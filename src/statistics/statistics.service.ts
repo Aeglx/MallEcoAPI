@@ -1,36 +1,30 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, MoreThanOrEqual } from 'typeorm';
-import { Product } from '../products/entities/product.entity';
 
 @Injectable()
 export class StatisticsService {
-  constructor(
-    @InjectRepository(Product) private readonly productRepository: Repository<Product>,
-  ) {}
+  // 模拟产品数据
+  private products = [
+    { id: 1, name: '产品1', price: 100, stock: 100, sales: 50, isShow: 1, isNew: 1, isHot: 1, createdAt: new Date() },
+    { id: 2, name: '产品2', price: 200, stock: 200, sales: 20, isShow: 1, isNew: 0, isHot: 1, createdAt: new Date() },
+    { id: 3, name: '产品3', price: 300, stock: 300, sales: 0, isShow: 0, isNew: 1, isHot: 0, createdAt: new Date() },
+    { id: 4, name: '产品4', price: 400, stock: 400, sales: 100, isShow: 1, isNew: 1, isHot: 1, createdAt: new Date() },
+    { id: 5, name: '产品5', price: 500, stock: 500, sales: 10, isShow: 1, isNew: 0, isHot: 0, createdAt: new Date() },
+  ];
 
   /**
    * 获取商品销售统计
    */
   async getProductStatistics() {
-    const [totalProducts, totalStock, totalSales, avgPrice] = await Promise.all([
-      this.productRepository.count(),
-      this.productRepository.createQueryBuilder('product')
-        .select('SUM(product.stock) as totalStock')
-        .getRawOne(),
-      this.productRepository.createQueryBuilder('product')
-        .select('SUM(product.sales) as totalSales')
-        .getRawOne(),
-      this.productRepository.createQueryBuilder('product')
-        .select('AVG(product.price) as avgPrice')
-        .getRawOne(),
-    ]);
+    const totalProducts = this.products.length;
+    const totalStock = this.products.reduce((sum, p) => sum + p.stock, 0);
+    const totalSales = this.products.reduce((sum, p) => sum + p.sales, 0);
+    const avgPrice = this.products.reduce((sum, p) => sum + p.price, 0) / totalProducts || 0;
 
     return {
       totalProducts,
-      totalStock: totalStock.totalStock || 0,
-      totalSales: totalSales.totalSales || 0,
-      avgPrice: avgPrice.avgPrice || 0,
+      totalStock,
+      totalSales,
+      avgPrice,
     };
   }
 
@@ -38,21 +32,19 @@ export class StatisticsService {
    * 获取热门商品
    */
   async getHotProducts(limit: number = 10) {
-    return await this.productRepository.find({
-      order: { sales: 'DESC' },
-      take: limit,
-    });
+    return [...this.products]
+      .sort((a, b) => b.sales - a.sales)
+      .slice(0, limit);
   }
 
   /**
    * 获取滞销商品
    */
   async getUnsoldProducts(limit: number = 10) {
-    return await this.productRepository.find({
-      where: { sales: 0, stock: MoreThanOrEqual(1) },
-      order: { createdAt: 'ASC' },
-      take: limit,
-    });
+    return [...this.products]
+      .filter(p => p.sales === 0 && p.stock >= 1)
+      .sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime())
+      .slice(0, limit);
   }
 
   /**
@@ -63,9 +55,9 @@ export class StatisticsService {
     
     return {
       ...productStats,
-      activeProducts: await this.productRepository.count({ where: { isShow: 1 } }),
-      newProducts: await this.productRepository.count({ where: { isNew: 1 } }),
-      hotProducts: await this.productRepository.count({ where: { isHot: 1 } }),
+      activeProducts: this.products.filter(p => p.isShow === 1).length,
+      newProducts: this.products.filter(p => p.isNew === 1).length,
+      hotProducts: this.products.filter(p => p.isHot === 1).length,
     };
   }
 }

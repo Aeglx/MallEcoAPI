@@ -2,21 +2,19 @@ import { Injectable, NotFoundException, BadRequestException } from '@nestjs/comm
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { RabbitMQService } from '../rabbitmq/rabbitmq.service';
+import { Product } from './entities/product.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class ProductsService {
-  // 使用内存数据结构模拟数据库
-  private products: any[] = [];
-  private nextId = 1;
-
   constructor(
+    @InjectRepository(Product)
+    private productRepository: Repository<Product>,
     private readonly rabbitMQService: RabbitMQService,
   ) {}
 
-  // 模拟数据库操作
-  private findProductIndex(id: number): number {
-    return this.products.findIndex(product => product.id === id);
-  }
+
 
 
 
@@ -25,19 +23,16 @@ export class ProductsService {
   /**
    * 创建商品
    */
-  async create(createProductDto: CreateProductDto): Promise<any> {
-    const product = {
-      id: this.nextId++,
+  async create(createProductDto: CreateProductDto): Promise<Product> {
+    const product = this.productRepository.create({
       ...createProductDto,
       sales: 0, // 初始销量为0
       isShow: createProductDto.isShow ? 1 : 0,
       isNew: createProductDto.isNew ? 1 : 0,
       isHot: createProductDto.isHot ? 1 : 0,
       sortOrder: createProductDto.sortOrder || 0,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
-    this.products.push(product);
+    });
+    await this.productRepository.save(product);
 
     // 发送商品创建消息
     await this.rabbitMQService.emit('product.created', product);
@@ -51,61 +46,47 @@ export class ProductsService {
   /**
    * 查询商品列表
    */
-  async findAll(params?: any): Promise<{ data: any[], total: number }> {
-    let filteredProducts = [...this.products];
+  async findAll(params?: any): Promise<{ data: Product[], total: number }> {
+    const queryBuilder = this.productRepository.createQueryBuilder('product');
     
     // 条件查询
     if (params.name) {
-      filteredProducts = filteredProducts.filter(product => 
-        product.name.includes(params.name)
-      );
+      queryBuilder.where('product.name LIKE :name', { name: `%${params.name}%` });
     }
     
     if (params.categoryId) {
-      filteredProducts = filteredProducts.filter(product => 
-        product.categoryId === params.categoryId
-      );
+      queryBuilder.andWhere('product.categoryId = :categoryId', { categoryId: params.categoryId });
     }
     
     if (params.brandId) {
-      filteredProducts = filteredProducts.filter(product => 
-        product.brandId === params.brandId
-      );
+      queryBuilder.andWhere('product.brandId = :brandId', { brandId: params.brandId });
     }
     
     if (params.isShow !== undefined) {
-      filteredProducts = filteredProducts.filter(product => 
-        product.isShow === params.isShow
-      );
+      queryBuilder.andWhere('product.isShow = :isShow', { isShow: params.isShow });
     }
     
     if (params.isNew !== undefined) {
-      filteredProducts = filteredProducts.filter(product => 
-        product.isNew === params.isNew
-      );
+      queryBuilder.andWhere('product.isNew = :isNew', { isNew: params.isNew });
     }
     
     if (params.isHot !== undefined) {
-      filteredProducts = filteredProducts.filter(product => 
-        product.isHot === params.isHot
-      );
+      queryBuilder.andWhere('product.isHot = :isHot', { isHot: params.isHot });
     }
     
     // 排序
-    filteredProducts.sort((a, b) => {
-      if (a.sortOrder !== b.sortOrder) {
-        return a.sortOrder - b.sortOrder;
-      }
-      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-    });
+    queryBuilder.orderBy('product.sortOrder', 'ASC')
+      .addOrderBy('product.createdAt', 'DESC');
     
     // 分页
-    const total = filteredProducts.length;
-    let data = filteredProducts;
+    const total = await queryBuilder.getCount();
+    let data: Product[] = [];
     
     if (params.page && params.limit) {
       const offset = (params.page - 1) * params.limit;
-      data = filteredProducts.slice(offset, offset + params.limit);
+      data = await queryBuilder.skip(offset).take(params.limit).getMany();
+    } else {
+      data = await queryBuilder.getMany();
     }
     
     return { data, total };
@@ -114,9 +95,8 @@ export class ProductsService {
   /**
    * 查询单个商品
    */
-  async findOne(id: string): Promise<any> {
-    const productId = parseInt(id, 10);
-    const product = this.products.find(product => product.id === productId);
+  async findOne(id: string): Promise<Product> {
+    const product = await this.productRepository.findOne({ where: { id } });
     if (!product) {
       throw new NotFoundException('商品不存在');
     }
@@ -126,11 +106,10 @@ export class ProductsService {
   /**
    * 更新商品
    */
-  async update(id: string, updateProductDto: UpdateProductDto): Promise<any> {
-    const productId = parseInt(id, 10);
-    const index = this.findProductIndex(productId);
+  async update(id: string, updateProductDto: UpdateProductDto): Promise<Product> {
+    const product = await this.productRepository.findOne({ where: { id } });
     
-    if (index === -1) {
+    if (!product) {
       throw new NotFoundException('商品不存在');
     }
     
@@ -150,32 +129,26 @@ export class ProductsService {
     }
     
     // 更新商品
-    const product = {
-      ...this.products[index],
-      ...updateData,
-      updatedAt: new Date(),
-    };
-    
-    this.products[index] = product;
+    await this.productRepository.update(id, updateData);
+    const updatedProduct = await this.productRepository.findOne({ where: { id } });
 
     // 发送商品更新消息
-    await this.rabbitMQService.emit('product.updated', product);
+    await this.rabbitMQService.emit('product.updated', updatedProduct);
 
-    return product;
+    return updatedProduct;
   }
 
   /**
    * 删除商品
    */
   async remove(id: string): Promise<{ message: string }> {
-    const productId = parseInt(id, 10);
-    const index = this.findProductIndex(productId);
+    const product = await this.productRepository.findOne({ where: { id } });
     
-    if (index === -1) {
+    if (!product) {
       throw new NotFoundException('商品不存在');
     }
     
-    this.products.splice(index, 1);
+    await this.productRepository.delete(id);
 
     // 发送商品删除消息
     await this.rabbitMQService.emit('product.deleted', { id });
@@ -191,18 +164,17 @@ export class ProductsService {
       throw new BadRequestException('请选择要删除的商品');
     }
     
-    const productIds = ids.map(id => parseInt(id, 10));
-    let affected = 0;
-    
     // 过滤掉不存在的商品
-    const validIds = productIds.filter(id => this.findProductIndex(id) !== -1);
+    const existingProducts = await this.productRepository.find({
+      where: ids.map(id => ({ id }))
+    });
+    
+    const validIds = existingProducts.map(product => product.id);
     
     // 删除商品
-    this.products = this.products.filter(product => 
-      !productIds.includes(product.id)
-    );
+    await this.productRepository.delete(validIds);
     
-    affected = validIds.length;
+    const affected = validIds.length;
     
     // 发送商品批量删除消息
     await this.rabbitMQService.emit('product.batch.deleted', { ids });
@@ -216,21 +188,15 @@ export class ProductsService {
   /**
    * 更新商品状态（上架/下架）
    */
-  async updateStatus(id: string, isShow: boolean): Promise<any> {
-    const productId = parseInt(id, 10);
-    const index = this.findProductIndex(productId);
+  async updateStatus(id: string, isShow: boolean): Promise<Product> {
+    const product = await this.productRepository.findOne({ where: { id } });
     
-    if (index === -1) {
+    if (!product) {
       throw new NotFoundException('商品不存在');
     }
     
-    const product = {
-      ...this.products[index],
-      isShow: isShow ? 1 : 0,
-      updatedAt: new Date(),
-    };
-    
-    this.products[index] = product;
+    product.isShow = isShow ? 1 : 0;
+    await this.productRepository.save(product);
 
     // 发送商品状态更新消息
     await this.rabbitMQService.emit('product.status.updated', {
@@ -244,77 +210,61 @@ export class ProductsService {
   /**
    * 商品搜索
    */
-  async search(params: any): Promise<{ data: any[], total: number }> {
-    let filteredProducts = [...this.products];
+  async search(params: any): Promise<{ data: Product[], total: number }> {
+    const queryBuilder = this.productRepository.createQueryBuilder('product');
     
     // 搜索关键词
     if (params.keyword) {
       const keyword = params.keyword.toLowerCase();
-      filteredProducts = filteredProducts.filter(product => 
-        product.name.toLowerCase().includes(keyword) || 
-        (product.description && product.description.toLowerCase().includes(keyword)) ||
-        (product.details && product.details.toLowerCase().includes(keyword))
-      );
+      queryBuilder.where('LOWER(product.name) LIKE :keyword', { keyword: `%${keyword}%` })
+        .orWhere('LOWER(product.description) LIKE :keyword', { keyword: `%${keyword}%` })
+        .orWhere('LOWER(product.details) LIKE :keyword', { keyword: `%${keyword}%` });
     }
     
     // 分类过滤
     if (params.categoryId) {
-      filteredProducts = filteredProducts.filter(product => 
-        product.categoryId === params.categoryId
-      );
+      queryBuilder.andWhere('product.categoryId = :categoryId', { categoryId: params.categoryId });
     }
     
     // 品牌过滤
     if (params.brandId) {
-      filteredProducts = filteredProducts.filter(product => 
-        product.brandId === params.brandId
-      );
+      queryBuilder.andWhere('product.brandId = :brandId', { brandId: params.brandId });
     }
     
     // 上架状态过滤
-    filteredProducts = filteredProducts.filter(product => product.isShow === 1);
+    queryBuilder.andWhere('product.isShow = 1');
     
     // 新品过滤
     if (params.isNew !== undefined) {
-      filteredProducts = filteredProducts.filter(product => 
-        product.isNew === params.isNew
-      );
+      queryBuilder.andWhere('product.isNew = :isNew', { isNew: params.isNew });
     }
     
     // 热门过滤
     if (params.isHot !== undefined) {
-      filteredProducts = filteredProducts.filter(product => 
-        product.isHot === params.isHot
-      );
+      queryBuilder.andWhere('product.isHot = :isHot', { isHot: params.isHot });
     }
     
     // 价格范围过滤
     if (params.minPrice !== undefined) {
-      filteredProducts = filteredProducts.filter(product => 
-        product.price >= params.minPrice
-      );
+      queryBuilder.andWhere('product.price >= :minPrice', { minPrice: params.minPrice });
     }
     if (params.maxPrice !== undefined) {
-      filteredProducts = filteredProducts.filter(product => 
-        product.price <= params.maxPrice
-      );
+      queryBuilder.andWhere('product.price <= :maxPrice', { maxPrice: params.maxPrice });
     }
     
     // 排序
-    filteredProducts.sort((a, b) => {
-      if (a.sortOrder !== b.sortOrder) {
-        return a.sortOrder - b.sortOrder;
-      }
-      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-    });
+    queryBuilder.orderBy('product.sortOrder', 'ASC')
+      .addOrderBy('product.createdAt', 'DESC');
     
     // 分页
-    const total = filteredProducts.length;
-    let data = filteredProducts;
+    const total = await queryBuilder.getCount();
+    let data: Product[] = [];
     
     if (params.page && params.limit) {
       const offset = (params.page - 1) * params.limit;
-      data = filteredProducts.slice(offset, offset + params.limit);
+      data = await queryBuilder.skip(offset).take(params.limit).getMany();
+    } else {
+      data = await queryBuilder.getMany();
     }
     
     return {
