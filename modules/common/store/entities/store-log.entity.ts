@@ -15,7 +15,7 @@ export enum StoreOperateType {
   OTHER = 10, // 其他操作
 }
 
-@Entity('store_log')
+@Entity('mall_store_log')
 export class StoreLog {
   @PrimaryGeneratedColumn('uuid')
   id: string;

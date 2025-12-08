@@ -7,12 +7,15 @@ import { ProductsModule } from './products/products.module';
 import { StatisticsModule } from './statistics/statistics.module';
 // import { join } from 'path';
 import { ManagerModule } from '../modules/manager/manager.module';
+import { MessageModule } from '../modules/message/message.module';
 // import { ElasticsearchModule } from '@nestjs/elasticsearch';
 import { RabbitMQModule } from './rabbitmq/rabbitmq.module';
 // Import entities manually
 import { Config } from '../modules/manager/config/entities/config.entity';
 import { Log } from '../modules/manager/log/entities/log.entity';
 import { Message } from '../modules/manager/messages/entities/message.entity';
+import { MemberMessage } from '../modules/message/entities/member-message.entity';
+import { StoreMessage } from '../modules/message/entities/store-message.entity';
 import { Product } from './products/entities/product.entity';
 
 @Module({
@@ -31,7 +34,7 @@ import { Product } from './products/entities/product.entity';
         password: configService.get('DB_PASSWORD'),
         database: configService.get('DB_NAME'),
         charset: configService.get('DB_CHARSET'),
-        entities: [Config, Log, Message, Product],
+        entities: [Config, Log, Message, MemberMessage, StoreMessage, Product],
         synchronize: configService.get('DB_SYNCHRONIZE'),
         logging: configService.get('DB_LOGGING'),
       }),
@@ -54,6 +57,7 @@ import { Product } from './products/entities/product.entity';
     ProductsModule,
     StatisticsModule,
     ManagerModule,
+    MessageModule,
     RabbitMQModule,
   ],
   controllers: [AppController],

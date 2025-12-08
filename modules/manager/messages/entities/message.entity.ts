@@ -29,7 +29,7 @@ export enum SenderType {
   MANAGER = 'manager',
 }
 
-@Entity('messages')
+@Entity('mall_messages')
 export class Message extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;

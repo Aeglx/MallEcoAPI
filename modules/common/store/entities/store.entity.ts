@@ -26,7 +26,7 @@ export enum StoreLevel {
   LEVEL_5 = 5, // 5级店铺
 }
 
-@Entity('store')
+@Entity('mall_store')
 export class Store {
   @PrimaryGeneratedColumn('uuid')
   id: string;

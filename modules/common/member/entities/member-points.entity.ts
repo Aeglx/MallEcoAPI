@@ -20,7 +20,7 @@ export enum PointsChangeReason {
   OTHER = 'other', // 其他
 }
 
-@Entity('member_points')
+@Entity('mall_member_points')
 export class MemberPoints {
   @PrimaryGeneratedColumn('uuid')
   id: string;

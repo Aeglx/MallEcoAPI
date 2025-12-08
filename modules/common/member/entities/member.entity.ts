@@ -26,7 +26,7 @@ export enum MemberGender {
   OTHER = 'other', // 其他
 }
 
-@Entity('members')
+@Entity('mall_members')
 export class Member {
   @PrimaryGeneratedColumn('uuid')
   id: string;

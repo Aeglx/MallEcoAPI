@@ -1,7 +1,7 @@
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, DeleteDateColumn, ManyToOne, Index } from 'typeorm';
 import { Member } from './member.entity';
 
-@Entity('member_addresses')
+@Entity('mall_member_addresses')
 export class MemberAddress {
   @PrimaryGeneratedColumn('uuid')
   id: string;
