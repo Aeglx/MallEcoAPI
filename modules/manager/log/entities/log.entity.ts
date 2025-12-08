@@ -22,7 +22,6 @@ export enum LogOperationType {
   POST = 'POST',
   PUT = 'PUT',
   PATCH = 'PATCH',
-  DELETE = 'DELETE',
 }
 
 export enum LogResult {

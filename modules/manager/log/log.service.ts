@@ -17,7 +17,7 @@ export class LogService {
   }
 
   async findAll(queryDto: QueryLogDto): Promise<{ data: Log[]; total: number }> {
-    const { page = 1, limit = 10, logType, operationType, operatorId, operatorName, result, startTime, endTime } = queryDto;
+    const { page = 1, limit = 10, logType, operationType, operatorId, operatorName, startTime, endTime } = queryDto;
 
     const query = this.logRepository.createQueryBuilder('log');
 
@@ -25,7 +25,6 @@ export class LogService {
     if (operationType) query.andWhere('log.operationType = :operationType', { operationType });
     if (operatorId) query.andWhere('log.operatorId = :operatorId', { operatorId });
     if (operatorName) query.andWhere('log.operatorName LIKE :operatorName', { operatorName: `%${operatorName}%` });
-    if (result) query.andWhere('log.result = :result', { result });
     if (startTime) query.andWhere('log.operationTime >= :startTime', { startTime });
     if (endTime) query.andWhere('log.operationTime <= :endTime', { endTime });
 
@@ -132,10 +131,11 @@ export class LogService {
       .select(
         'COUNT(*) as total, ' +
         'SUM(CASE WHEN log.result = :success THEN 1 ELSE 0 END) as successCount, ' +
-        'SUM(CASE WHEN log.result = :failed THEN 1 ELSE 0 END) as failedCount',
-        { success: LogResult.SUCCESS, failed: LogResult.FAILED }
+        'SUM(CASE WHEN log.result = :failed THEN 1 ELSE 0 END) as failedCount'
       )
       .where('log.operationTime BETWEEN :startTime AND :endTime', { startTime, endTime })
+      .setParameter('success', LogResult.SUCCESS)
+      .setParameter('failed', LogResult.FAILED)
       .getRawOne();
 
     return {

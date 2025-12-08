@@ -1,6 +1,7 @@
 import { Injectable, NestMiddleware, Logger } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
 import { LogService } from '../log.service';
+import { LogType, LogOperationType } from '../entities/log.entity';
 
 @Injectable()
 export class LogMiddleware implements NestMiddleware {
@@ -22,21 +23,42 @@ export class LogMiddleware implements NestMiddleware {
       const responseTime = Date.now() - start;
 
       // 构建日志数据
+      // 将HTTP方法映射到LogOperationType枚举
+      let logOperationType: LogOperationType;
+      switch (method) {
+        case 'GET':
+          logOperationType = LogOperationType.GET;
+          break;
+        case 'POST':
+          logOperationType = LogOperationType.POST;
+          break;
+        case 'PUT':
+          logOperationType = LogOperationType.PUT;
+          break;
+        case 'PATCH':
+          logOperationType = LogOperationType.PATCH;
+          break;
+        case 'DELETE':
+          logOperationType = LogOperationType.DELETE;
+          break;
+        default:
+          logOperationType = LogOperationType.OTHER;
+      }
+
+      // 构建日志数据
       const logData = {
-        logType: 'HTTP_REQUEST',
-        operationType: method,
+        logType: LogType.HTTP_REQUEST,
+        operationType: logOperationType,
         operatorId: req['user']?.id || 'anonymous',
         operatorName: req['user']?.username || 'anonymous',
-        requestUrl: originalUrl,
-        requestMethod: method,
-        requestParams: JSON.stringify(query),
-        requestBody: this.sanitizeBody(body),
-        responseCode: statusCode,
-        responseTime: responseTime,
+        content: `HTTP ${method} ${originalUrl}`,
         ipAddress: ip,
-        userAgent: userAgent,
-        result: statusCode >= 200 && statusCode < 300 ? 'SUCCESS' : 'FAILED',
-        details: statusCode >= 400 ? `HTTP Error: ${statusCode}` : '',
+        requestMethod: method,
+        requestUrl: originalUrl,
+        responseCode: statusCode,
+        requestParams: JSON.stringify(query),
+        responseData: statusCode >= 400 ? `HTTP Error: ${statusCode}` : 'SUCCESS',
+        responseTime: responseTime,
       };
 
       try {

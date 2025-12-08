@@ -86,4 +86,15 @@ export class ProductsController {
   async updateStatus(@Param('id') id: string, @Query('isShow') isShow: boolean) {
     return await this.productsService.updateStatus(id, isShow);
   }
+
+  /**
+   * 商品搜索
+   */
+  @Get('search')
+  @Public()
+  @ApiOperation({ summary: '商品搜索' })
+  @ApiResponse({ status: 200, description: '搜索成功' })
+  async search(@Query() query) {
+    return await this.productsService.search(query);
+  }
 }

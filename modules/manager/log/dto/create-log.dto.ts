@@ -3,7 +3,7 @@ import { LogType, LogOperationType } from '../entities/log.entity';
 
 export class CreateLogDto {
   @IsEnum(LogType)
-  type: LogType;
+  logType: LogType;
 
   @IsEnum(LogOperationType)
   operationType: LogOperationType;
@@ -22,19 +22,19 @@ export class CreateLogDto {
 
   @IsOptional()
   @MaxLength(50)
-  ip: string;
+  ipAddress: string;
 
   @IsOptional()
   @MaxLength(20)
-  method: string;
+  requestMethod: string;
 
   @IsOptional()
   @MaxLength(200)
-  path: string;
+  requestUrl: string;
 
   @IsOptional()
   @IsNumber()
-  statusCode: number;
+  responseCode: number;
 
   @IsOptional()
   requestParams: string;
@@ -44,14 +44,14 @@ export class CreateLogDto {
 
   @IsOptional()
   @IsNumber()
-  executionTime: number;
+  responseTime: number;
 }
 
 // 日志查询DTO
 export class QueryLogDto {
   @IsOptional()
   @IsEnum(LogType)
-  type: LogType;
+  logType: LogType;
 
   @IsOptional()
   @IsEnum(LogOperationType)
@@ -67,13 +67,13 @@ export class QueryLogDto {
 
   @IsOptional()
   @MaxLength(50)
-  ip: string;
+  ipAddress: string;
 
   @IsOptional()
-  startDate: Date;
+  startTime: Date;
 
   @IsOptional()
-  endDate: Date;
+  endTime: Date;
 
   @IsOptional()
   @IsNumber()
