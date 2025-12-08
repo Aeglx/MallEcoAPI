@@ -2,23 +2,23 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { MemberMessage } from '../entities/member-message.entity';
-import { CreateMemberMessageDto, QueryMemberMessageDto, UpdateMemberMessageDto } from '../dto/member-message.dto';
 import { MessageStatus } from '../entities/enums/message-status.enum';
-import { RabbitMqService } from '../../../src/rabbitmq/rabbitmq.service';
+import { CreateMemberMessageDto, QueryMemberMessageDto, UpdateMemberMessageDto } from '../dto/member-message.dto';
+import { RabbitMQService } from '../../../src/rabbitmq/rabbitmq.service';
 
 @Injectable()
 export class MemberMessageService {
   constructor(
     @InjectRepository(MemberMessage) private readonly memberMessageRepository: Repository<MemberMessage>,
-    private readonly rabbitMqService: RabbitMqService
+    private readonly rabbitMQService: RabbitMQService
   ) {}
 
   async createMessage(createMemberMessageDto: CreateMemberMessageDto): Promise<MemberMessage> {
     const message = this.memberMessageRepository.create(createMemberMessageDto);
     const savedMessage = await this.memberMessageRepository.save(message);
     
-    // 发送消息事件
-    await this.rabbitMqService.publish('member-message', 'member.message.created', savedMessage);
+    // 发送消息创建事件
+    await this.rabbitMQService.emit('member.message.created', savedMessage);
     
     return savedMessage;
   }
@@ -27,8 +27,8 @@ export class MemberMessageService {
     const memberMessages = this.memberMessageRepository.create(messages);
     const savedMessages = await this.memberMessageRepository.save(memberMessages);
     
-    // 发送批量消息事件
-    await this.rabbitMqService.publish('member-message', 'member.message.batch.created', savedMessages);
+    // 发送批量消息创建事件
+    await this.rabbitMQService.emit('member.message.batch.created', savedMessages);
     
     return savedMessages;
   }
@@ -37,8 +37,8 @@ export class MemberMessageService {
     const message = this.memberMessageRepository.create(createMemberMessageDto);
     await this.memberMessageRepository.save(message);
     
-    // 发送消息给所有会员的事件
-    await this.rabbitMqService.publish('member-message', 'member.message.broadcast', {
+    // 发送消息广播事件
+    await this.rabbitMQService.emit('member.message.broadcast', {
       ...createMemberMessageDto,
       sendToAll: true
     });
@@ -55,7 +55,7 @@ export class MemberMessageService {
   async updateMessageStatus(id: string, updateMemberMessageDto: UpdateMemberMessageDto): Promise<MemberMessage> {
     const message = await this.getMessageById(id);
     
-    if (updateMemberMessageDto.status === 'read') {
+    if (updateMemberMessageDto.status === MessageStatus.READ) {
       message.isRead = true;
     }
     message.status = updateMemberMessageDto.status;
@@ -63,7 +63,7 @@ export class MemberMessageService {
     const updatedMessage = await this.memberMessageRepository.save(message);
     
     // 发送消息状态更新事件
-    await this.rabbitMqService.publish('member-message', 'member.message.status.updated', updatedMessage);
+    await this.rabbitMQService.emit('member.message.status.updated', updatedMessage);
     
     return updatedMessage;
   }
@@ -75,7 +75,7 @@ export class MemberMessageService {
     );
     
     // 发送标记全部已读事件
-    await this.rabbitMqService.publish('member-message', 'member.message.all.read', {
+    await this.rabbitMQService.emit('member.message.all.read', {
       memberId,
       count: result.affected || 0
     });
@@ -88,19 +88,10 @@ export class MemberMessageService {
     if (result.affected === 0) {
       throw new NotFoundException('Message not found');
     }
-    
-    // 发送消息删除事件
-    await this.rabbitMqService.publish('member-message', 'member.message.deleted', { id });
   }
 
   async deleteAll(memberId: string): Promise<number> {
     const result = await this.memberMessageRepository.delete({ memberId });
-    
-    // 发送删除全部消息事件
-    await this.rabbitMqService.publish('member-message', 'member.message.all.deleted', {
-      memberId,
-      count: result.affected || 0
-    });
     
     return result.affected || 0;
   }

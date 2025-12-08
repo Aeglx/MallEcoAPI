@@ -4,21 +4,21 @@ import { Repository } from 'typeorm';
 import { StoreMessage } from '../entities/store-message.entity';
 import { MessageStatus } from '../entities/enums/message-status.enum';
 import { CreateStoreMessageDto, QueryStoreMessageDto, UpdateStoreMessageDto } from '../dto/store-message.dto';
-import { RabbitMqService } from '../../../src/rabbitmq/rabbitmq.service';
+import { RabbitMQService } from '../../../src/rabbitmq/rabbitmq.service';
 
 @Injectable()
 export class StoreMessageService {
   constructor(
     @InjectRepository(StoreMessage) private readonly storeMessageRepository: Repository<StoreMessage>,
-    private readonly rabbitMqService: RabbitMqService
+    private readonly rabbitMQService: RabbitMQService
   ) {}
 
   async createMessage(createStoreMessageDto: CreateStoreMessageDto): Promise<StoreMessage> {
     const message = this.storeMessageRepository.create(createStoreMessageDto);
     const savedMessage = await this.storeMessageRepository.save(message);
     
-    // 发送消息事件
-    await this.rabbitMqService.publish('store-message', 'store.message.created', savedMessage);
+    // 发送消息创建事件
+    await this.rabbitMQService.emit('store.message.created', savedMessage);
     
     return savedMessage;
   }
@@ -27,8 +27,8 @@ export class StoreMessageService {
     const storeMessages = this.storeMessageRepository.create(messages);
     const savedMessages = await this.storeMessageRepository.save(storeMessages);
     
-    // 发送批量消息事件
-    await this.rabbitMqService.publish('store-message', 'store.message.batch.created', savedMessages);
+    // 发送批量消息创建事件
+    await this.rabbitMQService.emit('store.message.batch.created', savedMessages);
     
     return savedMessages;
   }
@@ -37,8 +37,8 @@ export class StoreMessageService {
     const message = this.storeMessageRepository.create(createStoreMessageDto);
     await this.storeMessageRepository.save(message);
     
-    // 发送消息给所有店铺的事件
-    await this.rabbitMqService.publish('store-message', 'store.message.broadcast', {
+    // 发送消息广播事件
+    await this.rabbitMQService.emit('store.message.broadcast', {
       ...createStoreMessageDto,
       sendToAll: true
     });
@@ -55,7 +55,7 @@ export class StoreMessageService {
   async updateMessageStatus(id: string, updateStoreMessageDto: UpdateStoreMessageDto): Promise<StoreMessage> {
     const message = await this.getMessageById(id);
     
-    if (updateStoreMessageDto.status === 'read') {
+    if (updateStoreMessageDto.status === MessageStatus.READ) {
       message.isRead = true;
     }
     message.status = updateStoreMessageDto.status;
@@ -63,7 +63,7 @@ export class StoreMessageService {
     const updatedMessage = await this.storeMessageRepository.save(message);
     
     // 发送消息状态更新事件
-    await this.rabbitMqService.publish('store-message', 'store.message.status.updated', updatedMessage);
+    await this.rabbitMQService.emit('store.message.status.updated', updatedMessage);
     
     return updatedMessage;
   }
@@ -75,7 +75,7 @@ export class StoreMessageService {
     );
     
     // 发送标记全部已读事件
-    await this.rabbitMqService.publish('store-message', 'store.message.all.read', {
+    await this.rabbitMQService.emit('store.message.all.read', {
       storeId,
       count: result.affected || 0
     });
@@ -88,19 +88,10 @@ export class StoreMessageService {
     if (result.affected === 0) {
       throw new NotFoundException('Message not found');
     }
-    
-    // 发送消息删除事件
-    await this.rabbitMqService.publish('store-message', 'store.message.deleted', { id });
   }
 
   async deleteAll(storeId: string): Promise<number> {
     const result = await this.storeMessageRepository.delete({ storeId });
-    
-    // 发送删除全部消息事件
-    await this.rabbitMqService.publish('store-message', 'store.message.all.deleted', {
-      storeId,
-      count: result.affected || 0
-    });
     
     return result.affected || 0;
   }

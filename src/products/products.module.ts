@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProductsController } from './products.controller';
 import { ProductsService } from './products.service';
@@ -7,7 +7,7 @@ import { RabbitMQModule } from '../rabbitmq/rabbitmq.module';
 
 @Module({
   imports: [
-    RabbitMQModule,
+    forwardRef(() => RabbitMQModule),
     TypeOrmModule.forFeature([Product]),
   ],
   controllers: [ProductsController],

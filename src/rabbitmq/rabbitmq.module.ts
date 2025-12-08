@@ -1,9 +1,11 @@
-import { Module, Global } from '@nestjs/common';
+import { Module, Global, forwardRef } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { ConfigService } from '@nestjs/config';
 import { RabbitMQService } from './rabbitmq.service';
 import { ProductMessageHandler } from './product-message-handler';
+import { MessageMessageHandler } from './message-message-handler';
 import { ProductsModule } from '../products/products.module';
+import { MessageModule } from '../../modules/message/message.module';
 
 @Global()
 @Module({
@@ -24,8 +26,10 @@ import { ProductsModule } from '../products/products.module';
         inject: [ConfigService],
       },
     ]),
+    forwardRef(() => ProductsModule),
+    forwardRef(() => MessageModule)
   ],
-  providers: [RabbitMQService],
+  providers: [RabbitMQService, ProductMessageHandler, MessageMessageHandler],
   exports: [ClientsModule, RabbitMQService],
 })
 export class RabbitMQModule {}

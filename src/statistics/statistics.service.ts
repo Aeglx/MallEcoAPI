@@ -1,30 +1,44 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository, getConnection, MoreThanOrEqual } from 'typeorm';
+import { Product } from '../products/entities/product.entity';
 
 @Injectable()
 export class StatisticsService {
-  // 模拟产品数据
-  private products = [
-    { id: 1, name: '产品1', price: 100, stock: 100, sales: 50, isShow: 1, isNew: 1, isHot: 1, createdAt: new Date() },
-    { id: 2, name: '产品2', price: 200, stock: 200, sales: 20, isShow: 1, isNew: 0, isHot: 1, createdAt: new Date() },
-    { id: 3, name: '产品3', price: 300, stock: 300, sales: 0, isShow: 0, isNew: 1, isHot: 0, createdAt: new Date() },
-    { id: 4, name: '产品4', price: 400, stock: 400, sales: 100, isShow: 1, isNew: 1, isHot: 1, createdAt: new Date() },
-    { id: 5, name: '产品5', price: 500, stock: 500, sales: 10, isShow: 1, isNew: 0, isHot: 0, createdAt: new Date() },
-  ];
+  constructor(
+    @InjectRepository(Product) private productRepository: Repository<Product>,
+  ) {}
 
   /**
    * 获取商品销售统计
    */
   async getProductStatistics() {
-    const totalProducts = this.products.length;
-    const totalStock = this.products.reduce((sum, p) => sum + p.stock, 0);
-    const totalSales = this.products.reduce((sum, p) => sum + p.sales, 0);
-    const avgPrice = this.products.reduce((sum, p) => sum + p.price, 0) / totalProducts || 0;
-
-    return {
+    const [
       totalProducts,
       totalStock,
       totalSales,
       avgPrice,
+      activeProducts,
+      newProducts,
+      hotProducts,
+    ] = await Promise.all([
+      this.productRepository.count(),
+      this.productRepository.sum('stock', {}),
+      this.productRepository.sum('sales', {}),
+      this.productRepository.average('price', {}),
+      this.productRepository.count({ where: { isShow: 1 } }),
+      this.productRepository.count({ where: { isNew: 1 } }),
+      this.productRepository.count({ where: { isHot: 1 } }),
+    ]);
+
+    return {
+      totalProducts: totalProducts || 0,
+      totalStock: totalStock || 0,
+      totalSales: totalSales || 0,
+      avgPrice: avgPrice || 0,
+      activeProducts: activeProducts || 0,
+      newProducts: newProducts || 0,
+      hotProducts: hotProducts || 0,
     };
   }
 
@@ -32,32 +46,106 @@ export class StatisticsService {
    * 获取热门商品
    */
   async getHotProducts(limit: number = 10) {
-    return [...this.products]
-      .sort((a, b) => b.sales - a.sales)
-      .slice(0, limit);
+    return this.productRepository
+      .find({
+        where: { isShow: 1 },
+        order: { sales: 'DESC' },
+        take: limit,
+        select: ['id', 'name', 'price', 'sales', 'mainImage', 'isHot'],
+      });
   }
 
   /**
    * 获取滞销商品
    */
   async getUnsoldProducts(limit: number = 10) {
-    return [...this.products]
-      .filter(p => p.sales === 0 && p.stock >= 1)
-      .sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime())
-      .slice(0, limit);
+    return this.productRepository
+      .find({
+        where: { sales: 0, stock: MoreThanOrEqual(1) },
+        order: { createdAt: 'ASC' },
+        take: limit,
+        select: ['id', 'name', 'price', 'stock', 'mainImage', 'createdAt'],
+      });
   }
 
   /**
    * 获取系统概览数据
    */
   async getSystemOverview() {
-    const productStats = await this.getProductStatistics();
-    
-    return {
-      ...productStats,
-      activeProducts: this.products.filter(p => p.isShow === 1).length,
-      newProducts: this.products.filter(p => p.isNew === 1).length,
-      hotProducts: this.products.filter(p => p.isHot === 1).length,
-    };
+    return await this.getProductStatistics();
+  }
+
+  /**
+   * 获取销售趋势统计
+   */
+  async getSalesTrend(days: number = 30) {
+    const startDate = new Date();
+    startDate.setDate(startDate.getDate() - days);
+
+    // 这里使用了简单的查询方式，实际项目中可能需要订单表的销售数据
+    // 为了演示，我们按商品创建日期统计
+    const products = await this.productRepository.find({
+      where: { createdAt: MoreThanOrEqual(startDate) },
+      select: ['sales', 'createdAt'],
+    });
+
+    // 按日期分组统计销售额
+    const dailySales = new Map<string, number>();
+    for (let i = 0; i <= days; i++) {
+      const date = new Date();
+      date.setDate(date.getDate() - days + i);
+      const dateKey = date.toISOString().split('T')[0];
+      dailySales.set(dateKey, 0);
+    }
+
+    products.forEach(product => {
+      const dateKey = product.createdAt.toISOString().split('T')[0];
+      if (dailySales.has(dateKey)) {
+        dailySales.set(dateKey, (dailySales.get(dateKey) || 0) + product.sales);
+      }
+    });
+
+    return Array.from(dailySales.entries()).map(([date, sales]) => ({
+      date,
+      sales,
+    }));
+  }
+
+  /**
+   * 获取分类销售统计
+   */
+  async getCategoryStatistics() {
+    const query = `
+      SELECT category_id, COUNT(*) as totalProducts, SUM(sales) as totalSales
+      FROM mall_product
+      GROUP BY category_id
+      ORDER BY totalSales DESC
+    `;
+
+    const result = await getConnection().query(query);
+    return result;
+  }
+
+  /**
+   * 获取价格区间统计
+   */
+  async getPriceRangeStatistics() {
+    const query = `
+      SELECT 
+        CASE 
+          WHEN price < 100 THEN '0-100'
+          WHEN price < 500 THEN '100-500'
+          WHEN price < 1000 THEN '500-1000'
+          ELSE '1000+'
+        END as priceRange,
+        COUNT(*) as totalProducts,
+        SUM(sales) as totalSales
+      FROM mall_product
+      GROUP BY priceRange
+      ORDER BY priceRange
+    `;
+
+    const result = await getConnection().query(query);
+    return result;
   }
 }

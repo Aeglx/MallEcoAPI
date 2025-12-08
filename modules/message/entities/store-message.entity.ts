@@ -28,7 +28,7 @@ export class StoreMessage extends BaseEntity {
   @Column({ name: 'status', type: 'enum', enum: MessageStatus, default: MessageStatus.UNREAD })
   status: MessageStatus;
 
-  @CreateDateColumn({ name: 'send_time', default: () => 'CURRENT_TIMESTAMP' })
+  @CreateDateColumn({ name: 'send_time' })
   sendTime: Date;
 
   @CreateDateColumn({ name: 'created_at' })

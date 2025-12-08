@@ -10,6 +10,10 @@ import { ManagerModule } from '../modules/manager/manager.module';
 import { MessageModule } from '../modules/message/message.module';
 // import { ElasticsearchModule } from '@nestjs/elasticsearch';
 import { RabbitMQModule } from './rabbitmq/rabbitmq.module';
+import { ConsulModule } from './consul/consul.module';
+import { HealthModule } from './health/health.module';
+import { GatewayModule } from './gateway/gateway.module';
+import { SocialModule } from './social/social.module';
 // Import entities manually
 import { Config } from '../modules/manager/config/entities/config.entity';
 import { Log } from '../modules/manager/log/entities/log.entity';
@@ -59,6 +63,10 @@ import { Product } from './products/entities/product.entity';
     ManagerModule,
     MessageModule,
     RabbitMQModule,
+    ConsulModule,
+    HealthModule,
+    GatewayModule,
+    SocialModule,
   ],
   controllers: [AppController],
   providers: [AppService],
