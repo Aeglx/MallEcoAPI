@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import { HttpExceptionFilter } from 'common/filters/http-exception.filter';
 import { TransformInterceptor } from 'common/interceptors/transform.interceptor';
 import { ConfigService } from '@nestjs/config';
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -16,6 +17,25 @@ async function bootstrap() {
   // 启用 CORS
   app.enableCors();
   
+  // 配置 Swagger
+  const swaggerConfig = new DocumentBuilder()
+    .setTitle('MallEco API')
+    .setDescription('MallEco商城系统API文档')
+    .setVersion('1.0')
+    .addTag('auth', '用户认证与授权')
+    .addTag('products', '商品管理')
+    .addBearerAuth({
+      type: 'http',
+      scheme: 'bearer',
+      bearerFormat: 'JWT',
+      in: 'header',
+      name: 'Authorization'
+    }, 'JWT-auth')
+    .build();
+  
+  const document = SwaggerModule.createDocument(app, swaggerConfig);
+  SwaggerModule.setup('api-docs', app, document);
+  
   // 获取配置服务
   const configService = app.get(ConfigService);
   
@@ -24,6 +44,7 @@ async function bootstrap() {
   
   await app.listen(port, () => {
     console.log(`Server running on http://localhost:${port}`);
+    console.log(`Swagger docs available at http://localhost:${port}/api-docs`);
   });
 }
 bootstrap();
