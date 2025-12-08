@@ -22,19 +22,19 @@ export class UpdatePromotionDto {
   @IsOptional()
   endTime?: Date;
 
-  @IsDecimal({ decimal_digits: '0,2', message: '满减金额必须是有效的数字' })
+  @IsDecimal({ decimal_digits: '0,2' })
   @IsOptional()
   minAmount?: number;
 
-  @IsDecimal({ decimal_digits: '0,2', message: '减免金额必须是有效的数字' })
+  @IsDecimal({ decimal_digits: '0,2' })
   @IsOptional()
   reductionAmount?: number;
 
-  @IsDecimal({ decimal_digits: '0,2', message: '折扣率必须是有效的数字' })
+  @IsDecimal({ decimal_digits: '0,2' })
   @IsOptional()
   discountRate?: number;
 
-  @IsDecimal({ decimal_digits: '0,2', message: '最大优惠金额必须是有效的数字' })
+  @IsDecimal({ decimal_digits: '0,2' })
   @IsOptional()
   maxDiscount?: number;
 

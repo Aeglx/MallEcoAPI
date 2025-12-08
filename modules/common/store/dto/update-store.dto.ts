@@ -86,7 +86,7 @@ export class UpdateStoreDto {
   @IsOptional()
   serviceWechat?: string;
 
-  @IsDecimal({ decimal_digits: '1,1', message: '信用评分必须是有效的数字' })
+  @IsDecimal({ decimal_digits: '1,1' })
   @IsOptional()
   creditScore?: number;
 

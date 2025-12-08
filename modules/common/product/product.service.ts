@@ -108,4 +108,15 @@ export class ProductService {
       relations: ['category', 'brand'],
     });
   }
+
+  /**
+   * 根据店铺ID统计商品数量
+   * @param storeId 店铺ID
+   * @returns 商品数量
+   */
+  async countByStoreId(storeId: string): Promise<number> {
+    return await this.productRepository.count({
+      where: { storeId },
+    });
+  }
 }

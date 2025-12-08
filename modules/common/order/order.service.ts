@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, In } from 'typeorm';
 import { Order } from './entities/order.entity';
 import { OrderItem } from './entities/order-item.entity';
 import { OrderLog } from './entities/order-log.entity';
@@ -371,6 +371,24 @@ export class OrderService {
   }
 
   /**
+   * 更新订单物流状态
+   * @param orderId 订单ID
+   * @param shippingStatus 物流状态
+   */
+  async updateShippingStatus(orderId: string, shippingStatus: number) {
+    const order = await this.findOne(orderId);
+    if (!order) {
+      throw new NotFoundException('订单不存在');
+    }
+
+    order.shipStatus = shippingStatus;
+    await this.orderRepository.save(order);
+
+    // 创建订单日志
+    await this.createOrderLog(order.id, order.orderStatus, order.payStatus, shippingStatus, '物流状态更新');
+  }
+
+  /**
    * 根据订单编号获取订单
    * @param orderSn 订单编号
    * @returns 订单详情
@@ -393,7 +411,7 @@ export class OrderService {
    */
   async findByIds(orderIds: string[]): Promise<Order[]> {
     return await this.orderRepository.find({
-      where: { id: { $in: orderIds } },
+      where: { id: In(orderIds) },
       relations: ['orderItems'],
     });
   }

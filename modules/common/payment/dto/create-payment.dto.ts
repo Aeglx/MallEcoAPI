@@ -6,7 +6,7 @@ export class CreatePaymentDto {
   @IsNotEmpty()
   orderSn: string;
 
-  @IsDecimal({ decimal_digits: '0,2', message: '支付金额必须是有效的数字' })
+  @IsDecimal({ decimal_digits: '0,2' })
   @IsNotEmpty()
   payAmount: number;
 

@@ -1,5 +1,4 @@
-import { Entity, Column, Index } from 'typeorm';
-import { BaseEntity } from '../../../common/base.entity';
+import { Entity, Column, Index, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity('mall_product')
 @Index(['name'])
@@ -9,7 +8,10 @@ import { BaseEntity } from '../../../common/base.entity';
 @Index(['isNew'])
 @Index(['isHot'])
 @Index(['price'])
-export class Product extends BaseEntity {
+export class Product {
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
+
   @Column({ length: 100 })  // 商品名称
   name: string;
 
@@ -54,4 +56,10 @@ export class Product extends BaseEntity {
 
   @Column({ name: 'details', type: 'text', nullable: true })  // 商品详情
   details: string;
+
+  @CreateDateColumn({ name: 'created_at' })
+  createdAt: Date;
+
+  @UpdateDateColumn({ name: 'updated_at' })
+  updatedAt: Date;
 }

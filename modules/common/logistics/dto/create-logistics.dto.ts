@@ -33,15 +33,15 @@ export class CreateLogisticsDto {
   @IsString({ message: '收件人地址不能为空' })
   receiverAddress: string;
 
-  @IsDecimal({ decimal_digits: '0,2', message: '重量必须是有效的数字' })
+  @IsDecimal({ decimal_digits: '0,2' })
   @IsOptional()
   weight?: number;
 
-  @IsDecimal({ decimal_digits: '0,2', message: '体积必须是有效的数字' })
+  @IsDecimal({ decimal_digits: '0,2' })
   @IsOptional()
   volume?: number;
 
-  @IsDecimal({ decimal_digits: '0,2', message: '配送费必须是有效的数字' })
+  @IsDecimal({ decimal_digits: '0,2' })
   @IsOptional()
   deliveryFee?: number;
 

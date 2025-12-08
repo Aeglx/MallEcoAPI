@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req } fro
 import { LogisticsService } from './logistics.service';
 import { CreateLogisticsDto } from './dto/create-logistics.dto';
 import { UpdateLogisticsDto } from './dto/update-logistics.dto';
-import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { LogisticsStatus } from './entities/logistics.entity';
 
 @Controller('logistics')

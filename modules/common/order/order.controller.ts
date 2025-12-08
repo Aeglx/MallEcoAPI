@@ -3,10 +3,9 @@ import { ApiTags, ApiOperation, ApiParam, ApiQuery } from '@nestjs/swagger';
 import { OrderService } from './order.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
-import { JwtAuthGuard } from 'src/security/guards/jwt-auth.guard';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { UseGuards } from '@nestjs/common';
-import { PageQueryDto } from 'src/shared/dto/page-query.dto';
-import { ApiPaginationQuery } from 'src/shared/decorators/api-pagination.decorator';
+
 import { OrderStatus, PayStatus, ShipStatus } from './enum/order-status.enum';
 
 @ApiTags('订单管理')

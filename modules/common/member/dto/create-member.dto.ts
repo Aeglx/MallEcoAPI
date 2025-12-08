@@ -1,13 +1,6 @@
 import { IsString, IsEmail, IsMobilePhone, IsOptional, IsEnum, MinLength, MaxLength, IsDateString } from 'class-validator';
 import { MemberGender, MemberLevel, MemberStatus } from '../entities/member.entity';
 
-// 会员性别枚举
-export enum MemberGender {
-  MALE = 'male', // 男
-  FEMALE = 'female', // 女
-  OTHER = 'other', // 其他
-}
-
 export class CreateMemberDto {
   @IsString()
   @MinLength(6)

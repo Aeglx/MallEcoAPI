@@ -19,6 +19,13 @@ export enum MemberLevel {
   LEVEL_5 = 'level_5', // 钻石会员
 }
 
+// 会员性别枚举
+export enum MemberGender {
+  MALE = 'male', // 男
+  FEMALE = 'female', // 女
+  OTHER = 'other', // 其他
+}
+
 @Entity('members')
 export class Member {
   @PrimaryGeneratedColumn('uuid')
@@ -103,11 +110,4 @@ export class Member {
   // 关联会员积分记录
   @OneToMany(() => MemberPoints, points => points.member)
   pointsRecords: MemberPoints[];
-}
-
-// 会员性别枚举
-export enum MemberGender {
-  MALE = 'male', // 男
-  FEMALE = 'female', // 女
-  OTHER = 'other', // 其他
 }

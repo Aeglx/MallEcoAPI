@@ -4,7 +4,7 @@ import { PaymentService } from './payment.service';
 import { CreatePaymentDto } from './dto/create-payment.dto';
 import { UpdatePaymentDto } from './dto/update-payment.dto';
 import { RefundPaymentDto } from './dto/refund-payment.dto';
-import { JwtAuthGuard } from 'src/security/guards/jwt-auth.guard';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { PayStatus } from './enum/payment-status.enum';
 
 @ApiTags('支付管理')

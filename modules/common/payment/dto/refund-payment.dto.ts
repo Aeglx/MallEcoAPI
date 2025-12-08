@@ -6,7 +6,7 @@ export class RefundPaymentDto {
   @IsNotEmpty()
   paySn: string;
 
-  @IsDecimal({ decimal_digits: '0,2', message: '退款金额必须是有效的数字' })
+  @IsDecimal({ decimal_digits: '0,2' })
   @IsNotEmpty()
   refundAmount: number;
 
