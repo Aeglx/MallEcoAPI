@@ -6,6 +6,7 @@ import { OrderItem } from './entities/order-item.entity';
 import { OrderLog } from './entities/order-log.entity';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
+import { OrderStatus, PayStatus, ShipStatus } from './enum/order-status.enum';
 
 @Injectable()
 export class OrderService {
@@ -35,9 +36,9 @@ export class OrderService {
       payAmount: totalAmount, // 假设没有折扣
       freightAmount: 0, // 假设免运费
       discountAmount: 0,
-      orderStatus: 0, // 待付款
-      payStatus: 0, // 待付款
-      shipStatus: 0, // 待发货
+      orderStatus: OrderStatus.UNPAID, // 待付款
+      payStatus: PayStatus.UNPAID, // 待付款
+      shipStatus: ShipStatus.UNDELIVERED, // 待发货
     });
 
     // 保存订单主表
@@ -56,7 +57,7 @@ export class OrderService {
     await this.orderItemRepository.save(orderItems);
 
     // 创建订单日志
-    await this.createOrderLog(savedOrder.id, 0, 0, 0, '订单创建成功');
+    await this.createOrderLog(savedOrder.id, OrderStatus.UNPAID, PayStatus.UNPAID, ShipStatus.UNDELIVERED, '订单创建成功');
 
     return savedOrder;
   }
@@ -207,5 +208,220 @@ export class OrderService {
       operateTime: new Date(),
     });
     return await this.orderLogRepository.save(orderLog);
+  }
+
+  /**
+   * 支付订单
+   * @param orderSn 订单编号
+   * @param payType 支付方式
+   * @param payOrderNo 支付流水号
+   * @returns 支付后的订单
+   */
+  async payOrder(orderSn: string, payType: string, payOrderNo: string): Promise<Order> {
+    const order = await this.orderRepository.findOne({
+      where: { orderSn },
+      relations: ['orderItems'],
+    });
+
+    if (!order) {
+      throw new NotFoundException(`Order with SN ${orderSn} not found`);
+    }
+
+    if (order.orderStatus !== OrderStatus.UNPAID || order.payStatus !== PayStatus.UNPAID) {
+      throw new BadRequestException('Order is not in unpaid status');
+    }
+
+    // 更新订单状态
+    order.orderStatus = OrderStatus.PAID;
+    order.payStatus = PayStatus.PAID;
+    order.payType = payType;
+    order.payTime = new Date();
+
+    const updatedOrder = await this.orderRepository.save(order);
+
+    // 创建订单日志
+    await this.createOrderLog(
+      order.id,
+      OrderStatus.PAID,
+      PayStatus.PAID,
+      undefined,
+      `订单支付成功，支付方式：${payType}，支付流水号：${payOrderNo}`,
+    );
+
+    return updatedOrder;
+  }
+
+  /**
+   * 取消订单
+   * @param orderSn 订单编号
+   * @param cancelReason 取消原因
+   * @returns 取消后的订单
+   */
+  async cancelOrder(orderSn: string, cancelReason: string): Promise<Order> {
+    const order = await this.orderRepository.findOne({
+      where: { orderSn },
+      relations: ['orderItems'],
+    });
+
+    if (!order) {
+      throw new NotFoundException(`Order with SN ${orderSn} not found`);
+    }
+
+    if (order.orderStatus !== OrderStatus.UNPAID || order.payStatus !== PayStatus.UNPAID) {
+      throw new BadRequestException('Only unpaid orders can be canceled');
+    }
+
+    // 更新订单状态
+    order.orderStatus = OrderStatus.CANCELLED;
+    order.payStatus = PayStatus.CANCEL;
+    order.cancelTime = new Date();
+
+    const updatedOrder = await this.orderRepository.save(order);
+
+    // 创建订单日志
+    await this.createOrderLog(
+      order.id,
+      OrderStatus.CANCELLED,
+      PayStatus.CANCEL,
+      undefined,
+      `订单取消，取消原因：${cancelReason}`,
+    );
+
+    return updatedOrder;
+  }
+
+  /**
+   * 发货
+   * @param orderSn 订单编号
+   * @param trackingNo 物流单号
+   * @param logisticsCompany 物流公司
+   * @returns 发货后的订单
+   */
+  async deliverOrder(orderSn: string, trackingNo: string, logisticsCompany: string): Promise<Order> {
+    const order = await this.orderRepository.findOne({
+      where: { orderSn },
+      relations: ['orderItems'],
+    });
+
+    if (!order) {
+      throw new NotFoundException(`Order with SN ${orderSn} not found`);
+    }
+
+    if (order.orderStatus !== OrderStatus.PAID || order.payStatus !== PayStatus.PAID || order.shipStatus !== ShipStatus.UNDELIVERED) {
+      throw new BadRequestException('Order is not in paid and undelivered status');
+    }
+
+    // 更新订单状态
+    order.orderStatus = OrderStatus.DELIVERED;
+    order.shipStatus = ShipStatus.DELIVERED;
+    order.trackingNo = trackingNo;
+    order.logisticsCompany = logisticsCompany;
+    order.shipTime = new Date();
+
+    const updatedOrder = await this.orderRepository.save(order);
+
+    // 创建订单日志
+    await this.createOrderLog(
+      order.id,
+      OrderStatus.DELIVERED,
+      undefined,
+      ShipStatus.DELIVERED,
+      `订单发货，物流单号：${trackingNo}，物流公司：${logisticsCompany}`,
+    );
+
+    return updatedOrder;
+  }
+
+  /**
+   * 确认收货
+   * @param orderSn 订单编号
+   * @returns 确认收货后的订单
+   */
+  async confirmOrder(orderSn: string): Promise<Order> {
+    const order = await this.orderRepository.findOne({
+      where: { orderSn },
+      relations: ['orderItems'],
+    });
+
+    if (!order) {
+      throw new NotFoundException(`Order with SN ${orderSn} not found`);
+    }
+
+    if (order.orderStatus !== OrderStatus.DELIVERED || order.shipStatus !== ShipStatus.DELIVERED) {
+      throw new BadRequestException('Order is not in delivered status');
+    }
+
+    // 更新订单状态
+    order.orderStatus = OrderStatus.COMPLETED;
+    order.shipStatus = ShipStatus.RECEIVED;
+    order.receiveTime = new Date();
+
+    const updatedOrder = await this.orderRepository.save(order);
+
+    // 创建订单日志
+    await this.createOrderLog(
+      order.id,
+      OrderStatus.COMPLETED,
+      undefined,
+      ShipStatus.RECEIVED,
+      '订单已确认收货',
+    );
+
+    return updatedOrder;
+  }
+
+  /**
+   * 根据订单编号获取订单
+   * @param orderSn 订单编号
+   * @returns 订单详情
+   */
+  async findByOrderSn(orderSn: string): Promise<Order> {
+    const order = await this.orderRepository.findOne({
+      where: { orderSn },
+      relations: ['orderItems'],
+    });
+    if (!order) {
+      throw new NotFoundException(`Order with SN ${orderSn} not found`);
+    }
+    return order;
+  }
+
+  /**
+   * 批量获取订单列表
+   * @param orderIds 订单ID列表
+   * @returns 订单列表
+   */
+  async findByIds(orderIds: string[]): Promise<Order[]> {
+    return await this.orderRepository.find({
+      where: { id: { $in: orderIds } },
+      relations: ['orderItems'],
+    });
+  }
+
+  /**
+   * 更新订单价格
+   * @param orderSn 订单编号
+   * @param updatePrice 更新后的价格
+   * @returns 更新后的订单
+   */
+  async updateOrderPrice(orderSn: string, updatePrice: number): Promise<Order> {
+    const order = await this.findByOrderSn(orderSn);
+
+    // 更新订单价格
+    order.totalAmount = updatePrice;
+    order.payAmount = updatePrice;
+
+    const updatedOrder = await this.orderRepository.save(order);
+
+    // 创建订单日志
+    await this.createOrderLog(
+      order.id,
+      undefined,
+      undefined,
+      undefined,
+      `订单价格更新为：${updatePrice}`,
+    );
+
+    return updatedOrder;
   }
 }

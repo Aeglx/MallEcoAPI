@@ -3,6 +3,7 @@ import { BaseEntity } from '../../../../common/base.entity';
 import { Category } from './category.entity';
 import { Brand } from './brand.entity';
 import { ProductSku } from './product-sku.entity';
+import { Store } from '../../store/entities/store.entity';
 
 @Entity('mall_product')
 @Index(['name'])
@@ -84,4 +85,8 @@ export class Product extends BaseEntity {
 
   @OneToMany(() => ProductSku, (sku) => sku.product)
   skus: ProductSku[];
+
+  @ManyToOne(() => Store, (store) => store.products, { createForeignKeyConstraints: false })
+  @JoinColumn({ name: 'store_id' })
+  store: Store;
 }
