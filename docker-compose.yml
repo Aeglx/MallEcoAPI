@@ -36,12 +36,12 @@ services:
   # MySQL数据库服务
   mysql:
     image: mysql:8.0
-    container_name: mall-eco-mysql
+    container_name: malleco-mysql
     ports:
       - "3306:3306"
     environment:
-      - MYSQL_ROOT_PASSWORD=123456
-      - MYSQL_DATABASE=mall_eco_api
+      - MYSQL_ROOT_PASSWORD=qwerty123
+      - MYSQL_DATABASE=malleco_api
     volumes:
       - mysql_data:/var/lib/mysql
       - ./mysql/init:/docker-entrypoint-initdb.d

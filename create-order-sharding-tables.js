@@ -17,14 +17,71 @@ async function createOrderShardingTables() {
   });
 
   try {
-    // 获取原始表结构
-    const [originalColumns] = await connection.execute(
-      'SHOW FULL COLUMNS FROM mall_order'
-    );
-
-    const [originalIndices] = await connection.execute(
-      'SHOW INDEX FROM mall_order'
-    );
+    // 预定义订单表结构
+    const tableStructure = `(
+      \`id\` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+      \`createBy\` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+      \`createTime\` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      \`updateBy\` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+      \`updateTime\` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+      \`deleteFlag\` tinyint NULL DEFAULT 0,
+      \`sn\` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+      \`memberId\` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+      \`storeId\` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+      \`supplierId\` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+      \`orderStatus\` tinyint NOT NULL DEFAULT 0,
+      \`payStatus\` tinyint NOT NULL DEFAULT 0,
+      \`shipStatus\` tinyint NOT NULL DEFAULT 0,
+      \`afterSaleStatus\` tinyint NOT NULL DEFAULT 0,
+      \`consigneeName\` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+      \`consigneeMobile\` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+      \`consigneeProvince\` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+      \`consigneeCity\` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+      \`consigneeDistrict\` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+      \`consigneeAddressId\` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+      \`consigneeAddressIdPath\` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+      \`consigneeDetail\` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+      \`flowPrice\` double NOT NULL,
+      \`goodsPrice\` double NOT NULL,
+      \`freightPrice\` double NOT NULL,
+      \`discountPrice\` double NOT NULL,
+      \`updatePrice\` double NULL DEFAULT NULL,
+      \`logisticsNo\` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+      \`logisticsCode\` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+      \`logisticsName\` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+      \`weight\` double NULL DEFAULT NULL,
+      \`goodsNum\` int NOT NULL,
+      \`remark\` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL,
+      \`sellerRemark\` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL,
+      \`cancelReason\` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+      \`completeTime\` datetime NULL DEFAULT NULL,
+      \`logisticsTime\` datetime NULL DEFAULT NULL,
+      \`payOrderNo\` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+      \`clientType\` enum('PC','MOBILE','APP','WECHAT') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+      \`needReceipt\` tinyint NOT NULL DEFAULT 0,
+      \`parentOrderSn\` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+      \`promotionId\` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+      \`orderType\` enum('NORMAL','VIRTUAL') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'NORMAL',
+      \`orderPromotionType\` enum('NORMAL','PINTUAN','COUPON','POINT') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'NORMAL',
+      \`priceDetail\` json NULL,
+      \`canReturn\` tinyint NOT NULL DEFAULT 1,
+      \`verificationCode\` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+      \`distributionId\` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+      \`useStoreMemberCouponIds\` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+      \`usePlatformMemberCouponId\` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+      \`qrCode\` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+      \`storeAddressPath\` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+      \`storeAddressMobile\` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+      \`storeAddressCenter\` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+      PRIMARY KEY (\`id\`) USING BTREE,
+      UNIQUE INDEX \`uk_order_sn\` (\`sn\`) USING BTREE,
+      INDEX \`idx_member_id\` (\`memberId\`) USING BTREE,
+      INDEX \`idx_store_id\` (\`storeId\`) USING BTREE,
+      INDEX \`idx_order_status\` (\`orderStatus\`) USING BTREE,
+      INDEX \`idx_pay_status\` (\`payStatus\`) USING BTREE,
+      INDEX \`idx_ship_status\` (\`shipStatus\`) USING BTREE
+    ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+    `;
 
     // 生成创建表的SQL语句
     for (let i = 0; i < 16; i++) {
@@ -32,64 +89,11 @@ async function createOrderShardingTables() {
       const tableName = `mall_order_${tableIndex}`;
 
       // 创建表
-      let createTableSql = `CREATE TABLE IF NOT EXISTS \`${tableName}\` (`;
-
-      // 添加列
-      originalColumns.forEach((col, index) => {
-        createTableSql += `\`${col.Field}\` ${col.Type}`;
-        if (col.Collation) createTableSql += ` COLLATE ${col.Collation}`;
-        if (col.Null === 'NO') createTableSql += ' NOT NULL';
-        // 处理时间戳字段的默认值
-        if (col.Field === 'createTime' || col.Field === 'updateTime') {
-          if (col.Field === 'createTime') {
-            createTableSql += ' DEFAULT CURRENT_TIMESTAMP';
-          } else if (col.Field === 'updateTime') {
-            createTableSql += ' DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP';
-          }
-        } else if (col.Default !== null) {
-          if (typeof col.Default === 'string') {
-            createTableSql += ` DEFAULT '${col.Default}'`;
-          } else {
-            createTableSql += ` DEFAULT ${col.Default}`;
-          }
-        }
-        // 修复SQL语法错误，移除所有包含DEFAULT_GENERATED的Extra属性
-        if (col.Extra && !col.Extra.includes('DEFAULT_GENERATED')) {
-          createTableSql += ` ${col.Extra}`;
-        }
-        if (index < originalColumns.length - 1) createTableSql += ',';
-      });
-
-      // 添加主键
-      const primaryKey = originalColumns.find(col => col.Key === 'PRI');
-      if (primaryKey) {
-        createTableSql += `, PRIMARY KEY (\`${primaryKey.Field}\`)`;
-      }
-
-      createTableSql += ') ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;';
+      const createTableSql = `CREATE TABLE IF NOT EXISTS \`${tableName}\` ${tableStructure}`;
 
       // 执行创建表
       await connection.execute(createTableSql);
       console.log(`Created table: ${tableName}`);
-
-      // 添加索引（跳过主键）
-      const uniqueIndices = new Set();
-      originalIndices.forEach(idx => {
-        if (idx.Key_name !== 'PRIMARY') {
-          const indexName = idx.Key_name.replace('mall_order', tableName);
-          if (!uniqueIndices.has(indexName)) {
-            const isUnique = idx.Non_unique === 0;
-            const [indexColumns] = originalIndices
-              .filter(i => i.Key_name === idx.Key_name)
-              .map(i => `\`${i.Column_name}\``);
-
-            const createIndexSql = `${isUnique ? 'CREATE UNIQUE INDEX' : 'CREATE INDEX'} \`${indexName}\` ON \`${tableName}\` (${indexColumns});`;
-            connection.execute(createIndexSql);
-            uniqueIndices.add(indexName);
-            console.log(`Added ${isUnique ? 'unique ' : ''}index: ${indexName} to ${tableName}`);
-          }
-        }
-      });
     }
 
     console.log('All order sharding tables created successfully!');
