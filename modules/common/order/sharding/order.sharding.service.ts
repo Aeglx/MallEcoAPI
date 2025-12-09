@@ -1,14 +1,17 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
+import { DataSource } from 'typeorm';
 import { Order } from '../entities/order.entity';
-import { OrderShardingRepository } from './order.sharding.repository';
 import { generateOrderSn } from '../utils/order.sn.generator';
+import { ShardingService } from '../../sharding/sharding.service';
+import { ShardingTransactionManager } from '../../sharding/sharding.transaction.manager';
+import { orderShardingConfig } from './sharding.config';
 
 @Injectable()
 export class OrderShardingService {
   constructor(
-    @InjectRepository(OrderShardingRepository)
-    private readonly orderShardingRepository: OrderShardingRepository,
+    private readonly dataSource: DataSource,
+    private readonly shardingService: ShardingService,
+    private readonly transactionManager: ShardingTransactionManager,
   ) {}
 
   /**
@@ -22,57 +25,125 @@ export class OrderShardingService {
     const order = new Order();
     Object.assign(order, orderData, { orderSn });
     
-    // 保存到对应分表
-    return await this.orderShardingRepository.saveToShardingTable(order);
+    // 使用事务保存到对应分表
+    return await this.transactionManager.executeInTransaction(async (queryRunner) => {
+      return await this.shardingService.saveToShardingTable(
+        queryRunner,
+        order,
+        'mall_order',
+        orderSn,
+        orderShardingConfig,
+        'order_sn'
+      );
+    });
   }
 
   /**
    * 根据订单号查询订单
    */
   async findByOrderSn(orderSn: string): Promise<Order | undefined> {
-    return await this.orderShardingRepository.findByOrderSn(orderSn);
+    return await this.shardingService.findByShardingValue(
+      Order,
+      orderSn,
+      'mall_order',
+      orderShardingConfig,
+      'order_sn'
+    );
   }
 
   /**
    * 根据订单号更新订单
    */
   async updateByOrderSn(orderSn: string, updateData: Partial<Order>): Promise<void> {
-    return await this.orderShardingRepository.updateByOrderSn(orderSn, updateData);
+    // 使用事务更新订单
+    await this.transactionManager.executeInTransaction(async (queryRunner) => {
+      await this.shardingService.updateByShardingValue(
+        queryRunner,
+        Order,
+        orderSn,
+        updateData,
+        'mall_order',
+        orderShardingConfig,
+        'order_sn'
+      );
+    });
   }
 
   /**
    * 根据订单号删除订单
    */
   async deleteByOrderSn(orderSn: string): Promise<void> {
-    return await this.orderShardingRepository.deleteByOrderSn(orderSn);
+    // 使用事务删除订单
+    await this.transactionManager.executeInTransaction(async (queryRunner) => {
+      await this.shardingService.deleteByShardingValue(
+        queryRunner,
+        Order,
+        orderSn,
+        'mall_order',
+        orderShardingConfig,
+        'order_sn'
+      );
+    });
   }
 
   /**
    * 批量查询订单
    */
   async findInBatches(orderSns: string[]): Promise<Order[]> {
-    return await this.orderShardingRepository.findInBatches(orderSns);
+    return await this.shardingService.findInBatches(
+      this.dataSource.manager,
+      Order,
+      'order',
+      'mall_order',
+      orderShardingConfig,
+      'orderSn',
+      orderSns
+    );
   }
 
   /**
    * 获取订单总数
    */
   async getTotalCount(): Promise<number> {
-    return await this.orderShardingRepository.getTotalCount();
+    return await this.shardingService.getTotalCount(
+      this.dataSource.manager,
+      Order,
+      'order',
+      'mall_order',
+      orderShardingConfig
+    );
   }
 
   /**
    * 分页查询所有订单（跨表）
    */
   async findAll(page: number = 1, limit: number = 10): Promise<{ items: Order[]; total: number }> {
-    return await this.orderShardingRepository.findWithPagination(page, limit);
+    return await this.shardingService.findWithPagination(
+      this.dataSource.manager,
+      Order,
+      'order',
+      'mall_order',
+      orderShardingConfig,
+      page,
+      limit
+    );
   }
 
   /**
    * 根据用户ID查询订单（跨表）
    */
   async findByMemberId(memberId: number, page: number = 1, limit: number = 10): Promise<{ items: Order[]; total: number }> {
-    return await this.orderShardingRepository.findByMemberId(memberId, page, limit);
+    // 使用where条件进行分页查询
+    return await this.shardingService.findWithPagination(
+      this.dataSource.manager,
+      Order,
+      'order',
+      'mall_order',
+      orderShardingConfig,
+      page,
+      limit,
+      { memberId }
+    );
   }
 
   /**

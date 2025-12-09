@@ -20,7 +20,18 @@ export class ElasticsearchProductService implements OnModuleInit, OnModuleDestro
           mappings: {
             properties: {
               id: { type: 'keyword' },
-              name: { type: 'text', analyzer: 'ik_smart', search_analyzer: 'ik_smart' },
+              name: {
+                type: 'text',
+                analyzer: 'ik_smart',
+                search_analyzer: 'ik_smart',
+                fields: {
+                  suggest: {
+                    type: 'completion',
+                    analyzer: 'ik_smart',
+                    search_analyzer: 'ik_smart'
+                  }
+                }
+              },
               description: { type: 'text', analyzer: 'ik_smart', search_analyzer: 'ik_smart' },
               details: { type: 'text', analyzer: 'ik_smart', search_analyzer: 'ik_smart' },
               categoryId: { type: 'keyword' },
@@ -54,6 +65,8 @@ export class ElasticsearchProductService implements OnModuleInit, OnModuleDestro
         ...product,
         createdAt: new Date(product.createdAt).toISOString(),
         updatedAt: new Date(product.updatedAt).toISOString(),
+        // 添加搜索建议字段
+        'name.suggest': product.name
       },
     } as any);
   }
@@ -88,6 +101,8 @@ export class ElasticsearchProductService implements OnModuleInit, OnModuleDestro
         ...product,
         createdAt: new Date(product.createdAt).toISOString(),
         updatedAt: new Date(product.updatedAt).toISOString(),
+        // 添加搜索建议字段
+        'name.suggest': product.name
       });
     }
 
@@ -226,5 +241,33 @@ export class ElasticsearchProductService implements OnModuleInit, OnModuleDestro
    */
   async initializeProductIndex(products: Product[]): Promise<void> {
     await this.bulkIndexProducts(products);
+  }
+
+  /**
+   * 获取商品搜索建议
+   */
+  async getProductSuggestions(keyword: string, limit: number = 10): Promise<string[]> {
+    const response = await this.elasticsearchService.search({
+      index: this.index,
+      body: {
+        suggest: {
+          product_suggestions: {
+            prefix: keyword,
+            completion: {
+              field: 'name.suggest',
+              size: limit,
+              skip_duplicates: true
+            }
+          }
+        }
+      }
+    } as any);
+
+    if (response.suggest && response.suggest.product_suggestions) {
+      const suggestions = response.suggest.product_suggestions[0].options.map((option: any) => option.text);
+      return suggestions;
+    }
+
+    return [];
   }
 }

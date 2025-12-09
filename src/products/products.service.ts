@@ -222,7 +222,7 @@ export class ProductsService {
   async search(params: any): Promise<{ data: any[], total: number }> {
     // 暂时使用TypeORM进行简单搜索，后续可替换为Elasticsearch
     const queryBuilder = this.productRepository.createQueryBuilder('product');
-    const { keyword, categoryId, brandId, minPrice, maxPrice, isShow, isNew, isHot, recommend, page = 1, limit = 10 } = params;
+    const { keyword, categoryId, brandId, minPrice, maxPrice, isShow, isNew, isHot, recommend, page = 1, limit = 10, sortBy = 'sortOrder', sortOrder = 'ASC' } = params;
 
     // 关键词搜索
     if (keyword) {
@@ -274,7 +274,17 @@ export class ProductsService {
     }
 
     // 排序
-    queryBuilder.orderBy('product.sortOrder', 'ASC').addOrderBy('product.createdAt', 'DESC');
+    // 支持的排序字段：price, sales, createdAt, sortOrder
+    const validSortFields = ['price', 'sales', 'createdAt', 'sortOrder'];
+    const actualSortField = validSortFields.includes(sortBy) ? sortBy : 'sortOrder';
+    const actualSortOrder = ['ASC', 'DESC'].includes(sortOrder.toUpperCase()) ? sortOrder.toUpperCase() : 'ASC';
+    
+    queryBuilder.orderBy(`product.${actualSortField}`, actualSortOrder);
+    
+    // 如果不是按创建时间排序，添加创建时间作为次要排序条件
+    if (actualSortField !== 'createdAt') {
+      queryBuilder.addOrderBy('product.createdAt', 'DESC');
+    }
 
     // 分页
     const [data, total] = await queryBuilder.skip((page - 1) * limit).take(limit).getManyAndCount();
@@ -283,6 +293,24 @@ export class ProductsService {
       data,
       total,
     };
+  }
+
+  /**
+   * 根据关键词获取商品（用于搜索联想）
+   * @param keyword 搜索关键词
+   * @param limit 获取数量
+   * @returns 商品列表
+   */
+  async getProductsByKeyword(keyword: string, limit: number = 10) {
+    const products = await this.productRepository
+      .createQueryBuilder('product')
+      .where('product.name LIKE :keyword', { keyword: `${keyword}%` })
+      .andWhere('product.isShow = :isShow', { isShow: 1 })
+      .orderBy('product.sales', 'DESC')
+      .limit(limit)
+      .getMany();
+
+    return products;
   }
 
   /**

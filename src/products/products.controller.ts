@@ -44,6 +44,19 @@ export class ProductsController {
   @Public()
   @ApiOperation({ summary: '商品搜索' })
   @ApiResponse({ status: 200, description: '搜索成功' })
+  @ApiQuery({ name: 'keyword', description: '搜索关键词', required: false })
+  @ApiQuery({ name: 'categoryId', description: '分类ID', required: false })
+  @ApiQuery({ name: 'brandId', description: '品牌ID', required: false })
+  @ApiQuery({ name: 'minPrice', description: '最低价格', required: false, type: Number })
+  @ApiQuery({ name: 'maxPrice', description: '最高价格', required: false, type: Number })
+  @ApiQuery({ name: 'isShow', description: '是否上架(0:下架, 1:上架)', required: false, type: Number })
+  @ApiQuery({ name: 'isNew', description: '是否新品(0:否, 1:是)', required: false, type: Number })
+  @ApiQuery({ name: 'isHot', description: '是否热门(0:否, 1:是)', required: false, type: Number })
+  @ApiQuery({ name: 'recommend', description: '是否推荐(0:否, 1:是)', required: false, type: Number })
+  @ApiQuery({ name: 'sortBy', description: '排序字段(price:价格, sales:销量, createdAt:新品)', required: false })
+  @ApiQuery({ name: 'sortOrder', description: '排序方式(ASC:升序, DESC:降序)', required: false })
+  @ApiQuery({ name: 'page', description: '页码', required: false, type: Number })
+  @ApiQuery({ name: 'limit', description: '每页数量', required: false, type: Number })
   async search(@Query() query) {
     return await this.productsService.search(query);
   }

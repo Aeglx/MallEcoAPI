@@ -3,9 +3,10 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ProductsModule } from './products/products.module';
-import { StatisticsModule } from './statistics/statistics.module';
-// import { join } from 'path';
+// Import modules from the unified modules directory
+import { ProductsModule } from './modules/products/products.module';
+import { StatisticsModule } from './modules/statistics/statistics.module';
+import { join } from 'path';
 import { ManagerModule } from '../modules/manager/manager.module';
 import { MessageModule } from '../modules/message/message.module';
 import { ElasticsearchModule } from '@nestjs/elasticsearch';
@@ -16,23 +17,13 @@ import { GatewayModule } from './gateway/gateway.module';
 import { SocialModule } from './social/social.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { GlobalConfigModule } from './config/config.module';
-// Import entities manually
-import { Config } from '../modules/manager/config/entities/config.entity';
-import { Log } from '../modules/manager/log/entities/log.entity';
-import { Message } from '../modules/manager/messages/entities/message.entity';
-import { MemberMessage } from '../modules/message/entities/member-message.entity';
-import { StoreMessage } from '../modules/message/entities/store-message.entity';
-import { Product } from './products/entities/product.entity';
-import { Cart } from '../modules/buyer/cart/entities/cart.entity';
+// Use dynamic entity loading instead of manual imports
+// Import modules
 import { BuyerModule } from '../modules/buyer/buyer.module';
 import { ImModule } from '../modules/im/im.module';
-import { ChatRoom } from '../modules/im/entities/chat-room.entity';
-import { ChatMessage } from '../modules/im/entities/chat-message.entity';
-import { ImTalk } from '../modules/im/entities/im-talk.entity';
 import { XxlJobModule } from '../modules/xxljob/xxljob.module';
-import { Order } from '../modules/common/order/entities/order.entity';
-import { OrderItem } from '../modules/common/order/entities/order-item.entity';
-import { OrderLog } from '../modules/common/order/entities/order-log.entity';
+// Use the search module from the unified modules directory
+// import { SearchModule } from './modules/search/search.module';
 
 @Module({
   imports: [
@@ -59,7 +50,10 @@ import { OrderLog } from '../modules/common/order/entities/order-log.entity';
         password: configService.get('DB_PASSWORD'),
         database: configService.get('DB_NAME'),
         charset: configService.get('DB_CHARSET'),
-        entities: [Config, Log, Message, MemberMessage, StoreMessage, Product, Cart, ChatRoom, ChatMessage, ImTalk, Order, OrderItem, OrderLog],
+        entities: [
+          join(__dirname, '**/*.entity{.ts,.js}'),
+          join(__dirname, '../modules/**/*.entity{.ts,.js}'),
+        ],
         synchronize: configService.get('DB_SYNCHRONIZE'),
         logging: configService.get('DB_LOGGING'),
         // 数据库连接池配置
@@ -95,6 +89,7 @@ import { OrderLog } from '../modules/common/order/entities/order-log.entity';
     BuyerModule,
     ImModule,
     XxlJobModule,
+    SearchModule,
   ],
   controllers: [AppController],
   providers: [AppService],
