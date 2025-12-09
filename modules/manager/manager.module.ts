@@ -2,11 +2,14 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from './config/config.module';
 import { LogModule } from './log/log.module';
 import { MessagesModule } from './messages/messages.module';
+import { ManagerProductsModule } from './products/products.module';
+import { ManagerOrdersModule } from './orders/orders.module';
+import { ManagerUsersModule } from './users/users.module';
 
 @Module({
-  imports: [ConfigModule, LogModule, MessagesModule],
+  imports: [ConfigModule, LogModule, MessagesModule, ManagerProductsModule, ManagerOrdersModule, ManagerUsersModule],
   controllers: [],
   providers: [],
-  exports: [ConfigModule, LogModule, MessagesModule],
+  exports: [ConfigModule, LogModule, MessagesModule, ManagerProductsModule, ManagerOrdersModule, ManagerUsersModule],
 })
 export class ManagerModule {}

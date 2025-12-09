@@ -30,10 +30,37 @@ export class ProductsController {
   @ApiQuery({ name: 'isShow', description: '是否上架(0:下架, 1:上架)', required: false })
   @ApiQuery({ name: 'isNew', description: '是否新品(0:否, 1:是)', required: false })
   @ApiQuery({ name: 'isHot', description: '是否热门(0:否, 1:是)', required: false })
+  @ApiQuery({ name: 'recommend', description: '是否推荐(0:否, 1:是)', required: false })
   @ApiQuery({ name: 'page', description: '页码', required: false })
   @ApiQuery({ name: 'limit', description: '每页数量', required: false })
   async findAll(@Query() params) {
     return await this.productsService.findAll(params);
+  }
+
+  /**
+   * 商品搜索
+   */
+  @Get('search')
+  @Public()
+  @ApiOperation({ summary: '商品搜索' })
+  @ApiResponse({ status: 200, description: '搜索成功' })
+  async search(@Query() query) {
+    return await this.productsService.search(query);
+  }
+
+  /**
+   * 获取推荐商品
+   */
+  @Get('recommended')
+  @Public()
+  @ApiOperation({ summary: '获取推荐商品' })
+  @ApiResponse({ status: 200, description: '查询成功' })
+  @ApiQuery({ name: 'categoryId', description: '分类ID', required: false })
+  @ApiQuery({ name: 'brandId', description: '品牌ID', required: false })
+  @ApiQuery({ name: 'page', description: '页码', required: false })
+  @ApiQuery({ name: 'limit', description: '每页数量', required: false })
+  async getRecommendedProducts(@Query() params) {
+    return await this.productsService.getRecommendedProducts(params);
   }
 
   @Public()
@@ -85,16 +112,5 @@ export class ProductsController {
   @ApiQuery({ name: 'isShow', description: '是否上架(true/false)', required: true })
   async updateStatus(@Param('id') id: string, @Query('isShow') isShow: boolean) {
     return await this.productsService.updateStatus(id, isShow);
-  }
-
-  /**
-   * 商品搜索
-   */
-  @Get('search')
-  @Public()
-  @ApiOperation({ summary: '商品搜索' })
-  @ApiResponse({ status: 200, description: '搜索成功' })
-  async search(@Query() query) {
-    return await this.productsService.search(query);
   }
 }

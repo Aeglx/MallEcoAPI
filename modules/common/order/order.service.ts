@@ -7,6 +7,7 @@ import { OrderLog } from './entities/order-log.entity';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { OrderStatus, PayStatus, ShipStatus } from './enum/order-status.enum';
+import { OrderShardingService } from './sharding/order.sharding.service';
 
 @Injectable()
 export class OrderService {
@@ -14,6 +15,7 @@ export class OrderService {
     @InjectRepository(Order) private readonly orderRepository: Repository<Order>,
     @InjectRepository(OrderItem) private readonly orderItemRepository: Repository<OrderItem>,
     @InjectRepository(OrderLog) private readonly orderLogRepository: Repository<OrderLog>,
+    private readonly orderShardingService: OrderShardingService,
   ) {}
 
   /**
@@ -28,10 +30,9 @@ export class OrderService {
       0,
     );
 
-    // 创建订单主表
-    const order = this.orderRepository.create({
+    // 订单基本信息
+    const orderBase = {
       ...createOrderDto,
-      orderSn: this.generateOrderSn(),
       totalAmount,
       payAmount: totalAmount, // 假设没有折扣
       freightAmount: 0, // 假设免运费
@@ -39,10 +40,10 @@ export class OrderService {
       orderStatus: OrderStatus.UNPAID, // 待付款
       payStatus: PayStatus.UNPAID, // 待付款
       shipStatus: ShipStatus.UNDELIVERED, // 待发货
-    });
+    };
 
-    // 保存订单主表
-    const savedOrder = await this.orderRepository.save(order);
+    // 使用分表服务创建订单
+    const savedOrder = await this.orderShardingService.createOrder(orderBase);
 
     // 创建订单商品项
     const orderItems = createOrderDto.items.map((item) => 
@@ -67,9 +68,8 @@ export class OrderService {
    * @returns 订单列表
    */
   async findAll(): Promise<Order[]> {
-    return await this.orderRepository.find({
-      relations: ['orderItems'],
-    });
+    const { items } = await this.orderShardingService.findAll(1, 1000); // 默认获取前1000条
+    return items;
   }
 
   /**
@@ -135,12 +135,7 @@ export class OrderService {
    * @returns 分页订单列表
    */
   async findByPage(page: number, limit: number): Promise<{ items: Order[]; total: number }> {
-    const [items, total] = await this.orderRepository.findAndCount({
-      skip: (page - 1) * limit,
-      take: limit,
-      relations: ['orderItems'],
-    });
-    return { items, total };
+    return await this.orderShardingService.findAll(page, limit);
   }
 
   /**
@@ -149,10 +144,8 @@ export class OrderService {
    * @returns 订单列表
    */
   async findByMemberId(memberId: string): Promise<Order[]> {
-    return await this.orderRepository.find({
-      where: { memberId },
-      relations: ['orderItems'],
-    });
+    const { items } = await this.orderShardingService.findByMemberId(parseInt(memberId), 1, 1000);
+    return items;
   }
 
   /**
@@ -165,22 +158,6 @@ export class OrderService {
       where: { orderStatus },
       relations: ['orderItems'],
     });
-  }
-
-  /**
-   * 生成订单号
-   * @returns 订单号
-   */
-  private generateOrderSn(): string {
-    const date = new Date();
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    const hours = String(date.getHours()).padStart(2, '0');
-    const minutes = String(date.getMinutes()).padStart(2, '0');
-    const seconds = String(date.getSeconds()).padStart(2, '0');
-    const random = Math.floor(1000 + Math.random() * 9000); // 4位随机数
-    return `${year}${month}${day}${hours}${minutes}${seconds}${random}`;
   }
 
   /**
@@ -218,10 +195,7 @@ export class OrderService {
    * @returns 支付后的订单
    */
   async payOrder(orderSn: string, payType: string, payOrderNo: string): Promise<Order> {
-    const order = await this.orderRepository.findOne({
-      where: { orderSn },
-      relations: ['orderItems'],
-    });
+    const order = await this.orderShardingService.findByOrderSn(orderSn);
 
     if (!order) {
       throw new NotFoundException(`Order with SN ${orderSn} not found`);
@@ -232,12 +206,19 @@ export class OrderService {
     }
 
     // 更新订单状态
-    order.orderStatus = OrderStatus.PAID;
-    order.payStatus = PayStatus.PAID;
-    order.payType = payType;
-    order.payTime = new Date();
+    await this.orderShardingService.updateByOrderSn(orderSn, {
+      orderStatus: OrderStatus.PAID,
+      payStatus: PayStatus.PAID,
+      payType,
+      payTime: new Date(),
+    });
 
-    const updatedOrder = await this.orderRepository.save(order);
+    // 重新获取更新后的订单
+    const updatedOrder = await this.orderShardingService.findByOrderSn(orderSn);
+
+    if (!updatedOrder) {
+      throw new NotFoundException(`Order with SN ${orderSn} not found after update`);
+    }
 
     // 创建订单日志
     await this.createOrderLog(
@@ -258,10 +239,7 @@ export class OrderService {
    * @returns 取消后的订单
    */
   async cancelOrder(orderSn: string, cancelReason: string): Promise<Order> {
-    const order = await this.orderRepository.findOne({
-      where: { orderSn },
-      relations: ['orderItems'],
-    });
+    const order = await this.orderShardingService.findByOrderSn(orderSn);
 
     if (!order) {
       throw new NotFoundException(`Order with SN ${orderSn} not found`);
@@ -272,11 +250,18 @@ export class OrderService {
     }
 
     // 更新订单状态
-    order.orderStatus = OrderStatus.CANCELLED;
-    order.payStatus = PayStatus.CANCEL;
-    order.cancelTime = new Date();
+    await this.orderShardingService.updateByOrderSn(orderSn, {
+      orderStatus: OrderStatus.CANCELLED,
+      payStatus: PayStatus.CANCEL,
+      cancelTime: new Date(),
+    });
 
-    const updatedOrder = await this.orderRepository.save(order);
+    // 重新获取更新后的订单
+    const updatedOrder = await this.orderShardingService.findByOrderSn(orderSn);
+
+    if (!updatedOrder) {
+      throw new NotFoundException(`Order with SN ${orderSn} not found after update`);
+    }
 
     // 创建订单日志
     await this.createOrderLog(
@@ -298,10 +283,7 @@ export class OrderService {
    * @returns 发货后的订单
    */
   async deliverOrder(orderSn: string, trackingNo: string, logisticsCompany: string): Promise<Order> {
-    const order = await this.orderRepository.findOne({
-      where: { orderSn },
-      relations: ['orderItems'],
-    });
+    const order = await this.orderShardingService.findByOrderSn(orderSn);
 
     if (!order) {
       throw new NotFoundException(`Order with SN ${orderSn} not found`);
@@ -312,13 +294,20 @@ export class OrderService {
     }
 
     // 更新订单状态
-    order.orderStatus = OrderStatus.DELIVERED;
-    order.shipStatus = ShipStatus.DELIVERED;
-    order.trackingNo = trackingNo;
-    order.logisticsCompany = logisticsCompany;
-    order.shipTime = new Date();
+    await this.orderShardingService.updateByOrderSn(orderSn, {
+      orderStatus: OrderStatus.DELIVERED,
+      shipStatus: ShipStatus.DELIVERED,
+      trackingNo,
+      logisticsCompany,
+      shipTime: new Date(),
+    });
 
-    const updatedOrder = await this.orderRepository.save(order);
+    // 重新获取更新后的订单
+    const updatedOrder = await this.orderShardingService.findByOrderSn(orderSn);
+
+    if (!updatedOrder) {
+      throw new NotFoundException(`Order with SN ${orderSn} not found after update`);
+    }
 
     // 创建订单日志
     await this.createOrderLog(
@@ -338,10 +327,7 @@ export class OrderService {
    * @returns 确认收货后的订单
    */
   async confirmOrder(orderSn: string): Promise<Order> {
-    const order = await this.orderRepository.findOne({
-      where: { orderSn },
-      relations: ['orderItems'],
-    });
+    const order = await this.orderShardingService.findByOrderSn(orderSn);
 
     if (!order) {
       throw new NotFoundException(`Order with SN ${orderSn} not found`);
@@ -352,11 +338,18 @@ export class OrderService {
     }
 
     // 更新订单状态
-    order.orderStatus = OrderStatus.COMPLETED;
-    order.shipStatus = ShipStatus.RECEIVED;
-    order.receiveTime = new Date();
+    await this.orderShardingService.updateByOrderSn(orderSn, {
+      orderStatus: OrderStatus.COMPLETED,
+      shipStatus: ShipStatus.RECEIVED,
+      receiveTime: new Date(),
+    });
 
-    const updatedOrder = await this.orderRepository.save(order);
+    // 重新获取更新后的订单
+    const updatedOrder = await this.orderShardingService.findByOrderSn(orderSn);
+
+    if (!updatedOrder) {
+      throw new NotFoundException(`Order with SN ${orderSn} not found after update`);
+    }
 
     // 创建订单日志
     await this.createOrderLog(
@@ -394,10 +387,7 @@ export class OrderService {
    * @returns 订单详情
    */
   async findByOrderSn(orderSn: string): Promise<Order> {
-    const order = await this.orderRepository.findOne({
-      where: { orderSn },
-      relations: ['orderItems'],
-    });
+    const order = await this.orderShardingService.findByOrderSn(orderSn);
     if (!order) {
       throw new NotFoundException(`Order with SN ${orderSn} not found`);
     }

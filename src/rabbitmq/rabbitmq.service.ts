@@ -35,7 +35,12 @@ export class RabbitMQService {
    * @param data 消息数据
    */
   async emit(pattern: string, data: any): Promise<void> {
-    this.client.emit(pattern, data).toPromise();
+    try {
+      await this.client.emit(pattern, data).toPromise();
+    } catch (error) {
+      console.error('Failed to emit message to RabbitMQ:', error);
+      // 可以选择重新抛出或记录错误，这里选择记录错误并继续执行
+    }
   }
 
   /**

@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { Config } from './entities/config.entity';
 import { CreateConfigDto } from './dto/create-config.dto';
 import { UpdateConfigDto } from './dto/update-config.dto';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
 export class ConfigService {
@@ -13,6 +14,7 @@ export class ConfigService {
   constructor(
     @InjectRepository(Config)
     private configRepository: Repository<Config>,
+    private readonly eventEmitter: EventEmitter2,
   ) {
     // 初始化缓存
     this.loadCache();
@@ -37,6 +39,8 @@ export class ConfigService {
     const savedConfig = await this.configRepository.save(config);
     // 更新缓存
     this.configCache.set(savedConfig.key, savedConfig);
+    // 触发配置创建事件
+    this.eventEmitter.emit('config.create', savedConfig);
     return savedConfig;
   }
 
@@ -77,6 +81,8 @@ export class ConfigService {
     const updatedConfig = await this.configRepository.save(config);
     // 更新缓存
     this.configCache.set(updatedConfig.key, updatedConfig);
+    // 触发配置更新事件
+    this.eventEmitter.emit('config.update', updatedConfig);
     return updatedConfig;
   }
 
@@ -88,6 +94,8 @@ export class ConfigService {
     }
     // 从缓存移除
     this.configCache.delete(config.key);
+    // 触发配置删除事件
+    this.eventEmitter.emit('config.delete', config);
   }
 
   async getConfigValue(key: string): Promise<string | null> {

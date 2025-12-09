@@ -4,8 +4,10 @@ import { ConfigService } from '@nestjs/config';
 import { RabbitMQService } from './rabbitmq.service';
 import { ProductMessageHandler } from './product-message-handler';
 import { MessageMessageHandler } from './message-message-handler';
+import { OrderMessageHandler } from './order-message-handler';
 import { ProductsModule } from '../products/products.module';
 import { MessageModule } from '../../modules/message/message.module';
+import { BuyerModule } from '../../modules/buyer/buyer.module';
 
 @Global()
 @Module({
@@ -27,9 +29,10 @@ import { MessageModule } from '../../modules/message/message.module';
       },
     ]),
     forwardRef(() => ProductsModule),
-    forwardRef(() => MessageModule)
+    forwardRef(() => MessageModule),
+    forwardRef(() => BuyerModule)
   ],
-  providers: [RabbitMQService, ProductMessageHandler, MessageMessageHandler],
+  providers: [RabbitMQService, ProductMessageHandler, MessageMessageHandler, OrderMessageHandler],
   exports: [ClientsModule, RabbitMQService],
 })
 export class RabbitMQModule {}

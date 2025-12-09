@@ -62,6 +62,10 @@ export class CreateProductDto {
   @IsOptional()
   isHot?: boolean;
 
+  @ApiProperty({ description: '是否推荐', example: true, default: false })
+  @IsOptional()
+  recommend?: boolean;
+
   @ApiProperty({ description: '排序', example: 100, default: 0 })
   @IsOptional()
   @IsNumber({}, { message: '排序必须是数字' })

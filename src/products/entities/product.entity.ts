@@ -8,6 +8,7 @@ import { Entity, Column, Index, PrimaryGeneratedColumn, CreateDateColumn, Update
 @Index(['isNew'])
 @Index(['isHot'])
 @Index(['price'])
+@Index(['recommend'])
 export class Product {
   @PrimaryGeneratedColumn('uuid')
   id: string;
@@ -47,6 +48,9 @@ export class Product {
 
   @Column({ name: 'is_hot', default: 0 })  // 是否热门(0:否, 1:是)
   isHot: number;
+
+  @Column({ name: 'recommend', default: 0 })  // 是否推荐(0:否, 1:是)
+  recommend: number;
 
   @Column({ name: 'sort_order', default: 0 })  // 排序
   sortOrder: number;

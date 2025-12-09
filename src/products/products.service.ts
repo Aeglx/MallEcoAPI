@@ -30,6 +30,7 @@ export class ProductsService {
       isShow: createProductDto.isShow ? 1 : 0,
       isNew: createProductDto.isNew ? 1 : 0,
       isHot: createProductDto.isHot ? 1 : 0,
+      recommend: createProductDto.recommend ? 1 : 0,
       sortOrder: createProductDto.sortOrder || 0,
     });
     await this.productRepository.save(product);
@@ -72,6 +73,10 @@ export class ProductsService {
     
     if (params.isHot !== undefined) {
       queryBuilder.andWhere('product.isHot = :isHot', { isHot: params.isHot });
+    }
+    
+    if (params.recommend !== undefined) {
+      queryBuilder.andWhere('product.recommend = :recommend', { recommend: params.recommend });
     }
     
     // 排序
@@ -126,6 +131,10 @@ export class ProductsService {
     
     if (updateProductDto.isHot !== undefined) {
       updateData.isHot = updateProductDto.isHot ? 1 : 0;
+    }
+    
+    if (updateProductDto.recommend !== undefined) {
+      updateData.recommend = updateProductDto.recommend ? 1 : 0;
     }
     
     // 更新商品
@@ -210,49 +219,95 @@ export class ProductsService {
   /**
    * 商品搜索
    */
-  async search(params: any): Promise<{ data: Product[], total: number }> {
+  async search(params: any): Promise<{ data: any[], total: number }> {
+    // 暂时使用TypeORM进行简单搜索，后续可替换为Elasticsearch
+    const queryBuilder = this.productRepository.createQueryBuilder('product');
+    const { keyword, categoryId, brandId, minPrice, maxPrice, isShow, isNew, isHot, recommend, page = 1, limit = 10 } = params;
+
+    // 关键词搜索
+    if (keyword) {
+      queryBuilder.where('product.name LIKE :keyword OR product.description LIKE :keyword', { keyword: `%${keyword}%` });
+    }
+
+    // 分类过滤
+    if (categoryId) {
+      queryBuilder.andWhere('product.categoryId = :categoryId', { categoryId });
+    }
+
+    // 品牌过滤
+    if (brandId) {
+      queryBuilder.andWhere('product.brandId = :brandId', { brandId });
+    }
+
+    // 价格范围过滤
+    if (minPrice !== undefined && maxPrice !== undefined) {
+      queryBuilder.andWhere('product.price BETWEEN :minPrice AND :maxPrice', { minPrice, maxPrice });
+    } else if (minPrice !== undefined) {
+      queryBuilder.andWhere('product.price >= :minPrice', { minPrice });
+    } else if (maxPrice !== undefined) {
+      queryBuilder.andWhere('product.price <= :maxPrice', { maxPrice });
+    }
+
+    // 上架状态过滤
+    if (isShow !== undefined) {
+      queryBuilder.andWhere('product.isShow = :isShow', { isShow });
+    }
+
+    // 新品过滤
+    if (isNew !== undefined) {
+      queryBuilder.andWhere('product.isNew = :isNew', { isNew });
+    }
+
+    // 热门过滤
+    if (isHot !== undefined) {
+      queryBuilder.andWhere('product.isHot = :isHot', { isHot });
+    }
+
+    // 推荐过滤
+    if (recommend !== undefined) {
+      queryBuilder.andWhere('product.recommend = :recommend', { recommend });
+    }
+
+    // 默认过滤上架商品
+    if (!isShow && isShow !== 0) {
+      queryBuilder.andWhere('product.isShow = 1');
+    }
+
+    // 排序
+    queryBuilder.orderBy('product.sortOrder', 'ASC').addOrderBy('product.createdAt', 'DESC');
+
+    // 分页
+    const [data, total] = await queryBuilder.skip((page - 1) * limit).take(limit).getManyAndCount();
+
+    return {
+      data,
+      total,
+    };
+  }
+
+  /**
+   * 获取推荐商品
+   */
+  async getRecommendedProducts(params?: any): Promise<{ data: Product[], total: number }> {
     const queryBuilder = this.productRepository.createQueryBuilder('product');
     
-    // 搜索关键词
-    if (params.keyword) {
-      const keyword = params.keyword.toLowerCase();
-      queryBuilder.where('LOWER(product.name) LIKE :keyword', { keyword: `%${keyword}%` })
-        .orWhere('LOWER(product.description) LIKE :keyword', { keyword: `%${keyword}%` })
-        .orWhere('LOWER(product.details) LIKE :keyword', { keyword: `%${keyword}%` });
-    }
+    // 只获取推荐商品
+    queryBuilder.where('product.recommend = 1');
     
-    // 分类过滤
+    // 只获取上架商品
+    queryBuilder.andWhere('product.isShow = 1');
+    
+    // 可选的分类过滤
     if (params.categoryId) {
       queryBuilder.andWhere('product.categoryId = :categoryId', { categoryId: params.categoryId });
     }
     
-    // 品牌过滤
+    // 可选的品牌过滤
     if (params.brandId) {
       queryBuilder.andWhere('product.brandId = :brandId', { brandId: params.brandId });
     }
     
-    // 上架状态过滤
-    queryBuilder.andWhere('product.isShow = 1');
-    
-    // 新品过滤
-    if (params.isNew !== undefined) {
-      queryBuilder.andWhere('product.isNew = :isNew', { isNew: params.isNew });
-    }
-    
-    // 热门过滤
-    if (params.isHot !== undefined) {
-      queryBuilder.andWhere('product.isHot = :isHot', { isHot: params.isHot });
-    }
-    
-    // 价格范围过滤
-    if (params.minPrice !== undefined) {
-      queryBuilder.andWhere('product.price >= :minPrice', { minPrice: params.minPrice });
-    }
-    if (params.maxPrice !== undefined) {
-      queryBuilder.andWhere('product.price <= :maxPrice', { maxPrice: params.maxPrice });
-    }
-    
-    // 排序
+    // 排序：先按排序字段，再按创建时间
     queryBuilder.orderBy('product.sortOrder', 'ASC')
       .addOrderBy('product.createdAt', 'DESC');
     
