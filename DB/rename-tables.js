@@ -1,8 +1,11 @@
 const mysql = require('mysql2');
 const dotenv = require('dotenv');
+const path = require('path');
 
 // 加载.env文件中的环境变量
-dotenv.config();
+dotenv.config({
+  path: path.join(__dirname, '../config', '.env'),
+});
 
 // 创建连接池
 const pool = mysql.createPool({

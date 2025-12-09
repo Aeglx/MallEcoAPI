@@ -5,7 +5,7 @@ const dotenv = require('dotenv');
 
 // 加载环境变量
 dotenv.config({
-  path: path.join(__dirname, '.env'),
+  path: path.join(__dirname, '../config', '.env'),
 });
 
 async function executeSqlScript() {

@@ -12,8 +12,8 @@ services:
       - DB_HOST=mysql
       - DB_PORT=3306
       - DB_USERNAME=root
-      - DB_PASSWORD=123456
-      - DB_DATABASE=mall_eco_api
+      - DB_PASSWORD=qwerty123
+      - DB_DATABASE=malleco
       - DB_CONNECTION_LIMIT=20
       - REDIS_HOST=redis
       - REDIS_PORT=6379
@@ -32,6 +32,7 @@ services:
       - rabbitmq
       - consul
     restart: unless-stopped
+    command: sh -c "node init-database.js && npm run start:prod"
 
   # MySQL数据库服务
   mysql:
@@ -41,16 +42,15 @@ services:
       - "3306:3306"
     environment:
       - MYSQL_ROOT_PASSWORD=qwerty123
-      - MYSQL_DATABASE=malleco_api
+      - MYSQL_DATABASE=malleco
     volumes:
       - mysql_data:/var/lib/mysql
-      - ./mysql/init:/docker-entrypoint-initdb.d
     restart: unless-stopped
 
   # Redis缓存服务
   redis:
     image: redis:7.0-alpine
-    container_name: mall-eco-redis
+    container_name: malleco-redis
     ports:
       - "6379:6379"
     volumes:
@@ -60,7 +60,7 @@ services:
   # Elasticsearch搜索引擎服务
   elasticsearch:
     image: elasticsearch:8.11.0
-    container_name: mall-eco-elasticsearch
+    container_name: malleco-elasticsearch
     ports:
       - "9200:9200"
       - "9300:9300"
@@ -77,7 +77,7 @@ services:
   # Kibana可视化工具（可选）
   kibana:
     image: kibana:8.11.0
-    container_name: mall-eco-kibana
+    container_name: malleco-kibana
     ports:
       - "5601:5601"
     depends_on:

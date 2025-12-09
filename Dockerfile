@@ -22,5 +22,5 @@ ENV NODE_ENV=production
 # 暴露端口
 EXPOSE 3000
 
-# 启动应用
-CMD ["node", "dist/main"]
+# 启动应用，先初始化数据库再启动服务
+CMD sh -c "node init-database.js && node dist/src/main"

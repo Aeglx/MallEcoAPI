@@ -6,7 +6,7 @@ const util = require('util');
 
 // 加载环境变量
 dotenv.config({
-  path: path.join(__dirname, '.env'),
+  path: path.join(__dirname, '../config', '.env'),
 });
 
 // 将exec转换为Promise

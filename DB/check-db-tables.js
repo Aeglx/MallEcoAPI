@@ -1,8 +1,11 @@
 const mysql = require('mysql2/promise');
 const dotenv = require('dotenv');
+const path = require('path');
 
 // 加载环境变量
-dotenv.config();
+dotenv.config({
+  path: path.join(__dirname, '../config', '.env'),
+});
 
 async function checkTables() {
   try {
