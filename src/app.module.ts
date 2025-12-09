@@ -3,12 +3,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-// Import modules from the unified modules directory
-import { ProductsModule } from './modules/products/products.module';
-import { StatisticsModule } from './modules/statistics/statistics.module';
 import { join } from 'path';
-import { ManagerModule } from '../modules/manager/manager.module';
-import { MessageModule } from '../modules/message/message.module';
 import { ElasticsearchModule } from '@nestjs/elasticsearch';
 import { RabbitMQModule } from './rabbitmq/rabbitmq.module';
 import { ConsulModule } from './consul/consul.module';
@@ -17,13 +12,19 @@ import { GatewayModule } from './gateway/gateway.module';
 import { SocialModule } from './social/social.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { GlobalConfigModule } from './config/config.module';
-// Use dynamic entity loading instead of manual imports
-// Import modules
+
+// 多端分离模块导入
+import { ManagerModule } from '../modules/manager/manager.module';
 import { BuyerModule } from '../modules/buyer/buyer.module';
+import { SellerModule } from '../modules/seller/seller.module';
+import { MessageModule } from '../modules/message/message.module';
 import { ImModule } from '../modules/im/im.module';
 import { XxlJobModule } from '../modules/xxljob/xxljob.module';
-// Use the search module from the unified modules directory
-// import { SearchModule } from './modules/search/search.module';
+import { SearchModule } from '../modules/search/search.module';
+
+// 核心业务模块导入
+import { ProductsModule } from '../modules/products/products.module';
+import { StatisticsModule } from '../modules/statistics/statistics.module';
 
 @Module({
   imports: [
@@ -76,20 +77,26 @@ import { XxlJobModule } from '../modules/xxljob/xxljob.module';
       }),
       inject: [ConfigService],
     }),
+    // 核心业务模块
     ProductsModule,
     StatisticsModule,
+    SocialModule,
+    
+    // 多端分离模块
     ManagerModule,
-    MessageModule,
+    BuyerModule,
+    SellerModule,
+    
+    // 公共服务模块
     RabbitMQModule,
     ConsulModule,
     HealthModule,
     GatewayModule,
-    SocialModule,
     GlobalConfigModule,
-    BuyerModule,
+    MessageModule,
     ImModule,
-    XxlJobModule,
     SearchModule,
+    XxlJobModule,
   ],
   controllers: [AppController],
   providers: [AppService],
