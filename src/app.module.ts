@@ -30,6 +30,9 @@ import { ChatRoom } from '../modules/im/entities/chat-room.entity';
 import { ChatMessage } from '../modules/im/entities/chat-message.entity';
 import { ImTalk } from '../modules/im/entities/im-talk.entity';
 import { XxlJobModule } from '../modules/xxljob/xxljob.module';
+import { Order } from '../modules/common/order/entities/order.entity';
+import { OrderItem } from '../modules/common/order/entities/order-item.entity';
+import { OrderLog } from '../modules/common/order/entities/order-log.entity';
 
 @Module({
   imports: [
@@ -56,7 +59,7 @@ import { XxlJobModule } from '../modules/xxljob/xxljob.module';
         password: configService.get('DB_PASSWORD'),
         database: configService.get('DB_NAME'),
         charset: configService.get('DB_CHARSET'),
-        entities: [Config, Log, Message, MemberMessage, StoreMessage, Product, Cart, ChatRoom, ChatMessage, ImTalk],
+        entities: [Config, Log, Message, MemberMessage, StoreMessage, Product, Cart, ChatRoom, ChatMessage, ImTalk, Order, OrderItem, OrderLog],
         synchronize: configService.get('DB_SYNCHRONIZE'),
         logging: configService.get('DB_LOGGING'),
         // 数据库连接池配置
