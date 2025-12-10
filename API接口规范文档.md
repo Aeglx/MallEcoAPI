@@ -1,5 +1,9 @@
 # MallEcoAPI 接口规范文档
 
+**最后更新时间：2025年12月10日**
+**文档版本：v2.0**
+**规范状态：当前生效版本**
+
 ## 1. 规范概述
 
 ### 1.1 设计原则
@@ -444,6 +448,268 @@ Response: {
 }
 ```
 
+#### 3.1.4 搜索系统模块
+```typescript
+// 获取热门搜索关键词
+GET /search/hot-words
+Query: {
+  limit?: number;  // 限制数量，默认10
+}
+Response: {
+  code: number;
+  message: string;
+  data: string[];  // 热门搜索关键词列表
+}
+
+// 保存搜索历史
+POST /search/history/save
+Request: {
+  data: {
+    userId: string;
+    keyword: string;
+  }
+}
+Response: {
+  code: number;
+  message: string;
+}
+
+// 获取搜索历史
+GET /search/history/{userId}
+Query: {
+  limit?: number;  // 限制数量，默认20
+}
+Response: {
+  code: number;
+  message: string;
+  data: string[];  // 搜索历史列表
+}
+
+// 清除搜索历史
+POST /search/history/clear/{userId}
+Response: {
+  code: number;
+  message: string;
+}
+
+// 获取搜索联想
+GET /search/suggestions
+Query: {
+  keyword: string;
+  limit?: number;  // 限制数量，默认10
+}
+Response: {
+  code: number;
+  message: string;
+  data: string[];  // 搜索联想列表
+}
+
+// 搜索商品
+GET /search/products
+Query: {
+  keyword: string;
+  page?: number;  // 页码，默认1
+  pageSize?: number;  // 每页数量，默认10
+  categoryId?: string;
+  brandId?: string;
+  minPrice?: number;
+  maxPrice?: number;
+  isNew?: number;
+  isHot?: number;
+  recommend?: number;
+  sortBy?: string;
+  sortOrder?: 'asc' | 'desc';
+}
+Response: {
+  code: number;
+  message: string;
+  data: {
+    products: Product[];
+    total: number;
+    page: number;
+    pageSize: number;
+    totalPages: number;
+  };
+}
+```
+
+#### 3.1.5 钱包系统模块
+```typescript
+// 获取钱包信息
+GET /api/v1/buyer/wallet/info
+Response: {
+  code: number;
+  message: string;
+  data: WalletInfo;
+}
+
+// 获取钱包记录
+GET /api/v1/buyer/wallet/records
+Query: {
+  page?: number;
+  limit?: number;
+  startTime?: string;
+  endTime?: string;
+  type?: number;
+  direction?: number;
+}
+Response: {
+  code: number;
+  message: string;
+  data: {
+    items: WalletRecord[];
+    total: number;
+    page: number;
+    pageSize: number;
+    totalPages: number;
+  };
+}
+
+// 钱包转账
+POST /api/v1/buyer/wallet/transfer
+Request: {
+  data: {
+    toMemberId: string;
+    amount: number;
+    password: string;
+    description?: string;
+  }
+}
+Response: {
+  code: number;
+  message: string;
+  data: {
+    fromRecord: WalletRecord;
+    toRecord: WalletRecord;
+  };
+}
+
+// 设置支付密码
+POST /api/v1/buyer/wallet/set-password
+Request: {
+  data: {
+    password: string;
+  }
+}
+Response: {
+  code: number;
+  message: string;
+}
+
+// 修改支付密码
+POST /api/v1/buyer/wallet/change-password
+Request: {
+  data: {
+    oldPassword: string;
+    newPassword: string;
+  }
+}
+Response: {
+  code: number;
+  message: string;
+}
+
+// 重置支付密码
+POST /api/v1/buyer/wallet/reset-password
+Request: {
+  data: {
+    newPassword: string;
+    verifyCode: string;
+  }
+}
+Response: {
+  code: number;
+  message: string;
+}
+```
+
+#### 3.1.6 直播系统模块
+```typescript
+// 获取直播间列表
+GET /api/v1/buyer/live/list
+Query: {
+  page?: number;
+  limit?: number;
+  status?: number;
+  categoryId?: string;
+  keyword?: string;
+}
+Response: {
+  code: number;
+  message: string;
+  data: {
+    items: LiveRoom[];
+    total: number;
+    page: number;
+    pageSize: number;
+    totalPages: number;
+  };
+}
+
+// 获取直播间详情
+GET /api/v1/buyer/live/{id}
+Response: {
+  code: number;
+  message: string;
+  data: LiveRoomDetail;
+}
+
+// 获取直播间商品
+GET /api/v1/buyer/live/{id}/goods
+Response: {
+  code: number;
+  message: string;
+  data: LiveGoods[];
+}
+
+// 发送直播聊天消息
+POST /api/v1/buyer/live/{id}/chat
+Request: {
+  data: {
+    content: string;
+  }
+}
+Response: {
+  code: number;
+  message: string;
+  data: LiveChatMessage;
+}
+
+// 获取直播聊天历史
+GET /api/v1/buyer/live/{id}/chat/history
+Query: {
+  page?: number;
+  limit?: number;
+}
+Response: {
+  code: number;
+  message: string;
+  data: {
+    items: LiveChatMessage[];
+    total: number;
+  };
+}
+
+// 获取直播订单
+GET /api/v1/buyer/live/orders
+Query: {
+  page?: number;
+  limit?: number;
+  status?: number;
+}
+Response: {
+  code: number;
+  message: string;
+  data: {
+    items: LiveOrder[];
+    total: number;
+    page: number;
+    pageSize: number;
+    totalPages: number;
+  };
+}
+```
+
 ### 3.2 卖家端接口 (Seller)
 
 #### 3.2.1 店铺管理模块
@@ -614,6 +880,361 @@ DELETE /api/v1/manager/user/delete/{userId}
 Response: {
   code: number;
   message: string;
+}
+```
+
+#### 3.3.2 搜索系统管理模块
+```typescript
+// 获取热门搜索词列表
+GET /api/v1/manager/search/hot-words
+Query: {
+  page?: number;
+  limit?: number;
+  keyword?: string;
+}
+Response: {
+  code: number;
+  message: string;
+  data: {
+    items: HotWord[];
+    total: number;
+    page: number;
+    pageSize: number;
+    totalPages: number;
+  };
+}
+
+// 添加热门搜索词
+POST /api/v1/manager/search/hot-words/add
+Request: {
+  data: {
+    keyword: string;
+    sort: number;
+    status: number;
+  }
+}
+Response: {
+  code: number;
+  message: string;
+  data: HotWord;
+}
+
+// 更新热门搜索词
+PUT /api/v1/manager/search/hot-words/update/{id}
+Request: {
+  data: {
+    keyword?: string;
+    sort?: number;
+    status?: number;
+  }
+}
+Response: {
+  code: number;
+  message: string;
+  data: HotWord;
+}
+
+// 删除热门搜索词
+DELETE /api/v1/manager/search/hot-words/delete/{id}
+Response: {
+  code: number;
+  message: string;
+}
+
+// 获取搜索统计
+GET /api/v1/manager/search/statistics
+Query: {
+  startTime?: string;
+  endTime?: string;
+  top?: number;
+}
+Response: {
+  code: number;
+  message: string;
+  data: {
+    totalSearches: number;
+    topKeywords: SearchKeywordStat[];
+  };
+}
+```
+
+#### 3.3.3 钱包系统管理模块
+```typescript
+// 获取钱包概览
+GET /api/v1/manager/wallet/overview
+Query: {
+  startTime?: string;
+  endTime?: string;
+}
+Response: {
+  code: number;
+  message: string;
+  data: {
+    totalWallets: number;
+    totalBalance: number;
+    totalFrozenBalance: number;
+    totalRecharge: number;
+    totalWithdraw: number;
+    totalConsume: number;
+    totalCommission: number;
+  };
+}
+
+// 获取钱包记录
+GET /api/v1/manager/wallet/records
+Query: {
+  page?: number;
+  limit?: number;
+  memberId?: string;
+  startTime?: string;
+  endTime?: string;
+  type?: number;
+  direction?: number;
+}
+Response: {
+  code: number;
+  message: string;
+  data: {
+    items: WalletRecord[];
+    total: number;
+    page: number;
+    pageSize: number;
+    totalPages: number;
+  };
+}
+
+// 冻结钱包
+POST /api/v1/manager/wallet/freeze/{memberId}
+Request: {
+  data: {
+    amount?: number;
+    reason: string;
+  }
+}
+Response: {
+  code: number;
+  message: string;
+  data: WalletRecord;
+}
+
+// 解冻钱包
+POST /api/v1/manager/wallet/unfreeze/{memberId}
+Request: {
+  data: {
+    amount?: number;
+    reason: string;
+  }
+}
+Response: {
+  code: number;
+  message: string;
+  data: WalletRecord;
+}
+
+// 调整钱包余额
+POST /api/v1/manager/wallet/adjust/{memberId}
+Request: {
+  data: {
+    amount: number;
+    type: number;
+    direction: number;
+    description: string;
+  }
+}
+Response: {
+  code: number;
+  message: string;
+  data: WalletRecord;
+}
+
+// 获取钱包统计报告
+GET /api/v1/manager/wallet/statistics
+Query: {
+  startTime?: string;
+  endTime?: string;
+  type?: 'wallet' | 'recharge' | 'withdraw' | 'points';
+}
+Response: {
+  code: number;
+  message: string;
+  data: {
+    dailyStats: DailyWalletStat[];
+    summary: WalletStatSummary;
+  };
+}
+```
+
+#### 3.3.4 直播系统管理模块
+```typescript
+// 获取直播间列表
+GET /api/v1/manager/live/list
+Query: {
+  page?: number;
+  limit?: number;
+  storeId?: string;
+  status?: number;
+  startTime?: string;
+  endTime?: string;
+  keyword?: string;
+}
+Response: {
+  code: number;
+  message: string;
+  data: {
+    items: LiveRoom[];
+    total: number;
+    page: number;
+    pageSize: number;
+    totalPages: number;
+  };
+}
+
+// 获取直播间详情
+GET /api/v1/manager/live/detail/{id}
+Response: {
+  code: number;
+  message: string;
+  data: LiveRoomDetail;
+}
+
+// 创建直播间
+POST /api/v1/manager/live/create
+Request: {
+  data: {
+    storeId: string;
+    title: string;
+    coverImage: string;
+    categoryId: string;
+    startTime: string;
+    endTime: string;
+    description?: string;
+    tags?: string[];
+  }
+}
+Response: {
+  code: number;
+  message: string;
+  data: LiveRoom;
+}
+
+// 更新直播间
+PUT /api/v1/manager/live/update/{id}
+Request: {
+  data: {
+    title?: string;
+    coverImage?: string;
+    categoryId?: string;
+    startTime?: string;
+    endTime?: string;
+    description?: string;
+    tags?: string[];
+  }
+}
+Response: {
+  code: number;
+  message: string;
+  data: LiveRoom;
+}
+
+// 删除直播间
+DELETE /api/v1/manager/live/delete/{id}
+Response: {
+  code: number;
+  message: string;
+}
+
+// 更新直播间状态
+PUT /api/v1/manager/live/status/{id}
+Request: {
+  data: {
+    status: number;
+    reason?: string;
+  }
+}
+Response: {
+  code: number;
+  message: string;
+}
+
+// 获取直播间商品列表
+GET /api/v1/manager/live/{id}/goods
+Query: {
+  page?: number;
+  limit?: number;
+}
+Response: {
+  code: number;
+  message: string;
+  data: {
+    items: LiveGoods[];
+    total: number;
+  };
+}
+
+// 直播间商品上下架
+PUT /api/v1/manager/live/goods/status/{liveGoodsId}
+Request: {
+  data: {
+    status: number;
+  }
+}
+Response: {
+  code: number;
+  message: string;
+}
+
+// 获取直播订单列表
+GET /api/v1/manager/live/orders
+Query: {
+  page?: number;
+  limit?: number;
+  liveId?: string;
+  status?: number;
+  startTime?: string;
+  endTime?: string;
+}
+Response: {
+  code: number;
+  message: string;
+  data: {
+    items: LiveOrder[];
+    total: number;
+    page: number;
+    pageSize: number;
+    totalPages: number;
+  };
+}
+
+// 处理直播订单
+PUT /api/v1/manager/live/order/status/{orderId}
+Request: {
+  data: {
+    status: number;
+    reason?: string;
+  }
+}
+Response: {
+  code: number;
+  message: string;
+}
+
+// 获取直播统计
+GET /api/v1/manager/live/statistics
+Query: {
+  startTime?: string;
+  endTime?: string;
+  liveId?: string;
+}
+Response: {
+  code: number;
+  message: string;
+  data: {
+    totalLiveRooms: number;
+    totalViews: number;
+    totalOrders: number;
+    totalSales: number;
+    dailyStats: DailyLiveStat[];
+  };
 }
 ```
 

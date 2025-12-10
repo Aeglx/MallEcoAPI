@@ -25,6 +25,9 @@ import { SearchModule } from '../modules/search/search.module';
 // 核心业务模块导入
 import { ProductsModule } from '../modules/products/products.module';
 import { StatisticsModule } from '../modules/statistics/statistics.module';
+import { DistributionModule } from '../modules/distribution/distribution.module';
+import { LiveModule } from '../modules/live/live.module';
+import { RbacModule } from '../modules/rbac/rbac.module';
 
 @Module({
   imports: [
@@ -80,7 +83,10 @@ import { StatisticsModule } from '../modules/statistics/statistics.module';
     // 核心业务模块
     ProductsModule,
     StatisticsModule,
+    DistributionModule,
     SocialModule,
+    LiveModule,
+    RbacModule,
     
     // 多端分离模块
     ManagerModule,
