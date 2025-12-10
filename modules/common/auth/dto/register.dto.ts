@@ -1,59 +1,19 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString, MinLength, MaxLength, IsOptional, IsPhoneNumber, IsEmail } from 'class-validator';
+import { IsNotEmpty, IsString, IsEmail, IsOptional } from 'class-validator';
 
 export class RegisterDto {
-  @ApiProperty({
-    description: '用户名',
-    example: 'user123',
-    required: true,
-    minLength: 3,
-    maxLength: 50,
-  })
-  @IsNotEmpty()
+  @IsNotEmpty({ message: '用户名不能为空' })
   @IsString()
-  @MinLength(3)
-  @MaxLength(50)
   username: string;
 
-  @ApiProperty({
-    description: '密码',
-    example: 'Password@123',
-    required: true,
-    minLength: 6,
-  })
-  @IsNotEmpty()
+  @IsNotEmpty({ message: '密码不能为空' })
   @IsString()
-  @MinLength(6)
   password: string;
 
-  @ApiProperty({
-    description: '手机号',
-    example: '13800138000',
-    required: false,
-  })
+  @IsNotEmpty({ message: '邮箱不能为空' })
+  @IsEmail({}, { message: '邮箱格式不正确' })
+  email: string;
+
   @IsOptional()
   @IsString()
-  @IsPhoneNumber('CN', { message: '请输入有效的手机号码' })
   phone?: string;
-
-  @ApiProperty({
-    description: '邮箱',
-    example: 'user@example.com',
-    required: false,
-  })
-  @IsOptional()
-  @IsString()
-  @IsEmail({}, { message: '请输入有效的邮箱地址' })
-  email?: string;
-
-  @ApiProperty({
-    description: '昵称',
-    example: '用户123',
-    required: false,
-    maxLength: 50,
-  })
-  @IsOptional()
-  @IsString()
-  @MaxLength(50)
-  nickname?: string;
 }

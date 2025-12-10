@@ -1,42 +1,45 @@
-import { Controller, Post, Body, UseGuards, Get, Req } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { Controller, Post, Body, Get, Param, Put, Delete, UseGuards, Query } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { RegisterDto } from './dto/register.dto';
-import { LoginDto } from './dto/login.dto';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
-import { Public } from './public.decorator';
+import { LoginDto } from './dto/login.dto';
+import { RegisterDto } from './dto/register.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 
-@ApiTags('auth')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Public()
-  @Post('register')
-  @ApiOperation({ summary: '用户注册' })
-  @ApiResponse({ status: 201, description: '注册成功' })
-  @ApiResponse({ status: 400, description: '参数错误' })
-  @ApiResponse({ status: 409, description: '用户已存在' })
-  async register(@Body() registerDto: RegisterDto) {
-    return await this.authService.register(registerDto);
+  @Post('login')
+  async login(@Body() loginDto: LoginDto) {
+    return this.authService.login(loginDto);
   }
 
-  @Public()
-  @Post('login')
-  @ApiOperation({ summary: '用户登录' })
-  @ApiResponse({ status: 200, description: '登录成功' })
-  @ApiResponse({ status: 400, description: '参数错误' })
-  @ApiResponse({ status: 401, description: '用户名或密码错误' })
-  async login(@Body() loginDto: LoginDto) {
-    return await this.authService.login(loginDto);
+  @Post('register')
+  async register(@Body() registerDto: RegisterDto) {
+    return this.authService.register(registerDto);
   }
 
   @UseGuards(JwtAuthGuard)
   @Get('profile')
-  @ApiOperation({ summary: '获取当前用户信息' })
-  @ApiResponse({ status: 200, description: '获取成功' })
-  @ApiResponse({ status: 401, description: '未授权' })
-  async getProfile(@Req() req) {
-    return await this.authService.getProfile(req.user.userId);
+  async getProfile(@Query('userId') userId: string) {
+    return this.authService.getUserProfile(userId);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Put('profile/:id')
+  async updateProfile(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+    return this.authService.updateUser(id, updateUserDto);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('logout')
+  async logout(@Query('userId') userId: string) {
+    return this.authService.logout(userId);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('refresh-token')
+  async refreshToken(@Query('refreshToken') refreshToken: string) {
+    return this.authService.refreshToken(refreshToken);
   }
 }
