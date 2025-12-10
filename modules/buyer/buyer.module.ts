@@ -4,6 +4,7 @@ import { ProductModule } from './product/product.module';
 import { CartModule } from './cart/cart.module';
 import { OrderModule } from './order/order.module';
 import { BuyerLiveModule } from './live/live.module';
+import { BuyerContentModule } from './content/content.module';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { BuyerLiveModule } from './live/live.module';
     CartModule,
     OrderModule,
     BuyerLiveModule,
+    BuyerContentModule,
   ],
   exports: [OrderModule],
 })

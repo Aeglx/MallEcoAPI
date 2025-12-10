@@ -79,4 +79,85 @@ export class StatisticsController {
   async getPriceRangeStatistics() {
     return await this.statisticsService.getPriceRangeStatistics();
   }
+
+  /**
+   * 获取内容管理统计
+   */
+  @ApiOperation({ summary: '获取内容管理统计' })
+  @ApiResponse({ status: 200, description: '获取内容管理统计成功' })
+  @Get('content')
+  async getContentStatistics() {
+    return await this.statisticsService.getContentStatistics();
+  }
+
+  /**
+   * 获取文章阅读趋势
+   */
+  @ApiOperation({ summary: '获取文章阅读趋势' })
+  @ApiQuery({ name: 'days', description: '统计天数', required: false })
+  @ApiResponse({ status: 200, description: '获取文章阅读趋势成功' })
+  @Get('article-trend')
+  async getArticleTrend(@Query('days') days: string) {
+    return await this.statisticsService.getArticleTrend(parseInt(days) || 30);
+  }
+
+  /**
+   * 获取热门文章排行
+   */
+  @ApiOperation({ summary: '获取热门文章排行' })
+  @ApiQuery({ name: 'limit', description: '返回数量限制', required: false })
+  @ApiResponse({ status: 200, description: '获取热门文章排行成功' })
+  @Get('hot-articles')
+  async getHotArticles(@Query('limit') limit: string) {
+    return await this.statisticsService.getHotArticles(parseInt(limit) || 10);
+  }
+
+  /**
+   * 获取分类文章统计
+   */
+  @ApiOperation({ summary: '获取分类文章统计' })
+  @ApiResponse({ status: 200, description: '获取分类文章统计成功' })
+  @Get('category-articles')
+  async getCategoryArticleStatistics() {
+    return await this.statisticsService.getCategoryArticleStatistics();
+  }
+
+  /**
+   * 获取用户活跃度统计
+   */
+  @ApiOperation({ summary: '获取用户活跃度统计' })
+  @ApiQuery({ name: 'days', description: '统计天数', required: false })
+  @ApiResponse({ status: 200, description: '获取用户活跃度统计成功' })
+  @Get('user-activity')
+  async getUserActivityStatistics(@Query('days') days: string) {
+    return await this.statisticsService.getUserActivityStatistics(parseInt(days) || 30);
+  }
+
+  /**
+   * 获取综合仪表盘数据
+   */
+  @ApiOperation({ summary: '获取综合仪表盘数据' })
+  @ApiResponse({ status: 200, description: '获取综合仪表盘数据成功' })
+  @Get('dashboard')
+  async getDashboardStatistics() {
+    return await this.statisticsService.getDashboardStatistics();
+  }
+
+  /**
+   * 获取时间段统计对比
+   */
+  @ApiOperation({ summary: '获取时间段统计对比' })
+  @ApiQuery({ name: 'currentDays', description: '当前时间段天数', required: false })
+  @ApiQuery({ name: 'previousDays', description: '对比时间段天数', required: false })
+  @ApiResponse({ status: 200, description: '获取时间段统计对比成功' })
+  @Get('comparison')
+  async getPeriodComparison(
+    @Query('currentDays') currentDays: string,
+    @Query('previousDays') previousDays: string
+  ) {
+    return await this.statisticsService.getPeriodComparison(
+      parseInt(currentDays) || 7,
+      parseInt(previousDays) || 7
+    );
+  }
 }

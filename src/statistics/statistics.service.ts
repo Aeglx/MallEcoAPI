@@ -1,10 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, MoreThanOrEqual, createQueryBuilder } from 'typeorm';
+import { Repository, MoreThanOrEqual, createQueryBuilder, Between } from 'typeorm';
 import { Product } from '../products/entities/product.entity';
 import { Order } from '../../modules/common/order/entities/order.entity';
 import { OrderItem } from '../../modules/common/order/entities/order-item.entity';
 import { User } from '../../modules/common/auth/entities/user.entity';
+import { Article } from '../../modules/common/content/entities/article.entity';
+import { ArticleCategory } from '../../modules/common/content/entities/article-category.entity';
+import { ArticleComment } from '../../modules/common/content/entities/article-comment.entity';
 
 @Injectable()
 export class StatisticsService {
@@ -13,6 +16,9 @@ export class StatisticsService {
     @InjectRepository(Order) private orderRepository: Repository<Order>,
     @InjectRepository(OrderItem) private orderItemRepository: Repository<OrderItem>,
     @InjectRepository(User) private userRepository: Repository<User>,
+    @InjectRepository(Article) private articleRepository: Repository<Article>,
+    @InjectRepository(ArticleCategory) private categoryRepository: Repository<ArticleCategory>,
+    @InjectRepository(ArticleComment) private commentRepository: Repository<ArticleComment>,
   ) {}
 
   /**
@@ -210,5 +216,271 @@ export class StatisticsService {
     });
 
     return statistics;
+  }
+
+  /**
+   * 获取内容管理统计
+   */
+  async getContentStatistics() {
+    const [
+      totalArticles,
+      publishedArticles,
+      draftArticles,
+      totalViews,
+      totalLikes,
+      totalComments,
+      totalCategories,
+      activeCategories,
+    ] = await Promise.all([
+      this.articleRepository.count(),
+      this.articleRepository.count({ where: { status: 'published' } }),
+      this.articleRepository.count({ where: { status: 'draft' } }),
+      this.articleRepository.sum('viewCount', {}),
+      this.articleRepository.sum('likeCount', {}),
+      this.commentRepository.count({ where: { status: 'approved' } }),
+      this.categoryRepository.count(),
+      this.categoryRepository.count({ where: { isActive: true } }),
+    ]);
+
+    return {
+      totalArticles: totalArticles || 0,
+      publishedArticles: publishedArticles || 0,
+      draftArticles: draftArticles || 0,
+      totalViews: totalViews || 0,
+      totalLikes: totalLikes || 0,
+      totalComments: totalComments || 0,
+      totalCategories: totalCategories || 0,
+      activeCategories: activeCategories || 0,
+    };
+  }
+
+  /**
+   * 获取文章阅读趋势
+   */
+  async getArticleTrend(days: number = 30) {
+    const startDate = new Date();
+    startDate.setDate(startDate.getDate() - days);
+
+    const result = await this.articleRepository.createQueryBuilder('article')
+      .select('DATE(article.createdAt) as date, COUNT(*) as articleCount, SUM(article.viewCount) as totalViews')
+      .where('article.createdAt >= :startDate', { startDate })
+      .groupBy('DATE(article.createdAt)')
+      .orderBy('date', 'ASC')
+      .getRawMany();
+
+    // 初始化所有日期的数据
+    const dailyStats = new Map<string, { articleCount: number; totalViews: number }>();
+    for (let i = 0; i <= days; i++) {
+      const date = new Date();
+      date.setDate(date.getDate() - days + i);
+      const dateKey = date.toISOString().split('T')[0];
+      dailyStats.set(dateKey, { articleCount: 0, totalViews: 0 });
+    }
+
+    // 填充查询结果
+    result.forEach(item => {
+      dailyStats.set(item.date, {
+        articleCount: Number(item.articleCount) || 0,
+        totalViews: Number(item.totalViews) || 0,
+      });
+    }
+
+    return Array.from(dailyStats.entries()).map(([date, stats]) => ({
+      date,
+      ...stats,
+    }));
+  }
+
+  /**
+   * 获取热门文章排行
+   */
+  async getHotArticles(limit: number = 10) {
+    return this.articleRepository.find({
+      where: { status: 'published' },
+      order: { viewCount: 'DESC' },
+      take: limit,
+      select: ['id', 'title', 'viewCount', 'likeCount', 'publishedAt'],
+      relations: ['category'],
+    });
+  }
+
+  /**
+   * 获取分类文章统计
+   */
+  async getCategoryArticleStatistics() {
+    const result = await this.categoryRepository.createQueryBuilder('category')
+      .leftJoin('category.articles', 'article')
+      .select([
+        'category.id',
+        'category.name',
+        'COUNT(article.id) as totalArticles',
+        'SUM(article.viewCount) as totalViews',
+        'SUM(article.likeCount) as totalLikes',
+      ])
+      .where('category.isActive = :isActive', { isActive: true })
+      .groupBy('category.id')
+      .orderBy('totalViews', 'DESC')
+      .getRawMany();
+
+    return result.map(item => ({
+      categoryId: item.id,
+      categoryName: item.name,
+      totalArticles: Number(item.totalArticles) || 0,
+      totalViews: Number(item.totalViews) || 0,
+      totalLikes: Number(item.totalLikes) || 0,
+    }));
+  }
+
+  /**
+   * 获取用户活跃度统计
+   */
+  async getUserActivityStatistics(days: number = 30) {
+    const startDate = new Date();
+    startDate.setDate(startDate.getDate() - days);
+
+    const [
+      newUserCount,
+      activeUsersCount,
+      articleCommentsCount,
+      orderUsersCount,
+    ] = await Promise.all([
+      this.userRepository.count({
+        where: { createdAt: MoreThanOrEqual(startDate) }
+      }),
+      this.userRepository.count({
+        where: { 
+          isActive: 1,
+          updatedAt: MoreThanOrEqual(startDate)
+        }
+      }),
+      this.commentRepository.count({
+        where: { 
+          status: 'approved',
+          createdAt: MoreThanOrEqual(startDate)
+        }
+      }),
+      this.orderRepository.count({
+        where: { 
+          createTime: MoreThanOrEqual(startDate),
+          orderStatus: 2 // 已完成订单
+        }
+      }),
+    ]);
+
+    return {
+      newUserCount,
+      activeUsersCount,
+      articleCommentsCount,
+      orderUsersCount,
+      period: `${days}天`,
+    };
+  }
+
+  /**
+   * 获取综合仪表盘数据
+   */
+  async getDashboardStatistics() {
+    const [
+      productStats,
+      orderStats,
+      userStats,
+      contentStats,
+      userActivityStats,
+      hotProducts,
+      hotArticles,
+    ] = await Promise.all([
+      this.getProductStatistics(),
+      this.getOrderStatistics(),
+      this.getUserStatistics(),
+      this.getContentStatistics(),
+      this.getUserActivityStatistics(7),
+      this.getHotProducts(5),
+      this.getHotArticles(5),
+    ]);
+
+    return {
+      overview: {
+        ...productStats,
+        ...orderStats,
+        ...userStats,
+        ...contentStats,
+      },
+      userActivity: userActivityStats,
+      hotProducts,
+      hotArticles,
+    };
+  }
+
+  /**
+   * 获取时间段统计对比
+   */
+  async getPeriodComparison(currentDays: number = 7, previousDays: number = 7) {
+    const now = new Date();
+    const currentStart = new Date(now.getTime() - currentDays * 24 * 60 * 60 * 1000);
+    const previousStart = new Date(currentStart.getTime() - previousDays * 24 * 60 * 60 * 1000);
+    const previousEnd = currentStart;
+
+    const [
+      currentOrders,
+      previousOrders,
+      currentRevenue,
+      previousRevenue,
+      currentUsers,
+      previousUsers,
+      currentArticles,
+      previousArticles,
+    ] = await Promise.all([
+      this.orderRepository.count({
+        where: { createTime: Between(currentStart, now) }
+      }),
+      this.orderRepository.count({
+        where: { createTime: Between(previousStart, previousEnd) }
+      }),
+      this.orderItemRepository.sum('totalPrice', {
+        where: { 
+          order: { createTime: Between(currentStart, now) },
+        }
+      } as any),
+      this.orderItemRepository.sum('totalPrice', {
+        where: { 
+          order: { createTime: Between(previousStart, previousEnd) },
+        }
+      } as any),
+      this.userRepository.count({
+        where: { createdAt: Between(currentStart, now) }
+      }),
+      this.userRepository.count({
+        where: { createdAt: Between(previousStart, previousEnd) }
+      }),
+      this.articleRepository.count({
+        where: { createdAt: Between(currentStart, now) }
+      }),
+      this.articleRepository.count({
+        where: { createdAt: Between(previousStart, previousEnd) }
+      }),
+    ]);
+
+    return {
+      orders: {
+        current: currentOrders || 0,
+        previous: previousOrders || 0,
+        growth: previousOrders > 0 ? ((currentOrders - previousOrders) / previousOrders * 100).toFixed(2) : '0.00',
+      },
+      revenue: {
+        current: currentRevenue || 0,
+        previous: previousRevenue || 0,
+        growth: previousRevenue > 0 ? ((currentRevenue - previousRevenue) / previousRevenue * 100).toFixed(2) : '0.00',
+      },
+      users: {
+        current: currentUsers || 0,
+        previous: previousUsers || 0,
+        growth: previousUsers > 0 ? ((currentUsers - previousUsers) / previousUsers * 100).toFixed(2) : '0.00',
+      },
+      articles: {
+        current: currentArticles || 0,
+        previous: previousArticles || 0,
+        growth: previousArticles > 0 ? ((currentArticles - previousArticles) / previousArticles * 100).toFixed(2) : '0.00',
+      },
+    };
   }
 }

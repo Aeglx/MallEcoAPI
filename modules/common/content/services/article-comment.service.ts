@@ -137,4 +137,116 @@ export class ArticleCommentService {
       rejected,
     };
   }
+
+  // 卖家端方法
+  async findByStore(storeId: number, paginationDto: PaginationDto): Promise<[ArticleComment[], number]> {
+    const { page, limit } = paginationDto;
+    const skip = (page - 1) * limit;
+
+    const queryBuilder = this.commentRepository.createQueryBuilder('comment')
+      .leftJoinAndSelect('comment.article', 'article')
+      .where('article.storeId = :storeId', { storeId })
+      .orderBy('comment.createdAt', 'DESC')
+      .skip(skip)
+      .take(limit);
+
+    return await queryBuilder.getManyAndCount();
+  }
+
+  async getPendingCommentsByStore(storeId: number): Promise<ArticleComment[]> {
+    return await this.commentRepository.createQueryBuilder('comment')
+      .leftJoinAndSelect('comment.article', 'article')
+      .where('article.storeId = :storeId', { storeId })
+      .andWhere('comment.status = :status', { status: 'pending' })
+      .orderBy('comment.createdAt', 'DESC')
+      .take(50)
+      .getMany();
+  }
+
+  async approveByStore(id: number, storeId: number): Promise<ArticleComment> {
+    const comment = await this.commentRepository.createQueryBuilder('comment')
+      .leftJoinAndSelect('comment.article', 'article')
+      .where('comment.id = :id', { id })
+      .andWhere('article.storeId = :storeId', { storeId })
+      .getOne();
+
+    if (!comment) {
+      throw new NotFoundException(`评论 #${id} 不存在`);
+    }
+
+    comment.status = 'approved';
+    return await this.commentRepository.save(comment);
+  }
+
+  async rejectByStore(id: number, storeId: number): Promise<ArticleComment> {
+    const comment = await this.commentRepository.createQueryBuilder('comment')
+      .leftJoinAndSelect('comment.article', 'article')
+      .where('comment.id = :id', { id })
+      .andWhere('article.storeId = :storeId', { storeId })
+      .getOne();
+
+    if (!comment) {
+      throw new NotFoundException(`评论 #${id} 不存在`);
+    }
+
+    comment.status = 'rejected';
+    return await this.commentRepository.save(comment);
+  }
+
+  async removeByStore(id: number, storeId: number): Promise<void> {
+    const comment = await this.commentRepository.createQueryBuilder('comment')
+      .leftJoinAndSelect('comment.article', 'article')
+      .where('comment.id = :id', { id })
+      .andWhere('article.storeId = :storeId', { storeId })
+      .getOne();
+
+    if (!comment) {
+      throw new NotFoundException(`评论 #${id} 不存在`);
+    }
+
+    // 检查是否有回复
+    const replies = await this.commentRepository.find({
+      where: { parentId: id },
+    });
+
+    if (replies.length > 0) {
+      throw new NotFoundException('该评论下有回复，无法删除');
+    }
+
+    await this.commentRepository.remove(comment);
+  }
+
+  async getCommentStatisticsByStore(storeId: number): Promise<any> {
+    const [total, approved, pending, rejected] = await Promise.all([
+      this.commentRepository.createQueryBuilder('comment')
+        .leftJoin('comment.article', 'article')
+        .where('article.storeId = :storeId', { storeId })
+        .getCount(),
+      
+      this.commentRepository.createQueryBuilder('comment')
+        .leftJoin('comment.article', 'article')
+        .where('article.storeId = :storeId', { storeId })
+        .andWhere('comment.status = :status', { status: 'approved' })
+        .getCount(),
+      
+      this.commentRepository.createQueryBuilder('comment')
+        .leftJoin('comment.article', 'article')
+        .where('article.storeId = :storeId', { storeId })
+        .andWhere('comment.status = :status', { status: 'pending' })
+        .getCount(),
+      
+      this.commentRepository.createQueryBuilder('comment')
+        .leftJoin('comment.article', 'article')
+        .where('article.storeId = :storeId', { storeId })
+        .andWhere('comment.status = :status', { status: 'rejected' })
+        .getCount(),
+    ]);
+
+    return {
+      total,
+      approved,
+      pending,
+      rejected,
+    };
+  }
 }

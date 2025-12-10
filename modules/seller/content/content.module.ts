@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
-import { BuyerContentController } from './content.controller';
+import { SellerContentController } from './content.controller';
 import { ContentModule } from '../../../common/content/content.module';
 
 @Module({
   imports: [ContentModule],
-  controllers: [BuyerContentController],
+  controllers: [SellerContentController],
 })
-export class BuyerContentModule {}
+export class SellerContentModule {}
