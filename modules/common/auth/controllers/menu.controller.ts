@@ -10,13 +10,23 @@ export class MenuController {
   constructor(private readonly menuService: MenuService) {}
 
   @Get()
-  async getMenus(@Query('type') type?: string) {
-    return this.menuService.getMenus(type);
+  async getMenus(@Query('type') type?: string, @Query('appType') appType?: number) {
+    return this.menuService.getMenus(type, appType);
   }
 
   @Get('tree')
-  async getMenuTree() {
-    return this.menuService.getMenuTree();
+  async getMenuTree(@Query('appType') appType?: number) {
+    return this.menuService.getMenuTree(appType);
+  }
+
+  @Get('admin/tree')
+  async getAdminMenuTree() {
+    return this.menuService.getMenuTree(1);
+  }
+
+  @Get('seller/tree')
+  async getSellerMenuTree() {
+    return this.menuService.getMenuTree(2);
   }
 
   @Get(':id')

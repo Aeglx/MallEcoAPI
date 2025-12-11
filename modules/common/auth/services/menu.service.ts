@@ -15,11 +15,15 @@ export class MenuService {
     private readonly permissionRepository: Repository<Permission>,
   ) {}
 
-  async getMenus(type?: string) {
+  async getMenus(type?: string, appType?: number) {
     const where: any = {};
     
     if (type) {
       where.type = type;
+    }
+    
+    if (appType !== undefined) {
+      where.appType = appType;
     }
 
     const menus = await this.menuRepository.find({
@@ -41,6 +45,7 @@ export class MenuService {
         icon: menu.icon,
         description: menu.description,
         type: menu.type,
+        appType: menu.appType,
         status: menu.status,
         hidden: menu.hidden,
         redirect: menu.redirect,
@@ -49,12 +54,58 @@ export class MenuService {
     };
   }
 
-  async getMenuTree() {
-    const menus = await this.menuRepository.findTrees();
+  async getMenuTree(appType?: number) {
+    let menus: Menu[];
     
-    return {
-      tree: menus.map(menu => this.buildMenuTreeItem(menu))
-    };
+    if (appType !== undefined) {
+      // 按终端类型过滤
+      menus = await this.menuRepository.find({
+        where: { appType },
+        order: { sortOrder: 'ASC' }
+      });
+      
+      // 手动构建树形结构
+      const tree = this.buildTreeFromList(menus);
+      return {
+        tree: tree.map(menu => this.buildMenuTreeItem(menu))
+      };
+    } else {
+      // 获取所有菜单树
+      menus = await this.menuRepository.findTrees();
+      return {
+        tree: menus.map(menu => this.buildMenuTreeItem(menu))
+      };
+    }
+  }
+
+  private buildTreeFromList(menus: Menu[]): Menu[] {
+    const menuMap = new Map<string, Menu>();
+    const rootMenus: Menu[] = [];
+
+    // 创建菜单映射
+    menus.forEach(menu => {
+      menuMap.set(menu.id, { ...menu, children: [] });
+    });
+
+    // 构建树形结构
+    menus.forEach(menu => {
+      const menuItem = menuMap.get(menu.id);
+      if (menu.parentId) {
+        const parent = menuMap.get(menu.parentId);
+        if (parent) {
+          parent.children.push(menuItem);
+          // 按sortOrder排序
+          parent.children.sort((a: Menu, b: Menu) => a.sortOrder - b.sortOrder);
+        }
+      } else {
+        rootMenus.push(menuItem);
+      }
+    });
+
+    // 按sortOrder排序根菜单
+    rootMenus.sort((a: Menu, b: Menu) => a.sortOrder - b.sortOrder);
+    
+    return rootMenus;
   }
 
   private buildMenuTreeItem(menu: Menu): any {
@@ -68,6 +119,7 @@ export class MenuService {
       icon: menu.icon,
       sortOrder: menu.sortOrder,
       type: menu.type,
+      appType: menu.appType,
       status: menu.status,
       permission: menu.permission,
       hidden: menu.hidden,
