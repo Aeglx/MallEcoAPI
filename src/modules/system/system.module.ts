@@ -16,6 +16,9 @@ import { SystemVersion } from './entities/system-version.entity';
 import { SystemDiagnosisController } from './controllers/system-diagnosis.controller';
 import { SystemDiagnosisService } from './services/system-diagnosis.service';
 import { SystemDiagnosis } from './entities/system-diagnosis.entity';
+import { PerformanceMonitorController } from './controllers/performance-monitor.controller';
+import { PerformanceMonitorService } from './services/performance-monitor.service';
+import { AuditLogService } from './services/audit-log.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([
@@ -30,7 +33,8 @@ import { SystemDiagnosis } from './entities/system-diagnosis.entity';
     SystemMonitorController,
     SystemBackupController,
     SystemVersionController,
-    SystemDiagnosisController
+    SystemDiagnosisController,
+    PerformanceMonitorController
   ],
   providers: [
     SystemConfigService,
@@ -38,8 +42,10 @@ import { SystemDiagnosis } from './entities/system-diagnosis.entity';
     SystemMonitorService,
     SystemBackupService,
     SystemVersionService,
-    SystemDiagnosisService
+    SystemDiagnosisService,
+    PerformanceMonitorService,
+    AuditLogService
   ],
-  exports: [SystemConfigService, SystemVersionService, SystemDiagnosisService]
+  exports: [SystemConfigService, SystemVersionService, SystemDiagnosisService, PerformanceMonitorService, AuditLogService]
 })
 export class SystemModule {}

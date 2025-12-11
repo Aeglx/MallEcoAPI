@@ -1,6 +1,10 @@
-import { IsOptional, IsString, IsNumber } from 'class-validator';
+import { IsOptional, IsString, IsNumber, IsBoolean } from 'class-validator';
 
 export class UpdateMenuDto {
+  @IsOptional()
+  @IsString()
+  title?: string;
+
   @IsOptional()
   @IsString()
   name?: string;
@@ -10,12 +14,12 @@ export class UpdateMenuDto {
   path?: string;
 
   @IsOptional()
-  @IsString()
-  icon?: string;
+  @IsNumber()
+  level?: number;
 
   @IsOptional()
   @IsString()
-  component?: string;
+  frontRoute?: string;
 
   @IsOptional()
   @IsString()
@@ -23,7 +27,19 @@ export class UpdateMenuDto {
 
   @IsOptional()
   @IsNumber()
-  sort?: number;
+  sortOrder?: number;
+
+  @IsOptional()
+  @IsString()
+  permission?: string;
+
+  @IsOptional()
+  @IsString()
+  icon?: string;
+
+  @IsOptional()
+  @IsString()
+  description?: string;
 
   @IsOptional()
   @IsString()
@@ -34,6 +50,10 @@ export class UpdateMenuDto {
   status?: number;
 
   @IsOptional()
+  @IsBoolean()
+  hidden?: boolean;
+
+  @IsOptional()
   @IsString()
-  permissionCode?: string;
+  redirect?: string;
 }

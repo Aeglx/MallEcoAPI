@@ -1,21 +1,25 @@
 import { IsNotEmpty, IsString, IsOptional, IsNumber } from 'class-validator';
 
 export class CreateMenuDto {
-  @IsNotEmpty({ message: '菜单名称不能为空' })
+  @IsNotEmpty({ message: '菜单标题不能为空' })
   @IsString()
-  name: string;
+  title: string;
+
+  @IsOptional()
+  @IsString()
+  name?: string;
 
   @IsOptional()
   @IsString()
   path?: string;
 
   @IsOptional()
-  @IsString()
-  icon?: string;
+  @IsNumber()
+  level?: number;
 
   @IsOptional()
   @IsString()
-  component?: string;
+  frontRoute?: string;
 
   @IsOptional()
   @IsString()
@@ -23,7 +27,19 @@ export class CreateMenuDto {
 
   @IsOptional()
   @IsNumber()
-  sort?: number;
+  sortOrder?: number;
+
+  @IsOptional()
+  @IsString()
+  permission?: string;
+
+  @IsOptional()
+  @IsString()
+  icon?: string;
+
+  @IsOptional()
+  @IsString()
+  description?: string;
 
   @IsOptional()
   @IsString()
@@ -34,6 +50,10 @@ export class CreateMenuDto {
   status?: number;
 
   @IsOptional()
+  @IsNumber()
+  hidden?: boolean;
+
+  @IsOptional()
   @IsString()
-  permissionCode?: string;
+  redirect?: string;
 }

@@ -5,6 +5,9 @@ import { CartModule } from './cart/cart.module';
 import { OrderModule } from './order/order.module';
 import { BuyerLiveModule } from './live/live.module';
 import { BuyerContentModule } from './content/content.module';
+import { WalletModule } from './wallet/wallet.module';
+import { PromotionModule } from './promotion/promotion.module';
+import { DistributionModule } from './distribution/distribution.module';
 
 @Module({
   imports: [
@@ -14,7 +17,10 @@ import { BuyerContentModule } from './content/content.module';
     OrderModule,
     BuyerLiveModule,
     BuyerContentModule,
+    WalletModule,
+    PromotionModule,
+    DistributionModule,
   ],
-  exports: [OrderModule],
+  exports: [OrderModule, WalletModule, PromotionModule],
 })
 export class BuyerModule {}

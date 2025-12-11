@@ -12,6 +12,8 @@ import { GatewayModule } from './gateway/gateway.module';
 import { SocialModule } from './social/social.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { GlobalConfigModule } from './config/config.module';
+import { APP_INTERCEPTOR } from '@nestjs/core';
+import { PerformanceInterceptor } from './common/interceptors/performance.interceptor';
 
 // 多端分离模块导入
 import { ManagerModule } from '../modules/manager/manager.module';
@@ -28,6 +30,28 @@ import { StatisticsModule } from '../modules/statistics/statistics.module';
 import { DistributionModule } from '../modules/distribution/distribution.module';
 import { LiveModule } from '../modules/live/live.module';
 import { RbacModule } from '../modules/rbac/rbac.module';
+
+// 新增核心电商模块
+import { OrderModule } from '../modules/order/order.module';
+import { PromotionModule } from '../modules/promotion/promotion.module';
+import { MemberModule } from '../modules/member/member.module';
+import { GoodsModule } from '../modules/goods/goods.module';
+import { WalletModule } from '../modules/wallet/wallet.module';
+import { PaymentModule } from '../modules/payment/payment.module';
+import { AfterSaleModule } from '../modules/aftersale/aftersale.module';
+import { LogisticsModule } from '../modules/logistics/logistics.module';
+import { EvaluationModule } from '../modules/evaluation/evaluation.module';
+import { PointsModule } from '../modules/points/points.module';
+
+// 第三阶段架构优化模块
+import { SystemModule } from '../modules/system/system.module';
+import { CacheModule } from '../modules/cache/cache.module';
+import { DatabaseModule } from '../modules/database/database.module';
+import { MicroservicesModule } from '../modules/microservices/microservices.module';
+import { ServiceMeshModule } from '../modules/service-mesh/service-mesh.module';
+
+// 高级功能模块
+import { RecommendationModule } from '../modules/recommendation/recommendation.module';
 
 @Module({
   imports: [
@@ -88,6 +112,18 @@ import { RbacModule } from '../modules/rbac/rbac.module';
     LiveModule,
     RbacModule,
     
+    // 新增核心电商模块
+    OrderModule,
+    PromotionModule,
+    MemberModule,
+    GoodsModule,
+    WalletModule,
+    PaymentModule,
+    AfterSaleModule,
+    LogisticsModule,
+    EvaluationModule,
+    PointsModule,
+    
     // 多端分离模块
     ManagerModule,
     BuyerModule,
@@ -103,8 +139,24 @@ import { RbacModule } from '../modules/rbac/rbac.module';
     ImModule,
     SearchModule,
     XxlJobModule,
+    
+    // 第三阶段架构优化模块
+    SystemModule,
+    CacheModule,
+    DatabaseModule,
+    MicroservicesModule,
+    ServiceMeshModule,
+
+    // 高级功能模块
+    RecommendationModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: PerformanceInterceptor,
+    },
+  ],
 })
 export class AppModule {}

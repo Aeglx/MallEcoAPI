@@ -1,195 +1,290 @@
-import { 
-  Controller, 
-  Get, 
-  Post, 
-  Put, 
-  Delete, 
-  Body, 
-  Param, 
-  Query,
-  UseGuards,
-  Request
-} from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiParam, ApiQuery, ApiResponse } from '@nestjs/swagger';
+import { Controller, Get, Post, Put, Delete, Body, Param, Query, Request } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiQuery } from '@nestjs/swagger';
 import { DistributionService } from '../services/distribution.service';
-import { DistributionApplyDTO } from '../dto/distribution-apply.dto';
-import { DistributionSearchParams } from '../dto/distribution-search.dto';
-import { Distribution } from '../entities/distribution.entity';
-import { DistributionStatusEnum } from '../enums/distribution-status.enum';
-import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
+import { DistributorEntity } from '../entities/distributor.entity';
 
-@ApiTags('分销员管理')
+@ApiTags('分销管理')
 @Controller('distribution')
-@UseGuards(JwtAuthGuard)
 export class DistributionController {
   constructor(private readonly distributionService: DistributionService) {}
 
-  @ApiOperation({ summary: '申请成为分销员' })
-  @ApiResponse({ status: 200, description: '申请成功', type: Distribution })
   @Post('apply')
-  async applyDistribution(
-    @Request() req,
-    @Body() applyDto: DistributionApplyDTO
-  ): Promise<{ data: Distribution; message: string }> {
-    const memberId = req.user.id;
-    const memberName = req.user.username;
-    
-    const distribution = await this.distributionService.applyDistribution(
-      memberId, 
-      memberName, 
-      applyDto
-    );
-    
-    return {
-      data: distribution,
-      message: '申请提交成功，请等待审核'
-    };
+  @ApiOperation({ summary: '申请成为分销员' })
+  @ApiResponse({ status: 201, description: '申请提交成功', type: DistributorEntity })
+  async applyDistributor(@Body() data: {
+    memberId: string;
+    realName: string;
+    mobile: string;
+    idCard?: string;
+    wechat?: string;
+    qq?: string;
+    bankName?: string;
+    bankAccount?: string;
+    accountName?: string;
+    applyReason?: string;
+  }) {
+    return await this.distributionService.applyDistributor(data);
   }
 
-  @ApiOperation({ summary: '获取当前用户的分销员信息' })
-  @ApiResponse({ status: 200, description: '获取成功', type: Distribution })
-  @Get('current')
-  async getCurrentDistribution(@Request() req): Promise<{ data: Distribution }> {
-    const memberId = req.user.id;
-    
-    // 检查分销设置
-    await this.distributionService.checkDistributionSetting();
-    
-    const distribution = await this.distributionService.getDistributionByMemberId(memberId);
-    
-    return { data: distribution };
+  @Get('distributors')
+  @ApiOperation({ summary: '获取分销员列表' })
+  @ApiQuery({ name: 'page', required: false, description: '页码' })
+  @ApiQuery({ name: 'pageSize', required: false, description: '每页数量' })
+  @ApiQuery({ name: 'status', required: false, description: '分销员状态' })
+  @ApiQuery({ name: 'level', required: false, description: '分销等级' })
+  async getDistributorList(@Query() params: {
+    page?: number;
+    pageSize?: number;
+    status?: string;
+    level?: string;
+  }) {
+    return await this.distributionService.getDistributorList(params);
   }
 
-  @ApiOperation({ summary: '绑定分销员' })
-  @ApiParam({ name: 'distributionId', description: '分销员ID' })
-  @ApiResponse({ status: 200, description: '绑定成功' })
-  @Get('binding/:distributionId')
-  async bindingDistribution(
-    @Request() req,
-    @Param('distributionId') distributionId: string
-  ): Promise<{ message: string }> {
-    const memberId = req.user.id;
-    
-    // 这里可以根据业务需求修改绑定逻辑
-    await this.distributionService.bindingDistribution(memberId, distributionId);
-    
-    return { message: '绑定成功' };
+  @Get('distributor/:distributorId')
+  @ApiOperation({ summary: '获取分销员详情' })
+  @ApiParam({ name: 'distributorId', description: '分销员ID' })
+  @ApiResponse({ status: 200, description: '获取成功', type: DistributorEntity })
+  async getDistributorById(@Param('distributorId') distributorId: string) {
+    return await this.distributionService.getDistributorById(distributorId);
   }
 
-  @ApiOperation({ summary: '审核分销员申请' })
-  @ApiParam({ name: 'id', description: '分销员ID' })
-  @ApiResponse({ status: 200, description: '审核成功', type: Distribution })
-  @Put('audit/:id')
-  async auditDistribution(
-    @Param('id') id: string,
-    @Body() auditData: { 
-      status: DistributionStatusEnum; 
-      auditRemark?: string;
-    }
-  ): Promise<{ data: Distribution; message: string }> {
-    const distribution = await this.distributionService.auditDistribution(
-      id, 
-      auditData.status, 
-      auditData.auditRemark
-    );
-    
-    const message = auditData.status === DistributionStatusEnum.PASS ? '审核通过' : '审核拒绝';
-    
-    return { data: distribution, message };
+  @Get('distributor/member/:memberId')
+  @ApiOperation({ summary: '根据会员ID获取分销员信息' })
+  @ApiParam({ name: 'memberId', description: '会员ID' })
+  async getDistributorByMemberId(@Param('memberId') memberId: string) {
+    return await this.distributionService.getDistributorByMemberId(memberId);
   }
 
-  @ApiOperation({ summary: '获取分销员分页列表' })
-  @ApiResponse({ status: 200, description: '获取成功' })
-  @Get('list')
-  async getDistributionList(
-    @Query() searchParams: DistributionSearchParams
-  ): Promise<{ 
-    data: Distribution[]; 
-    total: number; 
-    page: number; 
-    pageSize: number; 
-  }> {
-    const { items, total } = await this.distributionService.getDistributionList(searchParams);
-    
-    return {
-      data: items,
-      total,
-      page: searchParams.page || 1,
-      pageSize: searchParams.pageSize || 10
-    };
-  }
-
-  @ApiOperation({ summary: '根据ID获取分销员信息' })
-  @ApiParam({ name: 'id', description: '分销员ID' })
-  @ApiResponse({ status: 200, description: '获取成功', type: Distribution })
-  @Get(':id')
-  async getDistributionById(
-    @Param('id') id: string
-  ): Promise<{ data: Distribution }> {
-    const distribution = await this.distributionService.getDistributionById(id);
-    
-    return { data: distribution };
-  }
-
+  @Put('distributor/:distributorId')
   @ApiOperation({ summary: '更新分销员信息' })
-  @ApiParam({ name: 'id', description: '分销员ID' })
-  @ApiResponse({ status: 200, description: '更新成功', type: Distribution })
-  @Put(':id')
-  async updateDistribution(
-    @Param('id') id: string,
-    @Body() updateData: Partial<Distribution>
-  ): Promise<{ data: Distribution; message: string }> {
-    const distribution = await this.distributionService.updateDistribution(id, updateData);
-    
-    return {
-      data: distribution,
-      message: '更新成功'
-    };
+  @ApiParam({ name: 'distributorId', description: '分销员ID' })
+  @ApiResponse({ status: 200, description: '更新成功', type: DistributorEntity })
+  async updateDistributor(
+    @Param('distributorId') distributorId: string,
+    @Body() updateData: Partial<DistributorEntity>
+  ) {
+    return await this.distributionService.updateDistributor(distributorId, updateData);
   }
 
-  @ApiOperation({ summary: '启用/禁用分销员' })
-  @ApiParam({ name: 'id', description: '分销员ID' })
-  @ApiResponse({ status: 200, description: '操作成功', type: Distribution })
-  @Put('toggle/:id')
-  async toggleDistributionStatus(
-    @Param('id') id: string
-  ): Promise<{ data: Distribution; message: string }> {
-    const distribution = await this.distributionService.toggleDistributionStatus(id);
-    
-    const message = distribution.distributionStatus === DistributionStatusEnum.PASS ? 
-      '已启用分销员' : '已禁用分销员';
-    
-    return {
-      data: distribution,
-      message
-    };
+  @Post('distributor/:distributorId/approve')
+  @ApiOperation({ summary: '审核通过分销员' })
+  @ApiParam({ name: 'distributorId', description: '分销员ID' })
+  @ApiResponse({ status: 200, description: '审核通过' })
+  async approveDistributor(
+    @Param('distributorId') distributorId: string,
+    @Body() data: {
+      approveRemark?: string;
+      operatorId: string;
+    }
+  ) {
+    return await this.distributionService.approveDistributor(distributorId, data);
   }
 
-  @ApiOperation({ summary: '删除分销员' })
-  @ApiParam({ name: 'id', description: '分销员ID' })
-  @ApiResponse({ status: 200, description: '删除成功' })
-  @Delete(':id')
-  async deleteDistribution(
-    @Param('id') id: string
-  ): Promise<{ message: string }> {
-    await this.distributionService.deleteDistribution(id);
-    
-    return { message: '删除成功' };
+  @Post('distributor/:distributorId/reject')
+  @ApiOperation({ summary: '拒绝分销员申请' })
+  @ApiParam({ name: 'distributorId', description: '分销员ID' })
+  @ApiResponse({ status: 200, description: '拒绝成功' })
+  async rejectDistributor(
+    @Param('distributorId') distributorId: string,
+    @Body() data: {
+      rejectReason: string;
+      operatorId: string;
+    }
+  ) {
+    return await this.distributionService.rejectDistributor(distributorId, data);
   }
 
-  @ApiOperation({ summary: '获取分销员统计信息' })
-  @ApiResponse({ status: 200, description: '获取成功' })
-  @Get('statistics/overview')
-  async getDistributionStatistics(): Promise<{ 
-    data: {
-      totalCount: number;
-      pendingCount: number;
-      activeCount: number;
-      disabledCount: number;
-    };
-  }> {
-    const statistics = await this.distributionService.getDistributionStatistics();
-    
-    return { data: statistics };
+  @Post('distributor/:distributorId/freeze')
+  @ApiOperation({ summary: '冻结分销员' })
+  @ApiParam({ name: 'distributorId', description: '分销员ID' })
+  @ApiResponse({ status: 200, description: '冻结成功' })
+  async freezeDistributor(
+    @Param('distributorId') distributorId: string,
+    @Body() data: {
+      freezeReason: string;
+      operatorId: string;
+    }
+  ) {
+    return await this.distributionService.freezeDistributor(distributorId, data);
+  }
+
+  @Post('distributor/:distributorId/unfreeze')
+  @ApiOperation({ summary: '解冻分销员' })
+  @ApiParam({ name: 'distributorId', description: '分销员ID' })
+  @ApiResponse({ status: 200, description: '解冻成功' })
+  async unfreezeDistributor(
+    @Param('distributorId') distributorId: string,
+    @Body() data: {
+      unfreezeReason: string;
+      operatorId: string;
+    }
+  ) {
+    return await this.distributionService.unfreezeDistributor(distributorId, data);
+  }
+
+  @Post('distributor/:distributorId/level')
+  @ApiOperation({ summary: '调整分销员等级' })
+  @ApiParam({ name: 'distributorId', description: '分销员ID' })
+  @ApiResponse({ status: 200, description: '等级调整成功' })
+  async updateDistributorLevel(
+    @Param('distributorId') distributorId: string,
+    @Body() data: {
+      levelId: string;
+      reason?: string;
+      operatorId: string;
+    }
+  ) {
+    return await this.distributionService.updateDistributorLevel(distributorId, data);
+  }
+
+  @Get('commission/records')
+  @ApiOperation({ summary: '获取佣金记录列表' })
+  @ApiQuery({ name: 'page', required: false, description: '页码' })
+  @ApiQuery({ name: 'pageSize', required: false, description: '每页数量' })
+  @ApiQuery({ name: 'distributorId', required: false, description: '分销员ID' })
+  @ApiQuery({ name: 'type', required: false, description: '佣金类型' })
+  @ApiQuery({ name: 'status', required: false, description: '佣金状态' })
+  async getCommissionRecords(@Query() params: {
+    page?: number;
+    pageSize?: number;
+    distributorId?: string;
+    type?: string;
+    status?: string;
+  }) {
+    return await this.distributionService.getCommissionRecords(params);
+  }
+
+  @Get('distributor/:distributorId/commission')
+  @ApiOperation({ summary: '获取分销员佣金统计' })
+  @ApiParam({ name: 'distributorId', description: '分销员ID' })
+  async getDistributorCommission(@Param('distributorId') distributorId: string) {
+    return await this.distributionService.getDistributorCommission(distributorId);
+  }
+
+  @Post('commission/withdraw')
+  @ApiOperation({ summary: '申请佣金提现' })
+  @ApiResponse({ status: 200, description: '提现申请成功' })
+  async applyCommissionWithdraw(@Body() data: {
+    distributorId: string;
+    withdrawAmount: number;
+    bankName: string;
+    bankAccount: string;
+    accountName: string;
+  }) {
+    return await this.distributionService.applyCommissionWithdraw(data);
+  }
+
+  @Get('withdraw/applications')
+  @ApiOperation({ summary: '获取提现申请列表' })
+  @ApiQuery({ name: 'page', required: false, description: '页码' })
+  @ApiQuery({ name: 'pageSize', required: false, description: '每页数量' })
+  @ApiQuery({ name: 'status', required: false, description: '申请状态' })
+  async getWithdrawApplications(@Query() params: {
+    page?: number;
+    pageSize?: number;
+    status?: string;
+  }) {
+    return await this.distributionService.getWithdrawApplications(params);
+  }
+
+  @Post('withdraw/:applicationId/approve')
+  @ApiOperation({ summary: '审核通过提现申请' })
+  @ApiParam({ name: 'applicationId', description: '提现申请ID' })
+  @ApiResponse({ status: 200, description: '审核通过' })
+  async approveWithdrawApplication(
+    @Param('applicationId') applicationId: string,
+    @Body() data: {
+      approveRemark?: string;
+      operatorId: string;
+    }
+  ) {
+    return await this.distributionService.approveWithdrawApplication(applicationId, data);
+  }
+
+  @Post('withdraw/:applicationId/reject')
+  @ApiOperation({ summary: '拒绝提现申请' })
+  @ApiParam({ name: 'applicationId', description: '提现申请ID' })
+  @ApiResponse({ status: 200, description: '拒绝成功' })
+  async rejectWithdrawApplication(
+    @Param('applicationId') applicationId: string,
+    @Body() data: {
+      rejectReason: string;
+      operatorId: string;
+    }
+  ) {
+    return await this.distributionService.rejectWithdrawApplication(applicationId, data);
+  }
+
+  @Get('team/:distributorId')
+  @ApiOperation({ summary: '获取分销团队' })
+  @ApiParam({ name: 'distributorId', description: '分销员ID' })
+  @ApiQuery({ name: 'level', required: false, description: '团队层级' })
+  async getDistributionTeam(
+    @Param('distributorId') distributorId: string,
+    @Query('level') level?: string
+  ) {
+    return await this.distributionService.getDistributionTeam(distributorId, level);
+  }
+
+  @Get('goods')
+  @ApiOperation({ summary: '获取分销商品列表' })
+  @ApiQuery({ name: 'page', required: false, description: '页码' })
+  @ApiQuery({ name: 'pageSize', required: false, description: '每页数量' })
+  @ApiQuery({ name: 'storeId', required: false, description: '店铺ID' })
+  async getDistributionGoods(@Query() params: {
+    page?: number;
+    pageSize?: number;
+    storeId?: string;
+  }) {
+    return await this.distributionService.getDistributionGoods(params);
+  }
+
+  @Post('goods/:goodsId/commission')
+  @ApiOperation({ summary: '设置分销商品佣金' })
+  @ApiParam({ name: 'goodsId', description: '商品ID' })
+  @ApiResponse({ status: 200, description: '佣金设置成功' })
+  async setGoodsCommission(
+    @Param('goodsId') goodsId: string,
+    @Body() data: {
+      commissionRate: number;
+      fixedCommission?: number;
+      isActive: boolean;
+    }
+  ) {
+    return await this.distributionService.setGoodsCommission(goodsId, data);
+  }
+
+  @Get('statistics')
+  @ApiOperation({ summary: '获取分销统计' })
+  @ApiQuery({ name: 'startDate', required: false, description: '开始日期' })
+  @ApiQuery({ name: 'endDate', required: false, description: '结束日期' })
+  async getDistributionStatistics(@Query() params: {
+    startDate?: string;
+    endDate?: string;
+  }) {
+    return await this.distributionService.getDistributionStatistics(params);
+  }
+
+  @Post('invite/:inviteCode')
+  @ApiOperation({ summary: '通过邀请码注册' })
+  @ApiParam({ name: 'inviteCode', description: '邀请码' })
+  @ApiResponse({ status: 200, description: '注册成功' })
+  async registerByInviteCode(
+    @Param('inviteCode') inviteCode: string,
+    @Body() data: {
+      memberId: string;
+      realName: string;
+      mobile: string;
+    }
+  ) {
+    return await this.distributionService.registerByInviteCode(inviteCode, data);
+  }
+
+  @Get('distributor/:distributorId/invite')
+  @ApiOperation({ summary: '获取分销员邀请信息' })
+  @ApiParam({ name: 'distributorId', description: '分销员ID' })
+  async getDistributorInviteInfo(@Param('distributorId') distributorId: string) {
+    return await this.distributionService.getDistributorInviteInfo(distributorId);
   }
 }

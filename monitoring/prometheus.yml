@@ -1,0 +1,111 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  external_labels:
+    cluster: 'malleco-production'
+    environment: 'production'
+
+# 告警规则配置
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets: []
+
+# 加载规则文件
+rule_files:
+  - "alert_rules.yml"
+
+# 抓取配置
+scrape_configs:
+  # Prometheus自身监控
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+    scrape_interval: 30s
+
+  # MallEco应用监控
+  - job_name: 'malleco-app'
+    static_configs:
+      - targets: ['app:3000']
+    metrics_path: '/api/system/metrics'
+    scrape_interval: 15s
+    scrape_timeout: 10s
+    
+    # 自定义标签
+    labels:
+      service: 'malleco-api'
+      tier: 'backend'
+    
+    # 重试配置
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: app:3000
+
+  # Node.js应用监控
+  - job_name: 'node-exporter'
+    static_configs:
+      - targets: ['node-exporter:9100']
+    scrape_interval: 30s
+
+  # MySQL数据库监控
+  - job_name: 'mysql'
+    static_configs:
+      - targets: ['mysql-exporter:9104']
+    scrape_interval: 30s
+
+  # Redis缓存监控
+  - job_name: 'redis'
+    static_configs:
+      - targets: ['redis-exporter:9121']
+    scrape_interval: 30s
+
+  # Nginx监控
+  - job_name: 'nginx'
+    static_configs:
+      - targets: ['nginx-exporter:9113']
+    scrape_interval: 30s
+
+  # Elasticsearch监控
+  - job_name: 'elasticsearch'
+    static_configs:
+      - targets: ['elasticsearch-exporter:9114']
+    scrape_interval: 30s
+
+  # 黑盒监控 - HTTP检查
+  - job_name: 'blackbox-http'
+    metrics_path: /probe
+    params:
+      module: [http_2xx]
+    static_configs:
+      - targets:
+        - 'https://api.malleco.com/api/health'  # 外部健康检查
+        - 'https://api.malleco.com/api/products' # 主要API检查
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: blackbox-exporter:9115
+
+  # 黑盒监控 - TCP检查
+  - job_name: 'blackbox-tcp'
+    metrics_path: /probe
+    params:
+      module: [tcp_connect]
+    static_configs:
+      - targets:
+        - 'mysql:3306'
+        - 'redis:6379'
+        - 'elasticsearch:9200'
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: blackbox-exporter:9115

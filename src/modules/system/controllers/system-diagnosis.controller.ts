@@ -12,9 +12,9 @@ import {
   HttpCode,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
-import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
-import { RolesGuard } from '../../auth/guards/roles.guard';
-import { Roles } from '../../auth/decorators/roles.decorator';
+import { JwtAuthGuard } from '../../../auth/guards/jwt-auth.guard';
+import { RolesGuard } from '../../../auth/guards/roles.guard';
+import { Roles } from '../../../auth/decorators/roles.decorator';
 import { SystemDiagnosisService } from '../services/system-diagnosis.service';
 import { CreateSystemDiagnosisDto } from '../dto/create-system-diagnosis.dto';
 import { SystemDiagnosisSearchDto } from '../dto/system-diagnosis-search.dto';

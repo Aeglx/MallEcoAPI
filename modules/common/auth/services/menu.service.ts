@@ -24,21 +24,26 @@ export class MenuService {
 
     const menus = await this.menuRepository.find({
       where,
-      order: { sort: 'ASC', createTime: 'DESC' }
+      order: { sortOrder: 'ASC', createTime: 'DESC' }
     });
 
     return {
       items: menus.map(menu => ({
         id: menu.id,
+        title: menu.title,
         name: menu.name,
         path: menu.path,
-        icon: menu.icon,
-        component: menu.component,
+        level: menu.level,
+        frontRoute: menu.frontRoute,
         parentId: menu.parentId,
-        sort: menu.sort,
+        sortOrder: menu.sortOrder,
+        permission: menu.permission,
+        icon: menu.icon,
+        description: menu.description,
         type: menu.type,
         status: menu.status,
-        permissionCode: menu.permissionCode,
+        hidden: menu.hidden,
+        redirect: menu.redirect,
         createTime: menu.createTime
       }))
     };
@@ -55,14 +60,18 @@ export class MenuService {
   private buildMenuTreeItem(menu: Menu): any {
     return {
       id: menu.id,
+      title: menu.title,
       name: menu.name,
       path: menu.path,
+      level: menu.level,
+      frontRoute: menu.frontRoute,
       icon: menu.icon,
-      component: menu.component,
-      sort: menu.sort,
+      sortOrder: menu.sortOrder,
       type: menu.type,
       status: menu.status,
-      permissionCode: menu.permissionCode,
+      permission: menu.permission,
+      hidden: menu.hidden,
+      redirect: menu.redirect,
       children: menu.children ? menu.children.map(child => this.buildMenuTreeItem(child)) : []
     };
   }
@@ -102,13 +111,13 @@ export class MenuService {
   }
 
   async createMenu(createMenuDto: CreateMenuDto) {
-    // 检查菜单名称是否存在
+    // 检查菜单标题是否存在
     const existingMenu = await this.menuRepository.findOne({
-      where: { name: createMenuDto.name }
+      where: { title: createMenuDto.title }
     });
     
     if (existingMenu) {
-      throw new ConflictException('菜单名称已存在');
+      throw new ConflictException('菜单标题已存在');
     }
 
     const menu = this.menuRepository.create(createMenuDto);
@@ -141,13 +150,13 @@ export class MenuService {
       throw new NotFoundException('菜单不存在');
     }
     
-    if (updateMenuDto.name && updateMenuDto.name !== menu.name) {
+    if (updateMenuDto.title && updateMenuDto.title !== menu.title) {
       const existingMenu = await this.menuRepository.findOne({
-        where: { name: updateMenuDto.name }
+        where: { title: updateMenuDto.title }
       });
       
       if (existingMenu) {
-        throw new ConflictException('菜单名称已存在');
+        throw new ConflictException('菜单标题已存在');
       }
     }
 
