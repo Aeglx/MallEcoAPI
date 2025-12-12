@@ -164,48 +164,41 @@ export class WalletController {
     };
   }
 
-  @Post('recharge/verify')
-  @ApiOperation({ summary: '手动审核充值' })
-  @ApiBody({ description: '审核充值参数', type: Object })
-  @ApiResponse({ status: 200, description: '审核成功' })
-  async verifyRecharge(
+  @Post('recharge/retry')
+  @ApiOperation({ summary: '重试充值' })
+  @ApiBody({ description: '重试充值参数', type: Object })
+  @ApiResponse({ status: 200, description: '重试成功' })
+  async retryRecharge(
     @Body() body: {
       rechargeNo: string;
-      status: string;
-      remark?: string;
     },
     @CurrentUser() user: any,
   ): Promise<ResponseModel<any>> {
-    await this.rechargeService.verifyRecharge(
-      body.rechargeNo,
-      body.status,
-      body.remark,
-      user.id,
-      user.username,
-    );
+    await this.rechargeService.retryRecharge(body.rechargeNo);
     return {
       code: 200,
-      message: '审核成功',
+      message: '重试成功',
       data: null,
       timestamp: Date.now(),
       traceId: ''
     };
   }
 
-  @Post('recharge/sync')
-  @ApiOperation({ summary: '同步充值状态' })
-  @ApiBody({ description: '同步充值参数', type: Object })
-  @ApiResponse({ status: 200, description: '同步成功' })
-  async syncRechargeStatus(@Body() body: { rechargeNo: string }): Promise<ResponseModel<any>> {
-    await this.rechargeService.syncRechargeStatus(body.rechargeNo);
-    return {
-      code: 200,
-      message: '同步成功',
-      data: null,
-      timestamp: Date.now(),
-      traceId: ''
-    };
-  }
+  // @Post('recharge/sync')
+  // @ApiOperation({ summary: '同步充值状态' })
+  // @ApiBody({ description: '同步充值参数', type: Object })
+  // @ApiResponse({ status: 200, description: '同步成功' })
+  // async syncRechargeStatus(@Body() body: { rechargeNo: string }): Promise<ResponseModel<any>> {
+  //   // 注意：RechargeService中没有syncRechargeStatus方法，暂时注释
+  //   // await this.rechargeService.syncRechargeStatus(body.rechargeNo);
+  //   return {
+  //     code: 200,
+  //     message: '同步成功',
+  //     data: null,
+  //     timestamp: Date.now(),
+  //     traceId: ''
+  //   };
+  // }
 
   @Get('recharge/statistics')
   @ApiOperation({ summary: '获取充值统计' })
@@ -276,10 +269,13 @@ export class WalletController {
   ): Promise<ResponseModel<any>> {
     await this.withdrawService.auditWithdraw(
       body.withdrawNo,
-      body.status,
-      body.remark,
-      user.id,
-      user.username,
+      {
+        auditStatus: body.status === 'approve' ? 1 : 2, // 1-通过, 2-拒绝
+        auditorId: user.id,
+        auditorName: user.username,
+        auditRemark: body.remark,
+        rejectReason: body.status === 'reject' ? body.remark : undefined
+      }
     );
     return {
       code: 200,
@@ -297,19 +293,17 @@ export class WalletController {
   async processWithdraw(
     @Body() body: {
       withdrawNo: string;
-      status: string;
-      remark?: string;
+      paymentChannel: string;
       transactionNo?: string;
     },
     @CurrentUser() user: any,
   ): Promise<ResponseModel<any>> {
     await this.withdrawService.processWithdraw(
       body.withdrawNo,
-      body.status,
-      body.remark,
-      body.transactionNo,
-      user.id,
-      user.username,
+      {
+        paymentChannel: body.paymentChannel,
+        thirdTradeNo: body.transactionNo
+      }
     );
     return {
       code: 200,
@@ -333,9 +327,7 @@ export class WalletController {
   ): Promise<ResponseModel<any>> {
     await this.withdrawService.handleWithdrawFailed(
       body.withdrawNo,
-      body.reason,
-      user.id,
-      user.username,
+      body.reason
     );
     return {
       code: 200,
@@ -368,7 +360,7 @@ export class WalletController {
   @ApiOperation({ summary: '获取积分总览' })
   @ApiResponse({ status: 200, description: '获取成功' })
   async getPointsOverview(): Promise<ResponseModel<any>> {
-    const result = await this.pointsService.getPointsOverview();
+    const result = await this.pointsService.getPointsStatistics();
     return {
       code: 200,
       message: '获取成功',
@@ -412,14 +404,17 @@ export class WalletController {
     },
     @CurrentUser() user: any,
   ): Promise<ResponseModel<any>> {
-    const result = await this.pointsService.adjustPoints(
-      body.memberId,
-      body.amount,
-      body.type,
-      body.reason,
-      user.id,
-      user.username,
-    );
+    const result = await this.pointsService.changePoints({
+      memberId: body.memberId,
+      type: body.type === 'add' ? 8 : 9, // 8: 增加, 9: 减少
+      direction: body.amount > 0 ? 1 : 2, // 1: 收入, 2: 支出
+      points: Math.abs(body.amount),
+      businessType: 'ADMIN_ADJUST',
+      description: body.reason,
+      operatorId: user.id,
+      operatorName: user.username,
+      remark: body.reason,
+    });
     return {
       code: 200,
       message: '调整成功',
@@ -438,7 +433,7 @@ export class WalletController {
   @ApiQuery({ name: 'limit', description: '每页数量', required: false, example: 10 })
   @ApiResponse({ status: 200, description: '获取成功' })
   async getPointsGoodsList(@Query() query: any): Promise<ResponseModel<any>> {
-    const result = await this.pointsGoodsService.getPointsGoodsList(query);
+    const result = await this.pointsService.getPointsGoodsList(query);
     return {
       code: 200,
       message: '获取成功',
@@ -453,7 +448,7 @@ export class WalletController {
   @ApiParam({ name: 'id', description: '商品ID' })
   @ApiResponse({ status: 200, description: '获取成功' })
   async getPointsGoodsDetail(@Param('id') id: string): Promise<ResponseModel<any>> {
-    const result = await this.pointsGoodsService.getPointsGoodsDetail(+id);
+    const result = await this.pointsService.getPointsGoodsDetail(id);
     return {
       code: 200,
       message: '获取成功',
@@ -468,7 +463,7 @@ export class WalletController {
   @ApiBody({ description: '创建积分商品参数', type: Object })
   @ApiResponse({ status: 200, description: '创建成功' })
   async createPointsGoods(@Body() createGoodsDto: any): Promise<ResponseModel<any>> {
-    await this.pointsGoodsService.createPointsGoods(createGoodsDto);
+    await this.pointsService.createPointsGoods(createGoodsDto);
     return {
       code: 200,
       message: '创建成功',
@@ -647,42 +642,7 @@ export class WalletController {
     };
   }
 
-  @Get('statistics/recharge')
-  @ApiOperation({ summary: '充值统计报表' })
-  @ApiQuery({ name: 'rechargeType', description: '充值方式', required: false })
-  @ApiQuery({ name: 'startTime', description: '开始时间', required: false })
-  @ApiQuery({ name: 'endTime', description: '结束时间', required: false })
-  @ApiQuery({ name: 'groupBy', description: '分组方式', required: false })
-  @ApiResponse({ status: 200, description: '获取成功' })
-  async getRechargeStatistics(@Query() query: any): Promise<ResponseModel<any>> {
-    const result = await this.walletStatisticsService.getRechargeStatistics(query);
-    return {
-      code: 200,
-      message: '获取成功',
-      data: result,
-      timestamp: Date.now(),
-      traceId: ''
-    };
-  }
 
-  @Get('statistics/withdraw')
-  @ApiOperation({ summary: '提现统计报表' })
-  @ApiQuery({ name: 'withdrawType', description: '提现方式', required: false })
-  @ApiQuery({ name: 'auditStatus', description: '审核状态', required: false })
-  @ApiQuery({ name: 'startTime', description: '开始时间', required: false })
-  @ApiQuery({ name: 'endTime', description: '结束时间', required: false })
-  @ApiQuery({ name: 'groupBy', description: '分组方式', required: false })
-  @ApiResponse({ status: 200, description: '获取成功' })
-  async getWithdrawStatistics(@Query() query: any): Promise<ResponseModel<any>> {
-    const result = await this.walletStatisticsService.getWithdrawStatistics(query);
-    return {
-      code: 200,
-      message: '获取成功',
-      data: result,
-      timestamp: Date.now(),
-      traceId: ''
-    };
-  }
 
   @Get('statistics/points')
   @ApiOperation({ summary: '积分统计报表' })
