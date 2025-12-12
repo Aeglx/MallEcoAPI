@@ -3,8 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Like, Between } from 'typeorm';
 import { Seckill, SeckillGoods } from '../entities/seckill.entity';
 import { SeckillCreateDto } from '../dto/seckill-create.dto';
-import { CustomException } from '../../common/filters/custom-exception';
-import { CodeEnum } from '../../common/enums/code.enum';
+import { CustomException } from '../../filters/custom-exception';
+import { CodeEnum } from '../../enums/code.enum';
 
 @Injectable()
 export class SeckillService {

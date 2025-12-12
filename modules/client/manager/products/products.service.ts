@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Product } from '../../common/product/entities/product.entity';
 import { CreateProductDto, UpdateProductDto, QueryProductDto } from './dto/product.dto';
-import { RabbitMQService } from '../../../src/rabbitmq/rabbitmq.service';
+import { RabbitMQService } from '../../../../src/infrastructure/rabbitmq/rabbitmq.service';
 
 @Injectable()
 export class ManagerProductsService {

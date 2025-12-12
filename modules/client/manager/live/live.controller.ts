@@ -172,7 +172,7 @@ export class LiveController {
   @ApiOperation({ summary: '获取直播商品详情', description: '根据ID获取直播商品详情' })
   @ApiResponse({ status: 200, description: '获取成功' })
   @ApiResponse({ status: 404, description: '商品不存在' })
-  async getLiveGoods(@Param('id') id: string) {
+  async getLiveGoodsDetail(@Param('id') id: string) {
     const data = await this.liveGoodsService.findOne(id);
     return {
       code: HttpStatus.OK,

@@ -1,5 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
-import { BaseEntity } from '../../../../client/common/base.entity';
+import { BaseEntity } from '../../../../../common/base.entity';
 
 export enum MessageType {
   SYSTEM_NOTICE = 'system_notice',
@@ -43,22 +43,22 @@ export class Message extends BaseEntity {
   @Column({ type: 'enum', enum: MessageType, nullable: false, comment: '消息类型' })
   messageType: MessageType;
 
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP', comment: '发送时�? })
+  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP', comment: '发送时间' })
   sendTime: Date;
 
-  @Column({ type: 'enum', enum: MessageStatus, default: MessageStatus.PENDING, comment: '消息状�? })
+  @Column({ type: 'enum', enum: MessageStatus, default: MessageStatus.PENDING, comment: '消息状态' })
   status: MessageStatus;
 
   @Column({ type: 'varchar', length: 50, nullable: true, comment: '接收者ID' })
   receiverId: string;
 
-  @Column({ type: 'enum', enum: ReceiverType, default: ReceiverType.ALL, comment: '接收者类�? })
+  @Column({ type: 'enum', enum: ReceiverType, default: ReceiverType.ALL, comment: '接收者类型' })
   receiverType: ReceiverType;
 
   @Column({ type: 'varchar', length: 50, nullable: true, comment: '发送者ID' })
   senderId: string;
 
-  @Column({ type: 'enum', enum: SenderType, default: SenderType.SYSTEM, comment: '发送者类�? })
+  @Column({ type: 'enum', enum: SenderType, default: SenderType.SYSTEM, comment: '发送者类型' })
   senderType: SenderType;
 
   @Column({ type: 'boolean', default: false, comment: '是否已读' })

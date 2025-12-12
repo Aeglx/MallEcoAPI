@@ -67,9 +67,8 @@ export class AdvancedSecurityService implements OnModuleInit {
   private async loadSensitiveWords() {
     // 这里可以从数据库或文件加载敏感词
     const defaultSensitiveWords = [
-      '赌博', '毒品', '色情', '暴力', '恐�?, '诈骗', '传销',
-      '法轮�?, '台独', '藏独', '疆独', '港独',
-      '习近�?, '共产�?, '政府', '领导�?
+      '赌博', '毒品', '色情', '暴力', '诈骗', '传销',
+      '台独', '藏独', '疆独', '港独'
     ];
 
     defaultSensitiveWords.forEach(word => this.sensitiveWords.add(word));
@@ -98,7 +97,7 @@ export class AdvancedSecurityService implements OnModuleInit {
   }
 
   /**
-   * 检查限�?
+   * 检查限�?
    */
   async checkRateLimit(
     identifier: string,
@@ -127,7 +126,7 @@ export class AdvancedSecurityService implements OnModuleInit {
             async () => [] as number[]
           );
           
-          // 过滤掉过期请�?
+          // 过滤掉过期请�?
           const validRequests = existing.filter(time => time > windowStart);
           
           // 添加当前请求
@@ -189,7 +188,7 @@ export class AdvancedSecurityService implements OnModuleInit {
     return this.checkRateLimit(identifier, `api:${apiPath}`);
   }
 
-  // ==================== 敏感词过�?====================
+  // ==================== 敏感词过�?====================
 
   /**
    * 检查文本是否包含敏感词
@@ -210,7 +209,7 @@ export class AdvancedSecurityService implements OnModuleInit {
       }
     }
 
-    // 检查安全规�?
+    // 检查安全规�?
     for (const rule of this.securityRules) {
       if (rule.pattern.test(text)) {
         foundWords.push(rule.pattern.source);
@@ -228,7 +227,7 @@ export class AdvancedSecurityService implements OnModuleInit {
   }
 
   /**
-   * 过滤敏感�?
+   * 过滤敏感�?
    */
   filterSensitiveWords(text: string, replacement: string = '***'): {
     filteredText: string;
@@ -237,7 +236,7 @@ export class AdvancedSecurityService implements OnModuleInit {
     let filteredText = text;
     const replacedWords: string[] = [];
 
-    // 过滤敏感�?
+    // 过滤敏感�?
     for (const word of this.sensitiveWords) {
       if (filteredText.includes(word)) {
         const regex = new RegExp(word, 'gi');
@@ -251,7 +250,7 @@ export class AdvancedSecurityService implements OnModuleInit {
       if (rule.action === 'replace' && rule.replacement) {
         filteredText = filteredText.replace(rule.pattern, rule.replacement);
       } else if (rule.action === 'block') {
-        // 阻塞内容会在检查阶段处�?
+        // 阻塞内容会在检查阶段处�?
       }
     }
 
@@ -262,14 +261,14 @@ export class AdvancedSecurityService implements OnModuleInit {
   }
 
   /**
-   * 添加敏感�?
+   * 添加敏感�?
    */
   addSensitiveWord(word: string): void {
     this.sensitiveWords.add(word);
   }
 
   /**
-   * 移除敏感�?
+   * 移除敏感�?
    */
   removeSensitiveWord(word: string): boolean {
     return this.sensitiveWords.delete(word);
@@ -308,7 +307,7 @@ export class AdvancedSecurityService implements OnModuleInit {
   }
 
   /**
-   * 获取所有安全规�?
+   * 获取所有安全规�?
    */
   getSecurityRules(): SecurityRule[] {
     return [...this.securityRules];
@@ -318,7 +317,7 @@ export class AdvancedSecurityService implements OnModuleInit {
 
   private getSensitiveWordLevel(word: string): 'low' | 'medium' | 'high' {
     // 可以根据敏感词的严重程度返回不同级别
-    const highLevelWords = ['法轮�?, '台独', '藏独', '疆独', '港独'];
+    const highLevelWords = ['台独', '藏独', '疆独', '港独'];
     const mediumLevelWords = ['赌博', '毒品', '色情', '暴力'];
     
     if (highLevelWords.includes(word)) return 'high';
@@ -348,12 +347,12 @@ export class AdvancedSecurityService implements OnModuleInit {
     // 检查敏感词
     const sensitiveResult = this.containsSensitiveWords(input);
     if (sensitiveResult.contains) {
-      threats.push(`包含敏感�? ${sensitiveResult.words.join(', ')}`);
+      threats.push(`包含敏感�? ${sensitiveResult.words.join(', ')}`);
       score += sensitiveResult.level === 'high' ? 40 : 
                sensitiveResult.level === 'medium' ? 20 : 10;
     }
 
-    // 检查安全规�?
+    // 检查安全规�?
     for (const rule of this.securityRules) {
       if (rule.pattern.test(input)) {
         threats.push(`触发安全规则: ${rule.pattern.source}`);
@@ -378,7 +377,7 @@ export class AdvancedSecurityService implements OnModuleInit {
   }
 
   /**
-   * 健康检�?
+   * 健康检�?
    */
   async healthCheck(): Promise<{
     status: string;

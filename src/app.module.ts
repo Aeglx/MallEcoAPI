@@ -5,10 +5,11 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { join } from 'path';
 import { ElasticsearchModule } from '@nestjs/elasticsearch';
-import { RabbitMQModule } from './infrastructur./infrastructure/rabbitmq/rabbitmq.module';
+import { RabbitMQModule } from './infrastructure/rabbitmq/rabbitmq.module';
 import { ConsulModule } from './consul/consul.module';
-import { HealthModule } from './infrastructur./infrastructure/health/health.module';
-import { GatewayModule } from './infrastructur./infrastructure/gateway/gateway.module';
+import { HealthModule } from './infrastructure/health/health.module';
+import { GatewayModule } from './infrastructure/gateway/gateway.module';
+import { SearchModule } from './infrastructure/search/search.module';
 import { SocialModule } from './social/social.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { GlobalConfigModule } from './config/config.module';
@@ -44,7 +45,7 @@ import { PointsModule } from '../modules/points/points.module';
 
 // 第三阶段架构优化模块
 import { SystemModule } from '../modules/system/system.module';
-import { CacheModule } from '../module./infrastructure/cache/cache.module';
+import { CacheModule } from './infrastructure/cache/cache.module';
 import { DatabaseModule } from '../modules/database/database.module';
 import { MicroservicesModule } from '../modules/microservices/microservices.module';
 import { ServiceMeshModule } from '../modules/service-mesh/service-mesh.module';

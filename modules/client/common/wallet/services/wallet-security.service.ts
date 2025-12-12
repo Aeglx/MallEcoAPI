@@ -158,7 +158,7 @@ export class WalletSecurityService {
     }
 
     if (wallet.status !== 1) {
-      throw new CustomException(CodeEnum.WALLET_NOT_FROZEN);
+      throw new CustomException(CodeEnum.WALLET_FROZEN);
     }
 
     await this.walletRepository.update(

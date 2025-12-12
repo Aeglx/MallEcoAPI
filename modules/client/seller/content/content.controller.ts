@@ -15,7 +15,7 @@ import { CreateSpecialPageDto } from '../../../client/common/content/dto/create-
 import { UpdateSpecialPageDto } from '../../../client/common/content/dto/update-special-page.dto';
 import { PaginationDto } from '../../../client/common/dto/pagination.dto';
 
-@ApiTags('卖家�?内容管理')
+@ApiTags('卖家�?内容管理')
 @Controller('seller/content')
 export class SellerContentController {
   constructor(
@@ -28,7 +28,7 @@ export class SellerContentController {
 
   // 文章管理
   @Get('articles')
-  @ApiOperation({ summary: '获取文章列表', description: '获取店铺文章列表（卖家端�? })
+  @ApiOperation({ summary: '获取文章列表', description: '获取店铺文章列表（卖家端）' })
   @ApiQuery({ name: 'page', type: Number, example: 1, required: false })
   @ApiQuery({ name: 'limit', type: Number, example: 10, required: false })
   @ApiQuery({ name: 'status', type: String, example: 'published', required: false })
@@ -223,7 +223,7 @@ export class SellerContentController {
   }
 
   @Get('comments/pending')
-  @ApiOperation({ summary: '获取待审核评�?, description: '获取待审核的评论列表' })
+  @ApiOperation({ summary: '获取待审核评论', description: '获取待审核的评论列表' })
   async getPendingComments() {
     const storeId = 1; // 从认证信息中获取店铺ID
     const comments = await this.commentService.getPendingCommentsByStore(storeId);
@@ -339,7 +339,7 @@ export class SellerContentController {
 
   // 统计信息
   @Get('statistics')
-  @ApiOperation({ summary: '获取内容统计', description: '获取店铺内容管理系统的统计信�? })
+  @ApiOperation({ summary: '获取内容统计', description: '获取店铺内容管理系统的统计信息' })
   async getStatistics() {
     const storeId = 1; // 从认证信息中获取店铺ID
     const articleStats = await this.articleService.getArticleStatisticsByStore(storeId);

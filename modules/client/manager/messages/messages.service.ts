@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Between, And } from 'typeorm';
 import { Message, MessageStatus, MessageType, ReceiverType, SenderType } from './entities/message.entity';
 import { CreateMessageDto, QueryMessageDto } from './dto/create-message.dto';
-import { RabbitMQService } from '../../../src/rabbitmq/rabbitmq.service';
+import { RabbitMQService } from '../../../../src/infrastructure/rabbitmq/rabbitmq.service';
 
 @Injectable()
 export class MessageService {

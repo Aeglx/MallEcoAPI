@@ -6,7 +6,7 @@ import { OrderItem } from '../../common/order/entities/order-item.entity';
 import { OrderLog } from '../../common/order/entities/order-log.entity';
 import { QueryOrderDto, ShipOrderDto, BatchShipOrderDto } from './dto/order.dto';
 import { OrderStatus, PayStatus, ShipStatus } from '../../common/order/enum/order-status.enum';
-import { RabbitMQService } from '../../../src/rabbitmq/rabbitmq.service';
+import { RabbitMQService } from '../../../../src/infrastructure/rabbitmq/rabbitmq.service';
 
 @Injectable()
 export class ManagerOrdersService {

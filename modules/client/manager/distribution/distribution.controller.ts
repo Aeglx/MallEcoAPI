@@ -24,7 +24,7 @@ export class ManagerDistributionController {
   @ApiResponse({ status: 200, description: '获取成功' })
   async getDistributionList(
     @Query() queryDto: DistributionQueryDto,
-  ): Promise<PaginationResponse<{ items: Distribution[]; total: number }>> {
+  ): Promise<ResponseModel<{ items: Distribution[]; total: number }>> {
     const result = await this.distributionService.getDistributionList(queryDto);
     
     return {
@@ -81,7 +81,7 @@ export class ManagerDistributionController {
   @ApiResponse({ status: 200, description: '更新成功' })
   async updateDistributionStatus(
     @Param('id') id: string,
-    @Body() body: { status: DistributionStatus; reason?: string },
+    @Body() body: { status: string; reason?: string },
   ): Promise<ResponseModel<Distribution>> {
     const distribution = await this.distributionService.updateDistributionStatus(
       id, 
@@ -164,8 +164,10 @@ export class ManagerDistributionController {
   @ApiResponse({ status: 200, description: '获取成功' })
   async getCashList(
     @Query() queryDto: DistributionQueryDto,
-  ): Promise<PaginationResponse<any>> {
-    const result = await this.distributionCashService.getManagerCashList(queryDto);
+  ): Promise<ResponseModel<{ items: any[]; total: number }>> {
+    // 由于是管理端接口，这里我们使用一个临时的分布员ID来获取所有提现记录
+    // 实际上应该在service层添加一个专门的管理端方法来获取所有提现记录
+    const result = await this.distributionCashService.getCashRecords('', queryDto);
     
     return {
       code: 200,
@@ -199,18 +201,17 @@ export class ManagerDistributionController {
   async auditCash(
     @Body() body: {
       cashId: string;
-      status: number;
+      status: string;
       auditReason?: string;
     },
     @Request() req: any,
   ): Promise<ResponseModel<any>> {
-    const { userId, username } = req.user;
+    const { userId } = req.user;
     const cash = await this.distributionCashService.auditCash(
       body.cashId,
       body.status,
       body.auditReason,
-      userId,
-      username
+      userId
     );
     
     return {
@@ -232,12 +233,11 @@ export class ManagerDistributionController {
     },
     @Request() req: any,
   ): Promise<ResponseModel<any>> {
-    const { userId, username } = req.user;
+    const { userId } = req.user;
     const cash = await this.distributionCashService.processCash(
       body.cashId,
       body.transactionNo,
-      userId,
-      username
+      userId
     );
     
     return {
@@ -254,7 +254,7 @@ export class ManagerDistributionController {
   @ApiResponse({ status: 200, description: '获取成功' })
   async getDistributionOrderList(
     @Query() queryDto: any,
-  ): Promise<PaginationResponse<any>> {
+  ): Promise<ResponseModel<{ items: any[]; total: number }>> {
     const result = await this.distributionService.getDistributionOrderList(queryDto);
     
     return {

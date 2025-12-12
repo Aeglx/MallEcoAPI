@@ -6,18 +6,20 @@ import {
   Delete, 
   Body, 
   Query, 
-  Param 
+  Param,
+  Request 
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiQuery } from '@nestjs/swagger';
 import { CouponService } from '../../common/promotion/services/coupon.service';
 import { CouponCreateDto } from '../../common/promotion/dto/coupon-create.dto';
 import { CouponQueryDto } from '../../common/promotion/dto/coupon-query.dto';
-import { ResponseUtil } from '../../common/utils/response.util';
-import { CurrentUser } from '../../common/decorators/current-user.decorator';
-import { Response } from '../../common/interfaces/response.interface';
+import { ResponseModel, PaginationResponse } from '../../common/interfaces/response.interface';
+import { JwtAuthGuard } from '../../common/auth/guards/jwt-auth.guard';
+import { UseGuards } from '@nestjs/common';
 
 @ApiTags('管理-优惠券')
 @Controller('manager/coupon')
+@UseGuards(JwtAuthGuard)
 export class CouponController {
   constructor(private readonly couponService: CouponService) {}
 
@@ -26,10 +28,16 @@ export class CouponController {
   @ApiResponse({ status: 200, description: '创建成功' })
   async createCoupon(
     @Body() createDto: CouponCreateDto,
-    @CurrentUser() user: any,
-  ): Promise<Response<any>> {
-    const result = await this.couponService.createCoupon(createDto, user.id);
-    return ResponseUtil.success(result);
+    @Request() req: any,
+  ): Promise<ResponseModel<any>> {
+    const result = await this.couponService.createCoupon(createDto, req.user.id);
+    return {
+      code: 200,
+      message: '创建成功',
+      data: result,
+      timestamp: Date.now(),
+      traceId: '',
+    };
   }
 
   @Get('list')
@@ -43,18 +51,30 @@ export class CouponController {
   @ApiQuery({ name: 'page', description: '页码', required: false, example: 1 })
   @ApiQuery({ name: 'limit', description: '每页数量', required: false, example: 10 })
   @ApiResponse({ status: 200, description: '获取成功' })
-  async getCoupons(@Query() queryDto: CouponQueryDto): Promise<Response<any>> {
+  async getCoupons(@Query() queryDto: CouponQueryDto): Promise<ResponseModel<any>> {
     const result = await this.couponService.getCoupons(queryDto);
-    return ResponseUtil.success(result);
+    return {
+      code: 200,
+      message: '获取成功',
+      data: result,
+      timestamp: Date.now(),
+      traceId: '',
+    };
   }
 
   @Get('detail/:id')
   @ApiOperation({ summary: '获取优惠券详情' })
   @ApiParam({ name: 'id', description: '优惠券ID' })
   @ApiResponse({ status: 200, description: '获取成功' })
-  async getCouponDetail(@Param('id') id: string): Promise<Response<any>> {
+  async getCouponDetail(@Param('id') id: string): Promise<ResponseModel<any>> {
     const result = await this.couponService.getCouponDetail(id);
-    return ResponseUtil.success(result);
+    return {
+      code: 200,
+      message: '获取成功',
+      data: result,
+      timestamp: Date.now(),
+      traceId: '',
+    };
   }
 
   @Put('update/:id')
@@ -64,19 +84,31 @@ export class CouponController {
   async updateCoupon(
     @Param('id') id: string,
     @Body() updateDto: Partial<CouponCreateDto>,
-    @CurrentUser() user: any,
-  ): Promise<Response<any>> {
-    const result = await this.couponService.updateCoupon(id, updateDto, user.id);
-    return ResponseUtil.success(result);
+    @Request() req: any,
+  ): Promise<ResponseModel<any>> {
+    const result = await this.couponService.updateCoupon(id, updateDto, req.user.id);
+    return {
+      code: 200,
+      message: '更新成功',
+      data: result,
+      timestamp: Date.now(),
+      traceId: '',
+    };
   }
 
   @Delete('delete/:id')
   @ApiOperation({ summary: '删除优惠券' })
   @ApiParam({ name: 'id', description: '优惠券ID' })
   @ApiResponse({ status: 200, description: '删除成功' })
-  async deleteCoupon(@Param('id') id: string): Promise<Response<any>> {
+  async deleteCoupon(@Param('id') id: string): Promise<ResponseModel<any>> {
     await this.couponService.deleteCoupon(id);
-    return ResponseUtil.success(null);
+    return {
+      code: 200,
+      message: '删除成功',
+      data: null,
+      timestamp: Date.now(),
+      traceId: '',
+    };
   }
 
   @Get('member/list')
@@ -89,9 +121,15 @@ export class CouponController {
   @ApiQuery({ name: 'page', description: '页码', required: false, example: 1 })
   @ApiQuery({ name: 'limit', description: '每页数量', required: false, example: 10 })
   @ApiResponse({ status: 200, description: '获取成功' })
-  async getCouponMembers(@Query() queryDto: any): Promise<Response<any>> {
+  async getCouponMembers(@Query() queryDto: any): Promise<ResponseModel<any>> {
     const result = await this.couponService.getMyCoupons(queryDto);
-    return ResponseUtil.success(result);
+    return {
+      code: 200,
+      message: '获取成功',
+      data: result,
+      timestamp: Date.now(),
+      traceId: '',
+    };
   }
 
   @Post('grant')
@@ -99,15 +137,21 @@ export class CouponController {
   @ApiResponse({ status: 200, description: '发放成功' })
   async grantCoupon(
     @Body() body: { couponId: string; memberIds: string[] },
-  ): Promise<Response<any>> {
+  ): Promise<ResponseModel<any>> {
     const result = await this.couponService.grantCoupon(body.couponId, body.memberIds);
-    return ResponseUtil.success({ successCount: result });
+    return {
+      code: 200,
+      message: '发放成功',
+      data: { successCount: result },
+      timestamp: Date.now(),
+      traceId: '',
+    };
   }
 
   @Get('statistics')
   @ApiOperation({ summary: '获取优惠券统计' })
   @ApiResponse({ status: 200, description: '获取成功' })
-  async getCouponStatistics(): Promise<Response<any>> {
+  async getCouponStatistics(): Promise<ResponseModel<any>> {
     // 这里应该实现统计逻辑
     // 简化实现，实际应该查询数据库统计
     const statistics = {
@@ -118,6 +162,12 @@ export class CouponController {
       totalDiscount: 0,
     };
 
-    return ResponseUtil.success(statistics);
+    return {
+      code: 200,
+      message: '获取成功',
+      data: statistics,
+      timestamp: Date.now(),
+      traceId: '',
+    };
   }
 }

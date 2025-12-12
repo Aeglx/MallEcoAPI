@@ -3,7 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Product } from '../../common/product/entities/product.entity';
 import { ManagerProductsController } from './products.controller';
 import { ManagerProductsService } from './products.service';
-import { RabbitMQModule } from '../../../src/rabbitmq/rabbitmq.module';
+import { RabbitMQModule } from '../../../../src/infrastructure/rabbitmq/rabbitmq.module';
 
 @Module({
   imports: [

@@ -32,13 +32,13 @@ export class ConsulService implements OnModuleInit, OnModuleDestroy {
         address: serviceAddress,
         port: servicePort,
         check: {
-          http: `http://${serviceAddress}:${servicePort./infrastructure/health`,
+          http: `http://${serviceAddress}:${servicePort}/infrastructure/health`,
           interval: '10s',
           timeout: '5s',
         },
         tags: ['api', 'malleco', 'nestjs'],
       });
-      console.log(`Service registered with Consul: ${this.serviceId}`);
+      console.log('Service registered with Consul:', this.serviceId);
     } catch (error) {
       console.error('Failed to register service with Consul:', error.message);
     }
@@ -48,7 +48,7 @@ export class ConsulService implements OnModuleInit, OnModuleDestroy {
     if (this.serviceId) {
       try {
         await this.consulClient.agent.service.deregister(this.serviceId);
-        console.log(`Service deregistered from Consul: ${this.serviceId}`);
+        console.log('Service deregistered from Consul:', this.serviceId);
       } catch (error) {
         console.error('Failed to deregister service from Consul:', error.message);
       }
@@ -60,7 +60,7 @@ export class ConsulService implements OnModuleInit, OnModuleDestroy {
       const services = await this.consulClient.catalog.service.nodes(serviceName);
       return services;
     } catch (error) {
-      console.error(`Failed to get service ${serviceName}:`, error.message);
+      console.error('Failed to get service', serviceName, ':', error.message);
       return [];
     }
   }

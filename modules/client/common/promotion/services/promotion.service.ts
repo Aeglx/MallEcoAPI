@@ -2,8 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Like, Between } from 'typeorm';
 import { Promotion, PromotionParticipant } from '../entities/promotion.entity';
-import { CustomException } from '../../common/filters/custom-exception';
-import { CodeEnum } from '../../common/enums/code.enum';
+import { CustomException } from '../../filters/custom-exception';
+import { CodeEnum } from '../../enums/code.enum';
 
 @Injectable()
 export class PromotionService {
@@ -91,7 +91,7 @@ export class PromotionService {
       whereCondition.createTime = Between(startTime, endTime);
     }
 
-    const [items, total] = await this.promotionRepository.find({
+    const [items, total] = await this.promotionRepository.findAndCount({
       where: whereCondition,
       order: { sortOrder: 'ASC', createTime: 'DESC' },
       skip,
@@ -104,7 +104,7 @@ export class PromotionService {
         try {
           item.rules = JSON.parse(item.rules as any);
         } catch (e) {
-          item.rules = {};
+          item.rules = '{}';
         }
       }
     });
@@ -129,7 +129,7 @@ export class PromotionService {
       try {
         promotion.rules = JSON.parse(promotion.rules as any);
       } catch (e) {
-        promotion.rules = {};
+        promotion.rules = '{}';
       }
     }
 
@@ -264,7 +264,7 @@ export class PromotionService {
       whereCondition.status = status;
     }
 
-    const [items, total] = await this.promotionParticipantRepository.find({
+    const [items, total] = await this.promotionParticipantRepository.findAndCount({
       where: whereCondition,
       order: { participateTime: 'DESC' },
       skip,
@@ -277,7 +277,7 @@ export class PromotionService {
         try {
           item.data = JSON.parse(item.data as any);
         } catch (e) {
-          item.data = {};
+          item.data = '{}';
         }
       }
     });
@@ -302,7 +302,7 @@ export class PromotionService {
       whereCondition.status = status;
     }
 
-    const [items, total] = await this.promotionParticipantRepository.find({
+    const [items, total] = await this.promotionParticipantRepository.findAndCount({
       where: whereCondition,
       relations: ['promotion'],
       order: { participateTime: 'DESC' },

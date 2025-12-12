@@ -5,7 +5,7 @@ import { OrderItem } from '../../common/order/entities/order-item.entity';
 import { OrderLog } from '../../common/order/entities/order-log.entity';
 import { ManagerOrdersController } from './orders.controller';
 import { ManagerOrdersService } from './orders.service';
-import { RabbitMQModule } from '../../../src/rabbitmq/rabbitmq.module';
+import { RabbitMQModule } from '../../../../src/infrastructure/rabbitmq/rabbitmq.module';
 
 @Module({
   imports: [
