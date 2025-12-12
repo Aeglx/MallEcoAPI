@@ -106,6 +106,71 @@ export class ArticleTagService {
     await Promise.all(updatePromises);
   }
 
+  // 卖家端方法
+  async findByStore(storeId: number): Promise<ArticleTag[]> {
+    return await this.tagRepository.find({
+      where: { storeId, isActive: true },
+      order: { usageCount: 'DESC', name: 'ASC' },
+    });
+  }
+
+  async updateByStore(id: number, storeId: number, updateTagDto: UpdateArticleTagDto): Promise<ArticleTag> {
+    const tag = await this.tagRepository.findOne({
+      where: { id, storeId },
+    });
+
+    if (!tag) {
+      throw new NotFoundException(`标签 #${id} 不存在`);
+    }
+
+    // 检查新名称是否已存在
+    if (updateTagDto.name && updateTagDto.name !== tag.name) {
+      const existingTag = await this.tagRepository.findOne({
+        where: { name: updateTagDto.name, storeId },
+      });
+
+      if (existingTag && existingTag.id !== id) {
+        throw new NotFoundException(`标签名称 "${updateTagDto.name}" 已存在`);
+      }
+    }
+
+    Object.assign(tag, updateTagDto);
+    return await this.tagRepository.save(tag);
+  }
+
+  async removeByStore(id: number, storeId: number): Promise<void> {
+    const tag = await this.tagRepository.findOne({
+      where: { id, storeId },
+      relations: ['articles'],
+    });
+
+    if (!tag) {
+      throw new NotFoundException(`标签 #${id} 不存在`);
+    }
+
+    // 检查是否有文章关联
+    if (tag.articles && tag.articles.length > 0) {
+      throw new NotFoundException('该标签已被文章使用，无法删除');
+    }
+
+    await this.tagRepository.remove(tag);
+  }
+
+  // 更新 create 方法以支持 storeId
+  async create(createTagDto: CreateArticleTagDto): Promise<ArticleTag> {
+    // 检查标签是否已存在
+    const existingTag = await this.tagRepository.findOne({
+      where: { name: createTagDto.name, storeId: createTagDto.storeId },
+    });
+
+    if (existingTag) {
+      return existingTag;
+    }
+
+    const tag = this.tagRepository.create(createTagDto);
+    return await this.tagRepository.save(tag);
+  }
+
   async getTagStatistics(): Promise<any> {
     const total = await this.tagRepository.count();
     const active = await this.tagRepository.count({ where: { isActive: true } });

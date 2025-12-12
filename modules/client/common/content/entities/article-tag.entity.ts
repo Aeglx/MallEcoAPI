@@ -18,6 +18,9 @@ export class ArticleTag {
   @Column({ default: true })
   isActive: boolean;
 
+  @Column({ nullable: true })
+  storeId: number; // 店铺ID
+
   @ManyToMany(() => Article, article => article.tags)
   articles: Article[];
 
