@@ -1,10 +1,10 @@
 import { Controller, Get, Post, Query, Body, Param, UsePipes, ValidationPipe } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
-import { SearchService } from './search.service';
-import { SearchProductDto, SearchProductResponseDto } from './dto/search-product.dto';
-import { SearchSuggestDto, SearchSuggestResponseDto } from './dto/search-suggest.dto';
-import { SaveSearchHistoryDto, GetSearchHistoryDto, SearchHistoryResponseDto } from './dto/search-history.dto';
-import { SearchStatisticsDto, SearchTrendResponseDto, HotWordStatisticsResponseDto } from './dto/search-statistics.dto';
+import { SearchService } from './infrastructure/search.service';
+import { SearchProductDto, SearchProductResponseDto } from './dt./infrastructure/search-product.dto';
+import { SearchSuggestDto, SearchSuggestResponseDto } from './dt./infrastructure/search-suggest.dto';
+import { SaveSearchHistoryDto, GetSearchHistoryDto, SearchHistoryResponseDto } from './dt./infrastructure/search-history.dto';
+import { SearchStatisticsDto, SearchTrendResponseDto, HotWordStatisticsResponseDto } from './dt./infrastructure/search-statistics.dto';
 
 @ApiTags('搜索模块')
 @Controller('search')
@@ -13,12 +13,12 @@ export class SearchController {
   constructor(private readonly searchService: SearchService) {}
 
   /**
-   * 获取热门搜索关键词
+   * 获取热门搜索关键�?
    * @param limit 限制数量
    */
   @Get('hot-words')
-  @ApiOperation({ summary: '获取热门搜索关键词' })
-  @ApiResponse({ status: 200, description: '成功获取热门搜索关键词' })
+  @ApiOperation({ summary: '获取热门搜索关键�? })
+  @ApiResponse({ status: 200, description: '成功获取热门搜索关键�? })
   async getHotWords(@Query('limit') limit: string = '10') {
     return {
       code: 200,
@@ -132,12 +132,12 @@ export class SearchController {
   }
 
   /**
-   * 获取热门搜索词统计
+   * 获取热门搜索词统�?
    * @param limit 限制数量
    */
   @Get('statistics/hot-words')
-  @ApiOperation({ summary: '获取热门搜索词统计' })
-  @ApiResponse({ status: 200, description: '成功获取热门搜索词统计', type: [HotWordStatisticsResponseDto] })
+  @ApiOperation({ summary: '获取热门搜索词统�? })
+  @ApiResponse({ status: 200, description: '成功获取热门搜索词统�?, type: [HotWordStatisticsResponseDto] })
   async getHotWordStatistics(@Query('limit') limit: string = '10') {
     return {
       code: 200,
@@ -147,10 +147,10 @@ export class SearchController {
   }
 
   /**
-   * 获取搜索转化率统计
+   * 获取搜索转化率统�?
    */
   @Get('statistics/conversion')
-  @ApiOperation({ summary: '获取搜索转化率统计' })
+  @ApiOperation({ summary: '获取搜索转化率统�? })
   async getSearchConversionStatistics() {
     return {
       code: 200,
@@ -159,3 +159,4 @@ export class SearchController {
     };
   }
 }
+

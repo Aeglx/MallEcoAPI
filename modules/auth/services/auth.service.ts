@@ -80,7 +80,7 @@ export class AuthService {
       userId: user.id,
       username: user.username,
       email: user.email,
-      roles: user.roles.map(role => role.name),
+      roles: user.userRoles?.map(role => role.role?.name) || [],
     };
 
     const token = this.jwtService.sign(payload);
@@ -108,7 +108,7 @@ export class AuthService {
         nickname: user.nickname,
         avatar: user.avatar,
         status: user.status,
-        roles: user.roles,
+        roles: user.userRoles?.map(role => role.role) || [],
       },
       expiresIn: '24h',
     };
@@ -303,7 +303,7 @@ export class AuthService {
       nickname: user.nickname,
       avatar: user.avatar,
       status: user.status,
-      roles: user.roles,
+      roles: user.userRoles?.map(role => role.role) || [],
       createdAt: user.createdAt,
       lastLoginAt: user.lastLoginAt,
     };
@@ -326,12 +326,32 @@ export class AuthService {
   }
 
   /**
+   * 验证图形验证码
+   */
+  private async verifyCaptcha(captcha: string): Promise<boolean> {
+    // 这里应该调用captchaService来验证验证码
+    // 暂时返回模拟验证
+    return captcha === '1234'; // 模拟验证码
+  }
+
+  /**
    * 验证重置验证码
    */
   private async verifyResetCode(email: string, code: string): Promise<boolean> {
     // 这里应该从缓存或数据库中验证验证码
     // 暂时返回模拟验证
     return code === '123456'; // 模拟验证码
+  }
+
+  /**
+   * 验证验证码（对外暴露）
+   */
+  async verifyCode(email: string, code: string): Promise<{ valid: boolean, message: string }> {
+    const isValid = await this.verifyResetCode(email, code);
+    return {
+      valid: isValid,
+      message: isValid ? '验证码验证成功' : '验证码验证失败'
+    };
   }
 
   /**

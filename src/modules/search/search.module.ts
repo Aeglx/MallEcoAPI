@@ -1,7 +1,7 @@
 import { Module, CacheModule } from '@nestjs/common';
-import { SearchController } from './search.controller';
-import { SearchService } from './search.service';
-import { SearchCacheService } from './search-cache.service';
+import { SearchController } from './infrastructure/search.controller';
+import { SearchService } from './infrastructure/search.service';
+import { SearchCacheService } from './infrastructure/search-cache.service';
 import { DbConnectionService } from '../../common/database/db-connection.service';
 import { ElasticsearchModule } from '@nestjs/elasticsearch';
 import { ProductsModule } from '../../products/products.module';
@@ -24,3 +24,4 @@ import { ProductsModule } from '../../products/products.module';
   providers: [SearchService, SearchCacheService, DbConnectionService],
 })
 export class SearchModule {}
+

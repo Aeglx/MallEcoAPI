@@ -2,12 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, MoreThanOrEqual, createQueryBuilder, Between } from 'typeorm';
 import { Product } from '../products/entities/product.entity';
-import { Order } from '../../modules/common/order/entities/order.entity';
-import { OrderItem } from '../../modules/common/order/entities/order-item.entity';
-import { User } from '../../modules/common/auth/entities/user.entity';
-import { Article } from '../../modules/common/content/entities/article.entity';
-import { ArticleCategory } from '../../modules/common/content/entities/article-category.entity';
-import { ArticleComment } from '../../modules/common/content/entities/article-comment.entity';
+import { Order } from '../../modules/client/common/order/entities/order.entity';
+import { OrderItem } from '../../modules/client/common/order/entities/order-item.entity';
+import { User } from '../../modules/client/comm../infrastructure/auth/entities/user.entity';
+import { Article } from '../../modules/client/common/content/entities/article.entity';
+import { ArticleCategory } from '../../modules/client/common/content/entities/article-category.entity';
+import { ArticleComment } from '../../modules/client/common/content/entities/article-comment.entity';
 
 @Injectable()
 export class StatisticsService {
@@ -22,7 +22,7 @@ export class StatisticsService {
   ) {}
 
   /**
-   * 获取商品销售统计
+   * 获取商品销售统�?
    */
   async getProductStatistics() {
     const [
@@ -103,7 +103,7 @@ export class StatisticsService {
   private async getOrderStatistics() {
     const [totalOrders, completedOrders, totalRevenue, avgOrderValue] = await Promise.all([
       this.orderRepository.count(),
-      this.orderRepository.count({ where: { orderStatus: 2 } }), // 已完成订单
+      this.orderRepository.count({ where: { orderStatus: 2 } }), // 已完成订�?
       this.orderItemRepository.sum('totalPrice', {}),
       this.orderRepository.average('payAmount', { where: { orderStatus: 2 } } as any)
     ]);
@@ -132,13 +132,13 @@ export class StatisticsService {
   }
 
   /**
-   * 获取销售趋势统计
+   * 获取销售趋势统�?
    */
   async getSalesTrend(days: number = 30) {
     const startDate = new Date();
     startDate.setDate(startDate.getDate() - days);
 
-    // 使用订单数据统计销售趋势
+    // 使用订单数据统计销售趋�?
     const query = this.orderItemRepository.createQueryBuilder('orderItem');
     query.leftJoin('orderItem.order', 'order');
     query.select('DATE(order.create_time) as date, SUM(orderItem.total_price) as salesAmount');
@@ -149,7 +149,7 @@ export class StatisticsService {
     
     const result = await query.getRawMany();
 
-    // 初始化所有日期的销售额为0
+    // 初始化所有日期的销售额�?
     const dailySales = new Map<string, number>();
     for (let i = 0; i <= days; i++) {
       const date = new Date();
@@ -170,7 +170,7 @@ export class StatisticsService {
   }
 
   /**
-   * 获取分类销售统计
+   * 获取分类销售统�?
    */
   async getCategoryStatistics() {
     const query = this.productRepository.createQueryBuilder('product');
@@ -185,7 +185,7 @@ export class StatisticsService {
    * 获取价格区间统计
    */
   async getPriceRangeStatistics() {
-    // 使用TypeORM查询构建器实现价格区间统计
+    // 使用TypeORM查询构建器实现价格区间统�?
     const products = await this.productRepository.find({
       select: ['price', 'sales'],
     });
@@ -198,7 +198,7 @@ export class StatisticsService {
       { name: '1000+', min: 1000, max: Infinity }
     ];
 
-    // 初始化统计结果
+    // 初始化统计结�?
     const statistics = priceRanges.map(range => ({
       priceRange: range.name,
       totalProducts: 0,
@@ -332,7 +332,7 @@ export class StatisticsService {
   }
 
   /**
-   * 获取用户活跃度统计
+   * 获取用户活跃度统�?
    */
   async getUserActivityStatistics(days: number = 30) {
     const startDate = new Date();
@@ -362,7 +362,7 @@ export class StatisticsService {
       this.orderRepository.count({
         where: { 
           createTime: MoreThanOrEqual(startDate),
-          orderStatus: 2 // 已完成订单
+          orderStatus: 2 // 已完成订�?
         }
       }),
     ]);
@@ -377,7 +377,7 @@ export class StatisticsService {
   }
 
   /**
-   * 获取综合仪表盘数据
+   * 获取综合仪表盘数�?
    */
   async getDashboardStatistics() {
     const [
@@ -412,7 +412,7 @@ export class StatisticsService {
   }
 
   /**
-   * 获取时间段统计对比
+   * 获取时间段统计对�?
    */
   async getPeriodComparison(currentDays: number = 7, previousDays: number = 7) {
     const now = new Date();
@@ -484,3 +484,5 @@ export class StatisticsService {
     };
   }
 }
+
+

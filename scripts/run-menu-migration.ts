@@ -1,14 +1,14 @@
 /**
- * 菜单迁移脚本 - 使用NestJS应用上下文
+ * 菜单迁移脚本 - 使用NestJS应用上下�?
  * 运行方式: npx ts-node scripts/run-menu-migration.ts
  */
 
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from '../src/app.module';
-import { MenuService } from '../modules/common/auth/services/menu.service';
+import { MenuService } from '../modules/client/common/auth/services/menu.service';
 
 /**
- * Java版菜单数据结构
+ * Java版菜单数据结�?
  */
 interface JavaMenuData {
   id: string;
@@ -25,7 +25,7 @@ interface JavaMenuData {
 }
 
 /**
- * 管理端菜单数据
+ * 管理端菜单数�?
  */
 const adminMenus: JavaMenuData[] = [
   // 系统管理
@@ -209,7 +209,7 @@ const adminMenus: JavaMenuData[] = [
   },
   {
     id: '1348810864748945423',
-    title: '优惠券管理',
+    title: '优惠券管�?,
     name: 'coupon-management',
     path: '/marketing/coupon',
     level: 2,
@@ -304,7 +304,7 @@ const adminMenus: JavaMenuData[] = [
 ];
 
 /**
- * 卖家端菜单数据
+ * 卖家端菜单数�?
  */
 const sellerMenus: JavaMenuData[] = [
   // 商品管理
@@ -465,14 +465,14 @@ const sellerMenus: JavaMenuData[] = [
 ];
 
 async function bootstrap() {
-  console.log('开始启动NestJS应用上下文...');
+  console.log('开始启动NestJS应用上下�?..');
   
   const app = await NestFactory.createApplicationContext(AppModule);
   const menuService = app.get(MenuService);
 
-  console.log('开始迁移Java版菜单数据到API版...');
+  console.log('开始迁移Java版菜单数据到API�?..');
 
-  // 合并所有菜单数据
+  // 合并所有菜单数�?
   const allMenus = [...adminMenus, ...sellerMenus];
   let createdCount = 0;
   let skippedCount = 0;
@@ -492,7 +492,7 @@ async function bootstrap() {
         icon: javaMenu.icon,
         description: javaMenu.description,
         type: javaMenu.level === 1 ? 0 : 1, // 0-目录 1-菜单
-        status: 1, // 启用状态
+        status: 1, // 启用状�?
         hidden: false
       };
 
@@ -505,7 +505,7 @@ async function bootstrap() {
         await menuService.createMenu(apiMenuData as any);
         createdCount++;
       } else {
-        console.log(`菜单已存在: ${javaMenu.title}`);
+        console.log(`菜单已存�? ${javaMenu.title}`);
         skippedCount++;
       }
     } catch (error) {
@@ -513,7 +513,7 @@ async function bootstrap() {
     }
   }
 
-  console.log(`菜单数据迁移完成! 创建: ${createdCount} 个, 跳过: ${skippedCount} 个`);
+  console.log(`菜单数据迁移完成! 创建: ${createdCount} �? 跳过: ${skippedCount} 个`);
   
   await app.close();
   console.log('应用上下文已关闭');

@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Between } from 'typeorm';
-import { CachePerformanceEntity } from '../entities/cache-performance.entity';
-import { CacheConfigEntity } from '../entities/cache-config.entity';
-import { CacheInvalidationEntity } from '../entities/cache-invalidation.entity';
+import { CachePerformanceEntity } from '../entitie./infrastructure/cache-performance.entity';
+import { CacheConfigEntity } from '../entitie./infrastructure/cache-config.entity';
+import { CacheInvalidationEntity } from '../entitie./infrastructure/cache-invalidation.entity';
 
 @Injectable()
 export class CacheAnalysisService {
@@ -16,7 +16,7 @@ export class CacheAnalysisService {
     private readonly invalidationRepository: Repository<CacheInvalidationEntity>,
   ) {}
 
-  // 分析缓存命中率趋势
+  // 分析缓存命中率趋�?
   async analyzeHitRateTrends(days: number = 30) {
     const endDate = new Date();
     const startDate = new Date();
@@ -72,7 +72,7 @@ export class CacheAnalysisService {
     }));
   }
 
-  // 获取内存状态
+  // 获取内存状�?
   private getMemoryStatus(usage: number, limit: number): string {
     const percentage = (usage / limit) * 100;
     if (percentage > 90) return 'CRITICAL';
@@ -86,10 +86,10 @@ export class CacheAnalysisService {
     const percentage = (usage / limit) * 100;
     
     if (percentage > 90) {
-      return '内存使用率过高，建议立即清理或扩容';
+      return '内存使用率过高，建议立即清理或扩�?;
     }
     if (percentage > 80) {
-      return '内存使用率较高，建议监控并准备清理策略';
+      return '内存使用率较高，建议监控并准备清理策�?;
     }
     if (hitRate < 70) {
       return '命中率偏低，建议优化缓存策略';
@@ -116,7 +116,7 @@ export class CacheAnalysisService {
     }));
   }
 
-  // 计算热点数据优先级
+  // 计算热点数据优先�?
   private calculateHotDataPriority(data: CacheConfigEntity): string {
     const frequency = data.accessFrequency;
     const hitRate = data.hitRate;
@@ -163,7 +163,7 @@ export class CacheAnalysisService {
       impactAnalysis.avgExecutionTime += invalidation.executionTime;
       impactAnalysis.totalAffectedKeys += invalidation.keysCount;
 
-      // 按类型统计
+      // 按类型统�?
       if (!impactAnalysis.byType[invalidation.invalidationType]) {
         impactAnalysis.byType[invalidation.invalidationType] = 0;
       }
@@ -282,11 +282,11 @@ export class CacheAnalysisService {
     }
     
     if (efficiency.warmedUpConfigs < efficiency.totalConfigs * 0.8) {
-      recommendations.push('预热配置不足，建议实现缓存预热机制');
+      recommendations.push('预热配置不足，建议实现缓存预热机�?);
     }
     
     if (efficiency.lowEfficiencyConfigs > efficiency.totalConfigs * 0.3) {
-      recommendations.push('低效配置较多，需要全面优化缓存设计');
+      recommendations.push('低效配置较多，需要全面优化缓存设�?);
     }
     
     return recommendations;
@@ -356,18 +356,18 @@ export class CacheAnalysisService {
     };
   }
 
-  // 计算整体健康度
+  // 计算整体健康�?
   private calculateOverallHealth(hitRate: number, criticalMemory: number, highImpactInvalidations: number, lowEfficiencyRate: number): number {
     let score = 100;
     
-    // 命中率影响
+    // 命中率影�?
     score -= Math.max(0, (90 - hitRate) * 0.5);
     
     // 严重问题扣分
     score -= criticalMemory * 10;
     score -= highImpactInvalidations * 5;
     
-    // 低效率扣分
+    // 低效率扣�?
     score -= lowEfficiencyRate * 0.3;
     
     return Math.max(0, Math.round(score));

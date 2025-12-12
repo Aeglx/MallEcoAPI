@@ -1,9 +1,9 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from '../src/app.module';
-import { MenuService } from '../modules/common/auth/services/menu.service';
+import { MenuService } from '../modules/client/common/auth/services/menu.service';
 
 /**
- * Java版菜单数据结构
+ * Java版菜单数据结�?
  * 基于Java版的Menu实体和StoreMenu实体结构
  */
 interface JavaMenuData {
@@ -115,7 +115,7 @@ const adminMenus: JavaMenuData[] = [
   },
   {
     id: '1349247640584085504',
-    title: '敏感词',
+    title: '敏感�?,
     name: 'sensitiveWords',
     path: '/sys/sensitiveWords',
     level: 2,
@@ -137,7 +137,7 @@ const adminMenus: JavaMenuData[] = [
   },
   {
     id: '1374916594269945856',
-    title: '验证码',
+    title: '验证�?,
     name: 'slider',
     path: '/sys/slider',
     level: 2,
@@ -291,7 +291,7 @@ const adminMenus: JavaMenuData[] = [
   },
   {
     id: '1367041575619657728',
-    title: '回收站',
+    title: '回收�?,
     name: 'memberRecycle',
     path: '/member/memberRecycle',
     level: 2,
@@ -301,10 +301,10 @@ const adminMenus: JavaMenuData[] = [
     permission: '/manager/member*'
   },
 
-  // 预存款模块
+  // 预存款模�?
   {
     id: '1367042490443497472',
-    title: '预存款',
+    title: '预存�?,
     name: 'advance',
     path: '/advance',
     level: 1,
@@ -327,7 +327,7 @@ const adminMenus: JavaMenuData[] = [
   },
   {
     id: '1367042804944994304',
-    title: '充值记录',
+    title: '充值记�?,
     name: 'recharge',
     path: '/advance/recharge',
     level: 2,
@@ -519,7 +519,7 @@ const adminMenus: JavaMenuData[] = [
   },
   {
     id: '1372808352295288832',
-    title: '退款流水',
+    title: '退款流�?,
     name: 'refundLog',
     path: '/flow/refundLog',
     level: 2,
@@ -662,7 +662,7 @@ const adminMenus: JavaMenuData[] = [
   },
   {
     id: '1367049384792948736',
-    title: '优惠券',
+    title: '优惠�?,
     name: 'coupon',
     path: '/promotion/coupon',
     level: 2,
@@ -706,7 +706,7 @@ const adminMenus: JavaMenuData[] = [
   },
   {
     id: '1403988156444962818',
-    title: '券活动',
+    title: '券活�?,
     name: 'coupon-activity',
     path: '/promotion/coupon-activity',
     level: 2,
@@ -862,7 +862,7 @@ const adminMenus: JavaMenuData[] = [
   },
   {
     id: '1367050530030878720',
-    title: 'PC端',
+    title: 'PC�?,
     name: 'pcFloor',
     path: '/floor/pcFloor',
     level: 2,
@@ -873,7 +873,7 @@ const adminMenus: JavaMenuData[] = [
   },
   {
     id: '1367050673312497664',
-    title: '移动端',
+    title: '移动�?,
     name: 'wapList',
     path: '/floor/wapList',
     level: 2,
@@ -945,7 +945,7 @@ const adminMenus: JavaMenuData[] = [
   },
   {
     id: '1374178303975358464',
-    title: '分销员',
+    title: '分销�?,
     name: 'distribution',
     path: '/distributionManager/distribution',
     level: 2,
@@ -988,10 +988,10 @@ const adminMenus: JavaMenuData[] = [
     permission: '/manager/distribution/cash*'
   },
 
-  // 站内信模块
+  // 站内信模�?
   {
     id: '1376450531517530112',
-    title: '站内信',
+    title: '站内�?,
     name: 'notice',
     path: '/notice',
     level: 1,
@@ -1003,7 +1003,7 @@ const adminMenus: JavaMenuData[] = [
   },
   {
     id: '1376450662098796544',
-    title: '站内信',
+    title: '站内�?,
     name: 'noticeMessageTemplate',
     path: '/notice/noticeMessageTemplate',
     level: 2,
@@ -1355,7 +1355,7 @@ const sellerMenus: JavaMenuData[] = [
 ];
 
 /**
- * 新增的扩展功能模块（比Java版本更完整的菜单）
+ * 新增的扩展功能模块（比Java版本更完整的菜单�?
  */
 const extendedMenus: JavaMenuData[] = [
   // 数据中心模块
@@ -1395,7 +1395,7 @@ const extendedMenus: JavaMenuData[] = [
   },
   {
     id: '1500000000000000004',
-    title: '商品热力图',
+    title: '商品热力�?,
     name: 'product-heatmap',
     path: '/data-center/product-heatmap',
     level: 1,
@@ -1431,7 +1431,7 @@ const extendedMenus: JavaMenuData[] = [
   },
   {
     id: '1500000000000000007',
-    title: '营销自动化',
+    title: '营销自动�?,
     name: 'marketing-automation',
     path: '/intelligent-operations/marketing-automation',
     level: 1,
@@ -1452,10 +1452,10 @@ const extendedMenus: JavaMenuData[] = [
     permission: 'intelligent-operations:customer-profile:*'
   },
 
-  // 供应链管理模块
+  // 供应链管理模�?
   {
     id: '1500000000000000009',
-    title: '供应链管理',
+    title: '供应链管�?,
     name: 'supply-chain',
     path: '/supply-chain',
     level: 0,
@@ -1467,7 +1467,7 @@ const extendedMenus: JavaMenuData[] = [
   },
   {
     id: '1500000000000000010',
-    title: '供应商管理',
+    title: '供应商管�?,
     name: 'supplier-management',
     path: '/supply-chain/supplier-management',
     level: 1,
@@ -1536,7 +1536,7 @@ const extendedMenus: JavaMenuData[] = [
   },
   {
     id: '1500000000000000016',
-    title: '满意度调查',
+    title: '满意度调�?,
     name: 'satisfaction-survey',
     path: '/customer-service/satisfaction-survey',
     level: 1,
@@ -1546,10 +1546,10 @@ const extendedMenus: JavaMenuData[] = [
     permission: 'customer-service:satisfaction-survey:*'
   },
 
-  // 多店铺管理模块
+  // 多店铺管理模�?
   {
     id: '1500000000000000017',
-    title: '多店铺管理',
+    title: '多店铺管�?,
     name: 'multi-store',
     path: '/multi-store',
     level: 0,
@@ -1608,7 +1608,7 @@ const extendedMenus: JavaMenuData[] = [
   },
   {
     id: '1500000000000000022',
-    title: '营销素材库',
+    title: '营销素材�?,
     name: 'marketing-materials',
     path: '/marketing-tools/marketing-materials',
     level: 1,
@@ -1645,9 +1645,9 @@ async function bootstrap() {
   const app = await NestFactory.createApplicationContext(AppModule);
   const menuService = app.get(MenuService);
 
-  console.log('开始迁移Java版菜单数据到API版...');
+  console.log('开始迁移Java版菜单数据到API�?..');
 
-  // 合并所有菜单数据（Java版 + 扩展功能）
+  // 合并所有菜单数据（Java�?+ 扩展功能�?
   const allMenus = [...adminMenus, ...sellerMenus, ...extendedMenus];
 
   for (const javaMenu of allMenus) {
@@ -1665,7 +1665,7 @@ async function bootstrap() {
         icon: javaMenu.icon,
         description: javaMenu.description,
         type: javaMenu.level === 1 ? 0 : 1, // 0-目录 1-菜单
-        status: 1, // 启用状态
+        status: 1, // 启用状�?
         hidden: false
       };
 
@@ -1677,7 +1677,7 @@ async function bootstrap() {
         console.log(`创建菜单: ${javaMenu.title}`);
         await menuService.createMenu(apiMenuData as any);
       } else {
-        console.log(`菜单已存在: ${javaMenu.title}`);
+        console.log(`菜单已存�? ${javaMenu.title}`);
       }
     } catch (error) {
       console.error(`创建菜单失败: ${javaMenu.title}`, error);

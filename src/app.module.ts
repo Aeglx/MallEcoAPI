@@ -5,10 +5,10 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { join } from 'path';
 import { ElasticsearchModule } from '@nestjs/elasticsearch';
-import { RabbitMQModule } from './rabbitmq/rabbitmq.module';
+import { RabbitMQModule } from './infrastructur./infrastructure/rabbitmq/rabbitmq.module';
 import { ConsulModule } from './consul/consul.module';
-import { HealthModule } from './health/health.module';
-import { GatewayModule } from './gateway/gateway.module';
+import { HealthModule } from './infrastructur./infrastructure/health/health.module';
+import { GatewayModule } from './infrastructur./infrastructure/gateway/gateway.module';
 import { SocialModule } from './social/social.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { GlobalConfigModule } from './config/config.module';
@@ -16,13 +16,12 @@ import { APP_INTERCEPTOR } from '@nestjs/core';
 import { PerformanceInterceptor } from './common/interceptors/performance.interceptor';
 
 // 多端分离模块导入
-import { ManagerModule } from '../modules/manager/manager.module';
-import { BuyerModule } from '../modules/buyer/buyer.module';
-import { SellerModule } from '../modules/seller/seller.module';
-import { MessageModule } from '../modules/message/message.module';
-import { ImModule } from '../modules/im/im.module';
-import { XxlJobModule } from '../modules/xxljob/xxljob.module';
-import { SearchModule } from '../modules/search/search.module';
+import { ManagerModule } from '../modules/client/manager/manager.module';
+import { BuyerModule } from '../modules/client/buyer/buyer.module';
+import { SellerModule } from '../modules/client/seller/seller.module';
+import { MessageModule } from '../modules/service/message/message.module';
+import { ImModule } from '../modules/service/im/im.module';
+import { XxlJobModule } from '../modules/service/xxljob/xxljob.module';
 
 // 核心业务模块导入
 import { ProductsModule } from '../modules/products/products.module';
@@ -45,13 +44,13 @@ import { PointsModule } from '../modules/points/points.module';
 
 // 第三阶段架构优化模块
 import { SystemModule } from '../modules/system/system.module';
-import { CacheModule } from '../modules/cache/cache.module';
+import { CacheModule } from '../module./infrastructure/cache/cache.module';
 import { DatabaseModule } from '../modules/database/database.module';
 import { MicroservicesModule } from '../modules/microservices/microservices.module';
 import { ServiceMeshModule } from '../modules/service-mesh/service-mesh.module';
 
 // 高级功能模块
-import { RecommendationModule } from '../modules/recommendation/recommendation.module';
+import { RecommendationModule } from '../modules/service/recommendation/recommendation.module';
 
 @Module({
   imports: [
@@ -160,3 +159,4 @@ import { RecommendationModule } from '../modules/recommendation/recommendation.m
   ],
 })
 export class AppModule {}
+

@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Between, MoreThan } from 'typeorm';
-import { CachePerformanceEntity } from '../entities/cache-performance.entity';
-import { CacheConfigEntity } from '../entities/cache-config.entity';
-import { CacheInvalidationEntity } from '../entities/cache-invalidation.entity';
+import { CachePerformanceEntity } from '../entitie./infrastructure/cache-performance.entity';
+import { CacheConfigEntity } from '../entitie./infrastructure/cache-config.entity';
+import { CacheInvalidationEntity } from '../entitie./infrastructure/cache-invalidation.entity';
 
 @Injectable()
 export class CacheOptimizationService {
@@ -26,7 +26,7 @@ export class CacheOptimizationService {
     });
   }
 
-  // 获取所有缓存类型的状态
+  // 获取所有缓存类型的状�?
   async getAllCacheStatus() {
     const cacheTypes = ['REDIS', 'MEMCACHED', 'LOCAL', 'DATABASE'];
     const results = [];
@@ -50,7 +50,7 @@ export class CacheOptimizationService {
     return results;
   }
 
-  // 确定缓存状态
+  // 确定缓存状�?
   private determineCacheStatus(metric: CachePerformanceEntity): string {
     if (metric.hitRate >= 95) return 'EXCELLENT';
     if (metric.hitRate >= 85) return 'GOOD';
@@ -70,7 +70,7 @@ export class CacheOptimizationService {
   async getOptimizationTargets() {
     const targets = await this.configRepository.find({
       where: [
-        { hitRate: MoreThan(90) }, // 命中率过低
+        { hitRate: MoreThan(90) }, // 命中率过�?
         { accessFrequency: MoreThan(1000) }, // 访问频率过高
         { isWarmedUp: false }, // 未预热的缓存
       ],
@@ -145,7 +145,7 @@ export class CacheOptimizationService {
     const configs = await this.getCacheConfigs();
     const invalidations = await this.analyzeInvalidationPatterns();
 
-    // 分析命中率低的缓存
+    // 分析命中率低的缓�?
     const lowHitRateConfigs = configs.filter(c => c.hitRate < 70);
     if (lowHitRateConfigs.length > 0) {
       suggestions.push({
@@ -155,12 +155,12 @@ export class CacheOptimizationService {
         suggestions: lowHitRateConfigs.map(config => ({
           key: config.cacheKey,
           hitRate: config.hitRate,
-          suggestion: '考虑调整TTL或缓存策略，提高命中率'
+          suggestion: '考虑调整TTL或缓存策略，提高命中�?
         }))
       });
     }
 
-    // 分析高频访问的缓存
+    // 分析高频访问的缓�?
     const highFrequencyConfigs = configs.filter(c => c.accessFrequency > 1000);
     if (highFrequencyConfigs.length > 0) {
       suggestions.push({
@@ -185,7 +185,7 @@ export class CacheOptimizationService {
         suggestions: highImpactInvalidations.map(invalidation => ({
           type: invalidation.type,
           source: invalidation.source,
-          suggestion: '优化失效策略，考虑异步失效或批量处理'
+          suggestion: '优化失效策略，考虑异步失效或批量处�?
         }))
       });
     }
@@ -223,7 +223,7 @@ export class CacheOptimizationService {
           dataSize: Math.floor(Math.random() * 1000) + 100
         });
         
-        // 更新配置状态
+        // 更新配置状�?
         await this.configRepository.update(
           { cacheKey },
           { isWarmedUp: true, updatedAt: new Date() }
@@ -245,7 +245,7 @@ export class CacheOptimizationService {
     const results = [];
 
     if (cacheType) {
-      // 清理指定类型的缓存
+      // 清理指定类型的缓�?
       const configs = await this.configRepository.find({ 
         where: { cacheType } 
       });
@@ -297,7 +297,7 @@ export class CacheOptimizationService {
     const active = await query.andWhere('config.isActive = :isActive', { isActive: true }).getCount();
     const warmedUp = await query.andWhere('config.isWarmedUp = :isWarmedUp', { isWarmedUp: true }).getCount();
 
-    // 重新查询以避免重复条件
+    // 重新查询以避免重复条�?
     const avgHitRate = await this.configRepository
       .createQueryBuilder('config')
       .select('AVG(config.hitRate)', 'avgHitRate')
@@ -344,7 +344,7 @@ export class CacheOptimizationService {
         iteration: i + 1,
         operation,
         responseTime: endTime - startTime,
-        success: Math.random() > 0.01 // 99% 成功率
+        success: Math.random() > 0.01 // 99% 成功�?
       });
     }
 

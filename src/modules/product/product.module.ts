@@ -14,7 +14,7 @@ import { ProductSkuEntity } from './entities/product-sku.entity';
 import { ProductAttributeEntity } from './entities/product-attribute.entity';
 import { ProductReviewEntity } from './entities/product-review.entity';
 import { ProductInventoryEntity } from './entities/product-inventory.entity';
-import { AuthModule } from '../auth/auth.module';
+import { AuthModule } from '../infrastructure/auth/auth.module';
 
 @Module({
   imports: [

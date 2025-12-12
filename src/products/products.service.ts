@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { RabbitMQService } from '../rabbitmq/rabbitmq.service';
+import { RabbitMQService } from '../infrastructure/rabbitmq/rabbitmq.service';
 import { Product } from './entities/product.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -35,10 +35,10 @@ export class ProductsService {
     });
     await this.productRepository.save(product);
 
-    // 发送商品创建消息
+    // 发送商品创建消�?
     await this.rabbitMQService.emit('product.created', product);
 
-    // 发送商品更新消息
+    // 发送商品更新消�?
     await this.rabbitMQService.emit('product.updated', product);
 
     return product;
@@ -103,7 +103,7 @@ export class ProductsService {
   async findOne(id: string): Promise<Product> {
     const product = await this.productRepository.findOne({ where: { id } });
     if (!product) {
-      throw new NotFoundException('商品不存在');
+      throw new NotFoundException('商品不存�?);
     }
     return product;
   }
@@ -115,10 +115,10 @@ export class ProductsService {
     const product = await this.productRepository.findOne({ where: { id } });
     
     if (!product) {
-      throw new NotFoundException('商品不存在');
+      throw new NotFoundException('商品不存�?);
     }
     
-    // 创建更新对象，处理布尔值到数字的转换
+    // 创建更新对象，处理布尔值到数字的转�?
     const updateData: any = { ...updateProductDto };
     
     if (updateProductDto.isShow !== undefined) {
@@ -141,7 +141,7 @@ export class ProductsService {
     await this.productRepository.update(id, updateData);
     const updatedProduct = await this.productRepository.findOne({ where: { id } });
 
-    // 发送商品更新消息
+    // 发送商品更新消�?
     await this.rabbitMQService.emit('product.updated', updatedProduct);
 
     return updatedProduct;
@@ -154,12 +154,12 @@ export class ProductsService {
     const product = await this.productRepository.findOne({ where: { id } });
     
     if (!product) {
-      throw new NotFoundException('商品不存在');
+      throw new NotFoundException('商品不存�?);
     }
     
     await this.productRepository.delete(id);
 
-    // 发送商品删除消息
+    // 发送商品删除消�?
     await this.rabbitMQService.emit('product.deleted', { id });
 
     return { message: '删除成功' };
@@ -173,7 +173,7 @@ export class ProductsService {
       throw new BadRequestException('请选择要删除的商品');
     }
     
-    // 过滤掉不存在的商品
+    // 过滤掉不存在的商�?
     const existingProducts = await this.productRepository.find({
       where: ids.map(id => ({ id }))
     });
@@ -185,7 +185,7 @@ export class ProductsService {
     
     const affected = validIds.length;
     
-    // 发送商品批量删除消息
+    // 发送商品批量删除消�?
     await this.rabbitMQService.emit('product.batch.deleted', { ids });
 
     return {
@@ -195,19 +195,19 @@ export class ProductsService {
   }
 
   /**
-   * 更新商品状态（上架/下架）
+   * 更新商品状态（上架/下架�?
    */
   async updateStatus(id: string, isShow: boolean): Promise<Product> {
     const product = await this.productRepository.findOne({ where: { id } });
     
     if (!product) {
-      throw new NotFoundException('商品不存在');
+      throw new NotFoundException('商品不存�?);
     }
     
     product.isShow = isShow ? 1 : 0;
     await this.productRepository.save(product);
 
-    // 发送商品状态更新消息
+    // 发送商品状态更新消�?
     await this.rabbitMQService.emit('product.status.updated', {
       id: product.id,
       isShow: product.isShow,
@@ -224,7 +224,7 @@ export class ProductsService {
     const queryBuilder = this.productRepository.createQueryBuilder('product');
     const { keyword, categoryId, brandId, minPrice, maxPrice, isShow, isNew, isHot, recommend, page = 1, limit = 10, sortBy = 'sortOrder', sortOrder = 'ASC' } = params;
 
-    // 关键词搜索
+    // 关键词搜�?
     if (keyword) {
       queryBuilder.where('product.name LIKE :keyword OR product.description LIKE :keyword', { keyword: `%${keyword}%` });
     }
@@ -248,7 +248,7 @@ export class ProductsService {
       queryBuilder.andWhere('product.price <= :maxPrice', { maxPrice });
     }
 
-    // 上架状态过滤
+    // 上架状态过�?
     if (isShow !== undefined) {
       queryBuilder.andWhere('product.isShow = :isShow', { isShow });
     }
@@ -296,8 +296,8 @@ export class ProductsService {
   }
 
   /**
-   * 根据关键词获取商品（用于搜索联想）
-   * @param keyword 搜索关键词
+   * 根据关键词获取商品（用于搜索联想�?
+   * @param keyword 搜索关键�?
    * @param limit 获取数量
    * @returns 商品列表
    */
@@ -319,10 +319,10 @@ export class ProductsService {
   async getRecommendedProducts(params?: any): Promise<{ data: Product[], total: number }> {
     const queryBuilder = this.productRepository.createQueryBuilder('product');
     
-    // 只获取推荐商品
+    // 只获取推荐商�?
     queryBuilder.where('product.recommend = 1');
     
-    // 只获取上架商品
+    // 只获取上架商�?
     queryBuilder.andWhere('product.isShow = 1');
     
     // 可选的分类过滤
@@ -356,3 +356,4 @@ export class ProductsService {
     };
   }
 }
+

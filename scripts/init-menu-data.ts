@@ -1,10 +1,10 @@
 /**
- * 菜单数据初始化脚本
- * 将Java版的菜单结构迁移到API版，确保两者完全一致
+ * 菜单数据初始化脚�?
+ * 将Java版的菜单结构迁移到API版，确保两者完全一�?
  */
 
 import { DataSource } from 'typeorm';
-import { Menu } from '../modules/common/auth/entities/menu.entity';
+import { Menu } from '../modules/client/common/auth/entities/menu.entity';
 
 /**
  * 管理端菜单数据（基于Java版li_menu表结构）
@@ -236,7 +236,7 @@ const adminMenus = [
   },
   {
     id: '1348810864748945423',
-    title: '优惠券管理',
+    title: '优惠券管�?,
     name: 'coupon-management',
     path: '/marketing/coupon',
     level: 2,
@@ -555,12 +555,12 @@ const sellerMenus = [
 ];
 
 /**
- * 初始化菜单数据
+ * 初始化菜单数�?
  */
 async function initMenuData(dataSource: DataSource) {
   const menuRepository = dataSource.getRepository(Menu);
   
-  // 合并所有菜单数据
+  // 合并所有菜单数�?
   const allMenus = [...adminMenus, ...sellerMenus];
   
   let createdCount = 0;
@@ -576,7 +576,7 @@ async function initMenuData(dataSource: DataSource) {
       });
       
       if (existingMenu) {
-        console.log(`菜单已存在: ${menuData.title}`);
+        console.log(`菜单已存�? ${menuData.title}`);
         skippedCount++;
         continue;
       }
@@ -593,15 +593,15 @@ async function initMenuData(dataSource: DataSource) {
     }
   }
   
-  console.log(`菜单数据初始化完成! 创建: ${createdCount} 个, 跳过: ${skippedCount} 个`);
+  console.log(`菜单数据初始化完�? 创建: ${createdCount} �? 跳过: ${skippedCount} 个`);
 }
 
 /**
- * 主函数
+ * 主函�?
  */
 async function main() {
   try {
-    // 创建数据源连接
+    // 创建数据源连�?
     const dataSource = new DataSource({
       type: 'mysql',
       host: 'localhost',
@@ -615,16 +615,16 @@ async function main() {
     });
     
     await dataSource.initialize();
-    console.log('数据库连接成功');
+    console.log('数据库连接成�?);
     
-    // 初始化菜单数据
+    // 初始化菜单数�?
     await initMenuData(dataSource);
     
     await dataSource.destroy();
     console.log('数据库连接已关闭');
     
   } catch (error) {
-    console.error('初始化失败:', error);
+    console.error('初始化失�?', error);
     process.exit(1);
   }
 }

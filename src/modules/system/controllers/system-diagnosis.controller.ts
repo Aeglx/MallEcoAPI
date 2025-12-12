@@ -12,9 +12,9 @@ import {
   HttpCode,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
-import { JwtAuthGuard } from '../../../auth/guards/jwt-auth.guard';
-import { RolesGuard } from '../../../auth/guards/roles.guard';
-import { Roles } from '../../../auth/decorators/roles.decorator';
+import { JwtAuthGuard } from '../../../infrastructure/auth/guards/jwt-auth.guard';
+import { RolesGuard } from '../../../infrastructure/auth/guards/roles.guard';
+import { Roles } from '../../../infrastructure/auth/decorators/roles.decorator';
 import { SystemDiagnosisService } from '../services/system-diagnosis.service';
 import { CreateSystemDiagnosisDto } from '../dto/create-system-diagnosis.dto';
 import { SystemDiagnosisSearchDto } from '../dto/system-diagnosis-search.dto';
@@ -190,7 +190,7 @@ export class SystemDiagnosisController {
   }
 
   @Get('dashboard/metrics')
-  @ApiOperation({ summary: '获取诊断仪表盘指标' })
+  @ApiOperation({ summary: '获取诊断仪表盘指�? })
   @ApiResponse({ status: 200, description: '获取成功' })
   async getDashboardMetrics() {
     const statistics = await this.diagnosisService.getStatistics();
@@ -226,15 +226,15 @@ export class SystemDiagnosisController {
     
     // 健康评分算法
     let score = 100;
-    score -= (criticalCount * 25); // 严重问题扣25分
-    score -= (highCount * 15);     // 高优先级问题扣15分
-    score -= (mediumCount * 8);    // 中优先级问题扣8分
+    score -= (criticalCount * 25); // 严重问题�?5�?
+    score -= (highCount * 15);     // 高优先级问题�?5�?
+    score -= (mediumCount * 8);    // 中优先级问题�?�?
     
     return Math.max(0, Math.min(100, score));
   }
 
   private async getRecentTrend(): Promise<any[]> {
-    // 获取最近7天的诊断趋势
+    // 获取最�?天的诊断趋势
     const trend = [];
     const today = new Date();
     
@@ -246,7 +246,7 @@ export class SystemDiagnosisController {
       const nextDate = new Date(date);
       nextDate.setDate(nextDate.getDate() + 1);
       
-      // 这里简化处理，实际应该查询数据库
+      // 这里简化处理，实际应该查询数据�?
       trend.push({
         date: date.toISOString().split('T')[0],
         issues: Math.floor(Math.random() * 10),

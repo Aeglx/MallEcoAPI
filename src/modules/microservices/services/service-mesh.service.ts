@@ -34,7 +34,7 @@ export class ServiceMeshService {
     };
   }
 
-  // 获取网格中的所有服务
+  // 获取网格中的所有服�?
   private async getAllMeshServices(environment?: string) {
     const query = this.serviceRepository.createQueryBuilder('service')
       .where('service.status = :status', { status: 'RUNNING' });
@@ -64,7 +64,7 @@ export class ServiceMeshService {
         protocol: 'HTTP',
         name: 'http',
         healthCheck: {
-          path: service.healthCheckPath || '/health',
+          path: service.healthCheckPath || ./infrastructure/health',
           interval: '30s',
           timeout: '5s'
         }
@@ -223,7 +223,7 @@ export class ServiceMeshService {
     ];
   }
 
-  // 获取可观测性配置
+  // 获取可观测性配�?
   private async getObservabilityConfig() {
     return {
       tracing: {
@@ -253,7 +253,7 @@ export class ServiceMeshService {
     };
   }
 
-  // 获取服务间流量统计
+  // 获取服务间流量统�?
   async getTrafficStatistics(serviceName?: string, hours: number = 24) {
     const endDate = new Date();
     const startDate = new Date();
@@ -284,7 +284,7 @@ export class ServiceMeshService {
 
       const baseRequests = Math.floor(Math.random() * 1000) + 500;
       const requests = baseRequests + Math.floor(Math.random() * 200) - 100;
-      const errors = Math.floor(requests * (Math.random() * 0.05)); // 0-5% 错误率
+      const errors = Math.floor(requests * (Math.random() * 0.05)); // 0-5% 错误�?
       const latency = Math.floor(Math.random() * 100) + 50; // 50-150ms
       const bytes = requests * 1024; // 假设每个请求1KB
 
@@ -300,7 +300,7 @@ export class ServiceMeshService {
     return data;
   }
 
-  // 获取服务网格健康状态
+  // 获取服务网格健康状�?
   async getMeshHealthStatus() {
     const services = await this.getAllMeshServices();
     const controlPlane = await this.getControlPlaneStatus();
@@ -310,7 +310,7 @@ export class ServiceMeshService {
       overall: this.calculateMeshHealth(services, controlPlane, dataPlane),
       services: services.map(service => ({
         serviceName: service.serviceName,
-        status: 'HEALTHY', // 简化处理
+        status: 'HEALTHY', // 简化处�?
         endpoints: service.endpoints.map(ep => ({
           port: ep.port,
           protocol: ep.protocol,
@@ -326,7 +326,7 @@ export class ServiceMeshService {
     return healthStatus;
   }
 
-  // 获取控制平面状态
+  // 获取控制平面状�?
   private async getControlPlaneStatus(): any {
     return {
       pilot: {
@@ -351,7 +351,7 @@ export class ServiceMeshService {
     };
   }
 
-  // 获取数据平面状态
+  // 获取数据平面状�?
   private async getDataPlaneStatus(): any {
     return {
       totalProxies: 25,
@@ -367,20 +367,20 @@ export class ServiceMeshService {
     };
   }
 
-  // 计算网格健康状态
+  // 计算网格健康状�?
   private calculateMeshHealth(services: any[], controlPlane: any, dataPlane: any): string {
     let score = 100;
 
-    // 服务状态影响
+    // 服务状态影�?
     const unhealthyServices = services.filter(s => s.status !== 'HEALTHY').length;
     score -= unhealthyServices * 10;
 
-    // 控制平面状态影响
+    // 控制平面状态影�?
     const unhealthyControlComponents = Object.values(controlPlane)
       .filter((cp: any) => cp.status !== 'HEALTHY').length;
     score -= unhealthyControlComponents * 15;
 
-    // 数据平面状态影响
+    // 数据平面状态影�?
     if (dataPlane.healthyProxies < dataPlane.totalProxies * 0.9) {
       score -= 20;
     }
@@ -425,7 +425,7 @@ export class ServiceMeshService {
     };
   }
 
-  // 获取服务依赖图
+  // 获取服务依赖�?
   async getServiceDependencyGraph() {
     const dependencies = await this.dependencyRepository.find({
       where: { status: 'ACTIVE' }

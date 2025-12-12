@@ -15,7 +15,7 @@ import { DistributionService } from '../services/distribution.service';
 import { DistributionOrderSearchParams } from '../dto/distribution-order-search.dto';
 import { DistributionOrder } from '../entities/distribution-order.entity';
 import { DistributionOrderStatusEnum } from '../enums/distribution-order-status.enum';
-import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
+import { JwtAuthGuard } from '../../infrastructure/auth/guards/jwt-auth.guard';
 
 @ApiTags('分销订单管理')
 @Controller('distribution-order')
@@ -26,7 +26,7 @@ export class DistributionOrderController {
     private readonly distributionService: DistributionService
   ) {}
 
-  @ApiOperation({ summary: '获取分销员分页订单列表' })
+  @ApiOperation({ summary: '获取分销员分页订单列�? })
   @ApiResponse({ status: 200, description: '获取成功' })
   @Get('page')
   async getDistributionOrderPage(
@@ -38,7 +38,7 @@ export class DistributionOrderController {
     page: number; 
     pageSize: number; 
   }> {
-    // 如果是分销员角色，只能查看自己的订单
+    // 如果是分销员角色，只能查看自己的订�?
     if (req.user.role === 'DISTRIBUTION') {
       const distribution = await this.distributionService.getDistributionByMemberId(req.user.id);
       searchParams.distributionId = distribution.id;
@@ -90,7 +90,7 @@ export class DistributionOrderController {
     return { data: distributionOrder };
   }
 
-  @ApiOperation({ summary: '更新分销订单状态' })
+  @ApiOperation({ summary: '更新分销订单状�? })
   @ApiParam({ name: 'id', description: '分销订单ID' })
   @ApiResponse({ status: 200, description: '更新成功', type: DistributionOrder })
   @Put('status/:id')
@@ -107,12 +107,12 @@ export class DistributionOrderController {
     
     return {
       data: distributionOrder,
-      message: '订单状态更新成功'
+      message: '订单状态更新成�?
     };
   }
 
-  @ApiOperation({ summary: '处理分销订单退款' })
-  @ApiParam({ name: 'orderItemSn', description: '子订单编号' })
+  @ApiOperation({ summary: '处理分销订单退�? })
+  @ApiParam({ name: 'orderItemSn', description: '子订单编�? })
   @ApiResponse({ status: 200, description: '处理成功' })
   @Put('refund/:orderItemSn')
   async handleDistributionOrderRefund(
@@ -126,7 +126,7 @@ export class DistributionOrderController {
       refundData.refundAmount
     );
     
-    return { message: '退款处理成功' };
+    return { message: '退款处理成�? };
   }
 
   @ApiOperation({ summary: '获取分销订单统计信息' })

@@ -32,7 +32,7 @@ export class ConsulService implements OnModuleInit, OnModuleDestroy {
         address: serviceAddress,
         port: servicePort,
         check: {
-          http: `http://${serviceAddress}:${servicePort}/health`,
+          http: `http://${serviceAddress}:${servicePort./infrastructure/health`,
           interval: '10s',
           timeout: '5s',
         },
@@ -65,3 +65,4 @@ export class ConsulService implements OnModuleInit, OnModuleDestroy {
     }
   }
 }
+

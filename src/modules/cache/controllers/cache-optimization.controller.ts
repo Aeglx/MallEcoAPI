@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Put, Delete, Query, Body, Param } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiQuery, ApiParam, ApiBody } from '@nestjs/swagger';
-import { CacheOptimizationService } from '../services/cache-optimization.service';
-import { CacheAnalysisService } from '../services/cache-analysis.service';
+import { CacheOptimizationService } from '../service./infrastructure/cache-optimization.service';
+import { CacheAnalysisService } from '../service./infrastructure/cache-analysis.service';
 
 @ApiTags('缓存优化')
 @Controller('cache-optimization')
@@ -13,7 +13,7 @@ export class CacheOptimizationController {
 
   @Get('performance/metrics')
   @ApiOperation({ summary: '获取缓存性能指标' })
-  @ApiQuery({ name: 'startDate', description: '开始日期', required: true })
+  @ApiQuery({ name: 'startDate', description: '开始日�?, required: true })
   @ApiQuery({ name: 'endDate', description: '结束日期', required: true })
   @ApiResponse({ status: 200, description: '获取成功' })
   async getPerformanceMetrics(
@@ -27,7 +27,7 @@ export class CacheOptimizationController {
   }
 
   @Get('status')
-  @ApiOperation({ summary: '获取所有缓存类型状态' })
+  @ApiOperation({ summary: '获取所有缓存类型状�? })
   @ApiResponse({ status: 200, description: '获取成功' })
   async getAllCacheStatus() {
     return await this.optimizationService.getAllCacheStatus();
@@ -49,7 +49,7 @@ export class CacheOptimizationController {
 
   @Get('invalidation/history')
   @ApiOperation({ summary: '获取缓存失效历史' })
-  @ApiQuery({ name: 'startDate', description: '开始日期', required: false })
+  @ApiQuery({ name: 'startDate', description: '开始日�?, required: false })
   @ApiQuery({ name: 'endDate', description: '结束日期', required: false })
   @ApiQuery({ name: 'cacheType', description: '缓存类型', required: false })
   @ApiResponse({ status: 200, description: '获取成功' })
@@ -81,7 +81,7 @@ export class CacheOptimizationController {
 
   @Post('warmup')
   @ApiOperation({ summary: '执行缓存预热' })
-  @ApiBody({ description: '缓存键列表' })
+  @ApiBody({ description: '缓存键列�? })
   @ApiResponse({ status: 200, description: '预热执行成功' })
   async warmupCache(@Body('cacheKeys') cacheKeys: string[]) {
     return await this.optimizationService.warmupCache(cacheKeys);
@@ -90,7 +90,7 @@ export class CacheOptimizationController {
   @Delete('clear')
   @ApiOperation({ summary: '批量清理缓存' })
   @ApiQuery({ name: 'cacheType', description: '缓存类型', required: false })
-  @ApiQuery({ name: 'keyPattern', description: '键模式', required: false })
+  @ApiQuery({ name: 'keyPattern', description: '键模�?, required: false })
   @ApiResponse({ status: 200, description: '清理成功' })
   async clearCache(
     @Query('cacheType') cacheType?: string,
@@ -101,7 +101,7 @@ export class CacheOptimizationController {
 
   @Put('configs/:cacheKey')
   @ApiOperation({ summary: '更新缓存配置' })
-  @ApiParam({ name: 'cacheKey', description: '缓存键' })
+  @ApiParam({ name: 'cacheKey', description: '缓存�? })
   @ApiBody({ description: '配置更新' })
   @ApiResponse({ status: 200, description: '更新成功' })
   async updateCacheConfig(
@@ -113,7 +113,7 @@ export class CacheOptimizationController {
 
   @Post('configs')
   @ApiOperation({ summary: '添加缓存配置' })
-  @ApiBody({ description: '新配置' })
+  @ApiBody({ description: '新配�? })
   @ApiResponse({ status: 201, description: '添加成功' })
   async addCacheConfig(@Body() config: any) {
     return await this.optimizationService.addCacheConfig(config);
@@ -161,7 +161,7 @@ export class CacheAnalysisController {
   constructor(private readonly analysisService: CacheAnalysisService) {}
 
   @Get('hit-rate-trends')
-  @ApiOperation({ summary: '分析缓存命中率趋势' })
+  @ApiOperation({ summary: '分析缓存命中率趋�? })
   @ApiQuery({ name: 'days', description: '分析天数', required: false })
   @ApiResponse({ status: 200, description: '获取成功' })
   async analyzeHitRateTrends(@Query('days') days?: number) {
@@ -200,7 +200,7 @@ export class CacheAnalysisController {
 
   @Get('analysis-report')
   @ApiOperation({ summary: '生成缓存分析报告' })
-  @ApiQuery({ name: 'startDate', description: '开始日期', required: false })
+  @ApiQuery({ name: 'startDate', description: '开始日�?, required: false })
   @ApiQuery({ name: 'endDate', description: '结束日期', required: false })
   @ApiResponse({ status: 200, description: '获取成功' })
   async generateAnalysisReport(

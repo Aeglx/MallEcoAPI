@@ -2,8 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { DbConnectionService } from '../../common/database/db-connection.service';
 import { ElasticsearchService } from '@nestjs/elasticsearch';
 import { ElasticsearchProductService } from '../../products/elasticsearch.service';
-import { SearchCacheService } from './search-cache.service';
-import { SearchStatisticsDto, SearchTrendResponseDto, HotWordStatisticsResponseDto } from './dto/search-statistics.dto';
+import { SearchCacheService } from './infrastructure/search-cache.service';
+import { SearchStatisticsDto, SearchTrendResponseDto, HotWordStatisticsResponseDto } from './dt./infrastructure/search-statistics.dto';
 
 @Injectable()
 export class SearchService {
@@ -15,10 +15,10 @@ export class SearchService {
   ) {}
 
   /**
-   * 获取热门搜索关键词
+   * 获取热门搜索关键�?
    */
   async getHotWords(limit: number = 10): Promise<string[]> {
-    // 尝试从缓存获取
+    // 尝试从缓存获�?
     const cachedData = await this.searchCacheService.getHotWordsCache(limit);
     if (cachedData) {
       return cachedData;
@@ -45,7 +45,7 @@ export class SearchService {
    * 保存搜索历史
    */
   async saveSearchHistory(userId: string, keyword: string): Promise<void> {
-    // 检查是否已存在相同的搜索历史
+    // 检查是否已存在相同的搜索历�?
     const checkSql = `
       SELECT id 
       FROM mall_search_history 
@@ -55,7 +55,7 @@ export class SearchService {
     const existing = await this.dbConnectionService.queryOne(checkSql, [userId, keyword]);
     
     if (existing) {
-      // 如果存在，更新搜索时间
+      // 如果存在，更新搜索时�?
       const updateSql = `
         UPDATE mall_search_history 
         SET create_time = NOW(), update_time = NOW() 
@@ -63,7 +63,7 @@ export class SearchService {
       `;
       await this.dbConnectionService.query(updateSql, [existing.id]);
     } else {
-      // 如果不存在，插入新记录
+      // 如果不存在，插入新记�?
       const insertSql = `
         INSERT INTO mall_search_history (user_id, keyword, create_time, update_time, delete_flag) 
         VALUES (?, ?, NOW(), NOW(), 0)
@@ -71,7 +71,7 @@ export class SearchService {
       await this.dbConnectionService.query(insertSql, [userId, keyword]);
     }
     
-    // 保持每个用户的搜索历史不超过20条
+    // 保持每个用户的搜索历史不超过20�?
     const cleanupSql = `
       DELETE FROM mall_search_history 
       WHERE user_id = ? 
@@ -123,7 +123,7 @@ export class SearchService {
       return [];
     }
 
-    // 尝试从缓存获取
+    // 尝试从缓存获�?
     const cachedData = await this.searchCacheService.getSuggestionsCache(keyword, limit);
     if (cachedData) {
       return cachedData;
@@ -161,7 +161,7 @@ export class SearchService {
       console.warn('Elasticsearch suggestions failed, falling back to database query:', error);
     }
 
-    // 从商品表中获取相关关键词（回退方案）
+    // 从商品表中获取相关关键词（回退方案�?
     const productSql = `
       SELECT DISTINCT name 
       FROM mall_product 
@@ -200,7 +200,7 @@ export class SearchService {
     // 构建搜索参数
     const filters = { categoryId, brandId, minPrice, maxPrice, isNew, isHot, recommend, sortBy, sortOrder };
     
-    // 尝试从缓存获取
+    // 尝试从缓存获�?
     const cachedData = await this.searchCacheService.getSearchResultsCache(keyword, page, pageSize, filters);
     if (cachedData) {
       return cachedData;
@@ -237,7 +237,7 @@ export class SearchService {
       totalPages: Math.ceil(searchResult.total / pageSize)
     };
 
-    // 设置缓存（只缓存热门搜索词的结果）
+    // 设置缓存（只缓存热门搜索词的结果�?
     if (keyword && keyword.length > 2) {
       await this.searchCacheService.setSearchResultsCache(keyword, page, pageSize, filters, result);
     }
@@ -259,7 +259,7 @@ export class SearchService {
     const existing = await this.dbConnectionService.queryOne(checkSql, [keyword]);
     
     if (existing) {
-      // 如果存在，增加搜索次数
+      // 如果存在，增加搜索次�?
       const updateSql = `
         UPDATE mall_hot_words 
         SET search_count = search_count + 1, update_time = NOW() 
@@ -267,7 +267,7 @@ export class SearchService {
       `;
       await this.dbConnectionService.query(updateSql, [existing.id]);
     } else {
-      // 如果不存在，插入新记录
+      // 如果不存在，插入新记�?
       const insertSql = `
         INSERT INTO mall_hot_words (keyword, search_count, sort, create_time, update_time, delete_flag) 
         VALUES (?, 1, 0, NOW(), NOW(), 0)
@@ -282,7 +282,7 @@ export class SearchService {
   async getSearchTrend(searchStatisticsDto: SearchStatisticsDto): Promise<SearchTrendResponseDto[]> {
     const { startDate, endDate, type = 'daily' } = searchStatisticsDto;
     
-    // 尝试从缓存获取
+    // 尝试从缓存获�?
     const cacheKey = { type, startDate, endDate };
     const cachedData = await this.searchCacheService.getStatisticsCache('trend', cacheKey);
     if (cachedData) {
@@ -329,7 +329,7 @@ export class SearchService {
   }
 
   /**
-   * 获取热门搜索词统计
+   * 获取热门搜索词统�?
    */
   async getHotWordStatistics(limit: number = 10): Promise<HotWordStatisticsResponseDto[]> {
     const sql = `
@@ -359,10 +359,10 @@ export class SearchService {
   }
 
   /**
-   * 获取搜索转化率统计
+   * 获取搜索转化率统�?
    */
   async getSearchConversionStatistics(): Promise<any> {
-    // 总搜索次数
+    // 总搜索次�?
     const totalSearchesSql = `
       SELECT COUNT(*) as totalSearches 
       FROM mall_search_log 
@@ -370,7 +370,7 @@ export class SearchService {
       AND create_time >= DATE_SUB(NOW(), INTERVAL 30 DAY)
     `;
     
-    // 产生订单的搜索次数
+    // 产生订单的搜索次�?
     const conversionSearchesSql = `
       SELECT COUNT(DISTINCT sl.id) as conversionSearches
       FROM mall_search_log sl
@@ -398,7 +398,7 @@ export class SearchService {
   }
 
   /**
-   * 记录搜索日志（用于统计和分析）
+   * 记录搜索日志（用于统计和分析�?
    */
   async recordSearchLog(userId: string, keyword: string, searchDepth: number = 1): Promise<void> {
     const sql = `
@@ -409,3 +409,4 @@ export class SearchService {
     await this.dbConnectionService.query(sql, [userId, keyword, searchDepth]);
   }
 }
+

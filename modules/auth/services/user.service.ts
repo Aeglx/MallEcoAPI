@@ -100,7 +100,7 @@ export class UserService {
       .leftJoinAndSelect('user.userRoles', 'userRole')
       .leftJoinAndSelect('userRole.role', 'role')
       .addSelect(['user.id', 'user.username', 'user.email', 'user.phone', 'user.nickname', 'user.status', 'user.createdAt'])
-      .addSelect('GROUP_CONCAT(role.name)", 'roles');
+      .addSelect('GROUP_CONCAT(role.name)', 'roles');
 
     if (username) {
       queryBuilder.andWhere('user.username LIKE :username', { username: `%${username}%` });

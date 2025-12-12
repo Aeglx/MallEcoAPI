@@ -48,7 +48,7 @@ export class SocialService {
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
   ) {
-    // 初始化社交平台配置
+    // 初始化社交平台配�?
     this.configs = {
       [SocialPlatform.WECHAT]: {
         clientId: this.configService.get('WECHAT_APP_ID') || '',
@@ -117,28 +117,28 @@ export class SocialService {
     switch (platform) {
       case SocialPlatform.WECHAT:
       case SocialPlatform.WECHAT_MP:
-        return `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${config.clientId}&redirect_uri=${encodeURIComponent(config.redirectUri)}&response_type=code&scope=${config.scope}&state=${state || ''}#wechat_redirect`;
+        return `https://open.weixin.qq.com/connect/oaut../infrastructure/authorize?appid=${config.clientId}&redirect_uri=${encodeURIComponent(config.redirectUri)}&response_type=code&scope=${config.scope}&state=${state || ''}#wechat_redirect`;
       
       case SocialPlatform.WECHAT_OPEN:
         return `https://open.weixin.qq.com/connect/qrconnect?appid=${config.clientId}&redirect_uri=${encodeURIComponent(config.redirectUri)}&response_type=code&scope=${config.scope}&state=${state || ''}#wechat_redirect`;
       
       case SocialPlatform.QQ:
-        return `https://graph.qq.com/oauth2.0/authorize?client_id=${config.clientId}&redirect_uri=${encodeURIComponent(config.redirectUri)}&response_type=code&scope=${config.scope}&state=${state || ''}`;
+        return `https://graph.qq.com/oauth2../infrastructure/authorize?client_id=${config.clientId}&redirect_uri=${encodeURIComponent(config.redirectUri)}&response_type=code&scope=${config.scope}&state=${state || ''}`;
       
       case SocialPlatform.WEIBO:
-        return `https://api.weibo.com/oauth2/authorize?client_id=${config.clientId}&redirect_uri=${encodeURIComponent(config.redirectUri)}&response_type=code&scope=${config.scope}&state=${state || ''}`;
+        return `https://api.weibo.com/oaut../infrastructure/authorize?client_id=${config.clientId}&redirect_uri=${encodeURIComponent(config.redirectUri)}&response_type=code&scope=${config.scope}&state=${state || ''}`;
       
       case SocialPlatform.ALIPAY:
         return `https://openauth.alipay.com/oauth2/publicAppAuthorize.htm?app_id=${config.clientId}&scope=${config.scope}&redirect_uri=${encodeURIComponent(config.redirectUri)}&state=${state || ''}`;
       
       case SocialPlatform.APPLE:
-        return `https://appleid.apple.com/auth/authorize?client_id=${config.clientId}&redirect_uri=${encodeURIComponent(config.redirectUri)}&response_type=code&scope=${config.scope}&state=${state || ''}&response_mode=form_post`;
+        return `https://appleid.apple.c../infrastructure/auth/authorize?client_id=${config.clientId}&redirect_uri=${encodeURIComponent(config.redirectUri)}&response_type=code&scope=${config.scope}&state=${state || ''}&response_mode=form_post`;
       
       case SocialPlatform.GITHUB:
-        return `https://github.com/login/oauth/authorize?client_id=${config.clientId}&redirect_uri=${encodeURIComponent(config.redirectUri)}&scope=${config.scope}&state=${state || ''}`;
+        return `https://github.com/login/oau../infrastructure/authorize?client_id=${config.clientId}&redirect_uri=${encodeURIComponent(config.redirectUri)}&scope=${config.scope}&state=${state || ''}`;
       
       case SocialPlatform.GOOGLE:
-        return `https://accounts.google.com/o/oauth2/v2/auth?client_id=${config.clientId}&redirect_uri=${encodeURIComponent(config.redirectUri)}&response_type=code&scope=${config.scope}&state=${state || ''}`;
+        return `https://accounts.google.com/o/oauth2/../infrastructure/auth?client_id=${config.clientId}&redirect_uri=${encodeURIComponent(config.redirectUri)}&response_type=code&scope=${config.scope}&state=${state || ''}`;
       
       default:
         throw new HttpException(`Unsupported social platform: ${platform}`, HttpStatus.BAD_REQUEST);
@@ -198,7 +198,7 @@ export class SocialService {
           break;
         
         case SocialPlatform.ALIPAY:
-          response = await axios.get('https://openapi.alipay.com/gateway.do', {
+          response = await axios.get('https://openapi.alipay.co./infrastructure/gateway.do', {
             params: {
               app_id: config.clientId,
               method: 'alipay.system.oauth.token',
@@ -213,7 +213,7 @@ export class SocialService {
           return response.data.alipay_system_oauth_token_response;
         
         case SocialPlatform.APPLE:
-          response = await axios.post('https://appleid.apple.com/auth/token', {
+          response = await axios.post('https://appleid.apple.c../infrastructure/auth/token', {
             client_id: config.clientId,
             client_secret: config.clientSecret,
             code,
@@ -285,7 +285,7 @@ export class SocialService {
           const openIdData = JSON.parse(openIdResponse.data.match(/callback\((.*)\)/)[1]);
           const qqOpenId = openIdData.openid;
           
-          // 再获取用户信息
+          // 再获取用户信�?
           response = await axios.get('https://graph.qq.com/user/get_user_info', {
             params: {
               oauth_consumer_key: this.configs[platform].clientId,
@@ -315,7 +315,7 @@ export class SocialService {
           };
         
         case SocialPlatform.ALIPAY:
-          response = await axios.get('https://openapi.alipay.com/gateway.do', {
+          response = await axios.get('https://openapi.alipay.co./infrastructure/gateway.do', {
             params: {
               app_id: this.configs[platform].clientId,
               method: 'alipay.user.info.share',
@@ -372,7 +372,7 @@ export class SocialService {
     // 获取用户信息
     const userInfo = await this.getUserInfo(platform, tokenResult.access_token, tokenResult.openid);
     
-    // 查找或创建用户
+    // 查找或创建用�?
     let user: User;
     let socialAuth: SocialAuthEntity | null;
     
@@ -392,21 +392,21 @@ export class SocialService {
       });
     }
     
-    // 如果找到了社交账号，返回关联的用户
+    // 如果找到了社交账号，返回关联的用�?
     if (socialAuth && socialAuth.user) {
       user = socialAuth.user;
     } else {
-      // 否则创建新用户
+      // 否则创建新用�?
       user = await this.usersService.create({
         username: `social_${platform}_${userInfo.openid?.slice(0, 10)}`,
         nickname: userInfo.nickname || `User_${platform}_${userInfo.openid?.slice(0, 6)}`,
         avatar: userInfo.avatar || '',
         email: userInfo.email || '',
-        password: '', // 社交登录用户不需要密码
+        password: '', // 社交登录用户不需要密�?
       });
     }
     
-    // 更新或创建社交账号信息
+    // 更新或创建社交账号信�?
     if (socialAuth) {
       socialAuth.access_token = tokenResult.access_token;
       socialAuth.refresh_token = tokenResult.refresh_token;
@@ -439,7 +439,7 @@ export class SocialService {
 
   // 绑定社交账号
   async bindSocialAccount(userId: number, platform: SocialPlatform, accessToken: string, openId: string, unionId?: string): Promise<SocialAuthEntity> {
-    // 检查是否已经绑定
+    // 检查是否已经绑�?
     const existing = await this.socialAuthRepository.findOne({
       where: { user_id: userId, platform },
     });
@@ -448,7 +448,7 @@ export class SocialService {
       throw new HttpException('This social account is already bound', HttpStatus.BAD_REQUEST);
     }
     
-    // 检查openid是否已经被其他用户绑定
+    // 检查openid是否已经被其他用户绑�?
     const existingByOpenId = await this.socialAuthRepository.findOne({
       where: { open_id: openId, platform },
     });
@@ -482,10 +482,12 @@ export class SocialService {
     }
   }
 
-  // 获取用户绑定的所有社交账号
+  // 获取用户绑定的所有社交账�?
   async getUserSocialAccounts(userId: number): Promise<SocialAuthEntity[]> {
     return this.socialAuthRepository.find({
       where: { user_id: userId },
     });
   }
 }
+
+

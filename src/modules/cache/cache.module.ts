@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { CacheOptimizationController } from './controllers/cache-optimization.controller';
-import { CacheOptimizationService } from './services/cache-optimization.service';
-import { CacheAnalysisService } from './services/cache-analysis.service';
-import { CachePerformanceEntity } from './entities/cache-performance.entity';
-import { CacheConfigEntity } from './entities/cache-config.entity';
-import { CacheInvalidationEntity } from './entities/cache-invalidation.entity';
+import { CacheOptimizationController } from './controller./infrastructure/cache-optimization.controller';
+import { CacheOptimizationService } from './service./infrastructure/cache-optimization.service';
+import { CacheAnalysisService } from './service./infrastructure/cache-analysis.service';
+import { CachePerformanceEntity } from './entitie./infrastructure/cache-performance.entity';
+import { CacheConfigEntity } from './entitie./infrastructure/cache-config.entity';
+import { CacheInvalidationEntity } from './entitie./infrastructure/cache-invalidation.entity';
 
 @Module({
   imports: [TypeOrmModule.forFeature([

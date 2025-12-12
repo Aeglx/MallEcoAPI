@@ -1,9 +1,9 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from '../src/app.module';
-import { MenuService } from '../modules/common/auth/services/menu.service';
+import { MenuService } from '../modules/client/common/auth/services/menu.service';
 
 /**
- * 显示完整菜单树结构
+ * 显示完整菜单树结�?
  */
 async function bootstrap() {
   const app = await NestFactory.createApplicationContext(AppModule);
@@ -12,7 +12,7 @@ async function bootstrap() {
   console.log('=== 完整的菜单树结构 ===\n');
 
   try {
-    // 获取所有菜单
+    // 获取所有菜�?
     const allMenus = await menuService.getMenus();
     
     // 构建树形结构
@@ -22,21 +22,21 @@ async function bootstrap() {
     printMenuTree(menuTree);
     
     console.log('\n=== 菜单统计 ===');
-    console.log(`总菜单数量: ${allMenus.items.length}`);
+    console.log(`总菜单数�? ${allMenus.items.length}`);
     
-    // 按层级统计
+    // 按层级统�?
     const levelStats = allMenus.items.reduce((acc, menu) => {
       const level = menu.level || 0;
       acc[level] = (acc[level] || 0) + 1;
       return acc;
     }, {});
     
-    console.log('按层级统计:');
+    console.log('按层级统�?');
     Object.keys(levelStats).sort().forEach(level => {
       console.log(`  层级 ${level}: ${levelStats[level]} 个菜单`);
     });
     
-    // 按模块统计
+    // 按模块统�?
     const moduleStats = {};
     allMenus.items.forEach(menu => {
       if (menu.level === 0) {
@@ -58,7 +58,7 @@ async function bootstrap() {
 }
 
 /**
- * 构建菜单树
+ * 构建菜单�?
  */
 function buildMenuTree(menus: any[]) {
   const menuMap = new Map();
@@ -79,7 +79,7 @@ function buildMenuTree(menus: any[]) {
     }
   });
   
-  // 按排序值排序
+  // 按排序值排�?
   rootMenus.sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0));
   rootMenus.forEach(menu => {
     menu.children.sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0));
@@ -89,7 +89,7 @@ function buildMenuTree(menus: any[]) {
 }
 
 /**
- * 打印菜单树
+ * 打印菜单�?
  */
 function printMenuTree(menuTree: any[], level = 0) {
   const indent = '  '.repeat(level);
