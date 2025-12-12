@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { DatabaseConnectionService } from '../common/database/db-connection.service';
+import { DbConnectionService } from '../../common/database/db-connection.service';
 
 export interface HealthStatus {
   status: 'healthy' | 'unhealthy' | 'degraded';
@@ -35,7 +35,7 @@ export class EnhancedHealthService {
 
   constructor(
     private configService: ConfigService,
-    private databaseConnectionService: DatabaseConnectionService,
+    private databaseConnectionService: DbConnectionService,
   ) {
     this.startTime = new Date();
   }
@@ -86,7 +86,8 @@ export class EnhancedHealthService {
       const startTime = Date.now();
       
       // 执行简单查询测试连接
-      const connection = this.databaseConnectionService.getConnection();
+      // 注意：由于connection是一个Promise，需要先await它
+      const connection = await this.databaseConnectionService.getConnection();
       await connection.query('SELECT 1');
       
       const responseTime = Date.now() - startTime;

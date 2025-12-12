@@ -1,20 +1,17 @@
-import { Injectable, OnModuleInit, Inject, forwardRef } from '@nestjs/common';
+import { Injectable, OnModuleInit } from '@nestjs/common';
 import { ConfigService as NestConfigService } from '@nestjs/config';
-import { ConfigService as ManagerConfigService } from '../../modules/manager/config/config.service';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
 export class GlobalConfigService implements OnModuleInit {
   constructor(
     private readonly nestConfigService: NestConfigService,
-    @Inject(forwardRef(() => ManagerConfigService))
-    private readonly managerConfigService: ManagerConfigService,
     private readonly eventEmitter: EventEmitter2,
   ) {}
 
   async onModuleInit() {
     // 初始化默认配置
-    await this.managerConfigService.initDefaultConfig();
+    // 移除对 ManagerConfigService 的依赖
   }
 
   /**
@@ -28,14 +25,15 @@ export class GlobalConfigService implements OnModuleInit {
    * 获取系统配置
    */
   async getConfig<T = string>(key: string, defaultValue?: T): Promise<T> {
-    const value = await this.managerConfigService.getConfigValue(key);
-    if (value === null) {
+    // 暂时只从环境变量获取配置
+    const value = this.nestConfigService.get<T>(key);
+    if (value === undefined) {
       if (defaultValue !== undefined) {
         return defaultValue;
       }
       throw new Error(`Config ${key} not found`);
     }
-    return value as unknown as T;
+    return value;
   }
 
   /**
@@ -47,7 +45,24 @@ export class GlobalConfigService implements OnModuleInit {
     defaultValue?: T,
   ): Promise<T> {
     try {
-      return await this.managerConfigService.getConfigValueByType<T>(key, type);
+      const value = this.nestConfigService.get<string>(key);
+      if (value === undefined) {
+        if (defaultValue !== undefined) {
+          return defaultValue;
+        }
+        throw new Error(`Config ${key} not found`);
+      }
+
+      switch (type) {
+        case 'number':
+          return Number(value) as unknown as T;
+        case 'boolean':
+          return (value.toLowerCase() === 'true' || value === '1') as unknown as T;
+        case 'json':
+          return JSON.parse(value) as unknown as T;
+        default:
+          return value as unknown as T;
+      }
     } catch (error) {
       if (defaultValue !== undefined) {
         return defaultValue;
@@ -60,14 +75,21 @@ export class GlobalConfigService implements OnModuleInit {
    * 批量获取系统配置
    */
   async getBatchConfigs(keys: string[]): Promise<Map<string, string>> {
-    return await this.managerConfigService.getBatchConfigValues(keys);
+    const result = new Map<string, string>();
+    keys.forEach(key => {
+      const value = this.nestConfigService.get<string>(key);
+      if (value !== undefined) {
+        result.set(key, value);
+      }
+    });
+    return result;
   }
 
   /**
    * 刷新配置缓存
    */
   async refreshCache(): Promise<void> {
-    await this.managerConfigService.refreshCache();
+    // 移除对 ManagerConfigService 的依赖
     // 触发配置刷新事件
     this.eventEmitter.emit('config.refresh');
   }

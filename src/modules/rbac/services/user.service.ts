@@ -129,8 +129,8 @@ export class UserService {
 
     const permissions = new Set<Permission>();
     
-    user.userRoles.forEach(userRole => {
-      userRole.role.rolePermissions.forEach(rolePermission => {
+    user.roles.forEach(role => {
+      role.rolePermissions.forEach(rolePermission => {
         permissions.add(rolePermission.permission);
       });
     });

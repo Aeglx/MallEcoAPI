@@ -264,7 +264,10 @@ export class ElasticsearchProductService implements OnModuleInit, OnModuleDestro
     } as any);
 
     if (response.suggest && response.suggest.product_suggestions) {
-      const suggestions = response.suggest.product_suggestions[0].options.map((option: any) => option.text);
+      const options = response.suggest.product_suggestions[0].options;
+      // 确保options是数组
+      const optionsArray = Array.isArray(options) ? options : [options];
+      const suggestions = optionsArray.map((option: any) => option.text);
       return suggestions;
     }
 

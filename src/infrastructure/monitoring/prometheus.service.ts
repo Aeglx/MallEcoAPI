@@ -18,6 +18,12 @@ export class PrometheusService implements OnModuleInit {
   private userCounter: Counter;
   private cacheHitCounter: Counter;
   private cacheMissCounter: Counter;
+  
+  // 数据库指标
+  private databaseQueryCounter: Counter;
+  private databaseQueryDurationHistogram: Histogram;
+  private databaseErrorCounter: Counter;
+  private databasePoolConnectionsGauge: Gauge;
 
   constructor() {
     this.registry = new Registry();
@@ -101,6 +107,36 @@ export class PrometheusService implements OnModuleInit {
       name: 'cache_misses_total',
       help: 'Total number of cache misses',
       labelNames: ['cache_name'],
+      registers: [this.registry],
+    });
+
+    // 数据库指标
+    this.databaseQueryCounter = new Counter({
+      name: 'database_queries_total',
+      help: 'Total number of database queries',
+      labelNames: ['query_type'],
+      registers: [this.registry],
+    });
+
+    this.databaseQueryDurationHistogram = new Histogram({
+      name: 'database_query_duration_seconds',
+      help: 'Database query duration in seconds',
+      labelNames: ['query_type'],
+      buckets: [0.01, 0.05, 0.1, 0.5, 1, 2, 5, 10],
+      registers: [this.registry],
+    });
+
+    this.databaseErrorCounter = new Counter({
+      name: 'database_errors_total',
+      help: 'Total number of database errors',
+      labelNames: ['error_type'],
+      registers: [this.registry],
+    });
+
+    this.databasePoolConnectionsGauge = new Gauge({
+      name: 'database_pool_connections',
+      help: 'Database connection pool statistics',
+      labelNames: ['pool_type'],
       registers: [this.registry],
     });
   }
@@ -204,5 +240,32 @@ export class PrometheusService implements OnModuleInit {
       cpu: 0, // 需要实际实现
       uptime: process.uptime(),
     };
+  }
+
+  // 数据库相关指标记录
+  recordDatabaseQuery(queryType: string, duration: number) {
+    this.databaseQueryCounter.inc({ query_type: queryType });
+    this.databaseQueryDurationHistogram.observe({ query_type: queryType }, duration / 1000); // 转换为秒
+  }
+
+  recordSlowQuery() {
+    // 使用专门的慢查询计数器
+    this.databaseQueryCounter.inc({ query_type: 'SLOW_QUERY' });
+  }
+
+  recordDatabaseError(errorType: string) {
+    this.databaseErrorCounter.inc({ error_type: errorType });
+  }
+
+  recordConnectionPoolStats(poolStats: { 
+    totalConnections: number; 
+    activeConnections: number; 
+    idleConnections: number; 
+    waitingClients: number; 
+  }) {
+    this.databasePoolConnectionsGauge.set({ pool_type: 'total' }, poolStats.totalConnections);
+    this.databasePoolConnectionsGauge.set({ pool_type: 'active' }, poolStats.activeConnections);
+    this.databasePoolConnectionsGauge.set({ pool_type: 'idle' }, poolStats.idleConnections);
+    this.databasePoolConnectionsGauge.set({ pool_type: 'waiting' }, poolStats.waitingClients);
   }
 }

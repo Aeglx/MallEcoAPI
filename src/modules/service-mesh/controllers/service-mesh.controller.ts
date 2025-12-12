@@ -8,7 +8,7 @@ import {
   MeshTelemetryEntity,
   MeshSecurityEntity,
   MeshTrafficEntity
-} from '../entities';
+} from '../entities/index';
 
 @ApiTags('服务网格管理')
 @Controller('service-mesh')

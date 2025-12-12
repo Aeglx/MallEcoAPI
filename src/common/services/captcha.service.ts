@@ -1,4 +1,5 @@
-import { Injectable, Inject, CACHE_MANAGER } from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
 import { CaptchaUtil } from '../utils/captcha.util';
 
@@ -19,7 +20,7 @@ export class CaptchaService {
     expiresIn: number;
     imageName?: string;
   }> {
-    const uuid = this.captchaUtil.generateUUID();
+    const uuid = this.generateUUID();
     let captchaData;
 
     switch (type) {
@@ -111,16 +112,27 @@ export class CaptchaService {
       return { exists: false };
     }
 
-    const ttl = await this.cacheManager.store.ttl?.(`captcha:${uuid}`);
+    const storedCode = await this.cacheManager.get<string>(`captcha:${uuid}`);
     
-    if (ttl === undefined || ttl <= 0) {
+    if (!storedCode) {
       return { exists: false };
     }
 
     return {
       exists: true,
-      expiresIn: ttl,
+      expiresIn: 300, // 默认5分钟过期
     };
+  }
+
+  /**
+   * 生成UUID
+   */
+  private generateUUID(): string {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+      const r = Math.random() * 16 | 0;
+      const v = c == 'x' ? r : (r & 0x3 | 0x8);
+      return v.toString(16);
+    });
   }
 
   /**

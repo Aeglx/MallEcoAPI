@@ -22,7 +22,7 @@ interface OptimizationRule {
 @Injectable()
 export class PerformanceOptimizerService implements OnModuleInit {
   private readonly logger = new Logger(PerformanceOptimizerService.name);
-  private readonly metrics: PerformanceMetric[] = [];
+  private metrics: PerformanceMetric[] = [];
   private readonly maxMetrics = 1000; // 最大存储指标数量
   private readonly optimizationRules: OptimizationRule[] = [];
   private optimizationInterval: NodeJS.Timeout;

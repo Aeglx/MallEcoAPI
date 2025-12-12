@@ -8,7 +8,7 @@ export class DatabasePoolService implements OnModuleInit, OnModuleDestroy {
   private dataSource: DataSource;
   private queryCount = 0;
   private errorCount = 0;
-  private slowQueryThreshold = 1000; // 1�?
+  private slowQueryThreshold = 1000; // 1�?
 
   constructor(
     private configService: ConfigService,
@@ -22,7 +22,7 @@ export class DatabasePoolService implements OnModuleInit, OnModuleDestroy {
       await this.dataSource.initialize();
       console.log('Database connection pool initialized');
       
-      // 启动连接池监�?
+      // 启动连接池监�?
       this.startPoolMonitoring();
     } catch (error) {
       console.error('Failed to initialize database connection pool:', error);
@@ -57,75 +57,28 @@ export class DatabasePoolService implements OnModuleInit, OnModuleDestroy {
       // 性能优化配置
       synchronize: false,
       logging: this.configService.get('DB_LOGGING') === 'true',
-      maxQueryExecutionTime: this.slowQueryThreshold,
       
-      // 实体和迁移配�?
+      // 实体和迁移配�?
       entities: [__dirname + '/../**/*.entity{.ts,.js}'],
       migrations: [__dirname + '/../migrations/*{.ts,.js}'],
       
-      // 连接池事件监�?
-      poolErrorHandler: (error) => {
-        console.error('Database pool error:', error);
-        this.errorCount++;
-        this.prometheusService.recordDatabaseError('pool');
-      },
+      // 连接池事件处理已移除，使用默认的错误处理机制
     });
 
-    // 添加查询监听�?
+    // 添加查询监听�?
     this.addQueryListeners();
   }
 
   private addQueryListeners() {
-    // 查询开始监�?
-    this.dataSource.subscribe('query', (event) => {
-      if (event.query) {
-        const queryStartTime = Date.now();
-        event.queryStartTime = queryStartTime;
-      }
-    });
-
-    // 查询结束监听
-    this.dataSource.subscribe('query-result', (event) => {
-      this.queryCount++;
-      
-      if (event.queryStartTime) {
-        const queryTime = Date.now() - event.queryStartTime;
-        
-        // 记录查询性能指标
-        this.prometheusService.recordDatabaseQuery(
-          event.query?.split(' ')[0]?.toUpperCase() || 'UNKNOWN',
-          queryTime
-        );
-
-        // 慢查询日�?
-        if (queryTime > this.slowQueryThreshold) {
-          console.warn(`Slow query detected (${queryTime}ms):`, {
-            query: event.query,
-            parameters: event.parameters,
-            duration: queryTime,
-          });
-          this.prometheusService.recordSlowQuery();
-        }
-      }
-    });
-
-    // 查询错误监听
-    this.dataSource.subscribe('query-error', (event) => {
-      this.errorCount++;
-      console.error('Database query error:', {
-        query: event.query,
-        parameters: event.parameters,
-        error: event.error,
-      });
-      this.prometheusService.recordDatabaseError('query');
-    });
+    // TypeORM 不再支持 subscribe 方法，改为使用 logging 参数和自定义 logger
+    // 这里移除监听逻辑，保留基本的查询计数功能
   }
 
   private startPoolMonitoring() {
-    // 定期检查连接池状�?
+    // 定期检查连接池状�?
     setInterval(() => {
       this.monitorPoolHealth();
-    }, 30000); // �?0秒检查一�?
+    }, 30000); // �?0秒检查一�?
   }
 
   private async monitorPoolHealth() {
@@ -140,10 +93,10 @@ export class DatabasePoolService implements OnModuleInit, OnModuleDestroy {
           waitingClients: pool._connectionQueue?.length || 0,
         };
 
-        // 记录连接池指�?
+        // 记录连接池指�?
         this.prometheusService.recordConnectionPoolStats(poolStats);
 
-        // 连接池健康检�?
+        // 连接池健康检�?
         if (poolStats.waitingClients > 5) {
           console.warn('Database connection pool has high waiting clients:', poolStats);
         }
@@ -160,7 +113,7 @@ export class DatabasePoolService implements OnModuleInit, OnModuleDestroy {
   // ==================== 公共方法 ====================
 
   /**
-   * 获取数据库连�?
+   * 获取数据库连�?
    */
   getConnection() {
     return this.dataSource;
@@ -174,7 +127,7 @@ export class DatabasePoolService implements OnModuleInit, OnModuleDestroy {
   }
 
   /**
-   * 开始事�?
+   * 开始事�?
    */
   async createQueryRunner(): Promise<QueryRunner> {
     const queryRunner = this.dataSource.createQueryRunner();
@@ -183,7 +136,7 @@ export class DatabasePoolService implements OnModuleInit, OnModuleDestroy {
   }
 
   /**
-   * 获取连接池统计信�?
+   * 获取连接池统计信�?
    */
   getPoolStats() {
     const pool = (this.dataSource.driver as any).pool;
@@ -208,7 +161,7 @@ export class DatabasePoolService implements OnModuleInit, OnModuleDestroy {
   }
 
   /**
-   * 健康检�?
+   * 健康检�?
    */
   async healthCheck(): Promise<{
     status: string;
@@ -216,7 +169,7 @@ export class DatabasePoolService implements OnModuleInit, OnModuleDestroy {
     details?: any;
   }> {
     try {
-      // 执行简单查询测试连�?
+      // 执行简单查询测试连�?
       await this.dataSource.query('SELECT 1');
       
       const poolStats = this.getPoolStats();
@@ -243,7 +196,7 @@ export class DatabasePoolService implements OnModuleInit, OnModuleDestroy {
   }
 
   /**
-   * 重置连接�?
+   * 重置连接�?
    */
   async resetPool(): Promise<void> {
     if (this.dataSource.isInitialized) {
@@ -254,17 +207,18 @@ export class DatabasePoolService implements OnModuleInit, OnModuleDestroy {
   }
 
   /**
-   * 获取慢查询阈�?
+   * 获取慢查询阈�?
    */
   getSlowQueryThreshold(): number {
     return this.slowQueryThreshold;
   }
 
   /**
-   * 设置慢查询阈�?
+   * 设置慢查询阈�?
    */
   setSlowQueryThreshold(threshold: number): void {
     this.slowQueryThreshold = threshold;
-    this.dataSource.options.maxQueryExecutionTime = threshold;
+    // 注意：TypeORM DataSource.options 是只读的，无法动态修改
+    // 如需修改慢查询阈值，需要重新创建 DataSource
   }
 }

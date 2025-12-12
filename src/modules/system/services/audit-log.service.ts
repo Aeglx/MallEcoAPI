@@ -41,16 +41,16 @@ export class AuditLogService {
   async log(data: AuditLogData): Promise<void> {
     try {
       const logEntry = this.systemLogRepository.create({
-        userId: data.userId,
+        userId: data.userId ? parseInt(data.userId) : null,
         username: data.username,
-        action: data.action,
-        resource: data.resource,
-        resourceId: data.resourceId,
+        logType: data.action, // 使用logType代替不存在的action属性
+        module: data.resource, // 使用module代替不存在的resource属性
+        businessId: data.resourceId ? parseInt(data.resourceId) : null, // 使用businessId代替不存在的resourceId属性
         details: data.details ? JSON.stringify(data.details) : null,
-        ip: data.ip,
+        ipAddress: data.ip, // 使用ipAddress代替不存在的ip属性
         userAgent: data.userAgent,
         level: data.level || 'info',
-        timestamp: new Date(),
+        // createdAt由@CreateDateColumn自动生成，不需要手动设置
       });
 
       await this.systemLogRepository.save(logEntry);
@@ -272,21 +272,21 @@ export class AuditLogService {
 
     const logs = await this.systemLogRepository.find({
       where: {
-        userId,
-        timestamp: Between(startDate, new Date()),
+        userId: parseInt(userId),
+        createdAt: Between(startDate, new Date()),
       },
-      order: { timestamp: 'ASC' },
+      order: { createdAt: 'ASC' },
     });
 
     const actionsByType: { [key: string]: number } = {};
     const dailyActivity: { [key: string]: number } = {};
 
     logs.forEach(log => {
-      // 统计操作类型
-      actionsByType[log.action] = (actionsByType[log.action] || 0) + 1;
+      // 统计操作类型 - 使用logType代替不存在的action属性
+      actionsByType[log.logType] = (actionsByType[log.logType] || 0) + 1;
 
-      // 统计每日活动
-      const date = log.timestamp.toISOString().substring(0, 10);
+      // 统计每日活动 - 使用createdAt代替不存在的timestamp属性
+      const date = log.createdAt.toISOString().substring(0, 10);
       dailyActivity[date] = (dailyActivity[date] || 0) + 1;
     });
 
@@ -315,7 +315,7 @@ export class AuditLogService {
 
     const logs = await this.systemLogRepository.find({
       where: {
-        timestamp: Between(startDate, new Date()),
+        createdAt: Between(startDate, new Date()),
       },
     });
 
@@ -326,9 +326,10 @@ export class AuditLogService {
     const dailyActivity: { [key: string]: number } = {};
 
     logs.forEach(log => {
-      actionsByResource[log.resource] = (actionsByResource[log.resource] || 0) + 1;
+      // 使用module代替resource，因为SystemLogEntity中没有resource属性
+      actionsByResource[log.module] = (actionsByResource[log.module] || 0) + 1;
 
-      const date = log.timestamp.toISOString().substring(0, 10);
+      const date = log.createdAt.toISOString().substring(0, 10);
       dailyActivity[date] = (dailyActivity[date] || 0) + 1;
     });
 

@@ -86,10 +86,10 @@ export class DashboardService {
         },
       };
 
-      const result = await this.elasticsearchService.search(realTimeQuery);
+      const result = await this.elasticsearchService.search(realTimeQuery as any);
       
       return {
-        hourlyActivity: result.aggregations?.hourly_activity?.buckets || [],
+        hourlyActivity: (result.aggregations?.hourly_activity as any)?.buckets || [],
         lastUpdated: new Date().toISOString(),
       };
     } catch (error) {

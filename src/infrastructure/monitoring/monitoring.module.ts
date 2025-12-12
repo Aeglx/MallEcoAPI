@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
-import { MonitoringController } from './infrastructure/monitoring.controller';
+import { MonitoringController } from './monitoring.controller';
 import { PrometheusService } from './prometheus.service';
-import { MonitoringMiddleware } from './infrastructure/monitoring.middleware';
+import { MonitoringMiddleware } from './monitoring.middleware';
 
 @Module({
   controllers: [MonitoringController],

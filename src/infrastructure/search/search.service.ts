@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { DbConnectionService } from '../common/database/db-connection.service';
+import { DbConnectionService } from '../../common/database/db-connection.service';
 
 @Injectable()
 export class SearchService {

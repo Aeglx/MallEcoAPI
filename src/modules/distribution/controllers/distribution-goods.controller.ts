@@ -14,7 +14,7 @@ import { ApiTags, ApiOperation, ApiParam, ApiQuery, ApiResponse } from '@nestjs/
 import { DistributionGoodsService } from '../services/distribution-goods.service';
 import { DistributionGoodsSearchParams } from '../dto/distribution-goods-search.dto';
 import { DistributionGoods } from '../entities/distribution-goods.entity';
-import { JwtAuthGuard } from '../../infrastructure/auth/guards/jwt-auth.guard';
+import { JwtAuthGuard } from '../../../infrastructure/auth/guards/jwt-auth.guard';
 
 @ApiTags('分销商品管理')
 @Controller('distribution-goods')
@@ -46,7 +46,7 @@ export class DistributionGoodsController {
     @Body() goodsList: Partial<DistributionGoods>[],
     @Request() req
   ): Promise<{ data: DistributionGoods[]; message: string }> {
-    // 设置创建�?
+    // 设置创建者
     goodsList.forEach(goods => {
       goods.createBy = req.user.id;
     });
@@ -130,7 +130,7 @@ export class DistributionGoodsController {
 
   @ApiOperation({ summary: '检查SKU是否为分销商品' })
   @ApiParam({ name: 'skuId', description: 'SKU ID' })
-  @ApiResponse({ status: 200, description: '检查结�? })
+  @ApiResponse({ status: 200, description: '检查结果' })
   @Get('check/:skuId')
   async checkIsDistributionGoods(
     @Param('skuId') skuId: string
@@ -173,7 +173,6 @@ export class DistributionGoodsController {
   @Get('statistics/overview')
   async getDistributionGoodsStatistics(): Promise<{ data: any }> {
     const statistics = await this.distributionGoodsService.getDistributionGoodsStatistics();
-    
     return { data: statistics };
   }
 }

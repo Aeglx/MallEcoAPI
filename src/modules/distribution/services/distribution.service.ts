@@ -217,7 +217,7 @@ export class DistributionService {
   /**
    * 获取分销员统计信息
    */
-  async getDistributionStatistics(): Promise<any> {
+  async getDistributionStatistics(params?: { startDate?: string; endDate?: string }): Promise<any> {
     const totalCount = await this.distributionRepository.count({
       where: { deleteFlag: false }
     });
@@ -249,6 +249,174 @@ export class DistributionService {
       activeCount,
       disabledCount
     };
+  }
+
+  /**
+   * 通过邀请码注册
+   */
+  async registerByInviteCode(inviteCode: string, data: { memberId: string; realName: string; mobile: string }): Promise<any> {
+    // TODO: 实现通过邀请码注册的逻辑
+    return {};
+  }
+
+  /**
+   * 获取分销员邀请信息
+   */
+  async getDistributorInviteInfo(distributorId: string): Promise<any> {
+    // TODO: 实现获取分销员邀请信息的逻辑
+    return {};
+  }
+
+  /**
+   * 申请成为分销员
+   */
+  async applyDistributor(data: { memberId: string; realName: string; mobile: string; idCard?: string; wechat?: string; qq?: string; bankName?: string; bankAccount?: string; accountName?: string; applyReason?: string }): Promise<any> {
+    // TODO: 实现申请成为分销员的逻辑
+    return {};
+  }
+
+  /**
+   * 获取分销员列表
+   */
+  async getDistributorList(params: { page?: number; pageSize?: number; status?: string; level?: string }): Promise<any> {
+    // TODO: 实现获取分销员列表的逻辑
+    return { items: [], total: 0 };
+  }
+
+  /**
+   * 获取分销员详情
+   */
+  async getDistributorById(distributorId: string): Promise<any> {
+    // TODO: 实现获取分销员详情的逻辑
+    return {};
+  }
+
+  /**
+   * 根据会员ID获取分销员信息
+   */
+  async getDistributorByMemberId(memberId: string): Promise<any> {
+    // TODO: 实现根据会员ID获取分销员信息的逻辑
+    return {};
+  }
+
+  /**
+   * 更新分销员信息
+   */
+  async updateDistributor(distributorId: string, updateData: any): Promise<any> {
+    // TODO: 实现更新分销员信息的逻辑
+    return {};
+  }
+
+  /**
+   * 审核通过分销员
+   */
+  async approveDistributor(distributorId: string, data: { approveRemark?: string; operatorId: string }): Promise<any> {
+    // TODO: 实现审核通过分销员的逻辑
+    return {};
+  }
+
+  /**
+   * 拒绝分销员申请
+   */
+  async rejectDistributor(distributorId: string, data: { rejectReason: string; operatorId: string }): Promise<any> {
+    // TODO: 实现拒绝分销员申请的逻辑
+    return {};
+  }
+
+  /**
+   * 冻结分销员
+   */
+  async freezeDistributor(distributorId: string, data: { freezeReason: string; operatorId: string }): Promise<any> {
+    // TODO: 实现冻结分销员的逻辑
+    return {};
+  }
+
+  /**
+   * 解冻分销员
+   */
+  async unfreezeDistributor(distributorId: string, data: { unfreezeReason: string; operatorId: string }): Promise<any> {
+    // TODO: 实现解冻分销员的逻辑
+    return {};
+  }
+
+  /**
+   * 调整分销员等级
+   */
+  async updateDistributorLevel(distributorId: string, data: { levelId: string; reason?: string; operatorId: string }): Promise<any> {
+    // TODO: 实现调整分销员等级的逻辑
+    return {};
+  }
+
+  /**
+   * 获取佣金记录列表
+   */
+  async getCommissionRecords(params: { page?: number; pageSize?: number; distributorId?: string; type?: string; status?: string }): Promise<any> {
+    // TODO: 实现获取佣金记录列表的逻辑
+    return { items: [], total: 0 };
+  }
+
+  /**
+   * 获取分销员佣金统计
+   */
+  async getDistributorCommission(distributorId: string): Promise<any> {
+    // TODO: 实现获取分销员佣金统计的逻辑
+    return {};
+  }
+
+  /**
+   * 申请佣金提现
+   */
+  async applyCommissionWithdraw(data: { distributorId: string; withdrawAmount: number; bankName: string; bankAccount: string; accountName: string }): Promise<any> {
+    // TODO: 实现申请佣金提现的逻辑
+    return {};
+  }
+
+  /**
+   * 获取提现申请列表
+   */
+  async getWithdrawApplications(params: { page?: number; pageSize?: number; status?: string }): Promise<any> {
+    // TODO: 实现获取提现申请列表的逻辑
+    return { items: [], total: 0 };
+  }
+
+  /**
+   * 审核通过提现申请
+   */
+  async approveWithdrawApplication(applicationId: string, data: { approveRemark?: string; operatorId: string }): Promise<any> {
+    // TODO: 实现审核通过提现申请的逻辑
+    return {};
+  }
+
+  /**
+   * 拒绝提现申请
+   */
+  async rejectWithdrawApplication(applicationId: string, data: { rejectReason: string; operatorId: string }): Promise<any> {
+    // TODO: 实现拒绝提现申请的逻辑
+    return {};
+  }
+
+  /**
+   * 获取分销团队
+   */
+  async getDistributionTeam(distributorId: string, level?: string): Promise<any> {
+    // TODO: 实现获取分销团队的逻辑
+    return {};
+  }
+
+  /**
+   * 获取分销商品列表
+   */
+  async getDistributionGoods(params: { page?: number; pageSize?: number; storeId?: string }): Promise<any> {
+    // TODO: 实现获取分销商品列表的逻辑
+    return { items: [], total: 0 };
+  }
+
+  /**
+   * 设置分销商品佣金
+   */
+  async setGoodsCommission(goodsId: string, data: { commissionRate: number; fixedCommission?: number; isActive: boolean }): Promise<any> {
+    // TODO: 实现设置分销商品佣金的逻辑
+    return {};
   }
 
   /**

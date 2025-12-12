@@ -26,7 +26,7 @@ interface LogConfig {
 @Injectable({ scope: Scope.TRANSIENT })
 export class AdvancedLoggerService {
   private readonly config: LogConfig;
-  private readonly logBuffer: LogEntry[] = [];
+  private logBuffer: LogEntry[] = [];
   private readonly maxBufferSize = 100;
   private context?: string;
 

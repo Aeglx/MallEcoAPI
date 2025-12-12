@@ -54,7 +54,7 @@ describe('MallEcoAPI 安全渗透测试', () => {
       return request(app.getHttpServer())
         .post('/api/products')
         .send({
-          name: 'test'; DROP TABLE users--',
+          name: 'test; DROP TABLE users--',
           price: 100
         })
         .expect(400)
@@ -579,7 +579,7 @@ describe('MallEcoAPI 安全渗透测试', () => {
   });
 
   describe('配置安全测试', () => {
-    it.env文件泄露防护', () => {
+    it('env文件泄露防护', () => {
       return request(app.getHttpServer())
         .get('/.env')
         .expect(404);

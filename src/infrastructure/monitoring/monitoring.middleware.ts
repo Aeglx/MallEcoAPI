@@ -10,10 +10,10 @@ export class MonitoringMiddleware implements NestMiddleware {
     const startTime = Date.now();
     const originalSend = res.send;
 
-    // 记录请求开始时�?
+    // 记录请求开始时�?
     res.locals.startTime = startTime;
 
-    // 重写send方法以捕获响应时�?
+    // 重写send方法以捕获响应时�?
     res.send = function(body?: any) {
       const endTime = Date.now();
       const duration = endTime - startTime;
@@ -24,7 +24,7 @@ export class MonitoringMiddleware implements NestMiddleware {
       const statusCode = res.statusCode;
 
       // 排除监控端点自身
-      if (!route.includes(./infrastructure/monitoring')) {
+      if (!route.includes('./infrastructure/monitoring')) {
         this.prometheusService.recordHttpRequest(method, route, statusCode, duration);
       }
 

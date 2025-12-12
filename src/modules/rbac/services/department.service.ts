@@ -19,7 +19,7 @@ export class DepartmentService {
   }
 
   async findAll(searchDto: DepartmentSearchDto): Promise<Department[]> {
-    const { name, code, enabled, page = 1, limit = 10, sortBy = 'sort', sortOrder = 'ASC' } = searchDto;
+    const { name, code, status, page = 1, limit = 10, sortBy = 'sortWeight', sortOrder = 'ASC' } = searchDto;
     
     const queryBuilder = this.departmentRepository
       .createQueryBuilder('department')
@@ -33,8 +33,8 @@ export class DepartmentService {
       queryBuilder.andWhere('department.code LIKE :code', { code: `%${code}%` });
     }
 
-    if (enabled !== undefined) {
-      queryBuilder.andWhere('department.enabled = :enabled', { enabled });
+    if (status !== undefined) {
+      queryBuilder.andWhere('department.status = :status', { status });
     }
 
     return await queryBuilder
@@ -70,14 +70,14 @@ export class DepartmentService {
     return this.departmentRepository.find({
       where: { parent: { id: parentId } },
       relations: ['children'],
-      order: { sort: 'ASC' },
+      order: { sortWeight: 'ASC' },
     });
   }
 
   async buildTree(): Promise<Department[]> {
     const departments = await this.departmentRepository.find({
       relations: ['parent', 'children'],
-      order: { sort: 'ASC' },
+      order: { sortWeight: 'ASC' },
     });
 
     const rootDepartments = departments.filter(dept => !dept.parent);
@@ -89,5 +89,20 @@ export class DepartmentService {
 
     rootDepartments.forEach(root => buildSubTree(root));
     return rootDepartments;
+  }
+
+  async getDepartmentTree(): Promise<Department[]> {
+    return this.buildTree();
+  }
+
+  async moveDepartment(departmentId: number, parentId: number): Promise<Department> {
+    const department = await this.findOne(departmentId);
+    department.parentId = parentId;
+    return this.departmentRepository.save(department);
+  }
+
+  async getDepartmentUsers(departmentId: number): Promise<any[]> {
+    // 这里需要根据实际情况实现，可能需要关联用户表
+    return [];
   }
 }

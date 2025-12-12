@@ -94,8 +94,8 @@ export class PermissionService {
 
   async getPermissionTree(): Promise<any[]> {
     const permissions = await this.permissionRepository.find({
-      where: { enabled: true },
-      order: { sort: 'ASC', createdAt: 'DESC' },
+      where: { status: 1 },
+      order: { sortWeight: 'ASC', createdAt: 'DESC' },
     });
 
     const permissionMap = new Map<number, any>();
@@ -140,7 +140,7 @@ export class PermissionService {
   async getChildren(permissionId: number): Promise<Permission[]> {
     return await this.permissionRepository.find({
       where: { parentId: permissionId },
-      order: { sort: 'ASC' },
+      order: { sortWeight: 'ASC' },
     });
   }
 

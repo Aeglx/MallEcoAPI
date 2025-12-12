@@ -20,17 +20,13 @@ export class IsMobilePhoneConstraint implements ValidatorConstraintInterface {
 }
 
 export function IsMobilePhone(validationOptions?: ValidationOptions) {
-  return registerDecorator({
-    target: object.constructor.prototype,
-    propertyName: propertyKey,
-    options: validationOptions,
-    constraints: [new IsMobilePhoneConstraint()],
-    validator: {
-      validate: (value: any) => {
-        const phoneRegex = /^1[3-9]\d{9}$/;
-        return phoneRegex.test(value);
-      },
-      defaultMessage: '请输入有效的手机号码',
-    },
-  });
+  return (target: any, propertyName: string) => {
+    registerDecorator({
+      target,
+      propertyName,
+      options: validationOptions,
+      constraints: [],
+      validator: IsMobilePhoneConstraint,
+    });
+  };
 }

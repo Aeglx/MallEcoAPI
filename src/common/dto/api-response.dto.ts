@@ -32,7 +32,7 @@ export class ApiResponseDto<T = any> {
     this.path = path;
   }
 
-  static success<T>(data?: T, message = '操作成功', path?: string): ApiResponseDto<T> {
+  static success<T>(data?: T | T[], message = '操作成功', path?: string): ApiResponseDto<T | T[]> {
     return new ApiResponseDto(200, message, data, path);
   }
 

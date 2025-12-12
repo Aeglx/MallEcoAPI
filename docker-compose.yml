@@ -6,7 +6,7 @@ services:
     build: .
     container_name: mall-eco-api
     ports:
-      - "3000:3000"
+      - "3001:3001"
     environment:
       - NODE_ENV=production
       - DB_HOST=mysql

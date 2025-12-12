@@ -1,4 +1,4 @@
-import { MigrationInterface, QueryRunner, Table, Index } from 'typeorm';
+import { MigrationInterface, QueryRunner, Table, TableIndex } from 'typeorm';
 
 export class CreateDistributionTables1735612000000 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
@@ -175,7 +175,6 @@ export class CreateDistributionTables1735612000000 implements MigrationInterface
             name: 'specs',
             type: 'text',
             isNullable: true,
-            select: false,
             comment: '规格信息json',
           },
           {
@@ -513,47 +512,74 @@ export class CreateDistributionTables1735612000000 implements MigrationInterface
     // 创建索引
     await queryRunner.createIndex(
       'li_distribution',
-      new Index('IDX_MEMBER_ID', ['member_id']),
+      new TableIndex({
+        name: 'IDX_MEMBER_ID',
+        columnNames: ['member_id'],
+      }),
     );
 
     await queryRunner.createIndex(
       'li_distribution',
-      new Index('IDX_DISTRIBUTION_STATUS', ['distribution_status']),
+      new TableIndex({
+        name: 'IDX_DISTRIBUTION_STATUS',
+        columnNames: ['distribution_status'],
+      }),
     );
 
     await queryRunner.createIndex(
       'li_distribution_goods',
-      new Index('IDX_SKU_ID', ['sku_id']),
+      new TableIndex({
+        name: 'IDX_SKU_ID',
+        columnNames: ['sku_id'],
+      }),
     );
 
     await queryRunner.createIndex(
       'li_distribution_goods',
-      new Index('IDX_STORE_ID', ['store_id']),
+      new TableIndex({
+        name: 'IDX_STORE_ID',
+        columnNames: ['store_id'],
+      }),
     );
 
     await queryRunner.createIndex(
       'li_distribution_order',
-      new Index('IDX_DISTRIBUTION_ID_ORDER', ['distribution_id']),
+      new TableIndex({
+        name: 'IDX_DISTRIBUTION_ID_ORDER',
+        columnNames: ['distribution_id'],
+      }),
     );
 
     await queryRunner.createIndex(
       'li_distribution_order',
-      new Index('IDX_ORDER_SN', ['order_sn']),
+      new TableIndex({
+        name: 'IDX_ORDER_SN',
+        columnNames: ['order_sn'],
+      }),
     );
 
     await queryRunner.createIndex(
       'li_distribution_order',
-      new Index('IDX_MEMBER_ID_ORDER', ['member_id']),
+      new TableIndex({
+        name: 'IDX_MEMBER_ID_ORDER',
+        columnNames: ['member_id'],
+      }),
     );
 
     await queryRunner.createIndex(
       'li_distribution_cash',
-      new Index('IDX_DISTRIBUTION_ID_CASH', ['distribution_id']),
+      new TableIndex({
+        name: 'IDX_DISTRIBUTION_ID_CASH',
+        columnNames: ['distribution_id'],
+      }),
     );
 
     await queryRunner.createIndex(
       'li_distribution_cash',
-      new Index('IDX_CASH_SERIAL_NO', ['cash_serial_no']),
+      new TableIndex({
+        name: 'IDX_CASH_SERIAL_NO',
+        columnNames: ['cash_serial_no'],
+      }),
     );
   }
 

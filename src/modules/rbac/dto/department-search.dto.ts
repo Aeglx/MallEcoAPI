@@ -12,10 +12,10 @@ export class DepartmentSearchDto {
   @IsOptional()
   code?: string;
 
-  @ApiProperty({ description: '是否启用', required: false })
-  @IsBoolean()
+  @ApiProperty({ description: '部门状态', required: false })
+  @IsNumber()
   @IsOptional()
-  enabled?: boolean;
+  status?: number;
 
   @ApiProperty({ description: '页码', default: 1 })
   @IsNumber()

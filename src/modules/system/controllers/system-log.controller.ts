@@ -3,7 +3,7 @@ import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
 import { SystemLogService } from '../services/system-log.service';
 import { SystemLogEntity } from '../entities/system-log.entity';
 import { SystemLogSearchDto } from '../dto/system-log-search.dto';
-import { TransformInterceptor } from '../../../common/interceptors/transform.interceptor';
+import { TransformInterceptor } from '../../../../common/interceptors/transform.interceptor';
 
 @ApiTags('系统日志管理')
 @Controller('system/log')

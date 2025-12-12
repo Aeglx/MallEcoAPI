@@ -1,64 +1,13 @@
 import { DataSource } from 'typeorm';
-import { ShardingSphereDataSource } from 'shardingsphere-typeorm';
 
 export const createShardingDataSource = (): DataSource => {
-  return new ShardingSphereDataSource({
+  return new DataSource({
     type: 'mysql',
     host: process.env.DB_HOST || 'localhost',
     port: parseInt(process.env.DB_PORT || '3306'),
     username: process.env.DB_USERNAME || 'root',
     password: process.env.DB_PASSWORD || 'password',
     database: process.env.DB_DATABASE || 'malldb',
-    
-    // ShardingSphere配置
-    sharding: {
-      // 分片规则配置
-      tables: {
-        // 订单表分片配置
-        orders: {
-          actualDataNodes: 'malldb.orders_${0..3}',
-          tableStrategy: {
-            standard: {
-              shardingColumn: 'user_id',
-              preciseAlgorithmClassName: 'com.example.sharding.OrderTableShardingAlgorithm'
-            }
-          }
-        },
-        // 订单项表分片配置
-        order_items: {
-          actualDataNodes: 'malldb.order_items_${0..3}',
-          tableStrategy: {
-            standard: {
-              shardingColumn: 'order_id',
-              preciseAlgorithmClassName: 'com.example.sharding.OrderItemTableShardingAlgorithm'
-            }
-          }
-        },
-        // 支付记录表分片配置
-        payments: {
-          actualDataNodes: 'malldb.payments_${0..3}',
-          tableStrategy: {
-            standard: {
-              shardingColumn: 'user_id',
-              preciseAlgorithmClassName: 'com.example.sharding.PaymentTableShardingAlgorithm'
-            }
-          }
-        }
-      },
-      
-      // 默认分片策略
-      defaultTableStrategy: {
-        none: {}
-      }
-    },
-    
-    // 读写分离配置
-    masterSlave: {
-      name: 'ms',
-      masterDataSourceName: 'master',
-      slaveDataSourceNames: ['slave0', 'slave1'],
-      loadBalanceAlgorithmType: 'ROUND_ROBIN'
-    },
     
     // 其他配置
     synchronize: false,

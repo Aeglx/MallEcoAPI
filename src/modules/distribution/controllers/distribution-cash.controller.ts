@@ -13,7 +13,7 @@ import { ApiTags, ApiOperation, ApiParam, ApiQuery, ApiResponse } from '@nestjs/
 import { DistributionCashService } from '../services/distribution-cash.service';
 import { DistributionCash } from '../entities/distribution-cash.entity';
 import { DistributionCashStatusEnum } from '../entities/distribution-cash.entity';
-import { JwtAuthGuard } from '../../infrastructure/auth/guards/jwt-auth.guard';
+import { JwtAuthGuard } from '../../../infrastructure/auth/guards/jwt-auth.guard';
 
 @ApiTags('分销提现管理')
 @Controller('distribution-cash')
@@ -90,13 +90,13 @@ export class DistributionCashController {
     return { data: distributionCash };
   }
 
-  @ApiOperation({ summary: '获取当前用户的提现记�? })
+  @ApiOperation({ summary: '获取当前用户的提现记录' })
   @ApiResponse({ status: 200, description: '获取成功', isArray: true, type: DistributionCash })
   @Get('current/list')
   async getCurrentUserCashList(
     @Request() req
   ): Promise<{ data: DistributionCash[] }> {
-    // 这里需要先获取用户的分销员ID，然后获取提现记�?
+    // 这里需要先获取用户的分销员ID，然后获取提现记录
     // 暂时作为示例代码
     const distributionId = req.user.distributionId; // 假设用户信息中有分销员ID
     
@@ -111,8 +111,8 @@ export class DistributionCashController {
 
   @ApiOperation({ summary: '分页查询提现记录' })
   @ApiQuery({ name: 'distributionId', description: '分销员ID', required: false })
-  @ApiQuery({ name: 'cashStatus', description: '提现状�?, required: false })
-  @ApiQuery({ name: 'startTime', description: '开始时�?, required: false })
+  @ApiQuery({ name: 'cashStatus', description: '提现状态', required: false })
+  @ApiQuery({ name: 'startTime', description: '开始时间', required: false })
   @ApiQuery({ name: 'endTime', description: '结束时间', required: false })
   @ApiQuery({ name: 'page', description: '页码', required: false })
   @ApiQuery({ name: 'pageSize', description: '每页大小', required: false })

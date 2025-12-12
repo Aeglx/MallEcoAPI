@@ -43,8 +43,6 @@ export class ConnectionPoolService implements OnModuleInit, OnModuleDestroy {
         
         // 连接池配置
         connectionLimit: this.configService.get('database.connectionLimit') || 20,
-        acquireTimeout: this.configService.get('database.acquireTimeout') || 60000,
-        timeout: this.configService.get('database.idleTimeout') || 30000,
         
         // 性能优化配置
         enableKeepAlive: true,
@@ -61,7 +59,6 @@ export class ConnectionPoolService implements OnModuleInit, OnModuleDestroy {
         
         // 连接池配置
         maxRetriesPerRequest: this.configService.get('redis.maxRetriesPerRequest') || 3,
-        retryDelayOnFailover: 100,
         enableReadyCheck: true,
         
         // 性能优化配置

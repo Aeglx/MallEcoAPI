@@ -14,13 +14,13 @@ export class OrderTaskService {
   ) {}
 
   /**
-   * �?0分钟检查一次，取消超时未支付的订单
+   * �?0分钟检查一次，取消超时未支付的订单
    */
   @Cron('0 */10 * * * *')
   async cancelTimeoutUnpaidOrders() {
-    this.logger.debug('开始检查超时未支付的订�?);
+    this.logger.debug('开始检查超时未支付的订单');
     try {
-      // 查找30分钟前创建的未支付订�?
+      // 查找30分钟前创建的未支付订�?
       const timeoutDate = new Date();
       timeoutDate.setMinutes(timeoutDate.getMinutes() - 30);
 
@@ -33,7 +33,7 @@ export class OrderTaskService {
       });
 
       if (ordersToCancel.length > 0) {
-        // 批量更新订单状态为已取�?
+        // 批量更新订单状态为已取�?
         await this.orderRepository.update(
           { id: In(ordersToCancel.map(order => order.id)) },
           { orderStatus: OrderStatus.CANCELLED },
@@ -44,18 +44,18 @@ export class OrderTaskService {
         this.logger.debug('没有发现超时未支付的订单');
       }
     } catch (error) {
-      this.logger.error('取消超时未支付订单失�?, error.stack);
+      this.logger.error('取消超时未支付订单失败', error.stack);
     }
   }
 
   /**
-   * 每天凌晨2点自动确认收货（发货�?天）
+   * 每天凌晨2点自动确认收货（发货�?天）
    */
   @Cron(CronExpression.EVERY_DAY_AT_2AM)
   async autoConfirmReceivedOrders() {
-    this.logger.debug('开始自动确认收�?);
+    this.logger.debug('开始自动确认收货');
     try {
-      // 查找7天前发货的订�?
+      // 查找7天前发货的订�?
       const confirmDate = new Date();
       confirmDate.setDate(confirmDate.getDate() - 7);
 
@@ -67,7 +67,7 @@ export class OrderTaskService {
       });
 
       if (ordersToConfirm.length > 0) {
-        // 批量更新订单状态为已完�?
+        // 批量更新订单状态为已完�?
         await this.orderRepository.update(
           { id: In(ordersToConfirm.map(order => order.id)) },
           { orderStatus: OrderStatus.COMPLETED },
@@ -83,11 +83,11 @@ export class OrderTaskService {
   }
 
   /**
-   * 每天凌晨3点生成订单统计报�?
+   * 每天凌晨3点生成订单统计报�?
    */
   @Cron(CronExpression.EVERY_DAY_AT_3AM)
   async generateOrderStatisticsReport() {
-    this.logger.debug('开始生成订单统计报�?);
+    this.logger.debug('开始生成订单统计报表');
     try {
       // 这里可以实现订单统计报表的生成逻辑
       // 例如：统计前一天的订单总量、销售额、订单状态分布等

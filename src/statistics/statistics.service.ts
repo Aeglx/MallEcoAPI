@@ -4,7 +4,8 @@ import { Repository, MoreThanOrEqual, createQueryBuilder, Between } from 'typeor
 import { Product } from '../products/entities/product.entity';
 import { Order } from '../../modules/client/common/order/entities/order.entity';
 import { OrderItem } from '../../modules/client/common/order/entities/order-item.entity';
-import { User } from '../infrastructure/auth/entities/user.entity';
+import { User } from '../modules/users/entities/user.entity';
+import { UserStatus } from '../modules/users/entities/user.entity';
 import { Article } from '../../modules/client/common/content/entities/article.entity';
 import { ArticleCategory } from '../../modules/client/common/content/entities/article-category.entity';
 import { ArticleComment } from '../../modules/client/common/content/entities/article-comment.entity';
@@ -122,7 +123,7 @@ export class StatisticsService {
   private async getUserStatistics() {
     const [totalUsers, activeUsers] = await Promise.all([
       this.userRepository.count(),
-      this.userRepository.count({ where: { isActive: 1 } })
+      this.userRepository.count({ where: { status: UserStatus.ACTIVE } })
     ]);
 
     return {
@@ -283,7 +284,7 @@ export class StatisticsService {
         articleCount: Number(item.articleCount) || 0,
         totalViews: Number(item.totalViews) || 0,
       });
-    }
+    });
 
     return Array.from(dailyStats.entries()).map(([date, stats]) => ({
       date,
@@ -345,19 +346,19 @@ export class StatisticsService {
       orderUsersCount,
     ] = await Promise.all([
       this.userRepository.count({
-        where: { createdAt: MoreThanOrEqual(startDate) }
+        where: { createTime: MoreThanOrEqual(startDate) }
       }),
       this.userRepository.count({
-        where: { 
-          isActive: 1,
-          updatedAt: MoreThanOrEqual(startDate)
-        }
+        where: {
+        status: UserStatus.ACTIVE,
+        updateTime: MoreThanOrEqual(startDate)
+      }
       }),
       this.commentRepository.count({
         where: { 
-          status: 'approved',
-          createdAt: MoreThanOrEqual(startDate)
-        }
+        status: 'approved',
+        createdAt: MoreThanOrEqual(startDate)
+      }
       }),
       this.orderRepository.count({
         where: { 
@@ -447,10 +448,10 @@ export class StatisticsService {
         }
       } as any),
       this.userRepository.count({
-        where: { createdAt: Between(currentStart, now) }
+        where: { createTime: Between(currentStart, now) }
       }),
       this.userRepository.count({
-        where: { createdAt: Between(previousStart, previousEnd) }
+        where: { createTime: Between(previousStart, previousEnd) }
       }),
       this.articleRepository.count({
         where: { createdAt: Between(currentStart, now) }

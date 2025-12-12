@@ -1,7 +1,7 @@
 import { Injectable, NestInterceptor, ExecutionContext, CallHandler } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { tap, catchError } from 'rxjs/operators';
-import { SeataService } from './infrastructure/seata.service';
+import { SeataService } from './seata.service';
 
 @Injectable()
 export class SeataInterceptor implements NestInterceptor {
@@ -27,7 +27,7 @@ export class SeataInterceptor implements NestInterceptor {
 
     return next.handle().pipe(
       tap(() => {
-        // 请求成功，提交事�?
+        // 请求成功，提交事�?
         if (xid) {
           this.seataService.commitTransaction(xid).catch(error => {
             console.error('Failed to commit transaction:', error);
@@ -35,7 +35,7 @@ export class SeataInterceptor implements NestInterceptor {
         }
       }),
       catchError((error) => {
-        // 请求失败，回滚事�?
+        // 请求失败，回滚事�?
         if (xid) {
           this.seataService.rollbackTransaction(xid).catch(rollbackError => {
             console.error('Failed to rollback transaction:', rollbackError);
@@ -47,7 +47,7 @@ export class SeataInterceptor implements NestInterceptor {
   }
 }
 
-// 事务装饰�?
+// 事务装饰�?
 export function GlobalTransaction(timeout: number = 60000) {
   return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
     const originalMethod = descriptor.value;
@@ -93,7 +93,7 @@ export function GlobalTransaction(timeout: number = 60000) {
   };
 }
 
-// 分支事务装饰�?
+// 分支事务装饰�?
 export function BranchTransaction(resourceId: string, branchType: string = 'AT') {
   return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
     const originalMethod = descriptor.value;

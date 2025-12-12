@@ -1,14 +1,9 @@
 import { Controller } from '@nestjs/common';
 import { EventPattern, Payload } from '@nestjs/microservices';
-import { MemberMessageService } from '../../modules/service/message/services/member-message.service';
-import { StoreMessageService } from '../../modules/service/message/services/store-message.service';
 
 @Controller()
 export class MessageMessageHandler {
-  constructor(
-    private readonly memberMessageService: MemberMessageService,
-    private readonly storeMessageService: StoreMessageService
-  ) {}
+  constructor() {}
 
   // 会员消息事件处理
   @EventPattern('member.message.created')

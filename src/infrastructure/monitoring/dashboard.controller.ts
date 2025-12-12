@@ -1,10 +1,10 @@
 import { Controller, Get, Query } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { DatabaseMonitorService } from './database.monitor';
-import { DatabaseHealthIndicator } from '../infrastructure/health/database.health';
-import { DatabaseBackupService } from '../backup/database.backup';
+import { DatabaseHealthIndicator } from '../health/database.health';
+import { DatabaseBackupService } from '../../backup/database.backup';
 
-@ApiTags('监控仪表�?)
+@ApiTags('监控仪表板')
 @Controller('monitoring')
 export class MonitoringDashboardController {
   constructor(
@@ -14,7 +14,7 @@ export class MonitoringDashboardController {
   ) {}
 
   @Get('dashboard')
-  @ApiOperation({ summary: '获取监控仪表板数�? })
+  @ApiOperation({ summary: '获取监控仪表板数据' })
   @ApiResponse({ status: 200, description: '监控数据获取成功' })
   async getDashboardData() {
     const [currentMetrics, healthStatus, backupHealth, performanceAnalysis] = await Promise.all([
@@ -66,8 +66,8 @@ export class MonitoringDashboardController {
   }
 
   @Get('backup/status')
-  @ApiOperation({ summary: '获取备份状�? })
-  @ApiResponse({ status: 200, description: '备份状态获取成�? })
+  @ApiOperation({ summary: '获取备份状态' })
+  @ApiResponse({ status: 200, description: '备份状态获取成功' })
   async getBackupStatus() {
     const [health, statistics] = await Promise.all([
       this.databaseBackup.checkBackupHealth(),
@@ -105,8 +105,8 @@ export class MonitoringDashboardController {
   }
 
   @Get('health')
-  @ApiOperation({ summary: '健康检查端�? })
-  @ApiResponse({ status: 200, description: '系统健康状�? })
+  @ApiOperation({ summary: '健康检查端点' })
+  @ApiResponse({ status: 200, description: '系统健康状态' })
   async getHealthStatus() {
     try {
       const [connection, structure, indexes, performance] = await Promise.all([
@@ -140,14 +140,14 @@ export class MonitoringDashboardController {
 
     if (!metrics) return ['暂无数据']; 
 
-    // 连接数建�?
+    // 连接数建�?
     if (metrics.connectionCount > 800) {
       recommendations.push('数据库连接数过高，建议优化连接池配置或增加max_connections');
     }
 
-    // 表大小建�?
+    // 表大小建�?
     if (metrics.tableSize > 5368709120) { // 5GB
-      recommendations.push('数据库表总大小超�?GB，建议考虑数据归档或分�?);
+      recommendations.push('数据库表总大小超过5GB，建议考虑数据归档或分表');
     }
 
     // 索引使用建议
@@ -155,7 +155,7 @@ export class MonitoringDashboardController {
       recommendations.push('索引使用率较低，建议检查查询语句和索引设计');
     }
 
-    // 锁等待建�?
+    // 锁等待建�?
     if (metrics.lockWaitTime > 1000) {
       recommendations.push('锁等待时间较长，建议优化事务设计或检查锁冲突');
     }
@@ -172,7 +172,7 @@ export class MonitoringDashboardController {
       );
       
       if (largeTables.length > 0) {
-        recommendations.push(`发现大表�?{largeTables.map((t: any) => t.table_name).join(', ')}，建议进行分表或归档`);
+        recommendations.push(`发现大表�?{largeTables.map((t: any) => t.table_name).join(', ')}，建议进行分表或归档`);
       }
     }
 
@@ -182,7 +182,7 @@ export class MonitoringDashboardController {
       );
       
       if (slowQueries.length > 0) {
-        recommendations.push('发现慢查询，建议优化相关SQL语句或添加索�?);
+        recommendations.push('发现慢查询，建议优化相关SQL语句或添加索引');
       }
     }
 
@@ -190,7 +190,7 @@ export class MonitoringDashboardController {
   }
 
   private async getRecentBackups() {
-    // 模拟获取最近备份记�?
+    // 模拟获取最近备份记�?
     return [
       {
         id: 1,

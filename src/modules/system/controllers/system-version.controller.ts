@@ -14,9 +14,9 @@ import {
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { Response } from 'express';
-import { JwtAuthGuard } from '../../infrastructure/auth/guards/jwt-auth.guard';
-import { RolesGuard } from '../../infrastructure/auth/guards/roles.guard';
-import { Roles } from '../../infrastructure/auth/decorators/roles.decorator';
+import { JwtAuthGuard } from '../../../infrastructure/auth/guards/jwt-auth.guard';
+import { RolesGuard } from '../../../infrastructure/auth/guards/roles.guard';
+import { Roles } from '../../../infrastructure/auth/decorators/roles.decorator';
 import { SystemVersionService } from '../services/system-version.service';
 import { CreateSystemVersionDto } from '../dto/create-system-version.dto';
 import { UpdateSystemVersionDto } from '../dto/update-system-version.dto';
@@ -118,7 +118,7 @@ export class SystemVersionController {
   }
 
   @Get('by-version/:version')
-  @ApiOperation({ summary: '根据版本号获取版本信�? })
+  @ApiOperation({ summary: '根据版本号获取版本信息' })
   @ApiResponse({ status: 200, description: '获取成功' })
   async findByVersion(@Param('version') version: string) {
     const versionEntity = await this.versionService.findByVersion(version);
@@ -147,7 +147,7 @@ export class SystemVersionController {
 
   @Patch(':id/set-current')
   @Roles('admin', 'system_manager')
-  @ApiOperation({ summary: '设置为当前版�? })
+  @ApiOperation({ summary: '设置为当前版本' })
   @ApiResponse({ status: 200, description: '设置成功' })
   async setCurrent(@Param('id') id: string) {
     const version = await this.versionService.setCurrentVersion(+id);
@@ -195,7 +195,7 @@ export class SystemVersionController {
     if (!version.downloadUrl) {
       return res.status(HttpStatus.NOT_FOUND).json({
         code: HttpStatus.NOT_FOUND,
-        message: '该版本没有可下载的文�?,
+        message: '该版本没有可下载的文件',
       });
     }
 
@@ -203,7 +203,7 @@ export class SystemVersionController {
     await this.versionService.incrementDownloadCount(+id);
 
     // 这里可以根据实际需求实现文件下载逻辑
-    // 例如：从文件系统、云存储等获取文�?
+    // 例如：从文件系统、云存储等获取文件
     return res.json({
       code: HttpStatus.OK,
       message: '下载链接获取成功',
@@ -231,7 +231,7 @@ export class SystemVersionController {
 
   @Post(':id/rollback')
   @Roles('admin', 'system_manager')
-  @ApiOperation({ summary: '回滚到指定版�? })
+  @ApiOperation({ summary: '回滚到指定版本' })
   @ApiResponse({ status: 200, description: '回滚成功' })
   async rollback(@Param('id') id: string) {
     const version = await this.versionService.setCurrentVersion(+id);
@@ -267,14 +267,14 @@ export class SystemVersionController {
 
   @Post(':id/validate')
   @Roles('admin', 'system_manager')
-  @ApiOperation({ summary: '验证版本文件完整�? })
+  @ApiOperation({ summary: '验证版本文件完整性' })
   @ApiResponse({ status: 200, description: '验证成功' })
   async validateVersion(@Param('id') id: string) {
     const version = await this.versionService.findOne(+id);
     
     // 这里可以实现文件完整性验证逻辑
     // 例如：验证文件校验和、检查文件是否存在等
-    const isValid = true; // 简化示�?
+    const isValid = true; // 简化示例
 
     return {
       code: HttpStatus.OK,

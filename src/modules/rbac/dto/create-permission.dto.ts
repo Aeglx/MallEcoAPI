@@ -15,10 +15,10 @@ export class CreatePermissionDto {
   @IsOptional()
   description?: string;
 
-  @ApiProperty({ description: '权限类型', default: 'api' })
-  @IsString()
+  @ApiProperty({ description: '权限类型', default: 1 })
+  @IsNumber()
   @IsOptional()
-  type?: string;
+  type?: number;
 
   @ApiProperty({ description: '所属模块', required: false })
   @IsString()

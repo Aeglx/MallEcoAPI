@@ -1,14 +1,12 @@
 import { Controller, Get, Post, Put, Delete, Body, Param, Query } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiQuery } from '@nestjs/swagger';
 import { MicroservicesService } from '../services/microservices.service';
-import { 
-  ServiceRegistryEntity, 
-  ServiceConfigEntity, 
-  ServiceMetricsEntity,
-  ServiceDiscoveryEntity,
-  LoadBalancerEntity,
-  CircuitBreakerEntity
-} from '../entities';
+import { ServiceRegistryEntity } from '../entities/service-registry.entity';
+import { ServiceConfigEntity } from '../entities/service-config.entity';
+import { ServiceMetricsEntity } from '../entities/service-metrics.entity';
+import { ServiceDiscoveryEntity } from '../entities/service-discovery.entity';
+import { LoadBalancerEntity } from '../entities/load-balancer.entity';
+import { CircuitBreakerEntity } from '../entities/circuit-breaker.entity';
 
 @ApiTags('微服务管理')
 @Controller('microservices')

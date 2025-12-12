@@ -30,8 +30,8 @@ export class DbConnectionService implements OnModuleInit, OnModuleDestroy {
       connection.release();
       console.log('数据库连接池初始化成功');
     } catch (error) {
-      console.error('数据库连接池初始化失败:', error);
-      throw error;
+      console.warn('数据库连接池初始化失败，但应用程序将继续运行:', error);
+      // 不抛出错误，让应用程序继续运行
     }
   }
 

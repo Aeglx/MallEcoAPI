@@ -1,6 +1,6 @@
 import { Module, Global } from '@nestjs/common';
-import { SeataService } from './infrastructure/seata.service';
-import { SeataInterceptor } from './infrastructure/seata.interceptor';
+import { SeataService } from './seata.service';
+import { SeataInterceptor } from './seata.interceptor';
 
 @Global()
 @Module({

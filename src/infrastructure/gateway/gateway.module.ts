@@ -1,12 +1,11 @@
 import { Module, Global } from '@nestjs/common';
 import { HttpModule } from '@nestjs/axios';
-import { GatewayService } from './infrastructure/gateway.service';
-import { GatewayController } from './infrastructure/gateway.controller';
-import { ConsulModule } from '../consul/consul.module';
+import { GatewayService } from './gateway.service';
+import { GatewayController } from './gateway.controller';
 
 @Global()
 @Module({
-  imports: [HttpModule, ConsulModule],
+  imports: [HttpModule],
   controllers: [GatewayController],
   providers: [GatewayService],
   exports: [GatewayService],

@@ -6,7 +6,7 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import * as promClient from 'prom-client';
 
-interface DatabaseMetrics {
+export interface DatabaseMetrics {
   queryCount: number;
   slowQueryCount: number;
   connectionCount: number;

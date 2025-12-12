@@ -1,14 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Between, LessThan, MoreThan } from 'typeorm';
-import {
-  ServiceRegistryEntity,
-  ServiceConfigEntity,
-  ServiceMetricsEntity,
-  ServiceDiscoveryEntity,
-  LoadBalancerEntity,
-  CircuitBreakerEntity,
-} from '../entities';
+import { ServiceRegistryEntity } from '../entities/service-registry.entity';
+import { ServiceConfigEntity } from '../entities/service-config.entity';
+import { ServiceMetricsEntity } from '../entities/service-metrics.entity';
+import { ServiceDiscoveryEntity } from '../entities/service-discovery.entity';
+import { LoadBalancerEntity } from '../entities/load-balancer.entity';
+import { CircuitBreakerEntity } from '../entities/circuit-breaker.entity';
 
 @Injectable()
 export class MicroservicesService {

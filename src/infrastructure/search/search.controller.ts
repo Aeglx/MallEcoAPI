@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Delete, Query, Req, Body } from '@nestjs/common';
 import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { SearchService } from './infrastructure/search.service';
+import { SearchService } from './search.service';
 
 @ApiTags('搜索')
 @Controller('search')
@@ -11,7 +11,7 @@ export class SearchController {
    * 获取热门搜索
    */
   @Get('hot-words')
-  @ApiOperation({ summary: '获取热门搜索关键�? })
+  @ApiOperation({ summary: '获取热门搜索关键词' })
   @ApiQuery({ name: 'count', description: '获取数量', required: false, type: Number })
   @ApiResponse({ status: 200, description: '获取成功' })
   async getHotWords(@Query('count') count?: number) {
@@ -67,7 +67,7 @@ export class SearchController {
    */
   @Get('suggestions')
   @ApiOperation({ summary: '获取搜索联想' })
-  @ApiQuery({ name: 'keyword', description: '搜索关键�?, required: true })
+  @ApiQuery({ name: 'keyword', description: '搜索关键词', required: true })
   @ApiQuery({ name: 'limit', description: '获取数量', required: false, type: Number })
   @ApiResponse({ status: 200, description: '获取成功' })
   async getSearchSuggestions(

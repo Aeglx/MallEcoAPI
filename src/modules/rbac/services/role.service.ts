@@ -31,7 +31,7 @@ export class RoleService {
   }
 
   async findAll(searchDto: RoleSearchDto): Promise<{ data: Role[]; total: number }> {
-    const { name, code, enabled, page = 1, pageSize = 20 } = searchDto;
+    const { name, code, status, page = 1, pageSize = 20 } = searchDto;
     
     const queryBuilder = this.roleRepository
       .createQueryBuilder('role')
@@ -46,8 +46,8 @@ export class RoleService {
       queryBuilder.andWhere('role.code LIKE :code', { code: `%${code}%` });
     }
 
-    if (enabled !== undefined) {
-      queryBuilder.andWhere('role.enabled = :enabled', { enabled });
+    if (status !== undefined) {
+      queryBuilder.andWhere('role.status = :status', { status });
     }
 
     const [data, total] = await queryBuilder

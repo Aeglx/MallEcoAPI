@@ -19,7 +19,7 @@ export class MenuService {
   }
 
   async findAll(searchDto: MenuSearchDto): Promise<Menu[]> {
-    const { name, path, type, visible, page = 1, limit = 10, sortBy = 'sort', sortOrder = 'ASC' } = searchDto;
+    const { name, path, type, visible, page = 1, limit = 10, sortBy = 'sortWeight', sortOrder = 'ASC' } = searchDto;
     
     const queryBuilder = this.menuRepository
       .createQueryBuilder('menu')
@@ -74,14 +74,14 @@ export class MenuService {
     return this.menuRepository.find({
       where: { parent: { id: parentId } },
       relations: ['children'],
-      order: { sort: 'ASC' },
+      order: { sortWeight: 'ASC' },
     });
   }
 
   async buildTree(): Promise<Menu[]> {
     const menus = await this.menuRepository.find({
       relations: ['parent', 'children'],
-      order: { sort: 'ASC' },
+      order: { sortWeight: 'ASC' },
     });
 
     const rootMenus = menus.filter(menu => !menu.parent);
@@ -93,5 +93,21 @@ export class MenuService {
 
     rootMenus.forEach(root => buildSubTree(root));
     return rootMenus;
+  }
+
+  async getMenuTree(): Promise<Menu[]> {
+    return this.buildTree();
+  }
+
+  async sortMenus(sortedIds: number[]): Promise<void> {
+    // 实现菜单排序逻辑
+    for (let i = 0; i < sortedIds.length; i++) {
+      await this.menuRepository.update(sortedIds[i], { sortWeight: i });
+    }
+  }
+
+  async getMenuPermissions(menuId: number): Promise<any[]> {
+    // 这里需要根据实际情况实现，可能需要关联权限表
+    return [];
   }
 }

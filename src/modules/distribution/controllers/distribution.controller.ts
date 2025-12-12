@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Put, Delete, Body, Param, Query, Request } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiQuery } from '@nestjs/swagger';
 import { DistributionService } from '../services/distribution.service';
-import { DistributorEntity } from '../entities/distributor.entity';
+import { Distribution } from '../entities/distribution.entity';
 
 @ApiTags('分销管理')
 @Controller('distribution')
@@ -10,7 +10,7 @@ export class DistributionController {
 
   @Post('apply')
   @ApiOperation({ summary: '申请成为分销员' })
-  @ApiResponse({ status: 201, description: '申请提交成功', type: DistributorEntity })
+  @ApiResponse({ status: 201, description: '申请提交成功', type: Distribution })
   async applyDistributor(@Body() data: {
     memberId: string;
     realName: string;
@@ -44,7 +44,7 @@ export class DistributionController {
   @Get('distributor/:distributorId')
   @ApiOperation({ summary: '获取分销员详情' })
   @ApiParam({ name: 'distributorId', description: '分销员ID' })
-  @ApiResponse({ status: 200, description: '获取成功', type: DistributorEntity })
+  @ApiResponse({ status: 200, description: '获取成功', type: Distribution })
   async getDistributorById(@Param('distributorId') distributorId: string) {
     return await this.distributionService.getDistributorById(distributorId);
   }
@@ -59,10 +59,10 @@ export class DistributionController {
   @Put('distributor/:distributorId')
   @ApiOperation({ summary: '更新分销员信息' })
   @ApiParam({ name: 'distributorId', description: '分销员ID' })
-  @ApiResponse({ status: 200, description: '更新成功', type: DistributorEntity })
+  @ApiResponse({ status: 200, description: '更新成功', type: Distribution })
   async updateDistributor(
     @Param('distributorId') distributorId: string,
-    @Body() updateData: Partial<DistributorEntity>
+    @Body() updateData: Partial<Distribution>
   ) {
     return await this.distributionService.updateDistributor(distributorId, updateData);
   }

@@ -1,30 +1,30 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
-import * as seata from 'seata-nodejs-sdk';
+// import * as seata from 'seata-nodejs-sdk';
 
 @Injectable()
 export class SeataService implements OnModuleInit {
   private seataClient: any;
   
   async onModuleInit() {
-    await this.initSeataClient();
+    // await this.initSeataClient();
   }
 
   private async initSeataClient() {
     try {
-      this.seataClient = await seata.init({
-        applicationId: 'mall-eco-api',
-        txServiceGroup: 'mall_tx_group',
-        registry: {
-          type: 'nacos',
-          serverAddr: process.env.NACOS_SERVER_ADDR || 'localhost:8848',
-          namespace: process.env.NACOS_NAMESPACE || '',
-        },
-        config: {
-          type: 'nacos',
-          serverAddr: process.env.NACOS_SERVER_ADDR || 'localhost:8848',
-          namespace: process.env.NACOS_NAMESPACE || '',
-        },
-      });
+      // this.seataClient = await seata.init({
+      //   applicationId: 'mall-eco-api',
+      //   txServiceGroup: 'mall_tx_group',
+      //   registry: {
+      //     type: 'nacos',
+      //     serverAddr: process.env.NACOS_SERVER_ADDR || 'localhost:8848',
+      //     namespace: process.env.NACOS_NAMESPACE || '',
+      //   },
+      //   config: {
+      //     type: 'nacos',
+      //     serverAddr: process.env.NACOS_SERVER_ADDR || 'localhost:8848',
+      //     namespace: process.env.NACOS_NAMESPACE || '',
+      //   },
+      // });
       
       console.log('Seata client initialized successfully');
     } catch (error) {

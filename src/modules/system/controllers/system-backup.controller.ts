@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Delete, Param, Query, UseInterceptors } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { SystemBackupService } from '../services/system-backup.service';
-import { TransformInterceptor } from '../../../common/interceptors/transform.interceptor';
+import { TransformInterceptor } from '../../../../common/interceptors/transform.interceptor';
 
 @ApiTags('系统备份管理')
 @Controller('system/backup')

@@ -8,7 +8,7 @@ import {
   MeshTelemetryEntity,
   MeshSecurityEntity,
   MeshTrafficEntity,
-} from '../entities';
+} from '../entities/index';
 
 @Injectable()
 export class ServiceMeshService {
@@ -266,7 +266,7 @@ export class ServiceMeshService {
   }
 
   async updateSecurityPolicyHitCount(policyId: string) {
-    return await this.meshSecurityRepository.increment(policyId, 'hitCount', 1);
+    return await this.meshSecurityRepository.increment({ id: policyId }, 'hitCount', 1);
   }
 
   // 流量管理

@@ -1,7 +1,7 @@
 import { Controller, Get } from '@nestjs/common';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { EnhancedHealthService, HealthStatus } from './enhanced-health.service';
-import { SkipPerformance } from '../common/decorators/skip-performance.decorator';
+import { SkipPerformance } from '../../common/decorators/skip-performance.decorator';
 
 @ApiTags('健康检查')
 @Controller('health')
