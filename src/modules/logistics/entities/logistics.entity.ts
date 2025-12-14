@@ -11,6 +11,9 @@ export class MallLogistics {
   @Column({ name: 'code', type: 'varchar', length: 30, nullable: false, comment: '物流公司code' })
   code: string;
 
+  @Column({ name: 'plugin_name', type: 'varchar', length: 50, nullable: false, comment: '物流插件名称' })
+  pluginName: string;
+
   @Column({ name: 'stand_by', type: 'varchar', length: 10, nullable: true, default: 'N', comment: '支持电子面单 Y/N' })
   standBy: string;
 

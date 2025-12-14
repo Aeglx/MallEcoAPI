@@ -3,14 +3,14 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Notification } from './entities/notification.entity';
 import { NotificationController } from './controllers/notification.controller';
 import { NotificationService } from './services/notification.service';
-import { UserModule } from '../users/users.module';
+import { UsersModule } from '../users/users.module';
 import { SmsModule } from '../sms/sms.module';
 import { MailModule } from '../mail/mail.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Notification]),
-    UserModule,
+    UsersModule,
     SmsModule,
     MailModule
   ],

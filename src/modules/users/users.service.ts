@@ -96,4 +96,12 @@ export class UsersService {
     this.users.splice(index, 1);
     return true;
   }
+
+  /**
+   * 获取所有用户
+   * @returns 用户列表
+   */
+  async findAllUsers(): Promise<User[]> {
+    return this.users;
+  }
 }

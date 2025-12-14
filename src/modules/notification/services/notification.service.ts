@@ -4,7 +4,7 @@ import { Repository, Not } from 'typeorm';
 import { Notification, NotificationStatus, NotificationType } from '../entities/notification.entity';
 import { CreateNotificationDto } from '../dto/create-notification.dto';
 import { UpdateNotificationDto } from '../dto/update-notification.dto';
-import { UserService } from '../../users/services/user.service';
+import { UsersService } from '../../users/users.service';
 import { SmsService } from '../../sms/services/sms.service';
 import { MailService } from '../../mail/services/mail.service';
 
@@ -12,9 +12,9 @@ import { MailService } from '../../mail/services/mail.service';
 export class NotificationService {
   constructor(
     @InjectRepository(Notification) private readonly notificationRepository: Repository<Notification>,
-    private readonly userService: UserService,
+    private readonly userService: UsersService,
     private readonly smsService: SmsService,
-    private readonly mailService: MailService
+    private readonly mailService: MailService,
   ) {}
 
   /**
@@ -27,7 +27,7 @@ export class NotificationService {
 
     // 如果需要发送短信通知
     if (savedNotification.isSms === 1 && savedNotification.userId) {
-      const user = await this.userService.findUserById(savedNotification.userId);
+      const user = await this.userService.findById(savedNotification.userId.toString());
       if (user && user.phone) {
         await this.smsService.sendSms(
           user.phone,
@@ -39,7 +39,7 @@ export class NotificationService {
 
     // 如果需要发送邮件通知
     if (savedNotification.isEmail === 1 && savedNotification.userId) {
-      const user = await this.userService.findUserById(savedNotification.userId);
+      const user = await this.userService.findById(savedNotification.userId.toString());
       if (user && user.email) {
         await this.mailService.sendMail(
           user.email,

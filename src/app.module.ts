@@ -12,6 +12,7 @@ import { ProductsModule } from './products/products.module';
 // import { StatisticsModule } from './statistics/statistics.module';
 import { CacheModule } from './modules/cache/cache.module';
 import { AuthModule } from './modules/auth/auth.module';
+import { UsersModule } from './modules/users/users.module';
 import { CartModule } from './modules/cart/cart.module';
 import { OrdersModule } from './modules/orders/orders.module';
 import { WalletModule } from './modules/wallet/wallet.module';
@@ -106,6 +107,7 @@ import { MonitoringController } from './shared/monitoring/monitoring.controller'
     // StatisticsModule,
     CacheModule,
     AuthModule,
+    UsersModule,
     CartModule,
     OrdersModule,
     WalletModule,
