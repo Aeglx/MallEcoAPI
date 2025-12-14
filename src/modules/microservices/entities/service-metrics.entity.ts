@@ -42,7 +42,7 @@ export class ServiceMetricsEntity {
   @Column()
   timestamp: Date;
 
-  @Column({ type: 'jsonb', nullable: true })
+  @Column({ type: 'json', nullable: true })
   customMetrics: Record<string, any>;
 
   @CreateDateColumn()

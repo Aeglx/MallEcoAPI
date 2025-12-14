@@ -11,13 +11,13 @@ export class RecommendationHistoryEntity {
   @Column({ name: 'recommendation_type', type: 'varchar', length: 50 })
   recommendationType: string;
 
-  @Column({ name: 'recommendation_items', type: 'jsonb' })
+  @Column({ name: 'recommendation_items', type: 'json' })
   recommendationItems: Record<string, any>[];
 
   @Column({ name: 'algorithm_used', type: 'varchar', length: 100 })
   algorithmUsed: string;
 
-  @Column({ name: 'context_data', type: 'jsonb', nullable: true })
+  @Column({ name: 'context_data', type: 'json', nullable: true })
   contextData: Record<string, any>;
 
   @CreateDateColumn({ name: 'created_at' })

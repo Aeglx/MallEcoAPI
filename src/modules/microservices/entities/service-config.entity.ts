@@ -29,7 +29,7 @@ export class ServiceConfigEntity {
   @Column({ default: true })
   isActive: boolean;
 
-  @Column({ type: 'jsonb', nullable: true })
+  @Column({ type: 'json', nullable: true })
   validationRules: Record<string, any>;
 
   @CreateDateColumn()

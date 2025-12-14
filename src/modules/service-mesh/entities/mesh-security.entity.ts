@@ -17,14 +17,14 @@ export class MeshSecurityEntity {
   @Column({ type: 'enum', enum: ['source', 'destination', 'both'], default: 'both' })
   direction: string;
 
-  @Column({ type: 'jsonb' })
+  @Column({ type: 'json' })
   principals: Array<{
     type: string;
     value: string;
     namespace?: string;
   }>;
 
-  @Column({ type: 'jsonb' })
+  @Column({ type: 'json' })
   conditions: Array<{
     type: string;
     key: string;
@@ -32,14 +32,14 @@ export class MeshSecurityEntity {
     value: any;
   }>;
 
-  @Column({ type: 'jsonb', nullable: true })
+  @Column({ type: 'json', nullable: true })
   jwtConfig: {
     issuers: string[];
     audiences: string[];
     requiredClaims: Record<string, any>;
   };
 
-  @Column({ type: 'jsonb', nullable: true })
+  @Column({ type: 'json', nullable: true })
   rbacConfig: {
     roles: string[];
     permissions: string[];

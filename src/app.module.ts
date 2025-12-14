@@ -26,7 +26,7 @@ import { MonitoringController } from './shared/monitoring/monitoring.controller'
     }),
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: '.env',
+      envFilePath: 'config/.env',
     }),
     // 可选数据库连接 - 在没有MySQL的情况下应用程序仍能运行
     TypeOrmModule.forRootAsync({
@@ -40,7 +40,13 @@ import { MonitoringController } from './shared/monitoring/monitoring.controller'
         database: configService.get('DB_NAME'),
         charset: configService.get('DB_CHARSET'),
         entities: [
-          join(__dirname, '**/*.entity{.ts,.js}'),
+          join(__dirname, 'modules/rbac/**/*.entity{.ts,.js}'),
+          join(__dirname, 'modules/auth/**/*.entity{.ts,.js}'),
+          join(__dirname, 'modules/users/**/*.entity{.ts,.js}'),
+          join(__dirname, 'modules/products/**/*.entity{.ts,.js}'),
+          join(__dirname, 'modules/orders/**/*.entity{.ts,.js}'),
+          join(__dirname, 'modules/cart/**/*.entity{.ts,.js}'),
+          join(__dirname, 'social/**/*.entity{.ts,.js}'),
         ],
         synchronize: false, // 强制禁用同步
         logging: false, // 禁用日志

@@ -44,7 +44,7 @@ export class CircuitBreakerEntity {
   @Column({ default: true })
   isActive: boolean;
 
-  @Column({ type: 'jsonb', nullable: true })
+  @Column({ type: 'json', nullable: true })
   configuration: Record<string, any>;
 
   @CreateDateColumn()

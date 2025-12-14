@@ -14,7 +14,7 @@ export class MeshPolicyEntity {
   @Column({ type: 'enum', enum: ['traffic', 'security', 'reliability', 'observability'], default: 'traffic' })
   category: string;
 
-  @Column({ type: 'jsonb' })
+  @Column({ type: 'json' })
   targetServices: Array<{
     name: string;
     namespace?: string;

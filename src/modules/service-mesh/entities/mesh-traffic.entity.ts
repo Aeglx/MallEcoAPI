@@ -53,10 +53,10 @@ export class MeshTrafficEntity {
   @Column({ type: 'decimal', precision: 5, scale: 4, default: 0 })
   errorRate: number;
 
-  @Column({ type: 'jsonb', nullable: true })
+  @Column({ type: 'json', nullable: true })
   headers: Record<string, string>;
 
-  @Column({ type: 'jsonb', nullable: true })
+  @Column({ type: 'json', nullable: true })
   metadata: Record<string, any>;
 
   @Column()

@@ -14,7 +14,7 @@ export class LoadBalancerEntity {
   @Column({ type: 'enum', enum: ['round-robin', 'weighted-round-robin', 'least-connections', 'ip-hash', 'random'], default: 'round-robin' })
   algorithm: string;
 
-  @Column({ type: 'jsonb', nullable: true })
+  @Column({ type: 'json', nullable: true })
   instanceWeights: Record<string, number>;
 
   @Column({ default: 3 })
@@ -29,7 +29,7 @@ export class LoadBalancerEntity {
   @Column({ default: true })
   isActive: boolean;
 
-  @Column({ type: 'jsonb', nullable: true })
+  @Column({ type: 'json', nullable: true })
   configuration: Record<string, any>;
 
   @Column({ default: 0 })

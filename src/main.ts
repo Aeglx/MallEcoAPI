@@ -4,8 +4,17 @@ import { HttpExceptionFilter } from './shared/filters/http-exception.filter';
 import { ResponseInterceptor } from './shared/interceptors/response.interceptor';
 import { ConfigService } from '@nestjs/config';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { initializeDatabase } from './database-init';
 
 async function bootstrap() {
+  // 在应用启动前执行数据库初始化
+  console.log('🚀 启动数据库初始化检查...');
+  const dbInitSuccess = await initializeDatabase();
+  
+  if (!dbInitSuccess) {
+    console.log('⚠️ 数据库初始化失败，应用仍将继续启动，但数据库功能可能不可用');
+  }
+
   const app = await NestFactory.create(AppModule);
   
   // 应用全局异常过滤器

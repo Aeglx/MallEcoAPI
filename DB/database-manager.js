@@ -46,6 +46,10 @@ class DatabaseManager {
       console.log('✅ 数据库连接成功');
       return true;
     } catch (error) {
+      if (error.code === 'ER_BAD_DB_ERROR') {
+        console.log('📁 数据库不存在，尝试创建数据库...');
+        return await this.ensureDatabase();
+      }
       console.error('❌ 数据库连接失败:', error.message);
       return false;
     }

@@ -11,7 +11,7 @@ export class UserPreferenceEntity {
   @Column({ name: 'preference_type', type: 'varchar', length: 50 })
   preferenceType: string;
 
-  @Column({ name: 'preference_data', type: 'jsonb' })
+  @Column({ name: 'preference_data', type: 'json' })
   preferenceData: Record<string, any>;
 
   @Column({ name: 'score', type: 'decimal', precision: 5, scale: 2, default: 1.0 })

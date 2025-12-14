@@ -14,7 +14,7 @@ export class ServiceDiscoveryEntity {
   @Column({ type: 'enum', enum: ['consul', 'eureka', 'zookeeper', 'etcd', 'k8s'], default: 'consul' })
   discoveryType: string;
 
-  @Column({ type: 'jsonb', nullable: true })
+  @Column({ type: 'json', nullable: true })
   configuration: Record<string, any>;
 
   @Column({ type: 'enum', enum: ['active', 'inactive', 'error'], default: 'active' })
@@ -32,7 +32,7 @@ export class ServiceDiscoveryEntity {
   @Column({ length: 500, nullable: true })
   healthCheckUrl: string;
 
-  @Column({ type: 'jsonb', nullable: true })
+  @Column({ type: 'json', nullable: true })
   serviceFilters: Record<string, any>;
 
   @CreateDateColumn()

@@ -11,7 +11,7 @@ export class RecommendationConfigEntity {
   @Column({ name: 'config_type', type: 'varchar', length: 50 })
   configType: string;
 
-  @Column({ name: 'config_value', type: 'jsonb' })
+  @Column({ name: 'config_value', type: 'json' })
   configValue: Record<string, any>;
 
   @Column({ name: 'is_active', type: 'boolean', default: true })

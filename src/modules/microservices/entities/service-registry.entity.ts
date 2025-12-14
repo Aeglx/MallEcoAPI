@@ -26,7 +26,7 @@ export class ServiceRegistryEntity {
   @Column({ type: 'enum', enum: ['healthy', 'unhealthy', 'unknown'], default: 'unknown' })
   status: string;
 
-  @Column({ type: 'jsonb', nullable: true })
+  @Column({ type: 'json', nullable: true })
   metadata: Record<string, any>;
 
   @Column({ type: 'enum', enum: ['active', 'inactive', 'maintenance'], default: 'active' })
