@@ -19,6 +19,11 @@ import { PromotionModule } from './modules/promotion/promotion.module';
 import { DistributionModule } from './modules/distribution/distribution.module';
 import { ContentModule } from './modules/content/content.module';
 import { LiveModule } from './modules/live/live.module';
+import { PaymentModule } from './modules/payment/payment.module';
+import { SmsModule } from './modules/sms/sms.module';
+import { EmailModule } from './modules/email/email.module';
+import { FileModule } from './modules/file/file.module';
+import { CaptchaModule } from './modules/captcha/captcha.module';
 import { configurations } from './config/configuration';
 import { ResponseInterceptor } from './shared/interceptors/response.interceptor';
 import { HttpExceptionFilter } from './shared/filters/http-exception.filter';
@@ -106,6 +111,10 @@ import { MonitoringController } from './shared/monitoring/monitoring.controller'
     DistributionModule,
     ContentModule,
     LiveModule,
+    PaymentModule,
+    SmsModule,
+    EmailModule,
+    FileModule,
   ],
   controllers: [AppController, MonitoringController],
   providers: [
