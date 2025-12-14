@@ -18,6 +18,7 @@ import { WalletModule } from './modules/wallet/wallet.module';
 import { PromotionModule } from './modules/promotion/promotion.module';
 import { DistributionModule } from './modules/distribution/distribution.module';
 import { ContentModule } from './modules/content/content.module';
+import { LiveModule } from './modules/live/live.module';
 import { configurations } from './config/configuration';
 import { ResponseInterceptor } from './shared/interceptors/response.interceptor';
 import { HttpExceptionFilter } from './shared/filters/http-exception.filter';
@@ -103,6 +104,7 @@ import { MonitoringController } from './shared/monitoring/monitoring.controller'
     PromotionModule,
     DistributionModule,
     ContentModule,
+    LiveModule,
   ],
   controllers: [AppController, MonitoringController],
   providers: [
