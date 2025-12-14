@@ -15,6 +15,9 @@ import { AuthModule } from './modules/auth/auth.module';
 import { CartModule } from './modules/cart/cart.module';
 import { OrdersModule } from './modules/orders/orders.module';
 import { WalletModule } from './modules/wallet/wallet.module';
+import { PromotionModule } from './modules/promotion/promotion.module';
+import { DistributionModule } from './modules/distribution/distribution.module';
+import { ContentModule } from './modules/content/content.module';
 import { configurations } from './config/configuration';
 import { ResponseInterceptor } from './shared/interceptors/response.interceptor';
 import { HttpExceptionFilter } from './shared/filters/http-exception.filter';
@@ -54,6 +57,9 @@ import { MonitoringController } from './shared/monitoring/monitoring.controller'
           join(__dirname, 'modules/products/**/*.entity{.ts,.js}'),
           join(__dirname, 'modules/orders/**/*.entity{.ts,.js}'),
           join(__dirname, 'modules/cart/**/*.entity{.ts,.js}'),
+          join(__dirname, 'modules/promotion/**/*.entity{.ts,.js}'),
+          join(__dirname, 'modules/distribution/**/*.entity{.ts,.js}'),
+          join(__dirname, 'modules/content/**/*.entity{.ts,.js}'),
           join(__dirname, 'social/**/*.entity{.ts,.js}'),
         ],
         synchronize: false, // 强制禁用同步
@@ -94,6 +100,9 @@ import { MonitoringController } from './shared/monitoring/monitoring.controller'
     CartModule,
     OrdersModule,
     WalletModule,
+    PromotionModule,
+    DistributionModule,
+    ContentModule,
   ],
   controllers: [AppController, MonitoringController],
   providers: [
