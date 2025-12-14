@@ -2,6 +2,15 @@ import { Injectable, CanActivate, ExecutionContext, HttpException, HttpStatus } 
 import { RateLimiterService } from './rate-limiter.service';
 import { Request } from 'express';
 
+// 扩展Request接口以包含user属性
+declare global {
+  namespace Express {
+    interface Request {
+      user?: any;
+    }
+  }
+}
+
 @Injectable()
 export class RateLimitGuard implements CanActivate {
   constructor(private readonly rateLimiterService: RateLimiterService) {}

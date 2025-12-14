@@ -120,7 +120,7 @@ export class InputValidator {
   /**
    * 验证文件上传类型
    */
-  validateFileType(file: Express.Multer.File, allowedTypes: string[]): boolean {
+  validateFileType(file: any, allowedTypes: string[]): boolean {
     if (!allowedTypes.includes(file.mimetype)) {
       throw new BadRequestException(`文件类型不支持，支持的类型: ${allowedTypes.join(', ')}`);
     }

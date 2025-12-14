@@ -470,7 +470,8 @@ export class StatisticsService {
       revenue: {
         current: currentRevenue || 0,
         previous: previousRevenue || 0,
-        growth: previousRevenue > 0 ? ((currentRevenue - previousRevenue) / previousRevenue * 100).toFixed(2) : '0.00',
+        growth: (previousRevenue && previousRevenue > 0) ? 
+          (((currentRevenue || 0) - previousRevenue) / previousRevenue * 100).toFixed(2) : '0.00',
       },
       users: {
         current: currentUsers || 0,

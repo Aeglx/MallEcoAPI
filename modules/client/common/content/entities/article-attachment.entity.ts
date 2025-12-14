@@ -4,35 +4,35 @@ import { Article } from './article.entity';
 @Entity('article_attachment')
 export class ArticleAttachment {
   @PrimaryGeneratedColumn()
-  id: number;
+  id!: number;
 
   @Column({ length: 200 })
-  fileName: string;
+  fileName!: string;
 
   @Column({ length: 200 })
-  filePath: string;
+  filePath!: string;
 
   @Column({ length: 100 })
-  fileType: string;
+  fileType!: string;
 
   @Column({ default: 0 })
-  fileSize: number;
+  fileSize!: number;
 
   @Column({ length: 200, nullable: true })
-  thumbnailPath: string;
+  thumbnailPath!: string;
 
   @Column({ default: 0 })
-  downloadCount: number;
+  downloadCount!: number;
 
   @Column({ nullable: true })
-  articleId: number;
+  articleId!: number;
 
   @ManyToOne(() => Article, article => article.attachments)
-  article: Article;
+  article!: Article;
 
   @CreateDateColumn()
-  createdAt: Date;
+  createdAt!: Date;
 
   @UpdateDateColumn()
-  updatedAt: Date;
+  updatedAt!: Date;
 }

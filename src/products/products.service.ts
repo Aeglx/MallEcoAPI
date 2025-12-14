@@ -7,6 +7,9 @@ import { BaseService } from '../shared/services/base.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
+// 临时导出Product实体，如果它在被排除的目录中
+export { Product } from './entities/product.entity';
+
 @Injectable()
 export class ProductsService extends BaseService<Product> {
   constructor(

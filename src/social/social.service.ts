@@ -451,7 +451,7 @@ export class SocialService {
       throw new HttpException('This social account is already bound', HttpStatus.BAD_REQUEST);
     }
     
-    // 妫€鏌penid鏄惁宸茬粡琚叾浠栫敤鎴风粦瀹?
+    // 检查openid是否已经被其他用户绑定
     const existingByOpenId = await this.socialAuthRepository.findOne({
       where: { open_id: openId, platform },
     });
@@ -460,13 +460,13 @@ export class SocialService {
       throw new HttpException('This social account is already bound to another user', HttpStatus.BAD_REQUEST);
     }
     
-    // 鍒涘缓鏂扮殑缁戝畾
+    // 创建新的绑定
     const socialAuth = this.socialAuthRepository.create({
       user_id: userId,
       platform,
       client_type: ClientType.PC,
       open_id: openId,
-      union_id: unionId || null,
+      union_id: unionId || undefined,
       access_token: accessToken,
     });
     

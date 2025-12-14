@@ -29,7 +29,7 @@ export abstract class EnhancedBaseService<T extends ObjectLiteral> {
 
       const [data, total] = await this.repository.findAndCount({
         where: query?.where || {},
-        order: query?.order || { createdAt: 'DESC' },
+        order: query?.order || { createdAt: 'DESC' as 'ASC' | 'DESC' },
         relations: query?.relations || [],
         skip,
         take: limit,

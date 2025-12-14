@@ -2,14 +2,14 @@ import { Column, CreateDateColumn, PrimaryGeneratedColumn, UpdateDateColumn } fr
 
 export class BaseEntity {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id!: string;
 
   @CreateDateColumn({ name: 'create_time', type: 'datetime' })
-  createTime: Date;
+  createTime!: Date;
 
   @UpdateDateColumn({ name: 'update_time', type: 'datetime' })
-  updateTime: Date;
+  updateTime!: Date;
 
   @Column({ name: 'is_del', default: 0 })
-  isDel: number;
+  isDel!: number;
 }

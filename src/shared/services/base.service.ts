@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException, BadRequestException, ConflictException } from '@nestjs/common';
-import { Repository, DeepPartial, FindManyOptions, FindOneOptions, DeleteResult, ObjectLiteral } from 'typeorm';
+import { Repository, DeepPartial, FindManyOptions, FindOneOptions, DeleteResult, ObjectLiteral, Like } from 'typeorm';
 import { QueryBuilderUtil, PaginationParams, QueryResult } from '../utils/query-builder.util';
 
 /**

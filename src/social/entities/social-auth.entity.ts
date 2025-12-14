@@ -23,44 +23,44 @@ export enum ClientType {
 @Entity('social_auth')
 export class SocialAuthEntity {
   @PrimaryGeneratedColumn()
-  id: number;
+  id!: number;
 
   @Column()
-  user_id: number;
+  user_id!: number;
 
   @Column({ type: 'enum', enum: SocialPlatform })
-  platform: SocialPlatform;
+  platform!: SocialPlatform;
 
   @Column({ type: 'enum', enum: ClientType })
-  client_type: ClientType;
+  client_type!: ClientType;
 
   @Column()
-  open_id: string;
+  open_id!: string;
 
   @Column({ nullable: true })
-  union_id: string;
+  union_id!: string;
 
   @Column({ nullable: true })
-  access_token: string;
+  access_token!: string;
 
   @Column({ nullable: true })
-  refresh_token: string;
+  refresh_token!: string;
 
   @Column({ nullable: true })
-  expires_in: number;
+  expires_in!: number;
 
   @Column({ nullable: true })
-  scope: string;
+  scope!: string;
 
   @Column({ nullable: true })
-  extra_data: string;
+  extra_data!: string;
 
   @CreateDateColumn()
-  created_at: Date;
+  created_at!: Date;
 
   @UpdateDateColumn()
-  updated_at: Date;
+  updated_at!: Date;
 
   @ManyToOne(() => User, (user) => user.social_auths)
-  user: User;
+  user!: User;
 }

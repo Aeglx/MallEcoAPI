@@ -67,10 +67,10 @@ export class QueryBuilderUtil {
       }
       // 处理日期范围查询
       else if (dateFields?.includes(key)) {
-        if (typeof value === 'object' && value.start && value.end) {
+        if (typeof value === 'object' && value && 'start' in value && 'end' in value) {
           where[key] = {
-            $gte: value.start,
-            $lte: value.end,
+            $gte: (value as any).start,
+            $lte: (value as any).end,
           };
         }
       }
