@@ -28,7 +28,7 @@ import { MonitoringController } from './shared/monitoring/monitoring.controller'
       isGlobal: true,
       envFilePath: '.env',
     }),
-    // 尝试连接数据库，但如果连接失败，应用程序将继续运行
+    // 可选数据库连接 - 在没有MySQL的情况下应用程序仍能运行
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
@@ -42,10 +42,10 @@ import { MonitoringController } from './shared/monitoring/monitoring.controller'
         entities: [
           join(__dirname, '**/*.entity{.ts,.js}'),
         ],
-        synchronize: configService.get('DB_SYNCHRONIZE'),
-        logging: configService.get('DB_LOGGING'),
+        synchronize: false, // 强制禁用同步
+        logging: false, // 禁用日志
         // 添加连接重试和错误处理
-        retryAttempts: 3,
+        retryAttempts: 0, // 不重试连接
         retryDelay: 1000,
       }),
       inject: [ConfigService],
@@ -64,8 +64,8 @@ import { MonitoringController } from './shared/monitoring/monitoring.controller'
             entities: [
               join(__dirname, '**/*.entity{.ts,.js}'),
             ],
-            synchronize: configService.get('DB_SYNCHRONIZE'),
-            logging: configService.get('DB_LOGGING'),
+            synchronize: false,
+            logging: false,
           }),
           inject: [ConfigService],
         },

@@ -1,7 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { HttpExceptionFilter } from '../common/filters/http-exception.filter';
-import { TransformInterceptor } from '../common/interceptors/transform.interceptor';
+import { HttpExceptionFilter } from './shared/filters/http-exception.filter';
+import { ResponseInterceptor } from './shared/interceptors/response.interceptor';
 import { ConfigService } from '@nestjs/config';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
@@ -12,7 +12,7 @@ async function bootstrap() {
   app.useGlobalFilters(new HttpExceptionFilter());
   
   // 应用全局响应拦截器
-  app.useGlobalInterceptors(new TransformInterceptor());
+  app.useGlobalInterceptors(new ResponseInterceptor());
   
   // 启用 CORS
   app.enableCors();

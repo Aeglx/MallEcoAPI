@@ -12,8 +12,10 @@ export { Product } from './entities/product.entity';
 
 @Injectable()
 export class ProductsService extends BaseService<Product> {
+  @InjectRepository(Product)
+  private readonly productRepository: Repository<Product>;
+
   constructor(
-    @InjectRepository(Product)
     productRepository: Repository<Product>,
     private readonly rabbitMQService: RabbitMQService,
   ) {
@@ -29,10 +31,10 @@ export class ProductsService extends BaseService<Product> {
       searchableFields: ['name', 'description'], // 支持模糊查询的字段
       dateFields: ['createdAt', 'updatedAt'], // 日期字段
       defaultSort: 'sortOrder', // 默认按排序字段排序
-      defaultOrder: 'ASC' as const, // 升序排列
+      defaultOrder: 'DESC' as const, // 降序排列
       customOrder: {
-        sortOrder: 'ASC',
-        createdAt: 'DESC', // 创建时间降序作为第二排序条件
+        sortOrder: 'ASC' as 'ASC' | 'DESC',
+        createdAt: 'DESC' as 'ASC' | 'DESC', // 创建时间降序作为第二排序条件
       },
     };
   }
@@ -46,16 +48,16 @@ export class ProductsService extends BaseService<Product> {
   /**
    * 创建商品
    */
-  async create(createProductDto: CreateProductDto): Promise<Product> {
+  async create(createDto: any): Promise<Product> {
     // 处理布尔值到数字的转换
     const createData: any = {
-      ...createProductDto,
+      ...createDto,
       sales: 0, // 初始销量为0
-      isShow: createProductDto.isShow ? 1 : 0,
-      isNew: createProductDto.isNew ? 1 : 0,
-      isHot: createProductDto.isHot ? 1 : 0,
-      recommend: createProductDto.recommend ? 1 : 0,
-      sortOrder: createProductDto.sortOrder || 0,
+      isShow: createDto.isShow ? 1 : 0,
+      isNew: createDto.isNew ? 1 : 0,
+      isHot: createDto.isHot ? 1 : 0,
+      recommend: createDto.recommend ? 1 : 0,
+      sortOrder: createDto.sortOrder || 0,
     };
 
     const product = await super.create(createData);
@@ -67,6 +69,11 @@ export class ProductsService extends BaseService<Product> {
     await this.rabbitMQService.emit('product.updated', product);
 
     return product;
+  }
+
+  // 保留原有方法以兼容DTO
+  async createWithDto(createProductDto: CreateProductDto): Promise<Product> {
+    return this.create(createProductDto);
   }
 
   /**
@@ -82,31 +89,41 @@ export class ProductsService extends BaseService<Product> {
     recommend?: number;
     page?: number;
     limit?: number;
-  }): Promise<{ data: Product[], total: number }> {
-    return super.findAll(params) as Promise<{ data: Product[], total: number }>;
+  }): Promise<any> {
+    const result = await super.findAll(params);
+    if (Array.isArray(result)) {
+      return {
+        data: result,
+        total: result.length
+      };
+    }
+    return {
+      data: result.data,
+      total: result.total
+    };
   }
 
   /**
    * 更新商品
    */
-  async update(id: string, updateProductDto: UpdateProductDto): Promise<Product> {
+  async update(id: string, updateDto: any): Promise<Product> {
     // 创建更新对象，处理布尔值到数字的转换
-    const updateData: any = { ...updateProductDto };
+    const updateData: any = { ...updateDto };
     
-    if (updateProductDto.isShow !== undefined) {
-      updateData.isShow = updateProductDto.isShow ? 1 : 0;
+    if (updateDto.isShow !== undefined) {
+      updateData.isShow = updateDto.isShow ? 1 : 0;
     }
     
-    if (updateProductDto.isNew !== undefined) {
-      updateData.isNew = updateProductDto.isNew ? 1 : 0;
+    if (updateDto.isNew !== undefined) {
+      updateData.isNew = updateDto.isNew ? 1 : 0;
     }
     
-    if (updateProductDto.isHot !== undefined) {
-      updateData.isHot = updateProductDto.isHot ? 1 : 0;
+    if (updateDto.isHot !== undefined) {
+      updateData.isHot = updateDto.isHot ? 1 : 0;
     }
     
-    if (updateProductDto.recommend !== undefined) {
-      updateData.recommend = updateProductDto.recommend ? 1 : 0;
+    if (updateDto.recommend !== undefined) {
+      updateData.recommend = updateDto.recommend ? 1 : 0;
     }
     
     // 使用基础服务的更新方法
@@ -118,22 +135,27 @@ export class ProductsService extends BaseService<Product> {
     return updatedProduct;
   }
 
+  // 保留原有方法以兼容DTO
+  async updateWithDto(id: string, updateProductDto: UpdateProductDto): Promise<Product> {
+    return this.update(id, updateProductDto);
+  }
+
   /**
    * 删除商品
    */
-  async remove(id: string): Promise<{ message: string }> {
+  async remove(id: string): Promise<any> {
     const product = await this.productRepository.findOne({ where: { id } });
     
     if (!product) {
       throw new NotFoundException('商品不存在');
     }
     
-    await this.productRepository.delete(id);
+    const result = await this.productRepository.delete(id);
 
     // 发送商品删除消息
     await this.rabbitMQService.emit('product.deleted', { id });
 
-    return { message: '删除成功' };
+    return result;
   }
 
   /**
@@ -264,7 +286,7 @@ export class ProductsService extends BaseService<Product> {
     const actualSortField = validSortFields.includes(sortBy) ? sortBy : 'sortOrder';
     const actualSortOrder = ['ASC', 'DESC'].includes(sortOrder.toUpperCase()) ? sortOrder.toUpperCase() : 'ASC';
     
-    queryBuilder.orderBy(`product.${actualSortField}`, actualSortOrder);
+    queryBuilder.orderBy(`product.${actualSortField}`, actualSortOrder as 'ASC' | 'DESC');
     
     // 如果不是按创建时间排序，添加创建时间作为次要排序条件
     if (actualSortField !== 'createdAt') {

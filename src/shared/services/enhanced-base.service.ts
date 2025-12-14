@@ -19,7 +19,7 @@ export abstract class EnhancedBaseService<T extends ObjectLiteral> {
     page?: number;
     limit?: number;
     where?: any;
-    order?: Record<string, 'ASC' | 'DESC'>;
+    order?: any;
     relations?: string[];
   }): Promise<{ data: T[]; total: number }> {
     try {
@@ -29,7 +29,7 @@ export abstract class EnhancedBaseService<T extends ObjectLiteral> {
 
       const [data, total] = await this.repository.findAndCount({
         where: query?.where || {},
-        order: query?.order || { createdAt: 'DESC' as 'ASC' | 'DESC' },
+        order: query?.order || {},
         relations: query?.relations || [],
         skip,
         take: limit,

@@ -24,9 +24,9 @@
   "exclude": [
     "src/modules/promotion",
     "src/modules/promotion.disabled",
-    "src/modules/products",
     "src/modules/statistics",
     "src/modules/distribution",
+    "src/modules/distribution.disabled2",
     "src/modules/live",
     "src/modules/order",
     "src/modules/member",
@@ -40,9 +40,10 @@
     "src/modules/product",
     "src/modules/microservices",
     "src/modules/service-mesh",
-    "src/modules/cache",
     "src/modules/database",
     "src/modules/system",
-    "src/modules/recommendation"
+    "src/modules/recommendation",
+    "src/cache",
+    "src/shared"
   ]
 }

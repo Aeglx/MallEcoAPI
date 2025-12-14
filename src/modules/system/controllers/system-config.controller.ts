@@ -5,7 +5,7 @@ import { SystemConfigEntity } from '../entities/system-config.entity';
 import { CreateSystemConfigDto } from '../dto/create-system-config.dto';
 import { UpdateSystemConfigDto } from '../dto/update-system-config.dto';
 import { SystemConfigSearchDto } from '../dto/system-config-search.dto';
-import { TransformInterceptor } from '../../../../common/interceptors/transform.interceptor';
+import { TransformInterceptor } from '../../../shared/interceptors/transform.interceptor';
 
 @ApiTags('系统配置管理')
 @Controller('system/config')

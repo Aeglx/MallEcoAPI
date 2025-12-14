@@ -1,7 +1,7 @@
 import { Controller, Get, UseInterceptors } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { SystemMonitorService } from '../services/system-monitor.service';
-import { TransformInterceptor } from '../../../../common/interceptors/transform.interceptor';
+import { TransformInterceptor } from '../../../shared/interceptors/transform.interceptor';
 
 @ApiTags('系统监控')
 @Controller('system/monitor')
