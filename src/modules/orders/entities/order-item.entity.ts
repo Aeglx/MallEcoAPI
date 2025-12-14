@@ -1,5 +1,5 @@
 import { Column, Entity, Index } from 'typeorm';
-import { BaseEntity } from '../../../common/entities/base.entity';
+import { BaseEntity } from '../../../../common/base.entity';
 
 @Entity('mall_order_item')
 @Index(['orderId'])  // 为订单ID创建索引，方便查询

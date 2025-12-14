@@ -13,6 +13,8 @@ import { StatisticsModule } from './statistics/statistics.module';
 import { CacheModule } from './modules/cache/cache.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { CartModule } from './modules/cart/cart.module';
+import { OrdersModule } from './modules/orders/orders.module';
+import { WalletModule } from './modules/wallet/wallet.module';
 import { configurations } from './config/configuration';
 import { ResponseInterceptor } from './shared/interceptors/response.interceptor';
 import { HttpExceptionFilter } from './shared/filters/http-exception.filter';
@@ -90,6 +92,8 @@ import { MonitoringController } from './shared/monitoring/monitoring.controller'
     CacheModule,
     AuthModule,
     CartModule,
+    OrdersModule,
+    WalletModule,
   ],
   controllers: [AppController, MonitoringController],
   providers: [
