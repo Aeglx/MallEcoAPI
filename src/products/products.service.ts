@@ -47,7 +47,17 @@ export class ProductsService {
   /**
    * 查询商品列表
    */
-  async findAll(params?: any): Promise<{ data: Product[], total: number }> {
+  async findAll(params?: {
+    name?: string;
+    categoryId?: string;
+    brandId?: string;
+    isShow?: number;
+    isNew?: number;
+    isHot?: number;
+    recommend?: number;
+    page?: number;
+    limit?: number;
+  }): Promise<{ data: Product[], total: number }> {
     const queryBuilder = this.productRepository.createQueryBuilder('product');
     
     // 条件查询
@@ -118,8 +128,8 @@ export class ProductsService {
       throw new NotFoundException('商品不存在');
     }
     
-    // 创建更新对象，处理布尔值到数字的转�?
-    const updateData: any = { ...updateProductDto };
+    // 创建更新对象，处理布尔值到数字的转换
+    const updateData: Partial<Product> = { ...updateProductDto };
     
     if (updateProductDto.isShow !== undefined) {
       updateData.isShow = updateProductDto.isShow ? 1 : 0;
@@ -219,7 +229,21 @@ export class ProductsService {
   /**
    * 商品搜索
    */
-  async search(params: any): Promise<{ data: any[], total: number }> {
+  async search(params: {
+    keyword?: string;
+    categoryId?: string;
+    brandId?: string;
+    minPrice?: number;
+    maxPrice?: number;
+    isShow?: number;
+    isNew?: number;
+    isHot?: number;
+    recommend?: number;
+    page?: number;
+    limit?: number;
+    sortBy?: string;
+    sortOrder?: string;
+  }): Promise<{ data: Product[], total: number }> {
     // 暂时使用TypeORM进行简单搜索，后续可替换为Elasticsearch
     const queryBuilder = this.productRepository.createQueryBuilder('product');
     const { keyword, categoryId, brandId, minPrice, maxPrice, isShow, isNew, isHot, recommend, page = 1, limit = 10, sortBy = 'sortOrder', sortOrder = 'ASC' } = params;

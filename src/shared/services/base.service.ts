@@ -16,7 +16,11 @@ export abstract class BaseService<T extends ObjectLiteral> {
    * @param query 查询参数
    * @returns 实体列表或带总数的分页结果
    */
-  async findAll(query?: any): Promise<T[] | { data: T[]; total: number }> {
+  async findAll(query?: {
+    page?: number;
+    limit?: number;
+    [key: string]: any;
+  }): Promise<T[] | { data: T[]; total: number }> {
     try {
       if (query?.page && query?.limit) {
         // 分页查询
@@ -27,7 +31,7 @@ export abstract class BaseService<T extends ObjectLiteral> {
         const { page, limit, ...where } = query;
           
           // 构建排序选项
-          const order: any = { createdAt: 'DESC' };
+          const order: Record<string, 'ASC' | 'DESC'> = { createdAt: 'DESC' };
           
           const [data, total] = await this.repository.findAndCount({
           skip,
@@ -41,7 +45,7 @@ export abstract class BaseService<T extends ObjectLiteral> {
       } else {
           // 普通查询
           // 构建排序选项
-          const order: any = { createdAt: 'DESC' };
+          const order: Record<string, 'ASC' | 'DESC'> = { createdAt: 'DESC' };
           
           const options: FindManyOptions<T> = {
           order,

@@ -14,7 +14,8 @@ interface SocialConfig {
   clientSecret: string;
   redirectUri: string;
   scope?: string;
-  [key: string]: any;
+  // 允许其他配置属性，但需要明确的类型定义
+  [key: string]: string | undefined;
 }
 
 interface AccessTokenResult {
@@ -23,7 +24,8 @@ interface AccessTokenResult {
   expires_in?: number;
   openid?: string;
   unionid?: string;
-  [key: string]: any;
+  // 其他可能的属性
+  [key: string]: string | number | undefined;
 }
 
 interface UserInfoResult {
@@ -33,7 +35,8 @@ interface UserInfoResult {
   avatar?: string;
   email?: string;
   phone?: string;
-  [key: string]: any;
+  // 其他可能的用户信息属性
+  [key: string]: string | undefined;
 }
 
 @Injectable()
@@ -48,7 +51,7 @@ export class SocialService {
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
   ) {
-    // 初始化社交平台配�?
+    // 初始化社交平台配置
     this.configs = {
       [SocialPlatform.WECHAT]: {
         clientId: this.configService.get('WECHAT_APP_ID') || '',
@@ -179,7 +182,7 @@ export class SocialService {
               redirect_uri: config.redirectUri,
             },
           });
-          // 处理QQ返回的字符串格式响应
+          // 澶勭悊QQ杩斿洖鐨勫瓧绗︿覆鏍煎紡鍝嶅簲
           const qqResult = new URLSearchParams(response.data);
           return {
             access_token: qqResult.get('access_token'),
@@ -254,7 +257,7 @@ export class SocialService {
     }
   }
 
-  // 获取用户信息
+  // 鑾峰彇鐢ㄦ埛淇℃伅
   async getUserInfo(platform: SocialPlatform, accessToken: string, openId?: string): Promise<UserInfoResult> {
     try {
       let response;
@@ -278,14 +281,14 @@ export class SocialService {
           };
         
         case SocialPlatform.QQ:
-          // 先获取openid
+          // 鍏堣幏鍙杘penid
           const openIdResponse = await axios.get('https://graph.qq.com/oauth2.0/me', {
             params: { access_token: accessToken },
           });
           const openIdData = JSON.parse(openIdResponse.data.match(/callback\((.*)\)/)[1]);
           const qqOpenId = openIdData.openid;
           
-          // 再获取用户信�?
+          // 鍐嶈幏鍙栫敤鎴蜂俊鎭?
           response = await axios.get('https://graph.qq.com/user/get_user_info', {
             params: {
               oauth_consumer_key: this.configs[platform].clientId,
@@ -364,19 +367,19 @@ export class SocialService {
     }
   }
 
-  // 社交登录回调处理
+  // 绀句氦鐧诲綍鍥炶皟澶勭悊
   async handleCallback(platform: SocialPlatform, code: string, clientType: ClientType = ClientType.PC): Promise<{ user: User; token: string }> {
     // 获取访问令牌
     const tokenResult = await this.getAccessToken(platform, code);
     
-    // 获取用户信息
+    // 鑾峰彇鐢ㄦ埛淇℃伅
     const userInfo = await this.getUserInfo(platform, tokenResult.access_token, tokenResult.openid);
     
-    // 查找或创建用�?
+    // 鏌ユ壘鎴栧垱寤虹敤鎴?
     let user: User;
     let socialAuth: SocialAuthEntity | null;
     
-    // 优先通过unionid查找
+    // 浼樺厛閫氳繃unionid鏌ユ壘
     if (userInfo.unionid) {
       socialAuth = await this.socialAuthRepository.findOne({
         where: { union_id: userInfo.unionid, platform },
@@ -384,7 +387,7 @@ export class SocialService {
       });
     }
     
-    // 如果没有找到，通过openid查找
+    // 濡傛灉娌℃湁鎵惧埌锛岄€氳繃openid鏌ユ壘
     if (!socialAuth && userInfo.openid) {
       socialAuth = await this.socialAuthRepository.findOne({
         where: { open_id: userInfo.openid, platform },
@@ -392,21 +395,21 @@ export class SocialService {
       });
     }
     
-    // 如果找到了社交账号，返回关联的用�?
+    // 濡傛灉鎵惧埌浜嗙ぞ浜よ处鍙凤紝杩斿洖鍏宠仈鐨勭敤鎴?
     if (socialAuth && socialAuth.user) {
       user = socialAuth.user;
     } else {
-      // 否则创建新用�?
+      // 鍚﹀垯鍒涘缓鏂扮敤鎴?
       user = await this.usersService.create({
         username: `social_${platform}_${userInfo.openid?.slice(0, 10)}`,
         nickname: userInfo.nickname || `User_${platform}_${userInfo.openid?.slice(0, 6)}`,
         avatar: userInfo.avatar || '',
         email: userInfo.email || '',
-        password: '', // 社交登录用户不需要密�?
+        password: '', // 绀句氦鐧诲綍鐢ㄦ埛涓嶉渶瑕佸瘑鐮?
       });
     }
     
-    // 更新或创建社交账号信�?
+    // 鏇存柊鎴栧垱寤虹ぞ浜よ处鍙蜂俊鎭?
     if (socialAuth) {
       socialAuth.access_token = tokenResult.access_token;
       socialAuth.refresh_token = tokenResult.refresh_token;
@@ -428,7 +431,7 @@ export class SocialService {
       await this.socialAuthRepository.save(socialAuth);
     }
     
-    // 生成JWT令牌
+    // 鐢熸垚JWT浠ょ墝
     const token = this.jwtService.sign({
       id: user.id,
       username: user.username,
@@ -437,9 +440,9 @@ export class SocialService {
     return { user, token };
   }
 
-  // 绑定社交账号
+  // 缁戝畾绀句氦璐﹀彿
   async bindSocialAccount(userId: number, platform: SocialPlatform, accessToken: string, openId: string, unionId?: string): Promise<SocialAuthEntity> {
-    // 检查是否已经绑�?
+    // 妫€鏌ユ槸鍚﹀凡缁忕粦瀹?
     const existing = await this.socialAuthRepository.findOne({
       where: { user_id: userId, platform },
     });
@@ -448,7 +451,7 @@ export class SocialService {
       throw new HttpException('This social account is already bound', HttpStatus.BAD_REQUEST);
     }
     
-    // 检查openid是否已经被其他用户绑�?
+    // 妫€鏌penid鏄惁宸茬粡琚叾浠栫敤鎴风粦瀹?
     const existingByOpenId = await this.socialAuthRepository.findOne({
       where: { open_id: openId, platform },
     });
@@ -457,7 +460,7 @@ export class SocialService {
       throw new HttpException('This social account is already bound to another user', HttpStatus.BAD_REQUEST);
     }
     
-    // 创建新的绑定
+    // 鍒涘缓鏂扮殑缁戝畾
     const socialAuth = this.socialAuthRepository.create({
       user_id: userId,
       platform,
@@ -470,7 +473,7 @@ export class SocialService {
     return this.socialAuthRepository.save(socialAuth);
   }
 
-  // 解绑社交账号
+  // 瑙ｇ粦绀句氦璐﹀彿
   async unbindSocialAccount(userId: number, platform: SocialPlatform): Promise<void> {
     const result = await this.socialAuthRepository.delete({
       user_id: userId,
@@ -482,7 +485,7 @@ export class SocialService {
     }
   }
 
-  // 获取用户绑定的所有社交账�?
+  // 鑾峰彇鐢ㄦ埛缁戝畾鐨勬墍鏈夌ぞ浜よ处鍙?
   async getUserSocialAccounts(userId: number): Promise<SocialAuthEntity[]> {
     return this.socialAuthRepository.find({
       where: { user_id: userId },

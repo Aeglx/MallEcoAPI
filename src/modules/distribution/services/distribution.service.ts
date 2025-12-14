@@ -1,4 +1,5 @@
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import { BusinessException } from '../../../shared/exceptions/business.exception';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Like, Between, In } from 'typeorm';
 import { Distribution } from '../entities/distribution.entity';
@@ -254,9 +255,48 @@ export class DistributionService {
   /**
    * 通过邀请码注册
    */
-  async registerByInviteCode(inviteCode: string, data: { memberId: string; realName: string; mobile: string }): Promise<any> {
-    // TODO: 实现通过邀请码注册的逻辑
-    return {};
+  async registerByInviteCode(inviteCode: string, data: { memberId: string; realName: string; mobile: string }): Promise<Distribution> {
+    // 验证邀请码
+    const inviterDistribution = await this.distributionRepository.findOne({
+      where: { inviteCode, deleteFlag: false }
+    });
+
+    if (!inviterDistribution) {
+      throw new BadRequestException('无效的邀请码');
+    }
+
+    // 检查用户是否已经是分销员
+    const existingDistribution = await this.distributionRepository.findOne({
+      where: { memberId: data.memberId, deleteFlag: false }
+    });
+
+    if (existingDistribution) {
+      throw new BadRequestException('用户已经是分销员');
+    }
+
+    // 创建分销员
+    const distribution = new Distribution();
+    distribution.memberId = data.memberId;
+    distribution.memberName = data.realName;
+    distribution.name = data.realName;
+    distribution.mobile = data.mobile;
+    distribution.inviterId = inviterDistribution.id;
+    distribution.inviteCode = this.generateInviteCode();
+    distribution.distributionStatus = DistributionStatusEnum.NORMAL;
+    distribution.distributionOrderCount = 0;
+    distribution.rebateTotal = 0;
+    distribution.canRebate = 0;
+    distribution.commissionFrozen = 0;
+    distribution.distributionOrderPrice = 0;
+
+    return await this.distributionRepository.save(distribution);
+  }
+
+  /**
+   * 生成邀请码
+   */
+  private generateInviteCode(): string {
+    return Math.random().toString(36).substring(2, 8).toUpperCase();
   }
 
   /**
@@ -270,9 +310,38 @@ export class DistributionService {
   /**
    * 申请成为分销员
    */
-  async applyDistributor(data: { memberId: string; realName: string; mobile: string; idCard?: string; wechat?: string; qq?: string; bankName?: string; bankAccount?: string; accountName?: string; applyReason?: string }): Promise<any> {
-    // TODO: 实现申请成为分销员的逻辑
-    return {};
+  async applyDistributor(data: { memberId: string; realName: string; mobile: string; idCard?: string; wechat?: string; qq?: string; bankName?: string; bankAccount?: string; accountName?: string; applyReason?: string }): Promise<Distribution> {
+    // 检查用户是否已经是分销员
+    const existingDistribution = await this.distributionRepository.findOne({
+      where: { memberId: data.memberId, deleteFlag: false }
+    });
+
+    if (existingDistribution) {
+      throw new BadRequestException('用户已经申请或成为分销员');
+    }
+
+    // 创建分销员申请
+    const distribution = new Distribution();
+    distribution.memberId = data.memberId;
+    distribution.memberName = data.realName;
+    distribution.name = data.realName;
+    distribution.mobile = data.mobile;
+    distribution.idNumber = data.idCard;
+    distribution.wechat = data.wechat;
+    distribution.qq = data.qq;
+    distribution.settlementBankAccountName = data.accountName;
+    distribution.settlementBankAccountNum = data.bankAccount;
+    distribution.settlementBankBranchName = data.bankName;
+    distribution.inviteCode = this.generateInviteCode();
+    distribution.applyReason = data.applyReason;
+    distribution.distributionStatus = DistributionStatusEnum.APPLY;
+    distribution.distributionOrderCount = 0;
+    distribution.rebateTotal = 0;
+    distribution.canRebate = 0;
+    distribution.commissionFrozen = 0;
+    distribution.distributionOrderPrice = 0;
+
+    return await this.distributionRepository.save(distribution);
   }
 
   /**
@@ -310,9 +379,25 @@ export class DistributionService {
   /**
    * 审核通过分销员
    */
-  async approveDistributor(distributorId: string, data: { approveRemark?: string; operatorId: string }): Promise<any> {
-    // TODO: 实现审核通过分销员的逻辑
-    return {};
+  async approveDistributor(distributorId: string, data: { approveRemark?: string; operatorId: string }): Promise<Distribution> {
+    const distribution = await this.distributionRepository.findOne({
+      where: { id: distributorId, deleteFlag: false }
+    });
+
+    if (!distribution) {
+      throw new NotFoundException('分销员不存在');
+    }
+
+    if (distribution.distributionStatus !== DistributionStatusEnum.APPLY) {
+      throw new BadRequestException('只能审核待审核状态的申请');
+    }
+
+    distribution.distributionStatus = DistributionStatusEnum.NORMAL;
+    distribution.updateBy = data.operatorId;
+    distribution.approveTime = new Date();
+    distribution.approveRemark = data.approveRemark;
+
+    return await this.distributionRepository.save(distribution);
   }
 
   /**

@@ -3,9 +3,16 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { join } from 'path';
 import { EventEmitterModule } from '@nestjs/event-emitter';
+import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { RbacModule } from './modules/rbac/rbac.module';
+import { configurations } from './config/configuration';
+import { ResponseInterceptor } from './shared/interceptors/response.interceptor';
+import { HttpExceptionFilter } from './shared/filters/http-exception.filter';
+import { PerformanceInterceptor } from './shared/interceptors/performance.interceptor';
+import { PerformanceService } from './shared/monitoring/performance.service';
+import { MonitoringController } from './shared/monitoring/monitoring.controller';
 
 @Module({
   imports: [
@@ -66,7 +73,22 @@ import { RbacModule } from './modules/rbac/rbac.module';
     }),
     RbacModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [AppController, MonitoringController],
+  providers: [
+    AppService,
+    PerformanceService,
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: ResponseInterceptor,
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: PerformanceInterceptor,
+    },
+    {
+      provide: APP_FILTER,
+      useClass: HttpExceptionFilter,
+    },
+  ],
 })
 export class AppModule {}
