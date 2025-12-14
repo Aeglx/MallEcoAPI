@@ -5,7 +5,7 @@ import { UpdatePermissionDto } from '../dto/update-permission.dto';
 import { PermissionSearchDto } from '../dto/permission-search.dto';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 
-@ApiTags('RBAC - 权限管理')
+@ApiTags('权限管理')
 @Controller('rbac/permissions')
 export class PermissionController {
   constructor(private readonly permissionService: PermissionService) {}

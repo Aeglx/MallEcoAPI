@@ -3,7 +3,7 @@ import { UserStatisticsService } from '../services/user-statistics.service';
 import { UserStatisticsQueryDto } from '../dto/user-statistics-query.dto';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 
-@ApiTags('Statistics - 用户统计')
+@ApiTags('用户统计')
 @Controller('statistics/users')
 export class UserStatisticsController {
   constructor(private readonly userStatisticsService: UserStatisticsService) {}

@@ -5,7 +5,7 @@ import { UpdateRoleDto } from '../dto/update-role.dto';
 import { RoleSearchDto } from '../dto/role-search.dto';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 
-@ApiTags('RBAC - 角色管理')
+@ApiTags('角色管理')
 @Controller('rbac/roles')
 export class RoleController {
   constructor(private readonly roleService: RoleService) {}
@@ -52,7 +52,7 @@ export class RoleController {
   @Post(':id/permissions')
   @ApiOperation({ summary: '为角色分配权限' })
   @ApiResponse({ status: 200, description: '权限分配成功' })
-  assignPermissions(@Param('id') id: string, @Body() permissionIds: number[]) {
+  assignPermissions(@Param('id') id: string, @Body() { permissionIds }: { permissionIds: number[] }) {
     return this.roleService.assignPermissions(+id, permissionIds);
   }
 

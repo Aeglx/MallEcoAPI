@@ -78,7 +78,7 @@ export class LiveService {
   async getLiveStatistics(roomId: string): Promise<LiveStatistics[]> {
     return this.liveStatisticsRepository.find({
       where: { liveRoomId: roomId },
-      orderBy: { date: 'DESC' },
+      order: { date: 'DESC' },
       take: 30, // 获取最近30天数据
     });
   }

@@ -3,7 +3,7 @@ import { ApiTags, ApiOperation, ApiResponse, ApiQuery, ApiParam, ApiBody } from 
 import { CacheOptimizationService } from '../services/cache-optimization.service';
 import { CacheAnalysisService } from '../services/cache-analysis.service';
 
-@ApiTags('缓存优化')
+@ApiTags('缓存管理')
 @Controller('cache-optimization')
 export class CacheOptimizationController {
   constructor(

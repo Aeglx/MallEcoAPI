@@ -3,7 +3,7 @@ import { SalesStatisticsService } from '../services/sales-statistics.service';
 import { SalesStatisticsQueryDto } from '../dto/sales-statistics-query.dto';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 
-@ApiTags('Statistics - 销售统计')
+@ApiTags('销售统计')
 @Controller('statistics/sales')
 export class SalesStatisticsController {
   constructor(private readonly salesStatisticsService: SalesStatisticsService) {}

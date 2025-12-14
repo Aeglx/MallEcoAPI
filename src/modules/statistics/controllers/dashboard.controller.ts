@@ -3,7 +3,7 @@ import { DashboardService } from '../services/dashboard.service';
 import { DashboardQueryDto } from '../dto/dashboard-query.dto';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 
-@ApiTags('Statistics - 仪表盘')
+@ApiTags('仪表盘')
 @Controller('statistics/dashboard')
 export class DashboardController {
   constructor(private readonly dashboardService: DashboardService) {}

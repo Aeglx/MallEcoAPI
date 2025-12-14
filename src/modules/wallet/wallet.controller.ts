@@ -6,7 +6,7 @@ import { WalletTransaction } from './entities/wallet-transaction.entity';
 import { RechargeDto } from './dto/recharge.dto';
 import { WithdrawDto } from './dto/withdraw.dto';
 
-@ApiTags('wallet')
+@ApiTags('钱包管理')
 @Controller('wallet')
 export class WalletController {
   constructor(private readonly walletService: WalletService) {}

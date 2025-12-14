@@ -5,7 +5,7 @@ import { UpdateDepartmentDto } from '../dto/update-department.dto';
 import { DepartmentSearchDto } from '../dto/department-search.dto';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 
-@ApiTags('RBAC - 部门管理')
+@ApiTags('部门管理')
 @Controller('rbac/departments')
 export class DepartmentController {
   constructor(private readonly departmentService: DepartmentService) {}

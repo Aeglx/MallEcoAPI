@@ -5,7 +5,7 @@ import { UpdateUserDto } from '../dto/update-user.dto';
 import { UserSearchDto } from '../dto/user-search.dto';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 
-@ApiTags('RBAC - 用户管理')
+@ApiTags('用户管理')
 @Controller('rbac/users')
 export class UserController {
   constructor(private readonly userService: UserService) {}

@@ -3,7 +3,7 @@ import { FinancialStatisticsService } from '../services/financial-statistics.ser
 import { FinancialStatisticsQueryDto } from '../dto/financial-statistics-query.dto';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 
-@ApiTags('Statistics - 财务统计')
+@ApiTags('财务统计')
 @Controller('statistics/financial')
 export class FinancialStatisticsController {
   constructor(private readonly financialStatisticsService: FinancialStatisticsService) {}

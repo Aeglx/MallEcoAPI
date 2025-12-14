@@ -19,6 +19,7 @@ import { SystemDiagnosis } from './entities/system-diagnosis.entity';
 import { PerformanceMonitorController } from './controllers/performance-monitor.controller';
 import { PerformanceMonitorService } from './services/performance-monitor.service';
 import { AuditLogService } from './services/audit-log.service';
+import { DatabaseManagementController } from './controllers/database-management.controller';
 
 @Module({
   imports: [TypeOrmModule.forFeature([
@@ -34,7 +35,8 @@ import { AuditLogService } from './services/audit-log.service';
     SystemBackupController,
     SystemVersionController,
     SystemDiagnosisController,
-    PerformanceMonitorController
+    PerformanceMonitorController,
+    DatabaseManagementController
   ],
   providers: [
     SystemConfigService,
