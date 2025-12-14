@@ -174,4 +174,29 @@ export class SystemConfigService {
 
     return groups.map(item => item.configGroup);
   }
+
+  /**
+   * 获取配置摘要信息
+   */
+  async getConfigSummary(): Promise<{
+    totalConfigs: number;
+    totalGroups: number;
+    activeConfigs: number;
+  }> {
+    // 获取配置总数
+    const totalConfigs = await this.configRepository.count();
+    
+    // 获取配置分组数
+    const groups = await this.getConfigGroups();
+    const totalGroups = groups.length;
+    
+    // 获取活跃配置数（假设active为true表示活跃）
+    const activeConfigs = await this.configRepository.count({ where: { active: true } });
+
+    return {
+      totalConfigs,
+      totalGroups,
+      activeConfigs,
+    };
+  }
 }

@@ -19,6 +19,7 @@ import { SystemDiagnosis } from './entities/system-diagnosis.entity';
 import { PerformanceMonitorController } from './controllers/performance-monitor.controller';
 import { PerformanceMonitorService } from './services/performance-monitor.service';
 import { AuditLogService } from './services/audit-log.service';
+import { SystemManagementController } from './controllers/system-management.controller';
 import { DatabaseManagementController } from './controllers/database-management.controller';
 
 @Module({
@@ -36,6 +37,7 @@ import { DatabaseManagementController } from './controllers/database-management.
     SystemVersionController,
     SystemDiagnosisController,
     PerformanceMonitorController,
+    SystemManagementController,
     DatabaseManagementController
   ],
   providers: [
