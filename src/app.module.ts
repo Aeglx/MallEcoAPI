@@ -24,6 +24,8 @@ import { SmsModule } from './modules/sms/sms.module';
 import { EmailModule } from './modules/email/email.module';
 import { FileModule } from './modules/file/file.module';
 import { CaptchaModule } from './modules/captcha/captcha.module';
+import { FeedbackModule } from './modules/feedback/feedback.module';
+import { LogisticsModule } from './modules/logistics/logistics.module';
 import { configurations } from './config/configuration';
 import { ResponseInterceptor } from './shared/interceptors/response.interceptor';
 import { HttpExceptionFilter } from './shared/filters/http-exception.filter';
@@ -115,6 +117,9 @@ import { MonitoringController } from './shared/monitoring/monitoring.controller'
     SmsModule,
     EmailModule,
     FileModule,
+    CaptchaModule,
+    LogisticsModule,
+    FeedbackModule,
   ],
   controllers: [AppController, MonitoringController],
   providers: [

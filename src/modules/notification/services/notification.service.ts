@@ -4,7 +4,7 @@ import { Repository, Not } from 'typeorm';
 import { Notification, NotificationStatus, NotificationType } from '../entities/notification.entity';
 import { CreateNotificationDto } from '../dto/create-notification.dto';
 import { UpdateNotificationDto } from '../dto/update-notification.dto';
-import { UserService } from '../../user/services/user.service';
+import { UserService } from '../../users/services/user.service';
 import { SmsService } from '../../sms/services/sms.service';
 import { MailService } from '../../mail/services/mail.service';
 
