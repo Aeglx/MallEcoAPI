@@ -2,14 +2,7 @@ import { Injectable, CanActivate, ExecutionContext, HttpException, HttpStatus } 
 import { RateLimiterService } from './rate-limiter.service';
 import { Request } from 'express';
 
-// 扩展Request接口以包含user属性
-declare global {
-  namespace Express {
-    interface Request {
-      user?: any;
-    }
-  }
-}
+// 使用passport提供的Request.user定义，无需重复声明
 
 @Injectable()
 export class RateLimitGuard implements CanActivate {

@@ -7,6 +7,12 @@ import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { RbacModule } from './modules/rbac/rbac.module';
+import { ProductsModule } from './products/products.module';
+import { SystemModule } from './modules/system/system.module';
+import { StatisticsModule } from './statistics/statistics.module';
+import { CacheModule } from './modules/cache/cache.module';
+import { AuthModule } from './modules/auth/auth.module';
+import { CartModule } from './modules/cart/cart.module';
 import { configurations } from './config/configuration';
 import { ResponseInterceptor } from './shared/interceptors/response.interceptor';
 import { HttpExceptionFilter } from './shared/filters/http-exception.filter';
@@ -78,6 +84,12 @@ import { MonitoringController } from './shared/monitoring/monitoring.controller'
       ],
     }),
     RbacModule,
+    ProductsModule,
+    SystemModule,
+    StatisticsModule,
+    CacheModule,
+    AuthModule,
+    CartModule,
   ],
   controllers: [AppController, MonitoringController],
   providers: [

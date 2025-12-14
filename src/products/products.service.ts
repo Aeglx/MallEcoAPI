@@ -12,11 +12,9 @@ export { Product } from './entities/product.entity';
 
 @Injectable()
 export class ProductsService extends BaseService<Product> {
-  @InjectRepository(Product)
-  private readonly productRepository: Repository<Product>;
-
   constructor(
-    productRepository: Repository<Product>,
+    @InjectRepository(Product)
+    private readonly productRepository: Repository<Product>,
     private readonly rabbitMQService: RabbitMQService,
   ) {
     super(productRepository);

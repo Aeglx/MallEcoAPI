@@ -1,14 +1,13 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 
 @Injectable()
 export class UsersService {
-  constructor(
-    @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
-  ) {}
+  // 使用内存数组模拟数据库
+  private readonly users: User[] = [];
+  
+  constructor() {}
+
 
   /**
    * 创建用户
@@ -16,8 +15,14 @@ export class UsersService {
    * @returns 创建的用户
    */
   async create(userData: Partial<User>): Promise<User> {
-    const user = this.userRepository.create(userData);
-    return await this.userRepository.save(user);
+    const user = {
+      id: Date.now().toString(), // 使用时间戳作为ID
+      createTime: new Date(),
+      updateTime: new Date(),
+      ...userData,
+    } as User;
+    this.users.push(user);
+    return user;
   }
 
   /**
@@ -26,7 +31,7 @@ export class UsersService {
    * @returns 用户信息
    */
   async findById(id: string): Promise<User | undefined> {
-    return await this.userRepository.findOne({ where: { id } });
+    return this.users.find(user => user.id === id);
   }
 
   /**
@@ -35,7 +40,7 @@ export class UsersService {
    * @returns 用户信息
    */
   async findByUsername(username: string): Promise<User | undefined> {
-    return await this.userRepository.findOne({ where: { username } });
+    return this.users.find(user => user.username === username);
   }
 
   /**
@@ -44,7 +49,7 @@ export class UsersService {
    * @returns 用户信息
    */
   async findByEmail(email: string): Promise<User | undefined> {
-    return await this.userRepository.findOne({ where: { email } });
+    return this.users.find(user => user.email === email);
   }
 
   /**
@@ -53,7 +58,7 @@ export class UsersService {
    * @returns 用户信息
    */
   async findByPhone(phone: string): Promise<User | undefined> {
-    return await this.userRepository.findOne({ where: { phone } });
+    return this.users.find(user => user.phone === phone);
   }
 
   /**
@@ -63,8 +68,18 @@ export class UsersService {
    * @returns 更新后的用户
    */
   async update(id: string, userData: Partial<User>): Promise<User | undefined> {
-    await this.userRepository.update(id, userData);
-    return await this.findById(id);
+    const index = this.users.findIndex(user => user.id === id);
+    if (index === -1) {
+      return undefined;
+    }
+    
+    this.users[index] = {
+      ...this.users[index],
+      ...userData,
+      updateTime: new Date(),
+    };
+    
+    return this.users[index];
   }
 
   /**
@@ -73,7 +88,12 @@ export class UsersService {
    * @returns 删除结果
    */
   async delete(id: string): Promise<boolean> {
-    const result = await this.userRepository.delete(id);
-    return result.affected > 0;
+    const index = this.users.findIndex(user => user.id === id);
+    if (index === -1) {
+      return false;
+    }
+    
+    this.users.splice(index, 1);
+    return true;
   }
 }
