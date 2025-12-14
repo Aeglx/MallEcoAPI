@@ -9,6 +9,41 @@ SET SQL_MODE = 'NO_AUTO_VALUE_ON_ZERO';
 -- 商品管理模块 - 缺失表结构
 -- =============================================
 
+-- 商品主表
+CREATE TABLE IF NOT EXISTS `mall_product` (
+  `id` varchar(36) NOT NULL COMMENT '商品ID',
+  `name` varchar(100) NOT NULL COMMENT '商品名称',
+  `description` varchar(500) DEFAULT NULL COMMENT '商品描述',
+  `price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '商品价格',
+  `original_price` decimal(10,2) DEFAULT NULL COMMENT '原价',
+  `stock` int NOT NULL DEFAULT '0' COMMENT '库存数量',
+  `sales` int NOT NULL DEFAULT '0' COMMENT '销量',
+  `main_image` varchar(255) DEFAULT NULL COMMENT '主图',
+  `category_id` varchar(36) NOT NULL COMMENT '分类ID',
+  `brand_id` varchar(36) DEFAULT NULL COMMENT '品牌ID',
+  `is_show` tinyint(1) NOT NULL DEFAULT '1' COMMENT '是否上架(0:下架, 1:上架)',
+  `is_new` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否新品(0:否, 1:是)',
+  `is_hot` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否热门(0:否, 1:是)',
+  `recommend` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否推荐(0:否, 1:是)',
+  `sort_order` int NOT NULL DEFAULT '0' COMMENT '排序',
+  `specifications` json DEFAULT NULL COMMENT '规格参数(JSON格式)',
+  `details` text DEFAULT NULL COMMENT '商品详情',
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`id`),
+  KEY `idx_name` (`name`),
+  KEY `idx_category_id` (`category_id`),
+  KEY `idx_brand_id` (`brand_id`),
+  KEY `idx_is_show` (`is_show`),
+  KEY `idx_is_new` (`is_new`),
+  KEY `idx_is_hot` (`is_hot`),
+  KEY `idx_price` (`price`),
+  KEY `idx_recommend` (`recommend`),
+  KEY `idx_category_id_is_show_sort_order` (`category_id`, `is_show`, `sort_order`),
+  KEY `idx_is_show_sort_order_created_at` (`is_show`, `sort_order`, `created_at`),
+  FULLTEXT KEY `idx_name_is_show` (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='商品主表';
+
 -- 商品SKU表
 CREATE TABLE IF NOT EXISTS `mall_product_sku` (
   `id` varchar(36) NOT NULL COMMENT 'SKU ID',
