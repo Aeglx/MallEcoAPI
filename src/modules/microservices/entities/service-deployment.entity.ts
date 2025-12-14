@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, Index } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, Index } from 'typeorm';
 
 @Entity('service_deployment')
 @Index(['serviceName', 'environment'])
@@ -66,6 +66,6 @@ export class ServiceDeploymentEntity {
   @CreateDateColumn({ comment: '创建时间' })
   createdAt: Date;
 
-  @CreateDateColumn({ comment: '更新时间' })
+  @UpdateDateColumn({ comment: '更新时间' })
   updatedAt: Date;
 }

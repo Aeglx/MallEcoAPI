@@ -1,5 +1,5 @@
 import { Entity, Column } from 'typeorm';
-import { BaseEntity } from '../../../../common/base.entity';
+import { BaseEntity } from '../../../common/base.entity';
 
 @Entity('mall_activity')
 export class Activity extends BaseEntity {
@@ -30,3 +30,4 @@ export class Activity extends BaseEntity {
   @Column({ name: 'is_top', type: 'tinyint', default: 0, comment: '是否置顶' })
   isTop: number;
 }
+

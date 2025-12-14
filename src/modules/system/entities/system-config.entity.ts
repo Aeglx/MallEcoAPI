@@ -50,4 +50,8 @@ export class SystemConfigEntity {
   @ApiProperty({ description: '更新人' })
   @Column({ length: 50, nullable: true })
   updatedBy: string;
+
+  @ApiProperty({ description: '是否活跃' })
+  @Column({ default: true })
+  active: boolean;
 }

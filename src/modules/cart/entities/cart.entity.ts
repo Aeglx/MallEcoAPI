@@ -1,5 +1,5 @@
 import { Entity, Column, Index } from 'typeorm';
-import { BaseEntity } from '../../../../common/base.entity';
+import { BaseEntity } from '../../../common/base.entity';
 
 @Entity('mall_cart')
 @Index(['userId', 'productId'], { unique: true })
@@ -31,5 +31,6 @@ export class Cart extends BaseEntity {
   @Column({ name: 'selected', type: 'tinyint', default: 1 })
   selected: number;
 
-  // 注意：由于使用内存存储，暂时不添加实体关联
+  // 注意：由于使用内存存储，暂时不添加实体关�?
 }
+

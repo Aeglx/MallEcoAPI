@@ -1,5 +1,5 @@
 import { Entity, Column, Index, OneToMany } from 'typeorm';
-import { BaseEntity } from '../../../../common/base.entity';
+import { BaseEntity } from '../../../common/base.entity';
 import { SocialAuthEntity } from '../../../social/entities/social-auth.entity';
 
 export enum UserStatus {
@@ -66,3 +66,4 @@ export class User extends BaseEntity {
   @OneToMany(() => SocialAuthEntity, (socialAuth) => socialAuth.user)
   social_auths: SocialAuthEntity[];
 }
+

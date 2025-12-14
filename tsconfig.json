@@ -9,7 +9,12 @@
     "target": "ES2021",
     "sourceMap": true,
     "outDir": "./dist",
-    "baseUrl": ".",
+    "baseUrl": "./src",
+    "paths": {
+      "*": ["*"],
+      "../../../../common/base.entity": ["common/base.entity"],
+      "../../../common/base.entity": ["common/base.entity"]
+    },
     "incremental": true,
     "skipLibCheck": true,
     "strictNullChecks": false,
@@ -22,28 +27,7 @@
     "strictPropertyInitialization": false
   },
   "exclude": [
-    "src/modules/promotion",
-    "src/modules/promotion.disabled",
-    "src/modules/statistics",
-    "src/modules/distribution",
-    "src/modules/distribution.disabled2",
-    "src/modules/live",
-    "src/modules/order",
-    "src/modules/member",
-    "src/modules/goods",
-    "src/modules/wallet",
-    "src/modules/payment",
-    "src/modules/aftersale",
-    "src/modules/logistics",
-    "src/modules/evaluation",
-    "src/modules/points",
-    "src/modules/product",
-    "src/modules/microservices",
-    "src/modules/service-mesh",
-    "src/modules/database",
-    "src/modules/system",
-    "src/modules/recommendation",
-    "src/cache",
-    "src/shared"
+    "node_modules",
+    "dist"
   ]
 }

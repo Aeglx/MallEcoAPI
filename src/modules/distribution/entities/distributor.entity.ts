@@ -1,5 +1,5 @@
 import { Entity, Column, Index } from 'typeorm';
-import { BaseEntity } from '../../../../common/base.entity';
+import { BaseEntity } from '../../../common/base.entity';
 
 @Entity('mall_distributor')
 export class Distributor extends BaseEntity {
@@ -37,3 +37,4 @@ export class Distributor extends BaseEntity {
   @Column({ name: 'audit_note', type: 'varchar', length: 255, nullable: true, comment: '审核备注' })
   auditNote: string;
 }
+

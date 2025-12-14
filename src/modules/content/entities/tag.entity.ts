@@ -1,5 +1,5 @@
 import { Entity, Column, ManyToMany } from 'typeorm';
-import { BaseEntity } from '../../../../common/base.entity';
+import { BaseEntity } from '../../../common/base.entity';
 import { Article } from './article.entity';
 
 @Entity('mall_tag')
@@ -19,3 +19,4 @@ export class Tag extends BaseEntity {
   @ManyToMany(() => Article, article => article.tags)
   articles: Article[];
 }
+

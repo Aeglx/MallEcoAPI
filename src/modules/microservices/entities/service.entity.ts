@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, Index } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, Index } from 'typeorm';
 
 @Entity('microservice')
 @Index(['serviceName', 'version'])
@@ -48,7 +48,7 @@ export class ServiceEntity {
   @Column({ type: 'decimal', precision: 5, scale: 2, comment: '平均响应时间(ms)' })
   avgResponseTime: number;
 
-  @Column({ type: 'decimal', precision: 5, scale: 2, comment: '错误率(%)' })
+  @Column({ type: 'decimal', precision: 5, scale: 2, comment: '错误�?%)' })
   errorRate: number;
 
   @Column({ type: 'json', nullable: true, comment: '服务配置' })
@@ -66,6 +66,6 @@ export class ServiceEntity {
   @CreateDateColumn({ comment: '创建时间' })
   createdAt: Date;
 
-  @CreateDateColumn({ comment: '更新时间' })
+  @UpdateDateColumn({ comment: '更新时间' })
   updatedAt: Date;
 }

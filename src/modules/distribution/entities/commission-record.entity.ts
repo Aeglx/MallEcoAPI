@@ -1,5 +1,5 @@
 import { Entity, Column, Index } from 'typeorm';
-import { BaseEntity } from '../../../../common/base.entity';
+import { BaseEntity } from '../../../common/base.entity';
 
 @Entity('mall_commission_record')
 export class CommissionRecord extends BaseEntity {
@@ -33,3 +33,4 @@ export class CommissionRecord extends BaseEntity {
   @Column({ name: 'remark', type: 'varchar', length: 255, nullable: true, comment: '备注' })
   remark: string;
 }
+

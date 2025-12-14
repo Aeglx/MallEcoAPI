@@ -1,5 +1,5 @@
 import { Entity, Column, ManyToOne } from 'typeorm';
-import { BaseEntity } from '../../../../common/base.entity';
+import { BaseEntity } from '../../../common/base.entity';
 import { Live } from './live.entity';
 import { Product } from '../../../products/entities/product.entity';
 
@@ -32,6 +32,7 @@ export class LiveProduct extends BaseEntity {
   @Column({ name: 'sales_count', type: 'int', default: 0, comment: '直播间销量' })
   salesCount: number;
 
-  @Column({ name: 'is_hot', type: 'int', default: 0, comment: '是否为直播热品' })
+  @Column({ name: 'is_hot', type: 'int', default: 0, comment: '是否为直播热销' })
   isHot: number;
 }
+

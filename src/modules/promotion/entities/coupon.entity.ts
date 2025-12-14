@@ -1,5 +1,5 @@
 import { Entity, Column, Index } from 'typeorm';
-import { BaseEntity } from '../../../../common/base.entity';
+import { BaseEntity } from '../../../common/base.entity';
 
 @Entity('mall_coupon')
 export class Coupon extends BaseEntity {
@@ -42,3 +42,4 @@ export class Coupon extends BaseEntity {
   @Column({ name: 'applicable_ids', type: 'varchar', length: 255, nullable: true, comment: '适用商品/分类ID' })
   applicableIds: string;
 }
+

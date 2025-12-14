@@ -29,7 +29,7 @@ export class User {
   status: number; // 1-正常 2-禁用 3-锁定
 
   @Column({ default: 0 })
-  gender: number; // 0-未知 1-男 2-女
+  gender: number; // 0-未知 1-�?2-�?
 
   @Column({ nullable: true })
   lastLoginIp: string;

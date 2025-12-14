@@ -1,5 +1,5 @@
 import { Column, Entity, Index } from 'typeorm';
-import { BaseEntity } from '../../../../common/base.entity';
+import { BaseEntity } from '../../../common/base.entity';
 
 @Entity('mall_order_item')
 @Index(['orderId'])  // 为订单ID创建索引，方便查询
@@ -34,3 +34,4 @@ export class OrderItem extends BaseEntity {
   @Column({ name: 'is_deleted', nullable: false, default: 0, comment: '是否删除：0-否，1-是' })
   isDeleted: number;
 }
+

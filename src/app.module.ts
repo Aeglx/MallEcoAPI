@@ -8,8 +8,8 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { RbacModule } from './modules/rbac/rbac.module';
 import { ProductsModule } from './products/products.module';
-import { SystemModule } from './modules/system/system.module';
-import { StatisticsModule } from './statistics/statistics.module';
+// import { SystemModule } from './modules/system/system.module';
+// import { StatisticsModule } from './statistics/statistics.module';
 import { CacheModule } from './modules/cache/cache.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { CartModule } from './modules/cart/cart.module';
@@ -95,8 +95,8 @@ import { MonitoringController } from './shared/monitoring/monitoring.controller'
     }),
     RbacModule,
     ProductsModule,
-    SystemModule,
-    StatisticsModule,
+    // SystemModule,
+    // StatisticsModule,
     CacheModule,
     AuthModule,
     CartModule,

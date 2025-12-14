@@ -1,5 +1,5 @@
 import { Entity, Column, Index } from 'typeorm';
-import { BaseEntity } from '../../../../common/base.entity';
+import { BaseEntity } from '../../../common/base.entity';
 
 export enum TransactionType {
   INCOME = 1,    // 收入
@@ -9,14 +9,14 @@ export enum TransactionType {
 export enum TransactionStatus {
   SUCCESS = 1,   // 成功
   FAILURE = 2,   // 失败
-  PENDING = 3    // 处理中
+  PENDING = 3    // 处理�?
 }
 
 export enum TransactionBusinessType {
-  RECHARGE = 1,            // 充值
+  RECHARGE = 1,            // 充�?
   WITHDRAW = 2,            // 提现
   ORDER_PAYMENT = 3,       // 订单支付
-  ORDER_REFUND = 4,        // 订单退款
+  ORDER_REFUND = 4,        // 订单退�?
   REFERRAL_REWARD = 5,     // 推荐奖励
   SYSTEM_REWARD = 6,       // 系统奖励
   PENALTY = 7,             // 惩罚扣款
@@ -68,3 +68,4 @@ export class WalletTransaction extends BaseEntity {
   @Column({ name: 'extra', type: 'text', nullable: true })
   extra: string;
 }
+

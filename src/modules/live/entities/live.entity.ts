@@ -1,5 +1,5 @@
 import { Entity, Column, ManyToOne } from 'typeorm';
-import { BaseEntity } from '../../../../common/base.entity';
+import { BaseEntity } from '../../../common/base.entity';
 
 @Entity('mall_live')
 export class Live extends BaseEntity {
@@ -51,3 +51,4 @@ export class Live extends BaseEntity {
   @Column({ name: 'live_intro', type: 'text', nullable: true, comment: '直播简介' })
   liveIntro: string;
 }
+

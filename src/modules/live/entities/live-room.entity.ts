@@ -1,5 +1,5 @@
 import { Entity, Column, Index, OneToMany } from 'typeorm';
-import { BaseEntity } from '../../../../common/base.entity';
+import { BaseEntity } from '../../../common/base.entity';
 import { LiveGoods } from './live-goods.entity';
 import { LiveStatistics } from './live-statistics.entity';
 
@@ -47,3 +47,4 @@ export class LiveRoom extends BaseEntity {
   @OneToMany(() => LiveStatistics, statistics => statistics.liveRoom)
   statistics: LiveStatistics[];
 }
+

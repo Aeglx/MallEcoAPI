@@ -26,3 +26,4 @@ export class RecommendationHistoryEntity {
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
 }
+

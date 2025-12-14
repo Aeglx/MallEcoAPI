@@ -1,5 +1,5 @@
 import { Entity, Column, ManyToOne, ManyToMany, JoinTable, Index } from 'typeorm';
-import { BaseEntity } from '../../../../common/base.entity';
+import { BaseEntity } from '../../../common/base.entity';
 import { Category } from './category.entity';
 import { Tag } from './tag.entity';
 
@@ -26,10 +26,10 @@ export class Article extends BaseEntity {
   @Column({ name: 'view_count', type: 'int', default: 0, comment: '浏览量' })
   viewCount: number;
 
-  @Column({ name: 'like_count', type: 'int', default: 0, comment: '点赞数' })
+  @Column({ name: 'like_count', type: 'int', default: 0, comment: '点赞量' })
   likeCount: number;
 
-  @Column({ name: 'comment_count', type: 'int', default: 0, comment: '评论数' })
+  @Column({ name: 'comment_count', type: 'int', default: 0, comment: '评论量' })
   commentCount: number;
 
   @Column({ name: 'status', type: 'tinyint', default: 0, comment: '状态：0-草稿，1-已发布，2-已下架' })
@@ -55,3 +55,4 @@ export class Article extends BaseEntity {
   })
   tags: Tag[];
 }
+

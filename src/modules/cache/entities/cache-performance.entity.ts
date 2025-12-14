@@ -36,7 +36,7 @@ export class CachePerformanceEntity {
   @Column({ type: 'bigint', comment: '未命中次数' })
   misses: number;
 
-  @Column({ type: 'int', comment: '内存使用量(MB)' })
+  @Column({ type: 'int', comment: '内存使用(MB)' })
   memoryUsage: number;
 
   @Column({ type: 'int', comment: '最大内存限制(MB)' })

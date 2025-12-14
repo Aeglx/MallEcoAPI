@@ -1,5 +1,5 @@
 import { Entity, Column, Index, ManyToOne, JoinColumn } from 'typeorm';
-import { BaseEntity } from '../../../../common/base.entity';
+import { BaseEntity } from '../../../common/base.entity';
 import { LiveRoom } from './live-room.entity';
 
 @Entity('mall_live_goods')
@@ -42,3 +42,4 @@ export class LiveGoods extends BaseEntity {
   @JoinColumn({ name: 'live_room_id' })
   liveRoom: LiveRoom;
 }
+

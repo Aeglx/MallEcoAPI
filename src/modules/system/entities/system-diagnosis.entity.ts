@@ -36,7 +36,7 @@ export class SystemDiagnosis {
   affected: any; // 影响范围
 
   @Column({ default: false })
-  isResolved: boolean; // 是否已解决
+  isResolved: boolean; // 是否已解�?
 
   @Column({ type: 'text', nullable: true })
   resolution: string; // 解决方案
@@ -45,31 +45,31 @@ export class SystemDiagnosis {
   resolvedAt: Date; // 解决时间
 
   @Column({ length: 100, nullable: true })
-  resolvedBy: string; // 解决人
+  resolvedBy: string; // 解决�?
 
   @Column({ default: 'low' })
   severity: string; // low, medium, high, critical
 
   @Column({ default: false })
-  isAutoDiagnosis: boolean; // 是否为自动诊断
+  isAutoDiagnosis: boolean; // 是否为自动诊�?
 
   @Column({ type: 'json', nullable: true })
-  thresholds: any; // 诊断阈值
+  thresholds: any; // 诊断阈�?
 
   @Column({ type: 'json', nullable: true })
   history: any[]; // 历史记录
 
   @Column({ type: 'json', nullable: true })
-  context: any; // 诊断上下文信息
+  context: any; // 诊断上下文信�?
 
   @Column({ type: 'json', nullable: true })
   relatedIssues: any[]; // 相关问题
 
   @Column({ default: false })
-  requiresAttention: boolean; // 是否需要关注
+  requiresAttention: boolean; // 是否需要关�?
 
   @Column({ type: 'datetime', nullable: true })
-  nextCheck: Date; // 下次检查时间
+  nextCheck: Date; // 下次检查时�?
 
   @Column({ type: 'json', nullable: true })
   tags: string[]; // 标签

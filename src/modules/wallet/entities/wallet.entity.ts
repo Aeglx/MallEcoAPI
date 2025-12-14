@@ -1,5 +1,5 @@
 import { Entity, Column, Index } from 'typeorm';
-import { BaseEntity } from '../../../../common/base.entity';
+import { BaseEntity } from '../../../common/base.entity';
 
 @Entity('mall_wallet')
 @Index(['userId'], { unique: true })
@@ -27,3 +27,4 @@ export class Wallet extends BaseEntity {
   @Column({ name: 'last_operate_desc', type: 'varchar', length: 255, nullable: true })
   lastOperateDesc: string;
 }
+

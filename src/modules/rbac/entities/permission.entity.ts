@@ -47,7 +47,7 @@ export class Permission {
   isExternal: boolean; // 是否外部链接
 
   @Column({ nullable: true })
-  redirect: string; // 重定向路径
+  redirect: string; // 重定向路�?
 
   @Column({ default: false })
   hidden: boolean; // 是否隐藏

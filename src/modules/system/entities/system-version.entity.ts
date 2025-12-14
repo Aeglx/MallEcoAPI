@@ -15,10 +15,10 @@ export class SystemVersion {
   description: string;
 
   @Column({ type: 'json' })
-  features: any[]; // 新功能列表
+  features: any[]; // 新功能列�?
 
   @Column({ type: 'json' })
-  fixes: any[]; // 修复的问题列表
+  fixes: any[]; // 修复的问题列�?
 
   @Column({ type: 'json' })
   improvements: any[]; // 改进列表
@@ -27,10 +27,10 @@ export class SystemVersion {
   isLts: boolean; // 是否为LTS版本
 
   @Column({ default: false })
-  isCurrent: boolean; // 是否为当前版本
+  isCurrent: boolean; // 是否为当前版�?
 
   @Column({ default: false })
-  isDeprecated: boolean; // 是否已废弃
+  isDeprecated: boolean; // 是否已废�?
 
   @Column({ type: 'date', nullable: true })
   releaseDate: Date; // 发布日期
@@ -54,13 +54,13 @@ export class SystemVersion {
   status: string; // stable, beta, alpha, dev
 
   @Column({ type: 'json', nullable: true })
-  compatibility: any; // 兼容性信息
+  compatibility: any; // 兼容性信�?
 
   @Column({ length: 100, nullable: true })
   downloadUrl: string; // 下载地址
 
   @Column({ length: 255, nullable: true })
-  checksum: string; // 文件校验和
+  checksum: string; // 文件校验�?
 
   @Column({ type: 'bigint', default: 0 })
   fileSize: number; // 文件大小

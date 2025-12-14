@@ -1,5 +1,5 @@
 import { Column, Entity, Index, PrimaryGeneratedColumn } from 'typeorm';
-import { BaseEntity } from '../../../../common/base.entity';
+import { BaseEntity } from '../../../common/base.entity';
 
 @Entity('mall_order')
 export class Order extends BaseEntity {
@@ -57,7 +57,7 @@ export class Order extends BaseEntity {
   @Column({ name: 'city', nullable: true, comment: '城市' })
   city: string;
 
-  @Column({ name: 'district', nullable: true, comment: '区/县' })
+  @Column({ name: 'district', nullable: true, comment: '区县' })
   district: string;
 
   @Column({ name: 'address', nullable: false, comment: '详细地址' })
@@ -75,3 +75,4 @@ export class Order extends BaseEntity {
   @Column({ name: 'is_deleted', nullable: false, default: 0, comment: '是否删除：0-否，1-是' })
   isDeleted: number;
 }
+

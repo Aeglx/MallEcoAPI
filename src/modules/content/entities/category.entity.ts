@@ -1,5 +1,5 @@
 import { Entity, Column, OneToMany } from 'typeorm';
-import { BaseEntity } from '../../../../common/base.entity';
+import { BaseEntity } from '../../../common/base.entity';
 import { Article } from './article.entity';
 
 @Entity('mall_category')
@@ -16,9 +16,10 @@ export class Category extends BaseEntity {
   @Column({ name: 'sort_order', type: 'int', default: 0, comment: '排序' })
   sortOrder: number;
 
-  @Column({ name: 'status', type: 'tinyint', default: 0, comment: '状态：0-禁用，1-启用' })
+  @Column({ name: 'status', type: 'tinyint', default: 0, comment: '状态：0-禁用�?-启用' })
   status: number;
 
   @OneToMany(() => Article, article => article.category)
   articles: Article[];
 }
+

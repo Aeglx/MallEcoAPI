@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, Index } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, Index } from 'typeorm';
 
 @Entity('service_dependency')
 @Index(['serviceName', 'dependencyServiceName'])
@@ -27,7 +27,7 @@ export class ServiceDependencyEntity {
   @Column({ type: 'varchar', length: 20, comment: '通信协议' })
   protocol: string;
 
-  @Column({ type: 'int', comment: '超时时间(秒)' })
+  @Column({ type: 'int', comment: '超时时间(ms)' })
   timeout: number;
 
   @Column({ type: 'int', comment: '重试次数' })
@@ -51,6 +51,6 @@ export class ServiceDependencyEntity {
   @CreateDateColumn({ comment: '创建时间' })
   createdAt: Date;
 
-  @CreateDateColumn({ comment: '更新时间' })
+  @UpdateDateColumn({ comment: '更新时间' })
   updatedAt: Date;
 }
