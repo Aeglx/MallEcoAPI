@@ -11,12 +11,21 @@ describe('ProductsService', () => {
   const mockProduct = {
     id: '1',
     name: '测试商品',
+    description: '这是一个测试商品',
     price: 100,
+    originalPrice: 150,
     stock: 10,
+    sales: 0,
+    mainImage: 'http://example.com/image.jpg',
+    categoryId: 'category-1',
+    brandId: 'brand-1',
     isShow: 1,
     isNew: 0,
     isHot: 0,
     recommend: 0,
+    sortOrder: 0,
+    specifications: {},
+    details: '<p>商品详情</p>',
     createdAt: new Date(),
     updatedAt: new Date(),
   };
@@ -104,7 +113,8 @@ describe('ProductsService', () => {
       const updatedProduct = { ...mockProduct, ...updateDto };
 
       jest.spyOn(repository, 'findOne').mockResolvedValue(mockProduct);
-      jest.spyOn(repository, 'save').mockResolvedValue(updatedProduct);
+      jest.spyOn(repository, 'update').mockResolvedValue({} as any);
+      jest.spyOn(service, 'findOne').mockResolvedValue(updatedProduct);
 
       const result = await service.update('1', updateDto);
       expect(result).toEqual(updatedProduct);

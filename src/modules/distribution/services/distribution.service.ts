@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { BusinessException } from '../../../shared/exceptions/business.exception';
+import { BaseService } from '../../../shared/services/base.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Like, Between, In } from 'typeorm';
 import { Distribution } from '../entities/distribution.entity';
@@ -8,74 +9,85 @@ import { DistributionSearchParams } from '../dto/distribution-search.dto';
 import { DistributionStatusEnum } from '../enums/distribution-status.enum';
 
 @Injectable()
-export class DistributionService {
+export class DistributionService extends BaseService<Distribution> {
   constructor(
     @InjectRepository(Distribution)
-    private distributionRepository: Repository<Distribution>,
-  ) {}
+    distributionRepository: Repository<Distribution>,
+  ) {
+    super(distributionRepository);
+  }
+
+  protected getEntityName(): string {
+    return '分销员';
+  }
 
   /**
    * 申请成为分销员
    */
   async applyDistribution(memberId: string, memberName: string, applyDto: DistributionApplyDTO): Promise<Distribution> {
     // 检查用户是否已经是分销员
-    const existingDistribution = await this.distributionRepository.findOne({
-      where: { memberId, deleteFlag: false }
-    });
+    const existingDistribution = await this.findByField('memberId', memberId);
 
     if (existingDistribution) {
       throw new BadRequestException('用户已经申请过分销员');
     }
 
     // 创建分销员申请
-    const distribution = new Distribution();
-    distribution.memberId = memberId;
-    distribution.memberName = memberName;
-    distribution.name = applyDto.name;
-    distribution.idNumber = applyDto.idNumber;
-    distribution.settlementBankAccountName = applyDto.settlementBankAccountName;
-    distribution.settlementBankAccountNum = applyDto.settlementBankAccountNum;
-    distribution.settlementBankBranchName = applyDto.settlementBankBranchName;
-    distribution.distributionOrderCount = 0;
-    distribution.rebateTotal = 0;
-    distribution.canRebate = 0;
-    distribution.commissionFrozen = 0;
-    distribution.distributionOrderPrice = 0;
-    distribution.distributionStatus = DistributionStatusEnum.APPLY;
+    const createData = {
+      memberId,
+      memberName,
+      name: applyDto.name,
+      idNumber: applyDto.idNumber,
+      settlementBankAccountName: applyDto.settlementBankAccountName,
+      settlementBankAccountNum: applyDto.settlementBankAccountNum,
+      settlementBankBranchName: applyDto.settlementBankBranchName,
+      distributionOrderCount: 0,
+      rebateTotal: 0,
+      canRebate: 0,
+      commissionFrozen: 0,
+      distributionOrderPrice: 0,
+      distributionStatus: DistributionStatusEnum.APPLY,
+      deleteFlag: false,
+    };
 
-    return await this.distributionRepository.save(distribution);
+    return await this.create(createData);
+  }
+
+  /**
+   * 检查唯一性约束
+   */
+  protected async checkUniqueConstraints(createDto: any): Promise<void> {
+    // 检查用户是否已经是分销员
+    if (createDto.memberId) {
+      const existing = await this.findByField('memberId', createDto.memberId);
+      if (existing) {
+        throw new BadRequestException('用户已经申请过分销员');
+      }
+    }
   }
 
   /**
    * 审核分销员申请
    */
   async auditDistribution(id: string, status: DistributionStatusEnum, auditRemark?: string): Promise<Distribution> {
-    const distribution = await this.distributionRepository.findOne({
-      where: { id, deleteFlag: false }
-    });
-
-    if (!distribution) {
-      throw new NotFoundException('分销员不存在');
-    }
+    const distribution = await this.findOne(id);
 
     if (distribution.distributionStatus !== DistributionStatusEnum.APPLY) {
       throw new BadRequestException('只能审核待审核状态的申请');
     }
 
-    distribution.distributionStatus = status;
-    distribution.updateBy = auditRemark || '';
-
-    return await this.distributionRepository.save(distribution);
+    return await this.update(id, {
+      distributionStatus: status,
+      updateBy: auditRemark || '',
+    } as any);
   }
 
   /**
    * 获取当前用户的分销员信息
    */
   async getDistributionByMemberId(memberId: string): Promise<Distribution> {
-    const distribution = await this.distributionRepository.findOne({
-      where: { memberId, deleteFlag: false }
-    });
-
+    const distribution = await this.findByField('memberId', memberId);
+    
     if (!distribution) {
       throw new NotFoundException('用户还不是分销员');
     }

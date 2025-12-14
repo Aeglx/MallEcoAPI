@@ -1,9 +1,12 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, Index } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString, IsNumber, IsOptional, IsNotEmpty, MaxLength } from 'class-validator';
 import { DistributionStatusEnum } from '../enums/distribution-status.enum';
 
 @Entity('li_distribution')
+@Index(['memberId', 'deleteFlag'])
+@Index(['distributionStatus', 'createTime'])
+@Index(['memberId', 'distributionStatus', 'deleteFlag'])
 export class Distribution {
   @PrimaryGeneratedColumn('uuid')
   @ApiProperty({ description: '分销员ID' })

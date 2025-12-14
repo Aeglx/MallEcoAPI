@@ -3,6 +3,7 @@ import { ApiTags, ApiOperation, ApiResponse, ApiQuery, ApiParam } from '@nestjs/
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
+import { Cache, CacheInvalidate } from '../cache/cache.interceptor';
 // import { JwtAuthGuard } from './../../infrastructure/auth/guards/jwt-auth.guard';
 // import { Public } from './../../infrastructure/auth/public.decorator';
 
@@ -13,6 +14,7 @@ export class ProductsController {
 
   // @UseGuards(JwtAuthGuard)  // 生产环境应启用认证
   @Post()
+  @CacheInvalidate(['product_list:*', 'product_detail:*'])
   @ApiOperation({ summary: '创建商品' })
   @ApiResponse({ status: 201, description: '创建成功' })
   @ApiResponse({ status: 400, description: '参数错误' })
@@ -22,6 +24,15 @@ export class ProductsController {
 
   // @Public()
   @Get()
+  @Cache({ 
+    ttl: 300, // 5分钟缓存
+    key: (context) => `product_list:${JSON.stringify(context.getArgs()[0])}`,
+    condition: (context) => {
+      const params = context.getArgs()[0];
+      // 只缓存公开商品列表查询
+      return params.isShow !== 0;
+    }
+  })
   @ApiOperation({ summary: '查询商品列表' })
   @ApiResponse({ status: 200, description: '查询成功' })
   @ApiQuery({ name: 'name', description: '商品名称（模糊查询）', required: false })

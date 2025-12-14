@@ -9,6 +9,9 @@ import { Entity, Column, Index, PrimaryGeneratedColumn, CreateDateColumn, Update
 @Index(['isHot'])
 @Index(['price'])
 @Index(['recommend'])
+@Index(['categoryId', 'isShow', 'sortOrder'])
+@Index(['isShow', 'sortOrder', 'createdAt'])
+@Index(['name', 'isShow'], { fulltext: true })
 export class Product {
   @PrimaryGeneratedColumn('uuid')
   id: string;
