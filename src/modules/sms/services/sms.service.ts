@@ -1,6 +1,6 @@
 import { Injectable, BadRequestException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, MoreThan, LessThan, LessThanOrEqual } from 'typeorm';
 import { SmsLog } from '../entities/sms-log.entity';
 import { SmsTemplate } from '../entities/sms-template.entity';
 import { SmsVerification } from '../entities/sms-verification.entity';
@@ -29,7 +29,7 @@ export class SmsService {
       where: {
         mobile: phone,
         businessType: bizId,
-        createTime: { $gte: oneMinuteAgo },
+        createTime: MoreThan(oneMinuteAgo),
       },
     });
 
@@ -103,7 +103,7 @@ export class SmsService {
         code,
         businessType: bizId,
         used: 0,
-        expireTime: { $gte: now },
+        expireTime: MoreThan(now),
       },
       order: { createTime: 'DESC' },
     });
@@ -198,7 +198,7 @@ export class SmsService {
   async getSmsTemplates(): Promise<SmsTemplate[]> {
     return await this.smsTemplateRepository.find({
       where: { status: 1 },
-      orderBy: { createTime: 'DESC' },
+      order: { createTime: 'DESC' },
     });
   }
 }

@@ -31,7 +31,8 @@ export class NotificationService {
       if (user && user.phone) {
         await this.smsService.sendSms(
           user.phone,
-          `【MallEco】${savedNotification.title}: ${savedNotification.content}`
+          'NOTIFICATION_TEMPLATE',
+          { title: savedNotification.title, content: savedNotification.content }
         );
       }
     }
