@@ -1,5 +1,5 @@
-import { Injectable, ConfigService } from '@nestjs/common';
-import { Config } from 'src/config/config';
+import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import * as SMSClient from 'aliyun-sdk-v2/sms';
 
 @Injectable()
@@ -7,7 +7,7 @@ export class AliyunSmsService {
   private readonly smsClient: SMSClient;
 
   constructor(private readonly configService: ConfigService) {
-    const config = this.configService.get<Config>('config');
+    const config = this.configService.get('config');
     this.smsClient = new SMSClient({
       accessKeyId: config?.sms?.accessKeyId,
       accessKeySecret: config?.sms?.accessKeySecret,
@@ -23,7 +23,7 @@ export class AliyunSmsService {
    * @returns 发送结果
    */
   async sendSms(phoneNumbers: string, templateCode: string, templateParam: Record<string, any>): Promise<any> {
-    const config = this.configService.get<Config>('config');
+    const config = this.configService.get('config');
     const params = {
       PhoneNumbers: phoneNumbers,
       SignName: config?.sms?.signName,

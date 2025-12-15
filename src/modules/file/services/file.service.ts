@@ -2,7 +2,7 @@ import { Injectable, BadRequestException, NotFoundException } from '@nestjs/comm
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { MallFile } from '../entities/file.entity';
-import { MallFileDirectory } from '../entities/file-directory.entity';
+import { FileDirectory as MallFileDirectory } from '../entities/file-directory.entity';
 import { CreateFileDto } from '../dto/create-file.dto';
 import { UpdateFileDto } from '../dto/update-file.dto';
 import * as fs from 'fs';
@@ -16,7 +16,7 @@ export class FileService {
     @InjectRepository(MallFileDirectory) private readonly directoryRepository: Repository<MallFileDirectory>,
   ) {}
 
-  async uploadFile(file: Express.Multer.File, dto: Partial<CreateFileDto>): Promise<MallFile> {
+  async uploadFile(file: any, dto: Partial<CreateFileDto>): Promise<MallFile> {
     const uploadPath = process.env.UPLOAD_PATH || 'uploads';
     if (!fs.existsSync(uploadPath)) {
       fs.mkdirSync(uploadPath, { recursive: true });

@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { PaymentRecord } from '../entities/payment-record.entity';
 import { QueryPaymentDto } from '../dto/query-payment.dto';
 import { PaymentCallbackDto } from '../dto/payment-callback.dto';
-import * as AlipaySdk from 'alipay-sdk';
+import AlipaySdk from 'alipay-sdk';
 
 @Injectable()
 export class AlipayService {
@@ -36,7 +36,7 @@ export class AlipayService {
       };
 
       // 调用支付宝接口
-      const result = await this.alipaySdk.exec(method, {\ bizContent: params });
+      const result = await this.alipaySdk.exec(method, { bizContent: params });
 
       // 根据客户端类型返回不同的支付方式
       if (paymentClient === 'pc') {

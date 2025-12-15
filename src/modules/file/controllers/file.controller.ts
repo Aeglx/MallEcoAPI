@@ -32,7 +32,7 @@ export class FileController {
   @ApiResponse({ status: 201, description: '文件上传成功' })
   @Post('upload')
   @UseInterceptors(FileInterceptor('file'))
-  async uploadFile(@UploadedFile() file: Express.Multer.File, @Body() body: any) {
+  async uploadFile(@UploadedFile() file: any, @Body() body: any) {
     const result = await this.fileService.uploadFile(file, {
       directoryId: body.directoryId,
       description: body.description,

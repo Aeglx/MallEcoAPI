@@ -1,5 +1,6 @@
-import { Injectable, ConfigService } from '@nestjs/common';
-import { Config } from 'src/config/config';
+import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+// 移除未使用的导入
 import * as nodemailer from 'nodemailer';
 
 @Injectable()
@@ -7,7 +8,7 @@ export class SmtpEmailService {
   private readonly transporter: nodemailer.Transporter;
 
   constructor(private readonly configService: ConfigService) {
-    const config = this.configService.get<Config>('config');
+    const config = this.configService.get('config');
     this.transporter = nodemailer.createTransport({
       host: config?.email?.smtp?.host,
       port: config?.email?.smtp?.port,
@@ -28,7 +29,7 @@ export class SmtpEmailService {
    * @returns 发送结果
    */
   async sendMail(to: string, subject: string, html?: string, text?: string): Promise<any> {
-    const config = this.configService.get<Config>('config');
+    const config = this.configService.get('config');
     const mailOptions: nodemailer.SendMailOptions = {
       from: `${config?.email?.smtp?.fromName} <${config?.email?.smtp?.fromAddress}>`,
       to,

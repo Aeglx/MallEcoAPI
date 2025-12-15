@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { MallFile } from './entities/file.entity';
-import { MallFileDirectory } from './entities/file-directory.entity';
+import { FileDirectory as MallFileDirectory } from './entities/file-directory.entity';
 import { FileController } from './controllers/file.controller';
 import { FileService } from './services/file.service';
 import { ServeStaticModule } from '@nestjs/serve-static';

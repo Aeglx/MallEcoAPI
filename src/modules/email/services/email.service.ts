@@ -1,5 +1,6 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { MoreThanOrEqual, LessThanOrEqual } from 'typeorm';
 import { Repository } from 'typeorm';
 import { EmailLog } from '../entities/email-log.entity';
 import { EmailTemplate } from '../entities/email-template.entity';
@@ -29,7 +30,7 @@ export class EmailService {
       where: {
         email,
         businessType: bizId,
-        createTime: { $gte: oneMinuteAgo },
+        createTime: MoreThanOrEqual(oneMinuteAgo),
       },
     });
 
@@ -114,7 +115,7 @@ export class EmailService {
         code,
         businessType: bizId,
         used: 0,
-        expireTime: { $gte: now },
+        expireTime: MoreThanOrEqual(now),
       },
       order: { createTime: 'DESC' },
     });
@@ -225,7 +226,7 @@ export class EmailService {
   async getEmailTemplates(): Promise<EmailTemplate[]> {
     return await this.emailTemplateRepository.find({
       where: { status: 1 },
-      orderBy: { createTime: 'DESC' },
+      order: { createTime: 'DESC' },
     });
   }
 }

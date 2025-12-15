@@ -33,6 +33,5 @@ export class PaymentCallbackDto {
   @IsString()
   gmtPayment?: string;
 
-  @IsOptional()
   [key: string]: any;
 }

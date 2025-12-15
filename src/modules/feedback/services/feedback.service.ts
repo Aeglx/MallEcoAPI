@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { FeedbackStatus } from '../entities/feedback.entity';
 import { Repository } from 'typeorm';
 import { Feedback } from '../entities/feedback.entity';
 import { CreateFeedbackDto } from '../dto/create-feedback.dto';
@@ -47,11 +48,11 @@ export class FeedbackService {
     const feedback = await this.getFeedbackById(id);
     feedback.reply = reply;
     feedback.adminId = adminId;
-    feedback.status = 'resolved';
+    feedback.status = FeedbackStatus.RESOLVED;
     return this.feedbackRepository.save(feedback);
   }
 
-  async updateFeedbackStatus(id: number, status: string): Promise<Feedback> {
+  async updateFeedbackStatus(id: number, status: FeedbackStatus): Promise<Feedback> {
     const feedback = await this.getFeedbackById(id);
     feedback.status = status;
     return this.feedbackRepository.save(feedback);

@@ -23,7 +23,9 @@ export class NotificationService {
    */
   async createNotification(createNotificationDto: CreateNotificationDto): Promise<Notification> {
     const notification = this.notificationRepository.create(createNotificationDto);
-    const savedNotification = await this.notificationRepository.save(notification);
+    const savedNotification = Array.isArray(notification) ? notification[0] : notification;
+    await this.notificationRepository.save(savedNotification);
+    return savedNotification;
 
     // 如果需要发送短信通知
     if (savedNotification.isSms === 1 && savedNotification.userId) {
@@ -93,7 +95,7 @@ export class NotificationService {
    * 标记所有通知为已读
    * @param userId 用户ID
    */
-  async markAllAsRead(userId: number): Promise<void> {
+  async markAllAsRead(userId: string): Promise<void> {
     await this.notificationRepository.update(
       { userId, status: NotificationStatus.UNREAD },
       { status: NotificationStatus.READ }
@@ -138,7 +140,7 @@ export class NotificationService {
    * @param status 通知状态
    */
   async findNotificationsByUserId(
-    userId: number,
+    userId: string,
     type?: NotificationType,
     status?: NotificationStatus
   ): Promise<Notification[]> {
@@ -162,7 +164,7 @@ export class NotificationService {
    * 统计用户未读通知数量
    * @param userId 用户ID
    */
-  async countUnreadNotifications(userId: number): Promise<number> {
+  async countUnreadNotifications(userId: string): Promise<number> {
     return await this.notificationRepository.count({
       where: { userId, status: NotificationStatus.UNREAD }
     });

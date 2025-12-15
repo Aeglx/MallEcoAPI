@@ -52,7 +52,7 @@ export class LogisticsService {
    * @param expNo 运单号
    * @param phone 手机号
    */
-  async pollQuery(logisticsId: number, expNo: string, phone?: string): Promise<Traces> {
+  async pollQuery(logisticsId: string, expNo: string, phone?: string): Promise<Traces> {
     const logistics = await this.logisticsRepository.findOneBy({ id: logisticsId });
     if (!logistics) {
       throw new NotFoundException('Logistics not found');
@@ -70,7 +70,7 @@ export class LogisticsService {
    * @param from 出发地
    * @param to 目的地
    */
-  async pollMapTrack(logisticsId: number, expNo: string, phone?: string, from?: string, to?: string): Promise<Traces> {
+  async pollMapTrack(logisticsId: string, expNo: string, phone?: string, from?: string, to?: string): Promise<Traces> {
     const logistics = await this.logisticsRepository.findOneBy({ id: logisticsId });
     if (!logistics) {
       throw new NotFoundException('Logistics not found');
@@ -85,7 +85,7 @@ export class LogisticsService {
    * @param logisticsId 物流ID
    * @param labelOrderDTO 电子面单打印DTO
    */
-  async labelOrder(logisticsId: number, labelOrderDTO: LabelOrderDTO): Promise<Map<string, any>> {
+  async labelOrder(logisticsId: string, labelOrderDTO: LabelOrderDTO): Promise<Map<string, any>> {
     const logistics = await this.logisticsRepository.findOneBy({ id: logisticsId });
     if (!logistics) {
       throw new NotFoundException('Logistics not found');
@@ -100,7 +100,7 @@ export class LogisticsService {
    * @param logisticsId 物流ID
    * @param orderDetailVO 订单详情VO
    */
-  async createOrder(logisticsId: number, orderDetailVO: any): Promise<string> {
+  async createOrder(logisticsId: string, orderDetailVO: any): Promise<string> {
     const logistics = await this.logisticsRepository.findOneBy({ id: logisticsId });
     if (!logistics) {
       throw new NotFoundException('Logistics not found');
@@ -121,7 +121,7 @@ export class LogisticsService {
    * 根据ID获取物流信息
    * @param id 物流ID
    */
-  async findLogisticsById(id: number): Promise<MallLogistics> {
+  async findLogisticsById(id: string): Promise<MallLogistics> {
     const logistics = await this.logisticsRepository.findOneBy({ id });
     if (!logistics) {
       throw new NotFoundException('Logistics not found');
@@ -134,7 +134,7 @@ export class LogisticsService {
    * @param id 物流ID
    * @param updateLogisticsDto 更新物流信息DTO
    */
-  async updateLogistics(id: number, updateLogisticsDto: any): Promise<MallLogistics> {
+  async updateLogistics(id: string, updateLogisticsDto: any): Promise<MallLogistics> {
     const logistics = await this.findLogisticsById(id);
     Object.assign(logistics, updateLogisticsDto);
     return await this.logisticsRepository.save(logistics);
