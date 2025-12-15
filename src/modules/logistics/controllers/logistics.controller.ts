@@ -24,7 +24,7 @@ export class LogisticsController {
   @ApiQuery({ name: 'expNo', description: '运单号', required: true })
   @ApiQuery({ name: 'phone', description: '手机号', required: false })
   async pollQuery(
-    @Param('id') id: number,
+    @Param('id') id: string,
     @Query('expNo') expNo: string,
     @Query('phone') phone?: string,
   ): Promise<Traces> {
@@ -39,7 +39,7 @@ export class LogisticsController {
   @ApiQuery({ name: 'from', description: '出发地', required: false })
   @ApiQuery({ name: 'to', description: '目的地', required: false })
   async pollMapTrack(
-    @Param('id') id: number,
+    @Param('id') id: string,
     @Query('expNo') expNo: string,
     @Query('phone') phone?: string,
     @Query('from') from?: string,
@@ -53,7 +53,7 @@ export class LogisticsController {
   @ApiParam({ name: 'id', description: '物流ID' })
   @ApiBody({ type: LabelOrderDTO })
   async labelOrder(
-    @Param('id') id: number,
+    @Param('id') id: string,
     @Body() labelOrderDTO: LabelOrderDTO,
   ): Promise<Map<string, any>> {
     return await this.logisticsService.labelOrder(id, labelOrderDTO);
@@ -63,7 +63,7 @@ export class LogisticsController {
   @ApiOperation({ summary: '创建物流订单' })
   @ApiParam({ name: 'id', description: '物流ID' })
   async createOrder(
-    @Param('id') id: number,
+    @Param('id') id: string,
     @Body() orderDetailVO: any,
   ): Promise<string> {
     return await this.logisticsService.createOrder(id, orderDetailVO);
@@ -78,7 +78,7 @@ export class LogisticsController {
   @Get(':id')
   @ApiOperation({ summary: '根据ID获取物流信息' })
   @ApiParam({ name: 'id', description: '物流ID' })
-  async findLogisticsById(@Param('id') id: number): Promise<MallLogistics> {
+  async findLogisticsById(@Param('id') id: string): Promise<MallLogistics> {
     return await this.logisticsService.findLogisticsById(id);
   }
 
@@ -86,7 +86,7 @@ export class LogisticsController {
   @ApiOperation({ summary: '更新物流信息' })
   @ApiParam({ name: 'id', description: '物流ID' })
   async updateLogistics(
-    @Param('id') id: number,
+    @Param('id') id: string,
     @Body() updateLogisticsDto: any,
   ): Promise<MallLogistics> {
     return await this.logisticsService.updateLogistics(id, updateLogisticsDto);

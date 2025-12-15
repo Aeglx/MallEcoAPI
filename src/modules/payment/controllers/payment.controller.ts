@@ -1,7 +1,7 @@
 import { Controller, Post, Get, Body, Param, Query, HttpStatus } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { PaymentService } from '../services/payment.service';
-import { ApiResponseDto } from 'src/common/dto/api-response.dto';
+import { ApiResponseDto } from '../../../common/dto/api-response.dto';
 import { CreatePaymentDto } from '../dto/create-payment.dto';
 import { PaymentCallbackDto } from '../dto/payment-callback.dto';
 import { QueryPaymentDto } from '../dto/query-payment.dto';
@@ -16,12 +16,7 @@ export class PaymentController {
   @Post('create')
   async createPayment(@Body() createPaymentDto: CreatePaymentDto): Promise<ApiResponseDto> {
     const result = await this.paymentService.createPayment(createPaymentDto);
-    return {
-      success: true,
-      data: result,
-      message: '支付订单创建成功',
-      code: HttpStatus.OK,
-    };
+    return ApiResponseDto.success(result, '支付订单创建成功');
   }
 
   @ApiOperation({ summary: '支付接口' })
@@ -37,12 +32,7 @@ export class PaymentController {
       paymentClient,
       queryPaymentDto,
     );
-    return {
-      success: true,
-      data: result,
-      message: '支付接口调用成功',
-      code: HttpStatus.OK,
-    };
+    return ApiResponseDto.success(result, '支付接口调用成功');
   }
 
   @ApiOperation({ summary: '支付回调' })
@@ -61,12 +51,7 @@ export class PaymentController {
   @Get('query/:outTradeNo')
   async queryPayment(@Param('outTradeNo') outTradeNo: string): Promise<ApiResponseDto> {
     const result = await this.paymentService.queryPayment(outTradeNo);
-    return {
-      success: true,
-      data: result,
-      message: '支付状态查询成功',
-      code: HttpStatus.OK,
-    };
+    return ApiResponseDto.success(result, '支付状态查询成功');
   }
 
   @ApiOperation({ summary: '关闭支付订单' })
@@ -74,12 +59,7 @@ export class PaymentController {
   @Post('close/:outTradeNo')
   async closePayment(@Param('outTradeNo') outTradeNo: string): Promise<ApiResponseDto> {
     await this.paymentService.closePayment(outTradeNo);
-    return {
-      success: true,
-      data: null,
-      message: '支付订单关闭成功',
-      code: HttpStatus.OK,
-    };
+    return ApiResponseDto.success(null, '支付订单关闭成功');
   }
 
   @ApiOperation({ summary: '获取支付方式列表' })
@@ -87,11 +67,6 @@ export class PaymentController {
   @Get('methods')
   async getPaymentMethods(): Promise<ApiResponseDto> {
     const result = await this.paymentService.getPaymentMethods();
-    return {
-      success: true,
-      data: result,
-      message: '支付方式列表获取成功',
-      code: HttpStatus.OK,
-    };
+    return ApiResponseDto.success(result, '支付方式列表获取成功');
   }
 }

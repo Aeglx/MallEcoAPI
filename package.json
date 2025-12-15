@@ -21,6 +21,7 @@
     "db:init": "node DB/init-database.js"
   },
   "dependencies": {
+    "@alicloud/pop-core": "^1.8.0",
     "@elastic/elasticsearch": "^9.2.0",
     "@nestjs/axios": "^4.0.1",
     "@nestjs/cache-manager": "^3.0.1",

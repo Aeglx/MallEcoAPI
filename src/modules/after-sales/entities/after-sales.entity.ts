@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
-import { Order } from '../../order/entities/order.entity';
-import { User } from '../../user/entities/user.entity';
+import { Order } from '../../orders/entities/order.entity';
+import { User } from '../../users/entities/user.entity';
 
 export enum AfterSalesType {
   REFUND = 'refund',
@@ -24,14 +24,14 @@ export class AfterSales {
   id: number;
 
   @Column({ name: 'order_id' })
-  orderId: number;
+  orderId: string;
 
   @ManyToOne(() => Order)
   @JoinColumn({ name: 'order_id' })
   order: Order;
 
   @Column({ name: 'user_id' })
-  userId: number;
+  userId: string;
 
   @ManyToOne(() => User)
   @JoinColumn({ name: 'user_id' })

@@ -4,14 +4,14 @@ import { Repository } from 'typeorm';
 import { AfterSales, AfterSalesStatus } from '../entities/after-sales.entity';
 import { CreateAfterSalesDto } from '../dto/create-after-sales.dto';
 import { UpdateAfterSalesDto } from '../dto/update-after-sales.dto';
-import { OrderService } from '../../order/services/order.service';
+import { OrdersService } from '../../orders/orders.service';
 import { PaymentService } from '../../payment/services/payment.service';
 
 @Injectable()
 export class AfterSalesService {
   constructor(
     @InjectRepository(AfterSales) private readonly afterSalesRepository: Repository<AfterSales>,
-    private readonly orderService: OrderService,
+    private readonly orderService: OrdersService,
     private readonly paymentService: PaymentService
   ) {}
 
@@ -21,13 +21,13 @@ export class AfterSalesService {
    */
   async createAfterSales(createAfterSalesDto: CreateAfterSalesDto): Promise<AfterSales> {
     // 检查订单是否存在
-    const order = await this.orderService.findOrderById(createAfterSalesDto.orderId);
+    const order = await this.orderService.getOrderById(createAfterSalesDto.orderId);
     if (!order) {
       throw new NotFoundException('订单不存在');
     }
 
     // 检查订单状态是否允许申请售后服务
-    if (order.orderStatus !== 'COMPLETED' && order.orderStatus !== 'DELIVERED') {
+    if (order.status !== 4 && order.status !== 2) {
       throw new BadRequestException('只有已完成或已发货的订单才能申请售后服务');
     }
 
@@ -119,7 +119,7 @@ export class AfterSalesService {
    * @param id 售后服务ID
    * @param userId 用户ID
    */
-  async cancelAfterSales(id: number, userId: number): Promise<AfterSales> {
+  async cancelAfterSales(id: number, userId: string): Promise<AfterSales> {
     const afterSales = await this.findAfterSalesById(id);
     if (afterSales.userId !== userId) {
       throw new BadRequestException('您没有权限取消此售后服务申请');
@@ -150,7 +150,7 @@ export class AfterSalesService {
    * 获取用户的售后服务列表
    * @param userId 用户ID
    */
-  async findAfterSalesByUserId(userId: number): Promise<AfterSales[]> {
+  async findAfterSalesByUserId(userId: string): Promise<AfterSales[]> {
     return await this.afterSalesRepository.find({
       where: { userId },
       order: { createdAt: 'DESC' }

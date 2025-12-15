@@ -9,7 +9,7 @@ import { PaymentCallbackDto } from '../dto/payment-callback.dto';
 import { QueryPaymentDto } from '../dto/query-payment.dto';
 import { AlipayService } from './alipay.service';
 import { WechatPayService } from './wechatpay.service';
-import { OrdersService } from 'src/modules/orders/services/orders.service';
+import { OrdersService } from '../../orders/orders.service';
 
 @Injectable()
 export class PaymentService {

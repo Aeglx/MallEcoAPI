@@ -3,11 +3,11 @@ import { AfterSalesType } from '../entities/after-sales.entity';
 
 
 export class CreateAfterSalesDto {
-  @ApiProperty({ description: '订单ID', example: 1 })
-  orderId: number;
+  @ApiProperty({ description: '订单ID', example: '1' })
+  orderId: string;
 
-  @ApiProperty({ description: '用户ID', example: 1 })
-  userId: number;
+  @ApiProperty({ description: '用户ID', example: '1' })
+  userId: string;
 
   @ApiProperty({ description: '售后服务类型', enum: AfterSalesType, example: AfterSalesType.REFUND })
   type: AfterSalesType;

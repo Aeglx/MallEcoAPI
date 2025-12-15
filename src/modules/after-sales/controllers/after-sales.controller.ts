@@ -56,7 +56,7 @@ export class AfterSalesController {
   @ApiQuery({ name: 'userId', description: '用户ID', required: true })
   async cancelAfterSales(
     @Param('id') id: number,
-    @Query('userId') userId: number
+    @Query('userId') userId: string
   ): Promise<AfterSales> {
     return await this.afterSalesService.cancelAfterSales(id, userId);
   }
@@ -71,7 +71,7 @@ export class AfterSalesController {
   @Get('user/:userId')
   @ApiOperation({ summary: '获取用户的售后服务列表' })
   @ApiParam({ name: 'userId', description: '用户ID' })
-  async findAfterSalesByUserId(@Param('userId') userId: number): Promise<AfterSales[]> {
+  async findAfterSalesByUserId(@Param('userId') userId: string): Promise<AfterSales[]> {
     return await this.afterSalesService.findAfterSalesByUserId(userId);
   }
 

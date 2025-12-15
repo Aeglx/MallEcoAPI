@@ -2,16 +2,16 @@ import { Injectable, Logger } from '@nestjs/common';
 import { PaymentRecord } from '../entities/payment-record.entity';
 import { QueryPaymentDto } from '../dto/query-payment.dto';
 import { PaymentCallbackDto } from '../dto/payment-callback.dto';
-import AlipaySdk from 'alipay-sdk';
+import { AlipaySdk } from 'alipay-sdk';
 
 @Injectable()
 export class AlipayService {
   private readonly logger = new Logger(AlipayService.name);
-  private readonly alipaySdk: AlipaySdk;
+  private readonly alipaySdk: any;
 
   constructor() {
     // 初始化支付宝SDK
-    this.alipaySdk = new AlipaySdk({
+    this.alipaySdk = new (require('alipay-sdk').AlipaySdk)({
       appId: process.env.ALIPAY_APP_ID,
       privateKey: process.env.ALIPAY_PRIVATE_KEY,
       alipayPublicKey: process.env.ALIPAY_PUBLIC_KEY,
@@ -68,7 +68,7 @@ export class AlipayService {
   async handleCallback(callbackData: PaymentCallbackDto) {
     try {
       // 验证回调签名
-      const verifyResult = await this.alipaySdk.checkNotifySign(callbackData);
+      const verifyResult = this.alipaySdk.checkNotifySign(callbackData);
 
       if (!verifyResult) {
         this.logger.error('支付宝回调签名验证失败:', callbackData);

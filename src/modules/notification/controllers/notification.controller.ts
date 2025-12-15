@@ -45,7 +45,7 @@ export class NotificationController {
   @Put('read-all/:userId')
   @ApiOperation({ summary: '标记所有通知为已读' })
   @ApiParam({ name: 'userId', description: '用户ID' })
-  async markAllAsRead(@Param('userId') userId: number): Promise<void> {
+  async markAllAsRead(@Param('userId') userId: string): Promise<void> {
     return await this.notificationService.markAllAsRead(userId);
   }
 
@@ -76,7 +76,7 @@ export class NotificationController {
   @ApiQuery({ name: 'type', description: '通知类型', enum: NotificationType, required: false })
   @ApiQuery({ name: 'status', description: '通知状态', enum: NotificationStatus, required: false })
   async findNotificationsByUserId(
-    @Param('userId') userId: number,
+    @Param('userId') userId: string,
     @Query('type') type?: NotificationType,
     @Query('status') status?: NotificationStatus
   ): Promise<Notification[]> {
@@ -86,7 +86,7 @@ export class NotificationController {
   @Get('unread/count/:userId')
   @ApiOperation({ summary: '统计用户未读通知数量' })
   @ApiParam({ name: 'userId', description: '用户ID' })
-  async countUnreadNotifications(@Param('userId') userId: number): Promise<number> {
+  async countUnreadNotifications(@Param('userId') userId: string): Promise<number> {
     return await this.notificationService.countUnreadNotifications(userId);
   }
 

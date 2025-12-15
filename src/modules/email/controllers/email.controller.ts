@@ -1,7 +1,7 @@
 import { Controller, Post, Body, Param, Get, Query, HttpStatus } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { EmailService } from '../services/email.service';
-import { ApiResponseDto } from 'src/common/dto/api-response.dto';
+import { ApiResponseDto } from '../../../common/dto/api-response.dto';
 import { SendEmailDto } from '../dto/send-email.dto';
 import { VerifyEmailDto } from '../dto/verify-email.dto';
 
@@ -15,12 +15,7 @@ export class EmailController {
   @Post('send-code')
   async sendCode(@Body() sendEmailDto: SendEmailDto): Promise<ApiResponseDto> {
     await this.emailService.sendCode(sendEmailDto.email, sendEmailDto.templateCode, sendEmailDto.bizId);
-    return {
-      success: true,
-      data: null,
-      message: '邮件验证码发送成功',
-      code: HttpStatus.OK,
-    };
+    return ApiResponseDto.success(null, '邮件验证码发送成功');
   }
 
   @ApiOperation({ summary: '验证邮件验证码' })
@@ -29,19 +24,9 @@ export class EmailController {
   async verifyCode(@Body() verifyEmailDto: VerifyEmailDto): Promise<ApiResponseDto> {
     const isValid = await this.emailService.verifyCode(verifyEmailDto.email, verifyEmailDto.code, verifyEmailDto.bizId);
     if (isValid) {
-      return {
-        success: true,
-        data: null,
-        message: '邮件验证码验证成功',
-        code: HttpStatus.OK,
-      };
+      return ApiResponseDto.success(null, '邮件验证码验证成功');
     } else {
-      return {
-        success: false,
-        data: null,
-        message: '邮件验证码验证失败',
-        code: HttpStatus.BAD_REQUEST,
-      };
+      return ApiResponseDto.error('邮件验证码验证失败', HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -50,12 +35,7 @@ export class EmailController {
   @Post('send')
   async sendEmail(@Body() sendEmailDto: SendEmailDto): Promise<ApiResponseDto> {
     const result = await this.emailService.sendEmail(sendEmailDto.email, sendEmailDto.templateCode, sendEmailDto.params, sendEmailDto.bizId);
-    return {
-      success: true,
-      data: result,
-      message: '邮件发送成功',
-      code: HttpStatus.OK,
-    };
+    return ApiResponseDto.success(result, '邮件发送成功');
   }
 
   @ApiOperation({ summary: '获取邮件发送记录' })
@@ -63,12 +43,7 @@ export class EmailController {
   @Get('logs')
   async getEmailLogs(@Query('email') email?: string, @Query('page') page: number = 1, @Query('limit') limit: number = 10): Promise<ApiResponseDto> {
     const result = await this.emailService.getEmailLogs(email, page, limit);
-    return {
-      success: true,
-      data: result,
-      message: '邮件发送记录获取成功',
-      code: HttpStatus.OK,
-    };
+    return ApiResponseDto.success(result, '邮件发送记录获取成功');
   }
 
   @ApiOperation({ summary: '获取邮件模板列表' })
@@ -76,11 +51,6 @@ export class EmailController {
   @Get('templates')
   async getEmailTemplates(): Promise<ApiResponseDto> {
     const result = await this.emailService.getEmailTemplates();
-    return {
-      success: true,
-      data: result,
-      message: '邮件模板列表获取成功',
-      code: HttpStatus.OK,
-    };
+    return ApiResponseDto.success(result, '邮件模板列表获取成功');
   }
 }

@@ -2,14 +2,13 @@ import { Injectable, Logger } from '@nestjs/common';
 import { PaymentRecord } from '../entities/payment-record.entity';
 import { QueryPaymentDto } from '../dto/query-payment.dto';
 import { PaymentCallbackDto } from '../dto/payment-callback.dto';
-import { Wechatpay, R } from 'wechatpay-node-v3';
 import * as fs from 'fs';
 import * as path from 'path';
 
 @Injectable()
 export class WechatPayService {
   private readonly logger = new Logger(WechatPayService.name);
-  private readonly wechatpay: Wechatpay;
+  private readonly wechatpay: any;
 
   constructor() {
     // 读取证书文件
@@ -23,7 +22,7 @@ export class WechatPayService {
     );
 
     // 初始化微信支付SDK
-    this.wechatpay = new Wechatpay({
+    this.wechatpay = new (require('wechatpay-node-v3').default)({
       appid: process.env.WECHAT_APPID,
       mchid: process.env.WECHAT_MCHID,
       publicKey: certificate,

@@ -3,10 +3,10 @@ import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiQuery, ApiBody } from 
 import { FeedbackService } from '../services/feedback.service';
 import { CreateFeedbackDto } from '../dto/create-feedback.dto';
 import { Feedback } from '../entities/feedback.entity';
-import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
-import { RolesGuard } from '../../auth/guards/roles.guard';
-import { Roles } from '../../auth/decorators/roles.decorator';
-import { Role } from '../../user/enums/role.enum';
+import { JwtAuthGuard } from '../../../infrastructure/auth/guards/jwt-auth.guard';
+import { RolesGuard } from '../../../infrastructure/auth/guards/roles.guard';
+import { Roles } from '../../../infrastructure/auth/decorators/roles.decorator';
+import { Role } from '../../users/enums/role.enum';
 
 @ApiTags('feedback')
 @Controller('api/feedback')
@@ -76,7 +76,7 @@ export class FeedbackController {
   @ApiResponse({ status: 403, description: '禁止访问' })
   @ApiResponse({ status: 404, description: '反馈记录不存在' })
   async updateFeedbackStatus(@Param('id') id: number, @Body() { status }: { status: string }): Promise<Feedback> {
-    return this.feedbackService.updateFeedbackStatus(id, status);
+    return this.feedbackService.updateFeedbackStatus(id, status as any);
   }
 
   @Delete(':id')

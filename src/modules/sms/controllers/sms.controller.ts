@@ -1,7 +1,7 @@
 import { Controller, Post, Body, Param, Get, Query, HttpStatus } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { SmsService } from '../services/sms.service';
-import { ApiResponseDto } from 'src/common/dto/api-response.dto';
+import { ApiResponseDto } from '../../../common/dto/api-response.dto';
 import { SendSmsDto } from '../dto/send-sms.dto';
 import { VerifySmsDto } from '../dto/verify-sms.dto';
 
@@ -15,12 +15,7 @@ export class SmsController {
   @Post('send-code')
   async sendCode(@Body() sendSmsDto: SendSmsDto): Promise<ApiResponseDto> {
     await this.smsService.sendCode(sendSmsDto.phone, sendSmsDto.templateCode, sendSmsDto.bizId);
-    return {
-      success: true,
-      data: null,
-      message: '短信验证码发送成功',
-      code: HttpStatus.OK,
-    };
+    return ApiResponseDto.success(null, '短信验证码发送成功');
   }
 
   @ApiOperation({ summary: '验证短信验证码' })
@@ -29,19 +24,9 @@ export class SmsController {
   async verifyCode(@Body() verifySmsDto: VerifySmsDto): Promise<ApiResponseDto> {
     const isValid = await this.smsService.verifyCode(verifySmsDto.phone, verifySmsDto.code, verifySmsDto.bizId);
     if (isValid) {
-      return {
-        success: true,
-        data: null,
-        message: '短信验证码验证成功',
-        code: HttpStatus.OK,
-      };
+      return ApiResponseDto.success(null, '短信验证码验证成功');
     } else {
-      return {
-        success: false,
-        data: null,
-        message: '短信验证码验证失败',
-        code: HttpStatus.BAD_REQUEST,
-      };
+      return ApiResponseDto.error('短信验证码验证失败', HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -50,12 +35,7 @@ export class SmsController {
   @Post('send')
   async sendSms(@Body() sendSmsDto: SendSmsDto): Promise<ApiResponseDto> {
     const result = await this.smsService.sendSms(sendSmsDto.phone, sendSmsDto.templateCode, sendSmsDto.params, sendSmsDto.bizId);
-    return {
-      success: true,
-      data: result,
-      message: '短信发送成功',
-      code: HttpStatus.OK,
-    };
+    return ApiResponseDto.success(result, '短信发送成功');
   }
 
   @ApiOperation({ summary: '获取短信发送记录' })
@@ -63,12 +43,7 @@ export class SmsController {
   @Get('logs')
   async getSmsLogs(@Query('phone') phone?: string, @Query('page') page: number = 1, @Query('limit') limit: number = 10): Promise<ApiResponseDto> {
     const result = await this.smsService.getSmsLogs(phone, page, limit);
-    return {
-      success: true,
-      data: result,
-      message: '短信发送记录获取成功',
-      code: HttpStatus.OK,
-    };
+    return ApiResponseDto.success(result, '短信发送记录获取成功');
   }
 
   @ApiOperation({ summary: '获取短信模板列表' })
@@ -76,11 +51,6 @@ export class SmsController {
   @Get('templates')
   async getSmsTemplates(): Promise<ApiResponseDto> {
     const result = await this.smsService.getSmsTemplates();
-    return {
-      success: true,
-      data: result,
-      message: '短信模板列表获取成功',
-      code: HttpStatus.OK,
-    };
+    return ApiResponseDto.success(result, '短信模板列表获取成功');
   }
 }

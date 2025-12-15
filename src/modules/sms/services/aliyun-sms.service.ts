@@ -1,17 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import * as SMSClient from 'aliyun-sdk-v2/sms';
 
 @Injectable()
 export class AliyunSmsService {
-  private readonly smsClient: SMSClient;
+  private readonly smsClient: any;
 
   constructor(private readonly configService: ConfigService) {
     const config = this.configService.get('config');
-    this.smsClient = new SMSClient({
+    this.smsClient = new (require('@alicloud/pop-core').default)({
       accessKeyId: config?.sms?.accessKeyId,
       accessKeySecret: config?.sms?.accessKeySecret,
       endpoint: 'https://dysmsapi.aliyuncs.com',
+      apiVersion: '2017-05-25',
     });
   }
 
@@ -25,6 +25,7 @@ export class AliyunSmsService {
   async sendSms(phoneNumbers: string, templateCode: string, templateParam: Record<string, any>): Promise<any> {
     const config = this.configService.get('config');
     const params = {
+      RegionId: 'cn-hangzhou',
       PhoneNumbers: phoneNumbers,
       SignName: config?.sms?.signName,
       TemplateCode: templateCode,
@@ -32,7 +33,9 @@ export class AliyunSmsService {
     };
 
     try {
-      const result = await this.smsClient.send(params);
+      const result = await this.smsClient.request('SendSms', params, {
+        method: 'POST',
+      });
       return result;
     } catch (error) {
       throw new Error(`发送短信失败: ${error.message}`);
@@ -49,6 +52,7 @@ export class AliyunSmsService {
    */
   async querySendDetails(phoneNumber: string, sendDate: string, pageSize: number = 10, currentPage: number = 1): Promise<any> {
     const params = {
+      RegionId: 'cn-hangzhou',
       PhoneNumber: phoneNumber,
       SendDate: sendDate,
       PageSize: pageSize,
@@ -56,7 +60,9 @@ export class AliyunSmsService {
     };
 
     try {
-      const result = await this.smsClient.query(params);
+      const result = await this.smsClient.request('QuerySendDetails', params, {
+        method: 'POST',
+      });
       return result;
     } catch (error) {
       throw new Error(`查询短信发送记录失败: ${error.message}`);

@@ -1,7 +1,7 @@
 import { MallLogistics } from '../entities/logistics.entity';
 import { Traces } from '../entities/traces.vo';
 import { LabelOrderDTO } from '../dto/label-order.dto';
-import { OrderDetailVO } from 'src/modules/orders/entities/order-detail.vo';
+import { OrderDetailVO } from '../../orders/entities/order-detail.vo';
 
 export interface LogisticsPlugin {
   /**
