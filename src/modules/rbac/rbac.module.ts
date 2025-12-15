@@ -47,6 +47,7 @@ import { DepartmentController } from './controllers/department.controller';
     DepartmentService,
   ],
   exports: [
+    TypeOrmModule,
     UserService,
     RoleService,
     PermissionService,

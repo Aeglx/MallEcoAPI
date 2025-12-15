@@ -11,24 +11,29 @@ export class WechatPayService {
   private readonly wechatpay: any;
 
   constructor() {
-    // 读取证书文件
-    const privateKey = fs.readFileSync(
-      path.join(process.cwd(), 'config', 'wechatpay', 'private_key.pem'),
-      'utf8',
-    );
-    const certificate = fs.readFileSync(
-      path.join(process.cwd(), 'config', 'wechatpay', 'cert.pem'),
-      'utf8',
-    );
+    try {
+      // 读取证书文件
+      const privateKey = fs.readFileSync(
+        path.join(process.cwd(), 'config', 'wechatpay', 'private_key.pem'),
+        'utf8',
+      );
+      const certificate = fs.readFileSync(
+        path.join(process.cwd(), 'config', 'wechatpay', 'cert.pem'),
+        'utf8',
+      );
 
-    // 初始化微信支付SDK
-    this.wechatpay = new (require('wechatpay-node-v3').default)({
-      appid: process.env.WECHAT_APPID,
-      mchid: process.env.WECHAT_MCHID,
-      publicKey: certificate,
-      privateKey,
-      notify_url: process.env.WECHAT_NOTIFY_URL,
-    });
+      // 初始化微信支付SDK
+      this.wechatpay = new (require('wechatpay-node-v3').default)({
+        appid: process.env.WECHAT_APPID,
+        mchid: process.env.WECHAT_MCHID,
+        publicKey: certificate,
+        privateKey,
+        notify_url: process.env.WECHAT_NOTIFY_URL,
+      });
+    } catch (error) {
+      this.logger.warn('微信支付证书文件不存在或无法读取，微信支付功能将不可用:', error.message);
+      this.wechatpay = null;
+    }
   }
 
   async createPayment(paymentRecord: PaymentRecord, paymentClient: string, queryPaymentDto: QueryPaymentDto) {

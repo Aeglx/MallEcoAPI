@@ -4,7 +4,7 @@ import { FeedbackStatus } from '../entities/feedback.entity';
 import { Repository } from 'typeorm';
 import { Feedback } from '../entities/feedback.entity';
 import { CreateFeedbackDto } from '../dto/create-feedback.dto';
-import { User } from '../../users/entities/user.entity';
+import { User } from '../../rbac/entities/user.entity';
 
 @Injectable()
 export class FeedbackService {

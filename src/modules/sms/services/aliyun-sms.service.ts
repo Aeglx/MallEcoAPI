@@ -1,18 +1,25 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AliyunSmsService {
   private readonly smsClient: any;
+  private readonly logger = new Logger(AliyunSmsService.name);
 
   constructor(private readonly configService: ConfigService) {
-    const config = this.configService.get('config');
-    this.smsClient = new (require('@alicloud/pop-core').default)({
-      accessKeyId: config?.sms?.accessKeyId,
-      accessKeySecret: config?.sms?.accessKeySecret,
-      endpoint: 'https://dysmsapi.aliyuncs.com',
-      apiVersion: '2017-05-25',
-    });
+    try {
+      const config = this.configService.get('config');
+      const PopCore = require('@alicloud/pop-core');
+      this.smsClient = new PopCore({
+        accessKeyId: config?.sms?.accessKeyId,
+        accessKeySecret: config?.sms?.accessKeySecret,
+        endpoint: 'https://dysmsapi.aliyuncs.com',
+        apiVersion: '2017-05-25',
+      });
+    } catch (error) {
+      this.logger.warn('阿里云短信服务初始化失败，短信发送功能将不可用:', error.message);
+      this.smsClient = null;
+    }
   }
 
   /**
@@ -23,6 +30,10 @@ export class AliyunSmsService {
    * @returns 发送结果
    */
   async sendSms(phoneNumbers: string, templateCode: string, templateParam: Record<string, any>): Promise<any> {
+    if (!this.smsClient) {
+      throw new Error('阿里云短信服务未初始化，请检查配置');
+    }
+    
     const config = this.configService.get('config');
     const params = {
       RegionId: 'cn-hangzhou',
@@ -51,6 +62,10 @@ export class AliyunSmsService {
    * @returns 查询结果
    */
   async querySendDetails(phoneNumber: string, sendDate: string, pageSize: number = 10, currentPage: number = 1): Promise<any> {
+    if (!this.smsClient) {
+      throw new Error('阿里云短信服务未初始化，请检查配置');
+    }
+    
     const params = {
       RegionId: 'cn-hangzhou',
       PhoneNumber: phoneNumber,
