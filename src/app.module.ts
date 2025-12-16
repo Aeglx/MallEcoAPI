@@ -24,7 +24,8 @@ import { PaymentModule } from './modules/payment/payment.module';
 import { SmsModule } from './modules/sms/sms.module';
 import { EmailModule } from './modules/email/email.module';
 import { FileModule } from './modules/file/file.module';
-import { CaptchaModule } from './modules/captcha/captcha.module';
+import { BuyerModule } from './modules/buyer/buyer.module';
+import { CommonModule } from './modules/common/common.module';
 import { FeedbackModule } from './modules/feedback/feedback.module';
 import { LogisticsModule } from './modules/logistics/logistics.module';
 import { configurations } from './config/configuration';
@@ -70,6 +71,7 @@ import { MonitoringController } from './shared/monitoring/monitoring.controller'
           join(__dirname, 'modules/promotion/**/*.entity{.ts,.js}'),
           join(__dirname, 'modules/distribution/**/*.entity{.ts,.js}'),
           join(__dirname, 'modules/content/**/*.entity{.ts,.js}'),
+          join(__dirname, 'modules/captcha/**/*.entity{.ts,.js}'),
           join(__dirname, 'social/**/*.entity{.ts,.js}'),
         ],
         synchronize: false, // 强制禁用同步
@@ -119,7 +121,8 @@ import { MonitoringController } from './shared/monitoring/monitoring.controller'
     SmsModule,
     EmailModule,
     FileModule,
-    CaptchaModule,
+    BuyerModule,
+    CommonModule,
     LogisticsModule,
     FeedbackModule,
   ],
