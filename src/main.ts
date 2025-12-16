@@ -5,6 +5,10 @@ import { ResponseInterceptor } from './shared/interceptors/response.interceptor'
 import { ConfigService } from '@nestjs/config';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { initializeDatabase } from './database-init';
+import { join } from 'path';
+import * as express from 'express';
+import * as fs from 'fs';
+import * as path from 'path';
 
 async function bootstrap() {
   try {
@@ -28,6 +32,15 @@ async function bootstrap() {
     
     // 启用 CORS
     app.enableCors();
+    
+    // 配置静态资源服务
+    const publicDir = join(__dirname, '..', 'public');
+    app.use(express.static(publicDir));
+    
+    // 确保静态资源目录存在
+    if (!fs.existsSync(publicDir)) {
+      fs.mkdirSync(publicDir, { recursive: true });
+    }
     
     // 配置 Swagger
     const swaggerConfig = new DocumentBuilder()
