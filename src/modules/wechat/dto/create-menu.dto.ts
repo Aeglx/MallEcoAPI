@@ -40,8 +40,8 @@ export class CreateMenuDto {
 
   @ApiProperty({ description: '父菜单ID', required: false })
   @IsOptional()
-  @IsNumber({}, { message: '父菜单ID必须是数字' })
-  parentId?: number;
+  @IsString({ message: '父菜单ID必须是字符串' })
+  parentId?: string;
 
   @ApiProperty({ description: '菜单状态', enum: MenuStatus, default: MenuStatus.DRAFT })
   @IsOptional()

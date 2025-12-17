@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Delete, Body, Param, Query, UseGuards, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Param, Query, UseGuards } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiParam } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../../../infrastructure/auth/guards/jwt-auth.guard';
 import { WechatCouponService } from '../services/wechat-coupon.service';
@@ -29,7 +29,7 @@ export class WechatCouponController {
   @ApiOperation({ summary: '获取卡券详情' })
   @ApiParam({ name: 'id', description: '卡券ID' })
   @ApiResponse({ status: 200, description: '获取卡券详情成功' })
-  getCouponById(@Param('id', ParseIntPipe) id: number) {
+  getCouponById(@Param('id') id: string) {
     return this.wechatCouponService.getCouponById(id);
   }
 
@@ -45,7 +45,7 @@ export class WechatCouponController {
   @ApiParam({ name: 'id', description: '卡券ID' })
   @ApiResponse({ status: 200, description: '卡券更新成功' })
   updateCoupon(
-    @Param('id', ParseIntPipe) id: number,
+    @Param('id') id: string,
     @Body() updateDto: UpdateCouponDto,
   ) {
     return this.wechatCouponService.updateCoupon(id, updateDto);
@@ -55,7 +55,7 @@ export class WechatCouponController {
   @ApiOperation({ summary: '删除卡券' })
   @ApiParam({ name: 'id', description: '卡券ID' })
   @ApiResponse({ status: 200, description: '卡券删除成功' })
-  deleteCoupon(@Param('id', ParseIntPipe) id: number) {
+  deleteCoupon(@Param('id') id: string) {
     return this.wechatCouponService.deleteCoupon(id);
   }
 
@@ -71,7 +71,7 @@ export class WechatCouponController {
   @ApiOperation({ summary: '获取卡券模板详情' })
   @ApiParam({ name: 'id', description: '卡券模板ID' })
   @ApiResponse({ status: 200, description: '获取卡券模板详情成功' })
-  getCouponTemplateById(@Param('id', ParseIntPipe) id: number) {
+  getCouponTemplateById(@Param('id') id: string) {
     return this.wechatCouponService.getCouponTemplateById(id);
   }
 
@@ -87,7 +87,7 @@ export class WechatCouponController {
   @ApiParam({ name: 'id', description: '卡券模板ID' })
   @ApiResponse({ status: 200, description: '卡券模板更新成功' })
   updateCouponTemplate(
-    @Param('id', ParseIntPipe) id: number,
+    @Param('id') id: string,
     @Body() updateDto: UpdateCouponTemplateDto,
   ) {
     return this.wechatCouponService.updateCouponTemplate(id, updateDto);
@@ -97,7 +97,7 @@ export class WechatCouponController {
   @ApiOperation({ summary: '删除卡券模板' })
   @ApiParam({ name: 'id', description: '卡券模板ID' })
   @ApiResponse({ status: 200, description: '卡券模板删除成功' })
-  deleteCouponTemplate(@Param('id', ParseIntPipe) id: number) {
+  deleteCouponTemplate(@Param('id') id: string) {
     return this.wechatCouponService.deleteCouponTemplate(id);
   }
 
@@ -113,7 +113,7 @@ export class WechatCouponController {
   @ApiOperation({ summary: '获取卡券核销记录详情' })
   @ApiParam({ name: 'id', description: '卡券记录ID' })
   @ApiResponse({ status: 200, description: '获取卡券核销记录详情成功' })
-  getCouponRecordById(@Param('id', ParseIntPipe) id: number) {
+  getCouponRecordById(@Param('id') id: string) {
     return this.wechatCouponService.getCouponRecordById(id);
   }
 
@@ -122,8 +122,8 @@ export class WechatCouponController {
   @ApiParam({ name: 'id', description: '卡券记录ID' })
   @ApiResponse({ status: 200, description: '卡券核销成功' })
   verifyCoupon(
-    @Param('id', ParseIntPipe) id: number,
-    @Body() verifyData: { verifyCode: string; operatorId: number },
+    @Param('id') id: string,
+    @Body() verifyData: { operatorId: string },
   ) {
     return this.wechatCouponService.verifyCoupon(id, verifyData);
   }

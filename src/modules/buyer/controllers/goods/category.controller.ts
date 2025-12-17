@@ -1,5 +1,7 @@
 import { Controller, Get, Param, Query } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('商品分类')
 @Controller('buyer/goods/category')
 export class CategoryController {
   

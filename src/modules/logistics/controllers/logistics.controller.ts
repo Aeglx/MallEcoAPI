@@ -6,7 +6,7 @@ import { LabelOrderDTO } from '../dto/label-order.dto';
 import { MallLogistics } from '../entities/logistics.entity';
 import { Traces } from '../entities/traces.vo';
 
-@ApiTags('logistics')
+@ApiTags('物流管理')
 @Controller('logistics')
 export class LogisticsController {
   constructor(private readonly logisticsService: LogisticsService) {}
@@ -95,7 +95,7 @@ export class LogisticsController {
   @Delete(':id')
   @ApiOperation({ summary: '删除物流信息' })
   @ApiParam({ name: 'id', description: '物流ID' })
-  async deleteLogistics(@Param('id') id: number): Promise<void> {
+  async deleteLogistics(@Param('id') id: string): Promise<void> {
     return await this.logisticsService.deleteLogistics(id);
   }
 }

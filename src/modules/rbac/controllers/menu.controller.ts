@@ -5,7 +5,7 @@ import { UpdateMenuDto } from '../dto/update-menu.dto';
 import { MenuSearchDto } from '../dto/menu-search.dto';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 
-@ApiTags('RBAC - 菜单管理')
+@ApiTags('权限管理 - 菜单管理')
 @Controller('rbac/menus')
 export class MenuController {
   constructor(private readonly menuService: MenuService) {}

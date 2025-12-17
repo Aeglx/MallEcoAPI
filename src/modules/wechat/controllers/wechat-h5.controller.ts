@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Delete, Body, Param, Query, UseGuards, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Param, Query, UseGuards } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiParam } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../../../infrastructure/auth/guards/jwt-auth.guard';
 import { WechatH5Service } from '../services/wechat-h5.service';
@@ -28,7 +28,7 @@ export class WechatH5Controller {
   @ApiOperation({ summary: '获取H5页面详情' })
   @ApiParam({ name: 'id', description: 'H5页面ID' })
   @ApiResponse({ status: 200, description: '获取H5页面详情成功' })
-  getH5PageById(@Param('id', ParseIntPipe) id: number) {
+  getH5PageById(@Param('id') id: string) {
     return this.wechatH5Service.getH5PageById(id);
   }
 
@@ -44,7 +44,7 @@ export class WechatH5Controller {
   @ApiParam({ name: 'id', description: 'H5页面ID' })
   @ApiResponse({ status: 200, description: 'H5页面更新成功' })
   updateH5Page(
-    @Param('id', ParseIntPipe) id: number,
+    @Param('id') id: string,
     @Body() updateDto: UpdateH5PageDto,
   ) {
     return this.wechatH5Service.updateH5Page(id, updateDto);
@@ -54,7 +54,7 @@ export class WechatH5Controller {
   @ApiOperation({ summary: '删除H5页面' })
   @ApiParam({ name: 'id', description: 'H5页面ID' })
   @ApiResponse({ status: 200, description: 'H5页面删除成功' })
-  deleteH5Page(@Param('id', ParseIntPipe) id: number) {
+  deleteH5Page(@Param('id') id: string) {
     return this.wechatH5Service.deleteH5Page(id);
   }
 
@@ -62,7 +62,7 @@ export class WechatH5Controller {
   @ApiOperation({ summary: '发布H5页面' })
   @ApiParam({ name: 'id', description: 'H5页面ID' })
   @ApiResponse({ status: 200, description: 'H5页面发布成功' })
-  publishH5Page(@Param('id', ParseIntPipe) id: number) {
+  publishH5Page(@Param('id') id: string) {
     return this.wechatH5Service.publishH5Page(id);
   }
 
@@ -70,7 +70,7 @@ export class WechatH5Controller {
   @ApiOperation({ summary: '取消发布H5页面' })
   @ApiParam({ name: 'id', description: 'H5页面ID' })
   @ApiResponse({ status: 200, description: 'H5页面取消发布成功' })
-  unpublishH5Page(@Param('id', ParseIntPipe) id: number) {
+  unpublishH5Page(@Param('id') id: string) {
     return this.wechatH5Service.unpublishH5Page(id);
   }
 
@@ -86,7 +86,7 @@ export class WechatH5Controller {
   @ApiOperation({ summary: '获取H5模板详情' })
   @ApiParam({ name: 'id', description: 'H5模板ID' })
   @ApiResponse({ status: 200, description: '获取H5模板详情成功' })
-  getH5TemplateById(@Param('id', ParseIntPipe) id: number) {
+  getH5TemplateById(@Param('id') id: string) {
     return this.wechatH5Service.getH5TemplateById(id);
   }
 
@@ -102,7 +102,7 @@ export class WechatH5Controller {
   @ApiParam({ name: 'id', description: 'H5模板ID' })
   @ApiResponse({ status: 200, description: 'H5模板更新成功' })
   updateH5Template(
-    @Param('id', ParseIntPipe) id: number,
+    @Param('id') id: string,
     @Body() updateDto: UpdateH5TemplateDto,
   ) {
     return this.wechatH5Service.updateH5Template(id, updateDto);
@@ -112,7 +112,7 @@ export class WechatH5Controller {
   @ApiOperation({ summary: '删除H5模板' })
   @ApiParam({ name: 'id', description: 'H5模板ID' })
   @ApiResponse({ status: 200, description: 'H5模板删除成功' })
-  deleteH5Template(@Param('id', ParseIntPipe) id: number) {
+  deleteH5Template(@Param('id') id: string) {
     return this.wechatH5Service.deleteH5Template(id);
   }
 }

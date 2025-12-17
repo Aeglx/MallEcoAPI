@@ -5,7 +5,7 @@ import { CreateAfterSalesDto } from '../dto/create-after-sales.dto';
 import { UpdateAfterSalesDto } from '../dto/update-after-sales.dto';
 import { AfterSales, AfterSalesStatus } from '../entities/after-sales.entity';
 
-@ApiTags('after-sales')
+@ApiTags('售后管理')
 @Controller('after-sales')
 export class AfterSalesController {
   constructor(private readonly afterSalesService: AfterSalesService) {}

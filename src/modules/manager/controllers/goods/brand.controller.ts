@@ -1,6 +1,8 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { BrandService } from '../../services/goods/brand.service';
 
+@ApiTags('品牌')
 @Controller('manager/goods/brand')
 export class BrandController {
   constructor(private readonly brandService: BrandService) {}

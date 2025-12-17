@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Delete, Body, Param, Query, UseGuards, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Param, Query, UseGuards } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiParam } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../../../infrastructure/auth/guards/jwt-auth.guard';
 import { WechatMenuService } from '../services/wechat-menu.service';
@@ -35,7 +35,7 @@ export class WechatMenuController {
   @ApiOperation({ summary: '获取菜单详情' })
   @ApiParam({ name: 'id', description: '菜单ID' })
   @ApiResponse({ status: 200, description: '获取菜单详情成功' })
-  getMenuById(@Param('id', ParseIntPipe) id: number) {
+  getMenuById(@Param('id') id: string) {
     return this.wechatMenuService.getMenuById(id);
   }
 
@@ -51,7 +51,7 @@ export class WechatMenuController {
   @ApiParam({ name: 'id', description: '菜单ID' })
   @ApiResponse({ status: 200, description: '菜单更新成功' })
   updateMenu(
-    @Param('id', ParseIntPipe) id: number,
+    @Param('id') id: string,
     @Body() updateDto: UpdateMenuDto,
   ) {
     return this.wechatMenuService.updateMenu(id, updateDto);
@@ -61,7 +61,7 @@ export class WechatMenuController {
   @ApiOperation({ summary: '删除菜单' })
   @ApiParam({ name: 'id', description: '菜单ID' })
   @ApiResponse({ status: 200, description: '菜单删除成功' })
-  deleteMenu(@Param('id', ParseIntPipe) id: number) {
+  deleteMenu(@Param('id') id: string) {
     return this.wechatMenuService.deleteMenu(id);
   }
 
@@ -69,7 +69,7 @@ export class WechatMenuController {
   @ApiOperation({ summary: '发布菜单' })
   @ApiParam({ name: 'id', description: '菜单ID' })
   @ApiResponse({ status: 200, description: '菜单发布成功' })
-  publishMenu(@Param('id', ParseIntPipe) id: number) {
+  publishMenu(@Param('id') id: string) {
     return this.wechatMenuService.publishMenu(id);
   }
 
@@ -77,7 +77,7 @@ export class WechatMenuController {
   @ApiOperation({ summary: '取消发布菜单' })
   @ApiParam({ name: 'id', description: '菜单ID' })
   @ApiResponse({ status: 200, description: '菜单取消发布成功' })
-  unpublishMenu(@Param('id', ParseIntPipe) id: number) {
+  unpublishMenu(@Param('id') id: string) {
     return this.wechatMenuService.unpublishMenu(id);
   }
 
@@ -93,7 +93,7 @@ export class WechatMenuController {
   @ApiOperation({ summary: '获取菜单关键词详情' })
   @ApiParam({ name: 'id', description: '菜单关键词ID' })
   @ApiResponse({ status: 200, description: '获取菜单关键词详情成功' })
-  getMenuKeywordById(@Param('id', ParseIntPipe) id: number) {
+  getMenuKeywordById(@Param('id') id: string) {
     return this.wechatMenuService.getMenuKeywordById(id);
   }
 
@@ -109,7 +109,7 @@ export class WechatMenuController {
   @ApiParam({ name: 'id', description: '菜单关键词ID' })
   @ApiResponse({ status: 200, description: '菜单关键词更新成功' })
   updateMenuKeyword(
-    @Param('id', ParseIntPipe) id: number,
+    @Param('id') id: string,
     @Body() updateDto: UpdateMenuKeywordDto,
   ) {
     return this.wechatMenuService.updateMenuKeyword(id, updateDto);
@@ -119,7 +119,7 @@ export class WechatMenuController {
   @ApiOperation({ summary: '删除菜单关键词' })
   @ApiParam({ name: 'id', description: '菜单关键词ID' })
   @ApiResponse({ status: 200, description: '菜单关键词删除成功' })
-  deleteMenuKeyword(@Param('id', ParseIntPipe) id: number) {
+  deleteMenuKeyword(@Param('id') id: string) {
     return this.wechatMenuService.deleteMenuKeyword(id);
   }
 

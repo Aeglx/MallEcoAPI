@@ -55,7 +55,7 @@ export class WechatOauthService {
     }
 
     const [list, total] = await queryBuilder
-      .orderBy('user.createdAt', 'DESC')
+      .orderBy('user.createTime', 'DESC')
       .skip(skip)
       .take(pageSize)
       .getManyAndCount();
@@ -99,7 +99,7 @@ export class WechatOauthService {
     }
 
     const [list, total] = await queryBuilder
-      .orderBy('app.createdAt', 'DESC')
+      .orderBy('app.createTime', 'DESC')
       .skip(skip)
       .take(pageSize)
       .getManyAndCount();
@@ -148,7 +148,7 @@ export class WechatOauthService {
       .leftJoinAndSelect('token.app', 'app');
 
     if (userId) {
-      queryBuilder.andWhere('token.userId = :userId', { userId });
+      queryBuilder.andWhere('token.id = :userId', { userId });
     }
 
     if (appId) {
@@ -160,7 +160,7 @@ export class WechatOauthService {
     }
 
     const [list, total] = await queryBuilder
-      .orderBy('token.createdAt', 'DESC')
+      .orderBy('token.createTime', 'DESC')
       .skip(skip)
       .take(pageSize)
       .getManyAndCount();
@@ -187,8 +187,7 @@ export class WechatOauthService {
   // 撤销令牌
   async revokeToken(id: string) {
     const token = await this.getOauthTokenById(id);
-    token.status = TokenStatus.REVOKED;
-    token.revokedAt = new Date();
+    token.status = 0;
     return await this.oauthTokenRepository.save(token);
   }
 
@@ -198,13 +197,12 @@ export class WechatOauthService {
       .createQueryBuilder()
       .update(WechatOauthToken)
       .set({ 
-        status: TokenStatus.REVOKED,
-        revokedAt: new Date() 
+        status: 0
       })
-      .where('userId = :userId AND appId = :appId AND status = :active', {
+      .where('id = :userId AND appId = :appId AND status = :active', {
         userId,
         appId,
-        active: TokenStatus.ACTIVE
+        active: 1
       })
       .execute();
 
@@ -247,7 +245,7 @@ export class WechatOauthService {
     // 生成新的密钥（实际应该使用安全的随机生成方法）
     const newSecret = this.generateRandomString(32);
     app.appSecret = newSecret;
-    app.updatedAt = new Date();
+    app.updateTime = new Date();
 
     await this.oauthAppRepository.save(app);
     

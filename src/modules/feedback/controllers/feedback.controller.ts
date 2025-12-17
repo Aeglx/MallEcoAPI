@@ -8,7 +8,7 @@ import { RolesGuard } from '../../../infrastructure/auth/guards/roles.guard';
 import { Roles } from '../../../infrastructure/auth/decorators/roles.decorator';
 import { Role } from '../../users/enums/role.enum';
 
-@ApiTags('feedback')
+@ApiTags('反馈管理')
 @Controller('api/feedback')
 export class FeedbackController {
   constructor(private readonly feedbackService: FeedbackService) {}

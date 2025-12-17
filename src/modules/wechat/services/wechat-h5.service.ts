@@ -48,7 +48,7 @@ export class WechatH5Service {
     };
   }
 
-  async getH5PageById(id: number) {
+  async getH5PageById(id: string) {
     const h5Page = await this.h5PageRepository.findOne({ where: { id } });
     if (!h5Page) {
       throw new NotFoundException(`H5页面不存在: ${id}`);
@@ -61,13 +61,13 @@ export class WechatH5Service {
     return await this.h5PageRepository.save(h5Page);
   }
 
-  async updateH5Page(id: number, updateDto: UpdateH5PageDto) {
+  async updateH5Page(id: string, updateDto: UpdateH5PageDto) {
     const h5Page = await this.getH5PageById(id);
     Object.assign(h5Page, updateDto);
     return await this.h5PageRepository.save(h5Page);
   }
 
-  async deleteH5Page(id: number) {
+  async deleteH5Page(id: string) {
     const h5Page = await this.getH5PageById(id);
     await this.h5PageRepository.remove(h5Page);
     return { success: true, message: 'H5页面删除成功' };
@@ -102,7 +102,7 @@ export class WechatH5Service {
     };
   }
 
-  async getH5TemplateById(id: number) {
+  async getH5TemplateById(id: string) {
     const template = await this.h5TemplateRepository.findOne({ where: { id } });
     if (!template) {
       throw new NotFoundException(`H5模板不存在: ${id}`);
@@ -115,30 +115,29 @@ export class WechatH5Service {
     return await this.h5TemplateRepository.save(template);
   }
 
-  async updateH5Template(id: number, updateDto: UpdateH5TemplateDto) {
+  async updateH5Template(id: string, updateDto: UpdateH5TemplateDto) {
     const template = await this.getH5TemplateById(id);
     Object.assign(template, updateDto);
     return await this.h5TemplateRepository.save(template);
   }
 
-  async deleteH5Template(id: number) {
+  async deleteH5Template(id: string) {
     const template = await this.getH5TemplateById(id);
     await this.h5TemplateRepository.remove(template);
     return { success: true, message: 'H5模板删除成功' };
   }
 
   // 发布H5页面
-  async publishH5Page(id: number) {
+  async publishH5Page(id: string) {
     const h5Page = await this.getH5PageById(id);
-    h5Page.status = 1; // 已发布
-    h5Page.publishedAt = new Date();
+    h5Page.status = 1; // 启用
     return await this.h5PageRepository.save(h5Page);
   }
 
   // 取消发布H5页面
-  async unpublishH5Page(id: number) {
+  async unpublishH5Page(id: string) {
     const h5Page = await this.getH5PageById(id);
-    h5Page.status = 0; // 未发布
+    h5Page.status = 0; // 禁用
     return await this.h5PageRepository.save(h5Page);
   }
 }

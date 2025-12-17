@@ -1,6 +1,8 @@
 import { Controller, Get, Query, Param } from '@nestjs/common';
 import { PageDataService } from '../services/page-data.service';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('页面数据')
 @Controller('buyer/other/pageData')
 export class PageDataController {
   constructor(private readonly pageDataService: PageDataService) {}

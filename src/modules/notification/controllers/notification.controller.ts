@@ -5,7 +5,7 @@ import { CreateNotificationDto } from '../dto/create-notification.dto';
 import { UpdateNotificationDto } from '../dto/update-notification.dto';
 import { Notification, NotificationStatus, NotificationType } from '../entities/notification.entity';
 
-@ApiTags('notification')
+@ApiTags('通知管理')
 @Controller('notification')
 export class NotificationController {
   constructor(private readonly notificationService: NotificationService) {}

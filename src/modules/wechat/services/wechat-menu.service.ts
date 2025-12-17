@@ -45,7 +45,7 @@ export class WechatMenuService {
     }
 
     if (menuType) {
-      queryBuilder.andWhere('menu.menuType = :menuType', { menuType });
+      queryBuilder.andWhere('menu.type = :type', { type: menuType });
     }
 
     if (status !== undefined) {
@@ -54,7 +54,7 @@ export class WechatMenuService {
 
     const [list, total] = await queryBuilder
       .orderBy('menu.sortOrder', 'ASC')
-      .addOrderBy('menu.createdAt', 'DESC')
+      .addOrderBy('menu.createTime', 'DESC')
       .skip(skip)
       .take(pageSize)
       .getManyAndCount();
@@ -67,7 +67,7 @@ export class WechatMenuService {
     };
   }
 
-  async getMenuById(id: number) {
+  async getMenuById(id: string) {
     const menu = await this.menuRepository.findOne({ where: { id } });
     if (!menu) {
       throw new NotFoundException(`菜单不存在: ${id}`);
@@ -80,13 +80,13 @@ export class WechatMenuService {
     return await this.menuRepository.save(menu);
   }
 
-  async updateMenu(id: number, updateDto: UpdateMenuDto) {
+  async updateMenu(id: string, updateDto: UpdateMenuDto) {
     const menu = await this.getMenuById(id);
     Object.assign(menu, updateDto);
     return await this.menuRepository.save(menu);
   }
 
-  async deleteMenu(id: number) {
+  async deleteMenu(id: string) {
     const menu = await this.getMenuById(id);
     await this.menuRepository.remove(menu);
     return { success: true, message: '菜单删除成功' };
@@ -95,7 +95,7 @@ export class WechatMenuService {
   // 获取菜单配置树
   async getMenuTree() {
     const menus = await this.menuRepository.find({
-      where: { status: MenuStatus.PUBLISHED },
+      where: { status: 1 },
       order: { sortOrder: 'ASC' },
     });
 
@@ -115,15 +115,14 @@ export class WechatMenuService {
   }
 
   // 发布菜单
-  async publishMenu(id: number) {
+  async publishMenu(id: string) {
     const menu = await this.getMenuById(id);
-    menu.status = MenuStatus.PUBLISHED;
-    menu.publishedAt = new Date();
+    menu.status = 1;
     return await this.menuRepository.save(menu);
   }
 
   // 取消发布菜单
-  async unpublishMenu(id: number) {
+  async unpublishMenu(id: string) {
     const menu = await this.getMenuById(id);
     menu.status = MenuStatus.DRAFT;
     return await this.menuRepository.save(menu);
@@ -151,7 +150,7 @@ export class WechatMenuService {
     }
 
     const [list, total] = await queryBuilder
-      .orderBy('keyword.createdAt', 'DESC')
+      .orderBy('keyword.createTime', 'DESC')
       .skip(skip)
       .take(pageSize)
       .getManyAndCount();
@@ -164,7 +163,7 @@ export class WechatMenuService {
     };
   }
 
-  async getMenuKeywordById(id: number) {
+  async getMenuKeywordById(id: string) {
     const keyword = await this.menuKeywordRepository.findOne({ 
       where: { id },
       relations: ['menu'] 
@@ -180,13 +179,13 @@ export class WechatMenuService {
     return await this.menuKeywordRepository.save(keyword);
   }
 
-  async updateMenuKeyword(id: number, updateDto: UpdateMenuKeywordDto) {
+  async updateMenuKeyword(id: string, updateDto: UpdateMenuKeywordDto) {
     const keyword = await this.getMenuKeywordById(id);
     Object.assign(keyword, updateDto);
     return await this.menuKeywordRepository.save(keyword);
   }
 
-  async deleteMenuKeyword(id: number) {
+  async deleteMenuKeyword(id: string) {
     const keyword = await this.getMenuKeywordById(id);
     await this.menuKeywordRepository.remove(keyword);
     return { success: true, message: '菜单关键词删除成功' };

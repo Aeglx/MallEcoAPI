@@ -1,7 +1,9 @@
 import { Controller, Get, Query, Param } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { HotWordsService } from '../services/hot-words.service';
 import { GoodsService } from '../services/goods.service';
 
+@ApiTags('商品')
 @Controller('buyer/goods/goods')
 export class GoodsController {
   constructor(

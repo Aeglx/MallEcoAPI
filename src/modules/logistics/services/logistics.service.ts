@@ -144,7 +144,7 @@ export class LogisticsService {
    * 删除物流信息
    * @param id 物流ID
    */
-  async deleteLogistics(id: number): Promise<void> {
+  async deleteLogistics(id: string): Promise<void> {
     const result = await this.logisticsRepository.delete(id);
     if (result.affected === 0) {
       throw new NotFoundException('Logistics not found');

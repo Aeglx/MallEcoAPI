@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Delete, Body, Param, Query, UseGuards, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Param, Query, UseGuards } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiParam } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../../../infrastructure/auth/guards/jwt-auth.guard';
 import { WechatMaterialService, MaterialType } from '../services/wechat-material.service';
@@ -38,7 +38,7 @@ export class WechatMaterialController {
   @ApiOperation({ summary: '获取素材详情' })
   @ApiParam({ name: 'id', description: '素材ID' })
   @ApiResponse({ status: 200, description: '获取素材详情成功' })
-  getMaterialById(@Param('id', ParseIntPipe) id: number) {
+  getMaterialById(@Param('id') id: string) {
     return this.wechatMaterialService.getMaterialById(id);
   }
 
@@ -56,7 +56,7 @@ export class WechatMaterialController {
   @ApiParam({ name: 'id', description: '素材ID' })
   @ApiResponse({ status: 200, description: '素材更新成功' })
   updateMaterial(
-    @Param('id', ParseIntPipe) id: number,
+    @Param('id') id: string,
     @Body() updateDto: UpdateMaterialDto,
   ) {
     return this.wechatMaterialService.updateMaterial(id, updateDto);
@@ -67,7 +67,7 @@ export class WechatMaterialController {
   @ApiOperation({ summary: '删除素材' })
   @ApiParam({ name: 'id', description: '素材ID' })
   @ApiResponse({ status: 200, description: '素材删除成功' })
-  deleteMaterial(@Param('id', ParseIntPipe) id: number) {
+  deleteMaterial(@Param('id') id: string) {
     return this.wechatMaterialService.deleteMaterial(id);
   }
 
@@ -76,7 +76,7 @@ export class WechatMaterialController {
   @ApiOperation({ summary: '永久删除素材' })
   @ApiParam({ name: 'id', description: '素材ID' })
   @ApiResponse({ status: 200, description: '素材永久删除成功' })
-  permanentDeleteMaterial(@Param('id', ParseIntPipe) id: number) {
+  permanentDeleteMaterial(@Param('id') id: string) {
     return this.wechatMaterialService.permanentDeleteMaterial(id);
   }
 
@@ -85,7 +85,7 @@ export class WechatMaterialController {
   @ApiOperation({ summary: '发布素材' })
   @ApiParam({ name: 'id', description: '素材ID' })
   @ApiResponse({ status: 200, description: '素材发布成功' })
-  publishMaterial(@Param('id', ParseIntPipe) id: number) {
+  publishMaterial(@Param('id') id: string) {
     return this.wechatMaterialService.publishMaterial(id);
   }
 
@@ -94,7 +94,7 @@ export class WechatMaterialController {
   @ApiOperation({ summary: '取消发布素材' })
   @ApiParam({ name: 'id', description: '素材ID' })
   @ApiResponse({ status: 200, description: '素材取消发布成功' })
-  unpublishMaterial(@Param('id', ParseIntPipe) id: number) {
+  unpublishMaterial(@Param('id') id: string) {
     return this.wechatMaterialService.unpublishMaterial(id);
   }
 

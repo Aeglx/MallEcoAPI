@@ -56,7 +56,7 @@ export class WechatCouponService {
     };
   }
 
-  async getCouponById(id: number) {
+  async getCouponById(id: string) {
     const coupon = await this.couponRepository.findOne({ where: { id } });
     if (!coupon) {
       throw new NotFoundException(`卡券不存在: ${id}`);
@@ -69,13 +69,13 @@ export class WechatCouponService {
     return await this.couponRepository.save(coupon);
   }
 
-  async updateCoupon(id: number, updateDto: UpdateCouponDto) {
+  async updateCoupon(id: string, updateDto: UpdateCouponDto) {
     const coupon = await this.getCouponById(id);
     Object.assign(coupon, updateDto);
     return await this.couponRepository.save(coupon);
   }
 
-  async deleteCoupon(id: number) {
+  async deleteCoupon(id: string) {
     const coupon = await this.getCouponById(id);
     await this.couponRepository.remove(coupon);
     return { success: true, message: '卡券删除成功' };
@@ -110,7 +110,7 @@ export class WechatCouponService {
     };
   }
 
-  async getCouponTemplateById(id: number) {
+  async getCouponTemplateById(id: string) {
     const template = await this.couponTemplateRepository.findOne({ where: { id } });
     if (!template) {
       throw new NotFoundException(`卡券模板不存在: ${id}`);
@@ -123,13 +123,13 @@ export class WechatCouponService {
     return await this.couponTemplateRepository.save(template);
   }
 
-  async updateCouponTemplate(id: number, updateDto: UpdateCouponTemplateDto) {
+  async updateCouponTemplate(id: string, updateDto: UpdateCouponTemplateDto) {
     const template = await this.getCouponTemplateById(id);
     Object.assign(template, updateDto);
     return await this.couponTemplateRepository.save(template);
   }
 
-  async deleteCouponTemplate(id: number) {
+  async deleteCouponTemplate(id: string) {
     const template = await this.getCouponTemplateById(id);
     await this.couponTemplateRepository.remove(template);
     return { success: true, message: '卡券模板删除成功' };
@@ -171,7 +171,7 @@ export class WechatCouponService {
     };
   }
 
-  async getCouponRecordById(id: number) {
+  async getCouponRecordById(id: string) {
     const record = await this.couponRecordRepository.findOne({ 
       where: { id },
       relations: ['coupon', 'user'] 
@@ -183,20 +183,15 @@ export class WechatCouponService {
   }
 
   // 核销卡券
-  async verifyCoupon(recordId: number, verifyData: { verifyCode: string; operatorId: number }) {
+  async verifyCoupon(recordId: string, verifyData: { operatorId: string }) {
     const record = await this.getCouponRecordById(recordId);
     
-    if (record.status !== 1) { // 1: 已领取
+    if (record.status !== 1) { // 1: 待核销
       throw new NotFoundException('卡券状态不正确，无法核销');
     }
 
-    if (record.verifyCode !== verifyData.verifyCode) {
-      throw new NotFoundException('核销码不正确');
-    }
-
     record.status = 2; // 已核销
-    record.verifiedAt = new Date();
-    record.operatorId = verifyData.operatorId;
+    record.verifyTime = new Date();
 
     return await this.couponRecordRepository.save(record);
   }

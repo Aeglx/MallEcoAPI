@@ -21,8 +21,8 @@ export class WechatMenu extends BaseWechatEntity {
   @Column({ type: 'text', nullable: true, comment: '小程序信息' })
   miniprogram: string;
 
-  @Column({ type: 'int', comment: '父菜单ID，0为一级菜单' })
-  parentId: number;
+  @Column({ type: 'varchar', length: 36, default: '0', comment: '父菜单ID，0为一级菜单' })
+  parentId: string;
 
   @Column({ type: 'int', comment: '菜单排序' })
   sortOrder: number;

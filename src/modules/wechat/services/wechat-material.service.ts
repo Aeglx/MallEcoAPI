@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { WechatMaterial } from '../entities/wechat-material.entity';
+import { WechatMaterialImage } from '../entities/wechat-material-image.entity';
 import { CreateMaterialDto } from '../dto/create-material.dto';
 import { UpdateMaterialDto } from '../dto/update-material.dto';
 import { QueryMaterialDto } from '../dto/query-material.dto';
@@ -22,23 +22,19 @@ export enum MaterialStatus {
 @Injectable()
 export class WechatMaterialService {
   constructor(
-    @InjectRepository(WechatMaterial)
-    private readonly materialRepository: Repository<WechatMaterial>,
+    @InjectRepository(WechatMaterialImage)
+    private readonly materialRepository: Repository<WechatMaterialImage>,
   ) {}
 
   // 获取素材列表
   async getMaterials(queryDto: QueryMaterialDto) {
-    const { page = 1, pageSize = 10, title, materialType, status } = queryDto;
+    const { page = 1, pageSize = 10, title, status } = queryDto;
     const skip = (page - 1) * pageSize;
 
     const queryBuilder = this.materialRepository.createQueryBuilder('material');
 
     if (title) {
-      queryBuilder.andWhere('material.title LIKE :title', { title: `%${title}%` });
-    }
-
-    if (materialType) {
-      queryBuilder.andWhere('material.materialType = :materialType', { materialType });
+      queryBuilder.andWhere('material.name LIKE :name', { name: `%${title}%` });
     }
 
     if (status !== undefined) {
@@ -46,7 +42,7 @@ export class WechatMaterialService {
     }
 
     const [list, total] = await queryBuilder
-      .orderBy('material.createdAt', 'DESC')
+      .orderBy('material.createTime', 'DESC')
       .skip(skip)
       .take(pageSize)
       .getManyAndCount();
@@ -61,11 +57,19 @@ export class WechatMaterialService {
 
   // 按类型获取素材
   async getMaterialsByType(materialType: MaterialType, queryDto: QueryMaterialDto) {
-    const queryDtoWithType = { ...queryDto, materialType };
-    return this.getMaterials(queryDtoWithType);
+    // 由于我们目前只支持图片类型，这里只返回图片素材
+    if (materialType !== MaterialType.IMAGE) {
+      return {
+        list: [],
+        total: 0,
+        page: queryDto.page || 1,
+        pageSize: queryDto.pageSize || 10,
+      };
+    }
+    return this.getMaterials(queryDto);
   }
 
-  async getMaterialById(id: number) {
+  async getMaterialById(id: string) {
     const material = await this.materialRepository.findOne({ where: { id } });
     if (!material) {
       throw new NotFoundException(`素材不存在: ${id}`);
@@ -75,41 +79,47 @@ export class WechatMaterialService {
 
   // 创建素材
   async createMaterial(createDto: CreateMaterialDto) {
-    const material = this.materialRepository.create(createDto);
+    const material = this.materialRepository.create({
+      mediaId: `media_${Date.now()}`,
+      name: createDto.title,
+      url: createDto.url,
+      size: createDto.size || 0,
+      description: createDto.description,
+      status: createDto.status === MaterialStatus.PUBLISHED ? 1 : 0,
+    });
     return await this.materialRepository.save(material);
   }
 
   // 更新素材
-  async updateMaterial(id: number, updateDto: UpdateMaterialDto) {
+  async updateMaterial(id: string, updateDto: UpdateMaterialDto) {
     const material = await this.getMaterialById(id);
     Object.assign(material, updateDto);
     return await this.materialRepository.save(material);
   }
 
   // 删除素材
-  async deleteMaterial(id: number) {
+  async deleteMaterial(id: string) {
     const material = await this.getMaterialById(id);
     material.status = MaterialStatus.DELETED;
     return await this.materialRepository.save(material);
   }
 
   // 永久删除素材
-  async permanentDeleteMaterial(id: number) {
+  async permanentDeleteMaterial(id: string) {
     const material = await this.getMaterialById(id);
     await this.materialRepository.remove(material);
     return { success: true, message: '素材永久删除成功' };
   }
 
   // 发布素材
-  async publishMaterial(id: number) {
+  async publishMaterial(id: string) {
     const material = await this.getMaterialById(id);
-    material.status = MaterialStatus.PUBLISHED;
-    material.publishedAt = new Date();
+    material.status = 1;
     return await this.materialRepository.save(material);
   }
 
   // 取消发布素材
-  async unpublishMaterial(id: number) {
+  async unpublishMaterial(id: string) {
     const material = await this.getMaterialById(id);
     material.status = MaterialStatus.DRAFT;
     return await this.materialRepository.save(material);
@@ -117,18 +127,11 @@ export class WechatMaterialService {
 
   // 获取素材统计
   async getMaterialStats() {
-    const stats = await this.materialRepository
-      .createQueryBuilder('material')
-      .select('material.materialType', 'type')
-      .addSelect('COUNT(*)', 'count')
-      .addSelect('SUM(CASE WHEN material.status = 1 THEN 1 ELSE 0 END)', 'publishedCount')
-      .where('material.status != :deleted', { deleted: MaterialStatus.DELETED })
-      .groupBy('material.materialType')
-      .getRawMany();
-
+    const total = await this.materialRepository.count({ where: { status: 1 } });
+    
     return {
-      total: await this.materialRepository.count({ where: { status: MaterialStatus.PUBLISHED } }),
-      byType: stats,
+      total,
+      byType: [{ type: MaterialType.IMAGE, count: total, publishedCount: total }],
     };
   }
 }
