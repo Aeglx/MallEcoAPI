@@ -440,7 +440,7 @@ spec:
       - name: mall-eco-api
         image: mall-eco-api:latest
         ports:
-        - containerPort: 3000
+        - containerPort: 9000
         env:
         - name: NODE_ENV
           value: "production"
@@ -458,7 +458,7 @@ spec:
   ports:
   - protocol: TCP
     port: 80
-    targetPort: 3000
+    targetPort: 9000
   type: LoadBalancer
 ```
 

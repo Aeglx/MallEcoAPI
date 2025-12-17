@@ -26,7 +26,7 @@ scrape_configs:
   # MallEco应用监控
   - job_name: 'malleco-app'
     static_configs:
-      - targets: ['app:3000']
+      - targets: ['app:9000']
     metrics_path: '/api/system/metrics'
     scrape_interval: 15s
     scrape_timeout: 10s
@@ -43,7 +43,7 @@ scrape_configs:
       - source_labels: [__param_target]
         target_label: instance
       - target_label: __address__
-        replacement: app:3000
+        replacement: app:9000
 
   # Node.js应用监控
   - job_name: 'node-exporter'
