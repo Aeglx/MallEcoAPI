@@ -11,7 +11,7 @@ import { join } from 'path';
   imports: [
     TypeOrmModule.forFeature([MallFile, MallFileDirectory]),
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', '..', '..', 'uploads'),
+      rootPath: join(__dirname, '..', '..', '..', 'public', 'uploads'),
       serveRoot: '/uploads',
     }),
   ],
