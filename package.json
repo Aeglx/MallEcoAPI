@@ -19,7 +19,15 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "db:init": "node DB/init-database.js"
+    "db:init": "node DB/database-manager.js init",
+    "db:update": "node DB/database-manager.js update",
+    "db:health": "node DB/database-manager.js health",
+    "menu:init": "node scripts/init-menu.js init",
+    "menu:tree": "node scripts/init-menu.js tree",
+    "menu:stats": "node scripts/init-menu.js stats",
+    "wechat:show": "node scripts/show-wechat-menu.js tree",
+    "wechat:summary": "node scripts/show-wechat-menu.js summary",
+    "wechat:api": "node scripts/show-wechat-menu.js api"
   },
   "dependencies": {
     "@alicloud/pop-core": "^1.8.0",

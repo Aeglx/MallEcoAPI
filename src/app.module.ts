@@ -37,6 +37,7 @@ import { MemberModule } from './modules/member/member.module';
 import { StoreModule } from './modules/store/store.module';
 import { TradeModule } from './modules/trade/trade.module';
 import { OtherModule } from './modules/other/other.module';
+import { WechatModule } from './modules/wechat/wechat.module';
 import { configurations } from './config/configuration';
 import { ResponseInterceptor } from './shared/interceptors/response.interceptor';
 import { HttpExceptionFilter } from './shared/filters/http-exception.filter';
@@ -132,6 +133,7 @@ import { MonitoringController } from './shared/monitoring/monitoring.controller'
     StoreModule,
     TradeModule,
     OtherModule,
+    WechatModule,
   ],
   controllers: [AppController, MonitoringController],
   providers: [
