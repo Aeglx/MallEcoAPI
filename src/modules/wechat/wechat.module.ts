@@ -18,6 +18,8 @@ import { WechatCouponController } from './controllers/wechat-coupon.controller';
 import { WechatMaterialController } from './controllers/wechat-material.controller';
 import { WechatMenuController } from './controllers/wechat-menu.controller';
 import { WechatOauthController } from './controllers/wechat-oauth.controller';
+import { WechatOauthAppController } from './controllers/wechat-oauth-app.controller';
+import { WechatOauthTokenController } from './controllers/wechat-oauth-token.controller';
 
 // 实体导入
 import { WechatFans } from './entities/wechat-fans.entity';
@@ -70,6 +72,8 @@ import { WechatOauthToken } from './entities/wechat-oauth-token.entity';
     WechatMaterialController,
     WechatMenuController,
     WechatOauthController,
+    WechatOauthAppController,
+    WechatOauthTokenController,
   ],
   providers: [
     WechatService,
