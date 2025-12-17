@@ -274,9 +274,9 @@ npm run start:dev
 ```
 
 7. **访问服务**
-- API服务：http://localhost:3000
-- API文档：http://localhost:3000/api-docs
-- 管理后台：http://localhost:3000/admin
+- API服务：http://localhost:9000
+- API文档：http://localhost:9000/api-docs
+- 管理后台：http://localhost:9000/admin
 
 ### Docker快速启动
 
@@ -300,7 +300,7 @@ docker-compose -f docker-compose.prod.yml up -d
 ```env
 # 应用配置
 NODE_ENV=development
-PORT=3000
+PORT=9000
 API_PREFIX=api
 
 # 数据库配置
@@ -397,7 +397,7 @@ server {
     server_name api.your-domain.com;
 
     location / {
-        proxy_pass http://localhost:3000;
+        proxy_pass http://localhost:9000;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -405,7 +405,7 @@ server {
     }
 
     location /api-docs {
-        proxy_pass http://localhost:3000/api-docs;
+        proxy_pass http://localhost:9000/api-docs;
     }
 }
 ```
@@ -524,8 +524,8 @@ interface OrderResponse {
 
 启动服务后，访问以下地址查看完整的API文档：
 
-- **Swagger UI**: http://localhost:3000/api-docs
-- **OpenAPI JSON**: http://localhost:3000/api-docs-json
+- **Swagger UI**: http://localhost:9000/api-docs
+- **OpenAPI JSON**: http://localhost:9000/api-docs-json
 
 ## 🗄 数据库设计
 
