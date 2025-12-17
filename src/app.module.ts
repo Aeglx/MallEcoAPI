@@ -7,6 +7,7 @@ import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { RbacModule } from './modules/rbac/rbac.module';
+import { GoodsModule } from './modules/goods/goods.module';
 import { ProductsModule } from './products/products.module';
 // import { SystemModule } from './modules/system/system.module';
 // import { StatisticsModule } from './statistics/statistics.module';
@@ -101,6 +102,7 @@ import { MonitoringController } from './shared/monitoring/monitoring.controller'
       ],
     }),
     RbacModule,
+    GoodsModule,
     ProductsModule,
     // SystemModule,
     // StatisticsModule,

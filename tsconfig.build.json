@@ -2,9 +2,8 @@
   "extends": "./tsconfig.json",
   "include": [
     "src/**/*",
-    "!src/modules/**/*",
     "!src/modules/promotion.disabled/**/*",
-    "src/modules/rbac/**/*"
+    "src/modules/**/*"
   ],
   "exclude": [
     "node_modules",
