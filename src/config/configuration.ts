@@ -82,7 +82,7 @@ const serverConfig = registerAs<ServerConfig>('server', () => ({
   port: parseInt(process.env.PORT || '3000', 10),
   nodeEnv: (process.env.NODE_ENV as 'development' | 'production' | 'test') || 'development',
   cors: {
-    origin: process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(',') : ['http://localhost:3000'],
+    origin: process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(',') : ['http://localhost:3000', 'http://localhost:10000', 'http://localhost:10002', 'http://localhost:10003'],
     credentials: process.env.CORS_CREDENTIALS === 'true',
   },
 }));

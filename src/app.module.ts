@@ -28,6 +28,14 @@ import { BuyerModule } from './modules/buyer/buyer.module';
 import { CommonModule } from './modules/common/common.module';
 import { FeedbackModule } from './modules/feedback/feedback.module';
 import { LogisticsModule } from './modules/logistics/logistics.module';
+import { ManagerModule } from './modules/manager/manager.module';
+import { SellerModule } from './modules/seller/seller.module';
+import { ImModule } from './modules/im/im.module';
+import { AddressModule } from './modules/address/address.module';
+import { MemberModule } from './modules/member/member.module';
+import { StoreModule } from './modules/store/store.module';
+import { TradeModule } from './modules/trade/trade.module';
+import { OtherModule } from './modules/other/other.module';
 import { configurations } from './config/configuration';
 import { ResponseInterceptor } from './shared/interceptors/response.interceptor';
 import { HttpExceptionFilter } from './shared/filters/http-exception.filter';
@@ -54,30 +62,19 @@ import { MonitoringController } from './shared/monitoring/monitoring.controller'
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
         type: 'mysql',
-        host: configService.get('DB_HOST'),
-        port: configService.get('DB_PORT'),
-        username: configService.get('DB_USERNAME'),
-        password: configService.get('DB_PASSWORD'),
-        database: configService.get('DB_NAME'),
-        charset: configService.get('DB_CHARSET'),
+        host: configService.get('DB_HOST', 'localhost'),
+        port: configService.get('DB_PORT', 3306),
+        username: configService.get('DB_USERNAME', 'root'),
+        password: configService.get('DB_PASSWORD', ''),
+        database: configService.get('DB_NAME', 'malleco'),
+        charset: configService.get('DB_CHARSET', 'utf8mb4'),
         entities: [
-          join(__dirname, 'modules/rbac/**/*.entity{.ts,.js}'),
-          join(__dirname, 'modules/auth/**/*.entity{.ts,.js}'),
-          join(__dirname, 'modules/users/**/*.entity{.ts,.js}'),
-          join(__dirname, 'products/**/*.entity{.ts,.js}'),
-          join(__dirname, 'modules/orders/**/*.entity{.ts,.js}'),
-          join(__dirname, 'modules/cart/**/*.entity{.ts,.js}'),
-          join(__dirname, 'modules/wallet/**/*.entity{.ts,.js}'),
-          join(__dirname, 'modules/promotion/**/*.entity{.ts,.js}'),
-          join(__dirname, 'modules/distribution/**/*.entity{.ts,.js}'),
-          join(__dirname, 'modules/content/**/*.entity{.ts,.js}'),
-          join(__dirname, 'modules/captcha/**/*.entity{.ts,.js}'),
-          join(__dirname, 'social/**/*.entity{.ts,.js}'),
+          join(__dirname, 'modules/framework/**/*.entity{.ts,.js}'),
+          join(__dirname, '**/*.entity{.ts,.js}'),
         ],
-        synchronize: false, // 强制禁用同步
-        logging: false, // 禁用日志
-        // 添加连接重试和错误处理
-        retryAttempts: 0, // 不重试连接
+        synchronize: configService.get('DB_SYNC', 'false') === 'true', // 开发环境可开启
+        logging: configService.get('DB_LOGGING', 'false') === 'true', // 开发环境可开启
+        retryAttempts: 3, // 连接重试
         retryDelay: 1000,
       }),
       inject: [ConfigService],
@@ -125,6 +122,14 @@ import { MonitoringController } from './shared/monitoring/monitoring.controller'
     CommonModule,
     LogisticsModule,
     FeedbackModule,
+    ManagerModule,
+    SellerModule,
+    ImModule,
+    AddressModule,
+    MemberModule,
+    StoreModule,
+    TradeModule,
+    OtherModule,
   ],
   controllers: [AppController, MonitoringController],
   providers: [

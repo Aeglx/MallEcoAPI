@@ -1,0 +1,247 @@
+# MallEco API 应用配置
+
+server:
+  port: 8888
+  cors:
+    origin:
+      - http://localhost:3000
+      - http://localhost:3001
+    credentials: true
+
+# 管理端点配置
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*' # 生产环境请限制公开的端点
+
+# 文件上传配置
+upload:
+  maxFileSize: 20MB
+  maxRequestSize: 20MB
+
+# Redis配置
+redis:
+  host: localhost
+  port: 6379
+  password: ''
+  db: 0
+  pool:
+    maxActive: 200
+    maxIdle: 10
+    minIdle: 8
+
+# 数据库配置
+database:
+  type: mysql
+  host: localhost
+  port: 3306
+  username: root
+  password: root
+  database: malleco
+  charset: utf8mb4
+  synchronize: false # 生产环境必须为false
+  logging: false
+
+# 忽略鉴权URL
+ignoredUrls:
+  - /editor-app/**
+  - /actuator/**
+  - /MP_verify_qSyvBPhDsPdxvOhC.txt
+  - /weixin/**
+  - /source/**
+  - /store/passport/login/**
+  - /store/passport/login/refresh/**
+  - /common/common/slider/**
+  - /common/common/sms/**
+  - /common/common/site
+  - /buyer/payment/cashier/**
+  - /buyer/other/pageData/**
+  - /buyer/other/article/**
+  - /buyer/goods/**
+  - /buyer/store/**
+  - /buyer/passport/connect/**
+  - /buyer/members/**
+  - /buyer/passport/member/**
+  - /buyer/passport/member/refresh/**
+  - /buyer/promotion/pintuan/**
+  - /buyer/promotion/seckill/**
+  - /buyer/promotion/pointsGoods/**
+  - /buyer/promotion/coupon
+  - /buyer/member/evaluation/*/goodsEvaluation
+  - /buyer/member/evaluation/*/evaluationNumber
+  - /buyer/other/appVersion/**
+  - /buyer/broadcast/studio/**
+  - /manager/passport/user/login
+  - /manager/passport/user/refresh/**
+  - /manager/other/elasticsearch
+  - /manager/other/customWords
+  - /druid/**
+  - /swagger-ui.html
+  - /doc.html
+  - /swagger-resources/**
+  - /swagger/**
+  - /webjars/**
+  - /v2/api-docs/**
+  - /configuration/ui
+  - /boot-admin
+  - /manager/promotion/seckill/init
+  - /favicon.ico
+  - /static/**
+  - /public/**
+  - /resources/**
+  - /META-INF/resources/**
+
+# Swagger配置
+swagger:
+  title: MallEco API接口文档
+  description: MallEco B2B2C商城系统API文档
+  version: 1.0.0
+  termsOfServiceUrl: https://malleco.example.com
+  contact:
+    name: MallEco Team
+    url: https://malleco.example.com
+    email: support@malleco.example.com
+
+# 日志配置
+logging:
+  level:
+    root: info
+    'MallEco': info
+  file:
+    path: logs
+    maxHistory: 7
+    maxFileSize: 5MB
+
+# 验证码配置
+verificationCode:
+  effectiveTime: 300 # 秒
+  watermark: 'MALLECO'
+  interfereNum: 1
+  faultTolerant: 3
+
+# 系统配置
+system:
+  isDemoSite: false
+  sensitiveLevel: 1 # 脱敏级别：0-不做脱敏，1-管理端脱敏，2-管理端和商家端同时脱敏
+
+# 统计配置
+statistics:
+  onlineMember: 48 # 在线人数统计小时数
+  currentOnlineUpdate: 600 # 当前在线人数刷新间隔（秒）
+
+# LBS配置
+lbs:
+  key: 'YOUR_LBS_KEY'
+  sk: 'YOUR_LBS_SK'
+
+# 域名配置
+domain:
+  pc: http://localhost:8888
+  wap: http://localhost:8888
+  seller: http://localhost:8888
+  admin: http://localhost:8888
+
+# API地址配置
+api:
+  buyer: http://localhost:8888
+  base: http://localhost:8888
+  manager: http://localhost:8888
+  seller: http://localhost:8888
+
+# JWT配置
+jwtSetting:
+  tokenExpireTime: 10000 # 分钟
+
+# 缓存配置
+cache:
+  timeout: 1500 # 秒
+
+# 线程配置
+thread:
+  corePoolSize: 5
+  maxPoolSize: 50
+  queueCapacity: 50
+
+# Elasticsearch配置
+elasticsearch:
+  clusterName: elasticsearch
+  clusterNodes: localhost:9200
+  index:
+    numberOfReplicas: 0
+    numberOfShards: 3
+  indexPrefix: malleco
+  schema: http
+
+# RocketMQ配置
+rocketmq:
+  nameServer: localhost:9876
+  isVIPChannel: false
+  producer:
+    group: malleco_group
+    sendMessageTimeout: 30000
+  topics:
+    promotion: malleco_promotion_topic
+    msg: malleco_msg_topic
+    goods: malleco_goods_topic
+    order: malleco_order_topic
+    member: malleco_member_topic
+    store: malleco_store_topic
+    other: malleco_other_topic
+    notice: malleco_notice_topic
+    afterSale: malleco_after_sale_topic
+
+# XXL-Job配置
+xxlJob:
+  admin:
+    addresses: http://localhost:9001/xxl-job-admin
+  executor:
+    appname: xxl-job-executor-malleco
+    port: 8891
+    logpath: ./xxl-job/executor
+    logretentiondays: 7
+
+# 短信配置
+sms:
+  aliyun:
+    accessKeyId: YOUR_ALIYUN_ACCESS_KEY_ID
+    accessKeySecret: YOUR_ALIYUN_ACCESS_KEY_SECRET
+    signName: YOUR_SIGN_NAME
+    templateCode: YOUR_TEMPLATE_CODE
+  tencent:
+    appId: YOUR_TENCENT_APP_ID
+    appKey: YOUR_TENCENT_APP_KEY
+
+# 支付配置
+payment:
+  alipay:
+    appId: YOUR_ALIPAY_APP_ID
+    privateKey: YOUR_ALIPAY_PRIVATE_KEY
+    publicKey: YOUR_ALIPAY_PUBLIC_KEY
+    gateway: https://openapi.alipay.com/gateway.do
+  wechat:
+    appId: YOUR_WECHAT_APP_ID
+    appSecret: YOUR_WECHAT_APP_SECRET
+    mchId: YOUR_WECHAT_MCHID
+    notifyUrl: http://localhost:8888/payment/callback/wechatpay
+
+# 物流配置
+logistics:
+  appId: YOUR_LOGISTICS_APP_ID
+  appKey: YOUR_LOGISTICS_APP_KEY
+
+# 安全配置
+security:
+  bcryptRounds: 12
+  rateLimit:
+    windowMs: 900000
+    max: 100
+
+# 性能监控
+monitoring:
+  enabled: false
+  metricsInterval: 30000
+  alert:
+    cpuThreshold: 80
+    memoryThreshold: 85
+    responseTimeThreshold: 2000

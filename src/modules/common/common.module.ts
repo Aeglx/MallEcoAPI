@@ -1,17 +1,13 @@
 import { Module } from '@nestjs/common';
-import { SiteController } from './controllers/site.controller';
-import { SiteService } from './services/site.service';
-import { RegionController } from './controllers/region.controller';
-import { RegionService } from './services/region.service';
-import { IMController } from './controllers/im.controller';
-import { IMService } from './services/im.service';
-import { VerifyController } from './controllers/verify.controller';
-import { CaptchaModule } from '../captcha/captcha.module';
-import { SmsModule } from '../sms/sms.module';
+import { ConfigModule } from '@nestjs/config';
+import { UploadController } from './controllers/upload.controller';
+import { CommonController } from './common.controller';
+import { CommonService } from './common.service';
 
 @Module({
-  imports: [CaptchaModule, SmsModule],
-  controllers: [SiteController, RegionController, IMController, VerifyController],
-  providers: [SiteService, RegionService, IMService],
+  imports: [ConfigModule],
+  controllers: [UploadController, CommonController],
+  providers: [CommonService],
+  exports: [CommonService],
 })
 export class CommonModule {}

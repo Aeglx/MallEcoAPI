@@ -44,13 +44,13 @@ export class MeshTelemetryEntity {
   @Column({ type: 'int', default: 0 })
   responseSize: number;
 
-  @Column({ type: 'jsonb', nullable: true })
+  @Column({ type: 'json', nullable: true })
   headers: Record<string, string>;
 
-  @Column({ type: 'jsonb', nullable: true })
+  @Column({ type: 'json', nullable: true })
   tags: Record<string, any>;
 
-  @Column({ type: 'jsonb', nullable: true })
+  @Column({ type: 'json', nullable: true })
   baggage: Record<string, string>;
 
   @Column()
@@ -59,7 +59,7 @@ export class MeshTelemetryEntity {
   @Column({ type: 'text', nullable: true })
   errorMessage: string;
 
-  @Column({ type: 'jsonb', nullable: true })
+  @Column({ type: 'json', nullable: true })
   stackTrace: Record<string, any>;
 
   @CreateDateColumn()

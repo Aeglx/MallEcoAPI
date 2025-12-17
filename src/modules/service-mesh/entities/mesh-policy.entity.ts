@@ -21,7 +21,7 @@ export class MeshPolicyEntity {
     version?: string;
   }>;
 
-  @Column({ type: 'jsonb' })
+  @Column({ type: 'json' })
   rules: Array<{
     name: string;
     condition: Record<string, any>;
@@ -35,10 +35,10 @@ export class MeshPolicyEntity {
   @Column({ default: 0 })
   priority: number;
 
-  @Column({ type: 'jsonb', nullable: true })
+  @Column({ type: 'json', nullable: true })
   conditions: Record<string, any>;
 
-  @Column({ type: 'jsonb', nullable: true })
+  @Column({ type: 'json', nullable: true })
   actions: Record<string, any>;
 
   @Column({ nullable: true })
@@ -50,7 +50,7 @@ export class MeshPolicyEntity {
   @Column({ type: 'text', nullable: true })
   description: string;
 
-  @Column({ type: 'jsonb', nullable: true })
+  @Column({ type: 'json', nullable: true })
   metadata: Record<string, any>;
 
   @CreateDateColumn()

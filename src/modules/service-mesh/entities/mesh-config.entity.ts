@@ -14,7 +14,7 @@ export class MeshConfigEntity {
   @Column({ type: 'enum', enum: ['istio', 'linkerd', 'consul', 'kuma'], default: 'istio' })
   meshType: string;
 
-  @Column({ type: 'jsonb' })
+  @Column({ type: 'json' })
   configuration: Record<string, any>;
 
   @Column({ type: 'enum', enum: ['active', 'inactive', 'updating'], default: 'inactive' })
@@ -35,10 +35,10 @@ export class MeshConfigEntity {
   @Column({ length: 500, nullable: true })
   dataPlaneUrl: string;
 
-  @Column({ type: 'jsonb', nullable: true })
+  @Column({ type: 'json', nullable: true })
   namespaceConfig: Record<string, any>;
 
-  @Column({ type: 'jsonb', nullable: true })
+  @Column({ type: 'json', nullable: true })
   workloadConfig: Record<string, any>;
 
   @Column({ nullable: true })

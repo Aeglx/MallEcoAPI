@@ -23,7 +23,7 @@ export class MeshGatewayEntity {
   @Column({ length: 50, nullable: true })
   protocol: string;
 
-  @Column({ type: 'jsonb' })
+  @Column({ type: 'json' })
   routes: Array<{
     path: string;
     destination: string;
@@ -32,13 +32,13 @@ export class MeshGatewayEntity {
     retries: number;
   }>;
 
-  @Column({ type: 'jsonb', nullable: true })
+  @Column({ type: 'json', nullable: true })
   tlsConfig: Record<string, any>;
 
-  @Column({ type: 'jsonb', nullable: true })
+  @Column({ type: 'json', nullable: true })
   rateLimitConfig: Record<string, any>;
 
-  @Column({ type: 'jsonb', nullable: true })
+  @Column({ type: 'json', nullable: true })
   corsConfig: Record<string, any>;
 
   @Column({ type: 'enum', enum: ['active', 'inactive', 'error'], default: 'active' })
@@ -47,7 +47,7 @@ export class MeshGatewayEntity {
   @Column({ default: true })
   isEnabled: boolean;
 
-  @Column({ type: 'jsonb', nullable: true })
+  @Column({ type: 'json', nullable: true })
   customFilters: Record<string, any>;
 
   @Column({ type: 'text', nullable: true })
