@@ -4,14 +4,14 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import { DatabaseChecker } from '../../DB/database-check';
+import { DatabaseManager } from '../../DB';
 
 @Injectable()
 export class DatabaseConfig {
-    private readonly dbChecker: DatabaseChecker;
+    private readonly dbChecker: DatabaseManager;
 
     constructor() {
-        this.dbChecker = new DatabaseChecker();
+        this.dbChecker = new DatabaseManager();
     }
 
     /**
@@ -22,7 +22,7 @@ export class DatabaseConfig {
         
         try {
             // 检测数据库状态
-            const result = await this.dbChecker.check();
+            const result = await this.dbChecker.checkConnection();
             
             if (result) {
                 console.log('✅ 数据库检测完成，API服务正常启动');
@@ -67,7 +67,7 @@ export class DatabaseConfig {
      * 获取数据库健康状态
      */
     async getHealthStatus() {
-        return await this.dbChecker.healthCheck();
+        return await this.dbChecker.checkConnection();
     }
 
     /**
