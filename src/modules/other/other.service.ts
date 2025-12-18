@@ -9,15 +9,6 @@ export class OtherService {
     const pageData = {
       list: [
         {
-          type: 'carousel1',
-          options: {
-            list: [
-              { image: '/images/banner1.jpg', link: '/goods/1' },
-              { image: '/images/banner2.jpg', link: '/goods/2' }
-            ]
-          }
-        },
-        {
           type: 'goodsCategory',
           options: {
             categories: [

@@ -24,6 +24,15 @@ export class PageDataService {
               }
             },
             {
+              key: 'loginBanner',
+              type: 'bannerAdvert',
+              options: {
+                img: 'https://dummyimage.com/1183x167?text=会员登陆',
+                url: '/login'
+              }
+            },
+
+            {
               key: 'newGoodsSort',
               type: 'newGoodsSort',
               options: {
@@ -295,14 +304,7 @@ export class PageDataService {
                 }
               }
             },
-            {
-              key: 'loginBanner',
-              type: 'bannerAdvert',
-              options: {
-                img: 'https://dummyimage.com/1183x167?text=会员登陆',
-                url: '/login'
-              }
-            }
+
           ]
         }
       }
@@ -317,18 +319,28 @@ export class PageDataService {
         pageData: {
           list: [
             {
+              key: 'carousel1',
               type: 'carousel1',
               options: {
                 list: [
                   {
                     id: 1,
-                    imageUrl: 'https://dummyimage.com/1200x400?text=Special+Banner',
+                    imageUrl: 'https://dummyimage.com/1200x400/cccccc/ffffff&text=新潮国货-为颜值加分',
                     linkUrl: '/',
-                    title: '专题横幅'
+                    title: '首页横幅1'
                   }
                 ]
               }
             },
+            {
+              key: 'loginBanner',
+              type: 'bannerAdvert',
+              options: {
+                img: 'https://dummyimage.com/1183x167?text=会员登陆',
+                url: '/login'
+              }
+            },
+
             {
               type: 'goodsList',
               options: {
@@ -385,6 +397,28 @@ export class PageDataService {
       result: {
         pageData: {
           list: [
+            {
+              key: 'carousel1',
+              type: 'carousel1',
+              options: {
+                list: [
+                  {
+                    id: 1,
+                    imageUrl: 'https://dummyimage.com/1200x400/cccccc/ffffff&text=新潮国货-为颜值加分',
+                    linkUrl: '/',
+                    title: '首页横幅1'
+                  }
+                ]
+              }
+            },
+            {
+              key: 'loginBanner',
+              type: 'bannerAdvert',
+              options: {
+                img: 'https://dummyimage.com/1183x167?text=会员登陆',
+                url: '/login'
+              }
+            },
             {
               type: 'storeHeader',
               options: {
@@ -470,18 +504,28 @@ export class PageDataService {
         pageData: {
           list: [
             {
+              key: 'carousel1',
               type: 'carousel1',
               options: {
                 list: [
                   {
                     id: 1,
-                    imageUrl: `https://dummyimage.com/1200x400?text=${encodeURIComponent(name)}+Banner`,
+                    imageUrl: 'https://dummyimage.com/1200x400/cccccc/ffffff&text=新潮国货-为颜值加分',
                     linkUrl: '/',
-                    title: `${name}专题横幅`
+                    title: '首页横幅1'
                   }
                 ]
               }
             },
+            {
+              key: 'loginBanner',
+              type: 'bannerAdvert',
+              options: {
+                img: 'https://dummyimage.com/1183x167?text=会员登陆',
+                url: '/login'
+              }
+            },
+
             {
               type: 'goodsList',
               options: {
