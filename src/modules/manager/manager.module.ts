@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { PassportService } from '../passport/passport.service';
 import { GoodsController } from './controllers/goods/goods.controller';
 import { CategoryController } from './controllers/goods/category.controller';
 import { BrandController } from './controllers/goods/brand.controller';
@@ -9,6 +10,7 @@ import { OrderController } from './controllers/order/order.controller';
 import { PromotionController } from './controllers/promotion/promotion.controller';
 import { SystemSettingController } from './controllers/setting/system.controller';
 import { DashboardController } from './controllers/statistics/dashboard.controller';
+import { ManagerPassportController } from './controllers/passport/passport.controller';
 import { GoodsService } from './services/goods/goods.service';
 import { CategoryService } from './services/goods/category.service';
 import { BrandService } from './services/goods/brand.service';
@@ -30,7 +32,8 @@ import { DashboardService } from './services/statistics/dashboard.service';
     OrderController,
     PromotionController,
     SystemSettingController,
-    DashboardController
+    DashboardController,
+    ManagerPassportController
   ],
   providers: [
     GoodsService,
@@ -41,7 +44,8 @@ import { DashboardService } from './services/statistics/dashboard.service';
     OrderService,
     PromotionService,
     SystemSettingService,
-    DashboardService
+    DashboardService,
+    PassportService
   ],
   exports: [],
 })

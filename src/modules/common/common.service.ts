@@ -24,7 +24,17 @@ export class CommonService {
   // 获取图片logo
   async getBaseSite() {
     // 实现获取网站配置逻辑
-    return { success: true, data: { logo: '/logo.png' }, message: '获取网站配置成功' };
+    return { 
+      success: true, 
+      result: { 
+        settingValue: JSON.stringify({
+          domainLogo: '/logo.png',
+          domainIcon: '/favicon.ico',
+          siteName: 'MallEco商城系统'
+        })
+      }, 
+      message: '获取网站配置成功' 
+    };
   }
 
   // 发送短信验证码
