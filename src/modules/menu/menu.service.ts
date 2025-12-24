@@ -53,18 +53,11 @@ export class MenuService implements OnModuleInit {
       const children = this.getChildrenMenus(menus, topMenu.id, appType);
       
       return {
-        id: topMenu.id,
-        title: topMenu.title,
-        path: topMenu.path,
-        icon: topMenu.icon,
-        permission: topMenu.permission,
-        type: topMenu.type,
+        ...topMenu,
         children: children.length > 0 ? children : undefined
       };
     }).sort((a, b) => {
-      const menuA = menus.find(m => m.id === a.id);
-      const menuB = menus.find(m => m.id === b.id);
-      return (menuA?.sortOrder || 0) - (menuB?.sortOrder || 0);
+      return (a.sortOrder || 0) - (b.sortOrder || 0);
     });
   }
 
@@ -78,19 +71,12 @@ export class MenuService implements OnModuleInit {
         const children = this.getChildrenMenus(menus, menu.id, appType);
         
         return {
-          id: menu.id,
-          title: menu.title,
-          path: menu.path,
-          icon: menu.icon,
-          permission: menu.permission,
-          type: menu.type,
+          ...menu,
           children: children.length > 0 ? children : undefined
         };
       })
       .sort((a, b) => {
-        const menuA = menus.find(m => m.id === a.id);
-        const menuB = menus.find(m => m.id === b.id);
-        return (menuA?.sortOrder || 0) - (menuB?.sortOrder || 0);
+        return (a.sortOrder || 0) - (b.sortOrder || 0);
       });
   }
 
