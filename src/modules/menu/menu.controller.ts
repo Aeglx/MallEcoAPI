@@ -53,4 +53,20 @@ export class MenuController {
     const permissionList = permissions ? (Array.isArray(permissions) ? permissions : [permissions]) : [];
     return this.menuService.getUserMenuTree(userType, permissionList);
   }
+
+  @Get('test')
+  @ApiOperation({ summary: '测试菜单功能（公开端点）' })
+  @ApiResponse({ status: 200, description: '测试成功' })
+  testMenu() {
+    return {
+      success: true,
+      message: '菜单模块功能正常',
+      data: {
+        adminMenuCount: this.menuService.getAdminMenuTree().length,
+        sellerMenuCount: this.menuService.getSellerMenuTree().length,
+        wechatMenu: this.menuService.getWechatMenu(),
+        timestamp: new Date().toISOString()
+      }
+    };
+  }
 }
