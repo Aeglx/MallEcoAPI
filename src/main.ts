@@ -5,6 +5,8 @@ import { ResponseInterceptor } from './shared/interceptors/response.interceptor'
 import { ConfigService } from '@nestjs/config';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { initializeDatabase } from './database-init';
+import { NestExpressApplication } from '@nestjs/platform-express';
+import { join } from 'path';
 
 function printModuleInfo(configService: ConfigService) {
   const rabbitmqEnabled = configService.get('RABBITMQ_ENABLED') === 'true';
@@ -100,9 +102,14 @@ async function bootstrap() {
       console.log('⚠️ 数据库初始化失败，应用仍将继续启动，但数据库功能可能不可用');
     }
 
-    const app = await NestFactory.create(AppModule, {
+    const app = await NestFactory.create<NestExpressApplication>(AppModule, {
       logger: ['error', 'warn', 'log', 'debug', 'verbose']
     });
+    
+    // 静态文件服务（已禁用自定义模板）
+    // app.useStaticAssets(join(__dirname, '..', 'public'), {
+    //   prefix: '/public/',
+    // });
     
     // 应用全局异常过滤器
     app.useGlobalFilters(new HttpExceptionFilter());
@@ -114,71 +121,172 @@ async function bootstrap() {
     app.enableCors();
     
     // 配置 Swagger
+    const swaggerConfigService = app.get(ConfigService);
+    const swaggerPort = swaggerConfigService.get('PORT') || 9000;
+    const nodeEnv = swaggerConfigService.get('NODE_ENV') || 'development';
+    
     const swaggerConfig = new DocumentBuilder()
       .setTitle('MallEco API')
-      .setDescription('MallEco商城系统API文档')
+      .setDescription(`
+# MallEco商城系统API文档
+
+## 系统介绍
+MallEco是一个功能完整的电商系统，支持多端（买家端、商家端、管理端）业务场景。
+
+## 认证说明
+大部分API需要JWT认证，请在请求头中添加：
+\`\`\`
+Authorization: Bearer <your-token>
+\`\`\`
+
+## 环境信息
+- **当前环境**: ${nodeEnv}
+- **API地址**: http://localhost:${swaggerPort}
+- **文档版本**: v1.0
+
+## 主要功能模块
+- 用户认证与授权
+- 商品管理
+- 订单管理
+- 支付管理
+- 会员管理
+- 促销营销
+- 即时通讯
+- 统计分析
+      `)
       .setVersion('1.0')
-      .addTag('认证', '用户认证与授权')
-      .addTag('用户管理', '用户管理')
-      .addTag('角色管理', '角色管理')
-      .addTag('权限管理', '权限管理')
-      .addTag('部门管理', '部门管理')
-      .addTag('商品管理', '商品管理')
-      .addTag('购物车管理', '购物车管理')
-      .addTag('订单管理', '订单管理')
-      .addTag('钱包管理', '钱包管理')
-      .addTag('促销营销', '促销营销')
-      .addTag('分销管理', '分销管理')
-      .addTag('直播管理', '直播管理')
-      .addTag('内容管理', '内容管理')
-      .addTag('销售统计', '销售统计')
-      .addTag('订单统计', '订单统计')
-      .addTag('用户统计', '用户统计')
-      .addTag('财务统计', '财务统计')
-      .addTag('仪表盘', '仪表盘')
-      .addTag('系统管理', '系统管理')
-      .addTag('性能监控', '性能监控')
-      .addTag('缓存管理', '缓存管理')
-      .addTag('数据库管理', '数据库管理')
-      .addTag('微服务管理', '微服务管理')
-      .addTag('服务网格管理', '服务网格管理')
-      .addTag('推荐模块', '推荐模块')
-      .addTag('系统配置管理', '系统配置管理')
-      .addTag('系统日志管理', '系统日志管理')
-      .addTag('系统监控', '系统监控')
-      .addTag('系统诊断管理', '系统诊断管理')
-      .addTag('系统版本管理', '系统版本管理')
-      .addTag('系统备份管理', '系统备份管理')
-      .addBearerAuth({
-        type: 'http',
-        scheme: 'bearer',
-        bearerFormat: 'JWT',
-        in: 'header',
-        name: 'Authorization'
-      }, 'JWT-auth')
+      .setContact('MallEco团队', 'https://github.com/malleco', 'support@malleco.com')
+      .setLicense('MIT', 'https://opensource.org/licenses/MIT')
+      .addServer(`http://localhost:${swaggerPort}`, '本地开发环境')
+      .addServer(`http://0.0.0.0:${swaggerPort}`, '本地网络环境')
+      .addServer('https://api-dev.malleco.com', '开发环境')
+      .addServer('https://api.malleco.com', '生产环境')
+      // 核心业务模块
+      .addTag('认证', '用户认证与授权相关接口')
+      .addTag('用户管理', '用户信息管理接口')
+      .addTag('即时通讯', 'IM消息和WebSocket实时通讯接口')
+      // 商品相关
+      .addTag('商品', '商品信息管理接口')
+      .addTag('商品分类', '商品分类管理接口')
+      .addTag('购物车管理', '购物车操作接口')
+      // 订单相关
+      .addTag('订单管理', '订单创建、查询、管理接口')
+      .addTag('支付管理', '支付相关接口')
+      // 会员相关
+      .addTag('会员管理', '会员信息管理接口')
+      .addTag('钱包管理', '用户钱包和余额管理接口')
+      // 营销相关
+      .addTag('促销营销', '促销活动管理接口')
+      .addTag('分销管理', '分销业务管理接口')
+      .addTag('优惠券', '优惠券管理接口')
+      // 内容相关
+      .addTag('内容管理', '内容发布和管理接口')
+      .addTag('直播管理', '直播功能接口')
+      // 权限相关
+      .addTag('角色管理', '角色管理接口')
+      .addTag('权限管理', '权限管理接口')
+      .addTag('部门管理', '部门管理接口')
+      // 统计相关
+      .addTag('销售统计', '销售数据统计接口')
+      .addTag('订单统计', '订单数据统计接口')
+      .addTag('用户统计', '用户数据统计接口')
+      .addTag('财务统计', '财务数据统计接口')
+      .addTag('仪表盘', '数据仪表盘接口')
+      // 系统管理
+      .addTag('系统管理', '系统配置和管理接口')
+      .addTag('系统配置管理', '系统配置管理接口')
+      .addTag('系统日志管理', '系统日志管理接口')
+      .addTag('系统监控', '系统监控接口')
+      .addTag('系统诊断管理', '系统诊断管理接口')
+      .addTag('系统版本管理', '系统版本管理接口')
+      .addTag('系统备份管理', '系统备份管理接口')
+      // 基础设施
+      .addTag('性能监控', '性能监控接口')
+      .addTag('缓存管理', '缓存管理接口')
+      .addTag('数据库管理', '数据库管理接口')
+      .addTag('微服务管理', '微服务管理接口')
+      .addTag('服务网格管理', '服务网格管理接口')
+      .addTag('推荐模块', '推荐算法接口')
+      // 其他
+      .addTag('文件管理', '文件上传下载接口')
+      .addTag('短信服务', '短信发送接口')
+      .addTag('邮件服务', '邮件发送接口')
+      .addTag('物流管理', '物流信息管理接口')
+      .addTag('微信服务', '微信相关接口')
+      .addTag('反馈管理', '用户反馈管理接口')
+      .addTag('售后管理', '售后处理接口')
+      .addTag('品牌', '品牌管理接口')
+      .addTag('页面数据', '页面数据接口')
+      .addTag('通用-文件上传', '通用文件上传接口')
+      .addTag('通用', '通用接口')
+      .addTag('地址管理', '地址管理接口')
+      .addTag('交易管理', '交易管理接口')
+      .addTag('店铺管理', '店铺管理接口')
+      .addTag('搜索', '搜索功能接口')
+      .addTag('监控仪表板', '监控仪表板接口')
+      .addTag('健康检查', '健康检查接口')
+      .addTag('菜单管理', '菜单管理接口')
+      .addTag('统计管理', '统计管理接口')
+      .addTag('公众号管理', '公众号管理接口')
+      .addTag('公众号管理-消息管理', '公众号消息管理接口')
+      .addTag('公众号管理-授权用户管理', '公众号授权用户管理接口')
+      .addTag('公众号管理-授权令牌管理', '公众号授权令牌管理接口')
+      .addTag('公众号管理-授权应用管理', '公众号授权应用管理接口')
+      .addTag('公众号管理-自定义菜单', '公众号自定义菜单接口')
+      .addTag('公众号管理-素材管理', '公众号素材管理接口')
+      .addTag('公众号管理-H5网页', '公众号H5网页接口')
+      .addTag('公众号管理-微信卡券', '公众号微信卡券接口')
+      .addTag('卖家端-店铺设置', '卖家端店铺设置接口')
+      .addTag('管理端-数据统计', '管理端数据统计接口')
+      .addTag('管理端-系统设置', '管理端系统设置接口')
+      .addTag('权限管理 - 菜单管理', '权限管理菜单管理接口')
+      .addTag('通知管理', '通知管理接口')
+      .addBearerAuth(
+        {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+          name: 'Authorization',
+          description: '输入JWT Token，格式：Bearer <token>',
+          in: 'header',
+        },
+        'JWT-auth',
+      )
       .build();
     
-    const document = SwaggerModule.createDocument(app, swaggerConfig);
+    const document = SwaggerModule.createDocument(app, swaggerConfig, {
+      operationIdFactory: (controllerKey: string, methodKey: string) => methodKey,
+    });
+    
     SwaggerModule.setup('api-docs', app, document, {
       swaggerOptions: {
-        language: 'zh-cn',
         persistAuthorization: true,
+        tagsSorter: 'alpha',
+        operationsSorter: 'alpha',
+        docExpansion: 'list',
+        filter: true,
+        showRequestDuration: true,
+        tryItOutEnabled: true,
       },
+      customSiteTitle: 'MallEco API 文档',
+      customfavIcon: '/favicon.ico',
     });
     
     // 获取配置服务
-    const configService = app.get(ConfigService);
+    const appConfigService = app.get(ConfigService);
     
     // 从环境变量获取端口
-    const port = configService.get('PORT') || 3001;
-    console.log(`📝 配置的端口: ${port}`);
+    const appPort = appConfigService.get('PORT') || 9000;
+    console.log(`📝 配置的端口: ${appPort}`);
     
-    await app.listen(port, '0.0.0.0', () => {
-      console.log(`🚀 服务已启动在 http://localhost:${port}`);
-      console.log(`📖 Swagger文档可用在 http://localhost:${port}/api-docs`);
+    await app.listen(appPort, '0.0.0.0', () => {
+      console.log(`🚀 服务已启动在 http://localhost:${appPort}`);
+      console.log(`🌐 服务已启动在 http://0.0.0.0:${appPort} (可从外部访问)`);
+      console.log(`📖 Swagger文档可用在 http://localhost:${appPort}/api-docs`);
+      console.log(`📖 Swagger文档可用在 http://0.0.0.0:${appPort}/api-docs (可从外部访问)`);
       
       // 打印模块信息
-      printModuleInfo(configService);
+      printModuleInfo(appConfigService);
     });
     
     console.log('✅ 应用程序启动成功');

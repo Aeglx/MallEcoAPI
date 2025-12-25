@@ -3,7 +3,9 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { join } from 'path';
 import { EventEmitterModule } from '@nestjs/event-emitter';
-import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
+import { APP_FILTER, APP_INTERCEPTOR, APP_GUARD } from '@nestjs/core';
+import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
+import { throttlerConfig } from './config/rate-limit.config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { RbacModule } from './modules/rbac/rbac.module';
@@ -45,6 +47,10 @@ import { HttpExceptionFilter } from './shared/filters/http-exception.filter';
 import { PerformanceInterceptor } from './shared/interceptors/performance.interceptor';
 import { PerformanceService } from './shared/monitoring/performance.service';
 import { MonitoringController } from './shared/monitoring/monitoring.controller';
+import { AopModule } from './shared/aop/aop.module';
+import { EventsModule } from './shared/events/events.module';
+import { InfrastructureModule } from './infrastructure/infrastructure.module';
+import { SchedulerModule } from './shared/scheduler/scheduler.module';
 
 @Module({
   imports: [
@@ -60,6 +66,8 @@ import { MonitoringController } from './shared/monitoring/monitoring.controller'
       isGlobal: true,
       envFilePath: 'config/.env',
     }),
+    // API限流配置
+    ThrottlerModule.forRoot(throttlerConfig),
     // 可选数据库连接 - 在没有MySQL的情况下应用程序仍能运行
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
@@ -136,11 +144,20 @@ import { MonitoringController } from './shared/monitoring/monitoring.controller'
     OtherModule,
     WechatModule,
     MenuModule,
+    AopModule,
+    EventsModule,
+    InfrastructureModule,
+    SchedulerModule,
   ],
   controllers: [AppController, MonitoringController],
   providers: [
     AppService,
     PerformanceService,
+    // 全局启用限流守卫
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
     {
       provide: APP_INTERCEPTOR,
       useClass: ResponseInterceptor,

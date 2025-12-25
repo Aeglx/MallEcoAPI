@@ -31,7 +31,7 @@ export class MenuSeeder {
         const menu = this.menuRepository.create({
           name: menuData.name,
           path: menuData.path,
-          component: menuData.component || null,
+          component: (menuData as any).component || null, // component字段可能不存在
           icon: menuData.icon,
           parentId: menuData.parentId ? await this.findParentId(menuData.parentId) : null,
           sortWeight: menuData.sortOrder,

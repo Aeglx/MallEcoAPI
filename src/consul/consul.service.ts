@@ -20,7 +20,7 @@ export class ConsulService implements OnModuleInit, OnModuleDestroy {
 
   private async registerService() {
     const serviceName = this.configService.get('SERVICE_NAME', 'malleco-api');
-    const servicePort = this.configService.get('PORT', 3001);
+    const servicePort = this.configService.get('PORT', 9000);
     const serviceAddress = this.configService.get('SERVICE_ADDRESS', 'localhost');
     
     this.serviceId = `${serviceName}-${serviceAddress}-${servicePort}`;

@@ -1,5 +1,6 @@
 import { Controller, Post, Get, Put, Delete, Body, Param, Query, HttpStatus, HttpException } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiQuery, ApiBody } from '@nestjs/swagger';
+import { PreventDuplicateSubmissions } from '../../shared/aop/decorators/prevent-duplicate-submissions.decorator';
 import { OrdersService } from './orders.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderStatusDto } from './dto/update-order-status.dto';
@@ -15,6 +16,7 @@ export class OrdersController {
    * @returns 创建的订单
    */
   @Post()
+  @PreventDuplicateSubmissions({ expire: 5 }) // 5秒内防重复提交
   @ApiOperation({
     summary: '创建订单',
     description: '创建一个新的订单',
@@ -26,6 +28,10 @@ export class OrdersController {
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
     description: '请求参数错误',
+  })
+  @ApiResponse({
+    status: HttpStatus.TOO_MANY_REQUESTS,
+    description: '请勿重复提交',
   })
   @ApiBody({
     type: CreateOrderDto,

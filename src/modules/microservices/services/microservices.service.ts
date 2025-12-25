@@ -133,8 +133,8 @@ export class MicroservicesService {
       {
         serviceName: discovery.serviceName,
         instances: [
-          { host: 'localhost', port: 3001, status: 'healthy' },
-          { host: 'localhost', port: 3002, status: 'healthy' },
+          { host: 'localhost', port: 9000, status: 'healthy' },
+          { host: 'localhost', port: 9001, status: 'healthy' },
         ],
       },
     ];

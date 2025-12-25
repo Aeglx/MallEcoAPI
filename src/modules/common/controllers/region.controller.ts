@@ -1,6 +1,8 @@
 import { Controller, Get, Query, Param } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { RegionService } from '../services/region.service';
 
+@ApiTags('地址管理')
 @Controller('common/common/region')
 export class RegionController {
   constructor(private readonly regionService: RegionService) {}

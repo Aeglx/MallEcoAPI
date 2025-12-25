@@ -11,6 +11,12 @@
     "outDir": "./dist",
     "baseUrl": "./src",
     "paths": {
+      "@/*": ["*"],
+      "@modules/*": ["modules/*"],
+      "@shared/*": ["shared/*"],
+      "@config/*": ["config/*"],
+      "@infrastructure/*": ["infrastructure/*"],
+      "@common/*": ["common/*"],
       "*": ["*"],
       "../../../../common/base.entity": ["common/base.entity"],
       "../../../common/base.entity": ["common/base.entity"]

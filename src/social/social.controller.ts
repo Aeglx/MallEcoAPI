@@ -1,8 +1,10 @@
 import { Controller, Get, Post, Query, Body, Param, UseGuards, Request } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { SocialService } from './social.service';
 import { SocialPlatform, ClientType } from './entities/social-auth.entity';
 import { AuthGuard } from '@nestjs/passport';
 
+@ApiTags('认证')
 @Controller('api/social')
 export class SocialController {
   constructor(private readonly socialService: SocialService) {}

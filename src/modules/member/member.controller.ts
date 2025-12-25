@@ -1,6 +1,8 @@
 import { Controller, Get, Post, Put, Delete, Body, Param, Query } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { MemberService } from './member.service';
 
+@ApiTags('会员管理')
 @Controller('buyer/member')
 export class MemberController {
   constructor(private readonly memberService: MemberService) {}

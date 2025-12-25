@@ -1,6 +1,8 @@
 import { Controller, Get, Post, Put, Delete, Body, Param, Query } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { TradeService } from './trade.service';
 
+@ApiTags('交易管理')
 @Controller('buyer/trade')
 export class TradeController {
   constructor(private readonly tradeService: TradeService) {}

@@ -1,6 +1,8 @@
 import { Controller, Get, Param, Query } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { OtherService } from './other.service';
 
+@ApiTags('页面数据')
 @Controller('buyer/other')
 export class OtherController {
   constructor(private readonly otherService: OtherService) {}

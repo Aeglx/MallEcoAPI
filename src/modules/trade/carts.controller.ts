@@ -1,6 +1,8 @@
 import { Controller, Get, Post, Put, Delete, Body, Param, Query } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { CartsService } from './carts.service';
 
+@ApiTags('购物车管理')
 @Controller('trade/carts')
 export class CartsController {
   constructor(private readonly cartsService: CartsService) {}

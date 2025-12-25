@@ -1,6 +1,8 @@
 import { Controller, Get, Post, Body, Put, Delete, Param, Query } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { OrdersFullService } from '../services/orders-full.service';
 
+@ApiTags('订单管理')
 @Controller('order')
 export class OrdersFullController {
   constructor(private readonly ordersFullService: OrdersFullService) {}

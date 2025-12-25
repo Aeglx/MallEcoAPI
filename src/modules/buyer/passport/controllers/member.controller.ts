@@ -1,6 +1,8 @@
 import { Controller, Get, Post, Put, Patch, Query, Headers, Body, Param } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { MemberService } from '../services/member.service';
 
+@ApiTags('认证')
 @Controller('buyer/passport/member')
 export class MemberBuyerController {
   constructor(private readonly memberService: MemberService) {}

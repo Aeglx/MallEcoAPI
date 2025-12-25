@@ -4,7 +4,70 @@
  */
 
 import { Injectable } from '@nestjs/common';
+import { registerAs } from '@nestjs/config';
+import { IsString, IsNumber, IsBoolean, IsNotEmpty, Min, Max } from 'class-validator';
 import { DatabaseManager } from '../../DB';
+
+/**
+ * 数据库配置接口
+ */
+export interface DatabaseConfigInterface {
+  host: string;
+  port: number;
+  username: string;
+  password: string;
+  database: string;
+  charset: string;
+  synchronize: boolean;
+  logging: boolean;
+  connectionLimit: number;
+}
+
+/**
+ * 数据库配置验证类
+ */
+export class DatabaseConfigValidation {
+  @IsString()
+  @IsNotEmpty()
+  host!: string;
+
+  @IsNumber()
+  @Min(1)
+  @Max(65535)
+  port!: number;
+
+  @IsString()
+  @IsNotEmpty()
+  username!: string;
+
+  @IsString()
+  password!: string;
+
+  @IsString()
+  @IsNotEmpty()
+  database!: string;
+
+  @IsBoolean()
+  synchronize!: boolean;
+
+  @IsBoolean()
+  logging!: boolean;
+}
+
+/**
+ * 数据库配置（使用registerAs）
+ */
+export const databaseConfigRegister = registerAs<DatabaseConfigInterface>('database', () => ({
+  host: process.env.DB_HOST || 'localhost',
+  port: parseInt(process.env.DB_PORT || '3306', 10),
+  username: process.env.DB_USERNAME || 'root',
+  password: process.env.DB_PASSWORD || '',
+  database: process.env.DB_NAME || 'malleco',
+  charset: process.env.DB_CHARSET || 'utf8mb4',
+  synchronize: process.env.DB_SYNC === 'true',
+  logging: process.env.DB_LOGGING === 'true',
+  connectionLimit: parseInt(process.env.DB_CONNECTION_LIMIT || '20', 10),
+}));
 
 @Injectable()
 export class DatabaseConfig {

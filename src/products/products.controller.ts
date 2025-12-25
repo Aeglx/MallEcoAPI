@@ -7,7 +7,7 @@ import { UpdateProductDto } from './dto/update-product.dto';
 // import { JwtAuthGuard } from './../../infrastructure/auth/guards/jwt-auth.guard';
 // import { Public } from './../../infrastructure/auth/public.decorator';
 
-@ApiTags('商品管理')
+@ApiTags('商品')
 @Controller('products')
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}

@@ -1,6 +1,8 @@
 import { Controller, Get } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { CouponService } from './coupon.service';
 
+@ApiTags('优惠券')
 @Controller('buyer/promotion/coupon')
 export class CouponController {
   constructor(private readonly couponService: CouponService) {}

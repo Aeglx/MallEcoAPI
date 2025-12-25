@@ -110,11 +110,15 @@ const securityConfig = registerAs<SecurityConfig>('security', () => ({
   },
 }));
 
+// WebSocket配置
+import websocketConfig from './websocket.config';
+
 export const configurations = [
   databaseConfig,
   serverConfig,
   cacheConfig,
   securityConfig,
+  websocketConfig,
 ];
 
 export default {
@@ -122,4 +126,5 @@ export default {
   server: serverConfig,
   cache: cacheConfig,
   security: securityConfig,
+  websocket: websocketConfig,
 };

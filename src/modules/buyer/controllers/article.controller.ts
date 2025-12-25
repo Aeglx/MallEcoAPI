@@ -1,7 +1,9 @@
 import { Controller, Get, Query, Param } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { ArticleService } from '../services/article.service';
 import { ArticleCategoryService } from '../services/article-category.service';
 
+@ApiTags('内容管理')
 @Controller('buyer/other/article')
 export class ArticleController {
   constructor(

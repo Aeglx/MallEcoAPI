@@ -1,6 +1,8 @@
 import { Controller, Get, Query, Param } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { CommonService } from './common.service';
 
+@ApiTags('通用')
 @Controller('common/common')
 export class CommonController {
   constructor(private readonly commonService: CommonService) {}
