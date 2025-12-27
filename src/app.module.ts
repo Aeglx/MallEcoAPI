@@ -51,9 +51,18 @@ import { AopModule } from './shared/aop/aop.module';
 import { EventsModule } from './shared/events/events.module';
 import { InfrastructureModule } from './infrastructure/infrastructure.module';
 import { SchedulerModule } from './shared/scheduler/scheduler.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
 
 @Module({
   imports: [
+    // 静态文件服务 - 提供 public 目录下的文件访问
+    // 在开发环境中，__dirname 指向 dist/src，所以需要向上两级到项目根目录
+    // 在生产环境中，__dirname 指向 dist，所以需要向上一级到项目根目录
+    ServeStaticModule.forRoot({
+      rootPath: join(process.cwd(), 'public'),
+      serveRoot: '/',
+      exclude: ['/api*'], // 排除 API 路由
+    }),
     EventEmitterModule.forRoot({
       wildcard: true,
       delimiter: '.',

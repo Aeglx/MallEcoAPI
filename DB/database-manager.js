@@ -72,8 +72,22 @@ class DatabaseManager {
       
       console.log('✅ 所有SQL语句执行完成');
       console.log('🎉 数据库初始化完成！');
-      console.log(`📝 管理员账户：admin`);
-      console.log(`🔑 管理员密码：dav888`);
+      console.log('');
+      console.log('📋 初始账号信息：');
+      console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+      console.log('👤 管理员账号：');
+      console.log('   用户名：admin');
+      console.log('   密码：dav888');
+      console.log('   邮箱：admin@malleco.com');
+      console.log('   角色：超级管理员');
+      console.log('');
+      console.log('👤 运营账号：');
+      console.log('   用户名：operator');
+      console.log('   密码：dav888');
+      console.log('   邮箱：operator@malleco.com');
+      console.log('   角色：运营管理员');
+      console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+      console.log('⚠️  请登录后立即修改默认密码！');
       
     } catch (error) {
       console.error('❌ 数据库初始化失败:', error.message);

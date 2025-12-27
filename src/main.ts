@@ -86,7 +86,6 @@ function printModuleInfo(configService: ConfigService) {
   console.log(' ├── 启动生产: npm run start:prod ');
   console.log(' ├── 数据库初始化: npm run db:init ');
   console.log(' ├── 菜单初始化: npm run menu:init ');
-  console.log(' ├── 微信菜单: npm run wechat:show ');
   console.log(' ├── 代码检查: npm run lint ');
   console.log(' └── 测试: npm run test ');
   console.log('');
@@ -106,10 +105,10 @@ async function bootstrap() {
       logger: ['error', 'warn', 'log', 'debug', 'verbose']
     });
     
-    // 静态文件服务（已禁用自定义模板）
-    // app.useStaticAssets(join(__dirname, '..', 'public'), {
-    //   prefix: '/public/',
-    // });
+    // 设置全局 API 前缀
+    app.setGlobalPrefix('api');
+    
+    // 静态文件服务已在 app.module.ts 中通过 ServeStaticModule 配置
     
     // 应用全局异常过滤器
     app.useGlobalFilters(new HttpExceptionFilter());

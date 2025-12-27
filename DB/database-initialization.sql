@@ -343,16 +343,33 @@ INSERT INTO `rbac_roles` (`id`, `name`, `code`, `description`, `status`, `sort_w
 VALUES (1, '超级管理员', 'super_admin', '系统超级管理员，拥有所有权限', 1, 0) 
 ON DUPLICATE KEY UPDATE `name`='超级管理员', `code`='super_admin', `description`='系统超级管理员，拥有所有权限', `status`=1;
 
+-- 插入运营管理员角色
+INSERT INTO `rbac_roles` (`id`, `name`, `code`, `description`, `status`, `sort_weight`) 
+VALUES (2, '运营管理员', 'operator', '运营管理员，负责日常运营管理工作', 1, 1) 
+ON DUPLICATE KEY UPDATE `name`='运营管理员', `code`='operator', `description`='运营管理员，负责日常运营管理工作', `status`=1;
+
 -- 插入管理员用户（密码：dav888，使用bcrypt加密）
 -- 注意：bcrypt加密值可能需要根据实际情况调整
-INSERT INTO `rbac_users` (`id`, `username`, `password`, `email`, `status`, `real_name`) 
-VALUES (1, 'admin', '$2b$12$Gq2L8eXyKM3sURvkFiVqy.9.THMoIxo.mbN1PMw.026UeMBA0tAQ2', 'admin@malleco.com', 1, '系统管理员') 
-ON DUPLICATE KEY UPDATE `username`='admin', `password`='$2b$12$Gq2L8eXyKM3sURvkFiVqy.9.THMoIxo.mbN1PMw.026UeMBA0tAQ2', `email`='admin@malleco.com', `status`=1;
+INSERT INTO `rbac_users` (`id`, `username`, `password`, `email`, `status`, `real_name`, `phone`) 
+VALUES (1, 'admin', '$2b$12$Gq2L8eXyKM3sURvkFiVqy.9.THMoIxo.mbN1PMw.026UeMBA0tAQ2', 'admin@malleco.com', 1, '系统管理员', '13800000001') 
+ON DUPLICATE KEY UPDATE `username`='admin', `password`='$2b$12$Gq2L8eXyKM3sURvkFiVqy.9.THMoIxo.mbN1PMw.026UeMBA0tAQ2', `email`='admin@malleco.com', `status`=1, `real_name`='系统管理员', `phone`='13800000001';
 
--- 关联用户与角色
+-- 插入运营管理员用户（密码：operator123，使用bcrypt加密）
+-- 注意：bcrypt加密值需要根据实际情况生成，这里使用示例值
+-- 可以使用 node DB/generate-bcrypt.js 生成新的密码哈希值
+INSERT INTO `rbac_users` (`id`, `username`, `password`, `email`, `status`, `real_name`, `phone`) 
+VALUES (2, 'operator', '$2b$12$Gq2L8eXyKM3sURvkFiVqy.9.THMoIxo.mbN1PMw.026UeMBA0tAQ2', 'operator@malleco.com', 1, '运营管理员', '13800000002') 
+ON DUPLICATE KEY UPDATE `username`='operator', `password`='$2b$12$Gq2L8eXyKM3sURvkFiVqy.9.THMoIxo.mbN1PMw.026UeMBA0tAQ2', `email`='operator@malleco.com', `status`=1, `real_name`='运营管理员', `phone`='13800000002';
+
+-- 关联管理员用户与超级管理员角色
 INSERT INTO `rbac_user_roles` (`user_id`, `role_id`) 
 VALUES (1, 1) 
 ON DUPLICATE KEY UPDATE `user_id`=1, `role_id`=1;
+
+-- 关联运营管理员用户与运营管理员角色
+INSERT INTO `rbac_user_roles` (`user_id`, `role_id`) 
+VALUES (2, 2) 
+ON DUPLICATE KEY UPDATE `user_id`=2, `role_id`=2;
 
 -- 插入系统配置表
 CREATE TABLE IF NOT EXISTS `system_config` (
@@ -383,4 +400,5 @@ ON DUPLICATE KEY UPDATE `value`=VALUES(`value`), `description`=VALUES(`descripti
 -- 输出执行结果
 SELECT '数据库初始化完成！' AS `result`;
 SELECT '管理员账户：admin' AS `username`, '密码：dav888' AS `password`;
+SELECT '运营账户：operator' AS `username`, '密码：dav888' AS `password`;
 

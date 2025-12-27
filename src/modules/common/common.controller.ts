@@ -1,4 +1,4 @@
-import { Controller, Get, Query, Param } from '@nestjs/common';
+import { Controller, Get, Query, Param, Post, Body, Headers } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { CommonService } from './common.service';
 
@@ -39,5 +39,57 @@ export class CommonController {
     @Query() params: any
   ) {
     return this.commonService.sendSms(verificationEnums, mobile, params);
+  }
+
+  // 获取滑块验证码图片
+  @Get('slider/:verificationEnums')
+  async getSliderCaptcha(
+    @Headers('uuid') uuid: string,
+    @Param('verificationEnums') verificationEnums: string,
+  ) {
+    try {
+      if (!uuid) {
+        return { success: false, message: 'UUID不能为空' };
+      }
+      const result = await this.commonService.createSliderCaptcha(
+        verificationEnums as any,
+        uuid,
+      );
+      return { success: true, result };
+    } catch (error: any) {
+      console.error('获取滑块验证码失败:', error);
+      return { 
+        success: false, 
+        message: error.message || '获取滑块验证码失败',
+        error: process.env.NODE_ENV === 'development' ? error.stack : undefined
+      };
+    }
+  }
+
+  // 验证滑块验证码
+  @Post('slider/:verificationEnums')
+  async verifySliderCaptcha(
+    @Headers('uuid') uuid: string,
+    @Param('verificationEnums') verificationEnums: string,
+    @Body() body: { xPos?: number; x?: number; y?: number },
+  ) {
+    if (!uuid) {
+      return { success: false, message: 'UUID不能为空' };
+    }
+    try {
+      // 兼容 xPos 和 x 两种参数名
+      const xPos = body.xPos || body.x;
+      if (xPos === undefined || xPos === null) {
+        return { success: false, message: 'X坐标不能为空' };
+      }
+      const result = await this.commonService.preCheckSliderCaptcha(
+        xPos,
+        uuid,
+        verificationEnums as any,
+      );
+      return { success: true, result };
+    } catch (error: any) {
+      return { success: false, message: error.message || '验证失败' };
+    }
   }
 }
