@@ -1,4 +1,10 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
 @Entity('service_mesh_policy')
 export class MeshPolicyEntity {
@@ -11,7 +17,11 @@ export class MeshPolicyEntity {
   @Column({ length: 50 })
   policyType: string;
 
-  @Column({ type: 'enum', enum: ['traffic', 'security', 'reliability', 'observability'], default: 'traffic' })
+  @Column({
+    type: 'enum',
+    enum: ['traffic', 'security', 'reliability', 'observability'],
+    default: 'traffic',
+  })
   category: string;
 
   @Column({ type: 'json' })

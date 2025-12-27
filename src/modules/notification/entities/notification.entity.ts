@@ -1,4 +1,12 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+  ManyToOne,
+  JoinColumn,
+} from 'typeorm';
 import { User } from '../../users/entities/user.entity';
 
 export enum NotificationType {
@@ -6,13 +14,13 @@ export enum NotificationType {
   ORDER = 'order',
   ACTIVITY = 'activity',
   MESSAGE = 'message',
-  REFUND = 'refund'
+  REFUND = 'refund',
 }
 
 export enum NotificationStatus {
   UNREAD = 'unread',
   READ = 'read',
-  DELETED = 'deleted'
+  DELETED = 'deleted',
 }
 
 @Entity('mall_notification')

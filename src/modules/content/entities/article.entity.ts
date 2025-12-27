@@ -17,7 +17,13 @@ export class Article extends BaseEntity {
   @Column({ name: 'summary', type: 'text', nullable: true, comment: '文章摘要' })
   summary: string;
 
-  @Column({ name: 'cover_image', type: 'varchar', length: 255, nullable: true, comment: '封面图片' })
+  @Column({
+    name: 'cover_image',
+    type: 'varchar',
+    length: 255,
+    nullable: true,
+    comment: '封面图片',
+  })
   coverImage: string;
 
   @Column({ name: 'author', length: 50, nullable: true, comment: '作者' })
@@ -32,7 +38,12 @@ export class Article extends BaseEntity {
   @Column({ name: 'comment_count', type: 'int', default: 0, comment: '评论量' })
   commentCount: number;
 
-  @Column({ name: 'status', type: 'tinyint', default: 0, comment: '状态：0-草稿，1-已发布，2-已下架' })
+  @Column({
+    name: 'status',
+    type: 'tinyint',
+    default: 0,
+    comment: '状态：0-草稿，1-已发布，2-已下架',
+  })
   status: number;
 
   @Column({ name: 'is_top', type: 'tinyint', default: 0, comment: '是否置顶' })
@@ -44,7 +55,10 @@ export class Article extends BaseEntity {
   @Column({ name: 'publish_time', type: 'datetime', nullable: true, comment: '发布时间' })
   publishTime: Date;
 
-  @ManyToOne(() => Category, category => category.articles, { nullable: true, onDelete: 'SET NULL' })
+  @ManyToOne(() => Category, category => category.articles, {
+    nullable: true,
+    onDelete: 'SET NULL',
+  })
   category: Category;
 
   @ManyToMany(() => Tag)
@@ -55,4 +69,3 @@ export class Article extends BaseEntity {
   })
   tags: Tag[];
 }
-

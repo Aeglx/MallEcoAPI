@@ -68,7 +68,12 @@ export class AuditLogService {
   /**
    * 记录用户登录
    */
-  async logUserLogin(userId: string, username: string, ip: string, userAgent: string): Promise<void> {
+  async logUserLogin(
+    userId: string,
+    username: string,
+    ip: string,
+    userAgent: string,
+  ): Promise<void> {
     await this.log({
       userId,
       username,
@@ -206,16 +211,7 @@ export class AuditLogService {
     limit: number;
     totalPages: number;
   }> {
-    const {
-      userId,
-      action,
-      resource,
-      startDate,
-      endDate,
-      level,
-      page = 1,
-      limit = 10,
-    } = options;
+    const { userId, action, resource, startDate, endDate, level, page = 1, limit = 10 } = options;
 
     const queryBuilder = this.systemLogRepository.createQueryBuilder('log');
 
@@ -262,7 +258,10 @@ export class AuditLogService {
   /**
    * 获取用户活动统计
    */
-  async getUserActivityStats(userId: string, days: number = 30): Promise<{
+  async getUserActivityStats(
+    userId: string,
+    days: number = 30,
+  ): Promise<{
     totalActions: number;
     actionsByType: { [key: string]: number };
     dailyActivity: { date: string; count: number }[];

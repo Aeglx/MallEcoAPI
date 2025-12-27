@@ -19,7 +19,7 @@ export class CouponService {
             minPoint: 100,
             maxPoint: 10,
             couponValue: 10,
-            couponImage: 'https://via.placeholder.com/200x100?text=Coupon1'
+            couponImage: 'https://via.placeholder.com/200x100?text=Coupon1',
           },
           {
             id: '2',
@@ -32,10 +32,10 @@ export class CouponService {
             minPoint: 200,
             maxPoint: 50,
             couponValue: 50,
-            couponImage: 'https://via.placeholder.com/200x100?text=Coupon2'
-          }
-        ]
-      }
+            couponImage: 'https://via.placeholder.com/200x100?text=Coupon2',
+          },
+        ],
+      },
     };
   }
 }

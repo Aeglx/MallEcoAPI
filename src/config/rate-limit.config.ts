@@ -34,21 +34,21 @@ export const throttlerRouteConfig: Record<string, { ttl: number; limit: number }
   // 登录接口 - 严格限流
   'POST /modules/auth/login': { ttl: 60000, limit: 5 },
   'POST /modules/auth/register': { ttl: 60000, limit: 3 },
-  
+
   // 支付接口
   'POST /modules/payment/*': { ttl: 60000, limit: 10 },
-  
+
   // 下单接口
   'POST /modules/orders/create': { ttl: 60000, limit: 10 },
-  
+
   // 搜索接口 - 较宽松
   'GET /modules/goods/search': { ttl: 10000, limit: 100 },
   'GET /modules/common/*': { ttl: 10000, limit: 100 },
-  
+
   // 验证码接口
   'GET /modules/common/sms/*': { ttl: 60000, limit: 10 },
   'POST /modules/common/sms/*': { ttl: 60000, limit: 10 },
-  
+
   // WebSocket连接
   'GET /im': { ttl: 60000, limit: 20 },
 };
@@ -61,4 +61,3 @@ export const rateLimitWhitelist: string[] = [
   '::1',
   // 可以添加更多白名单IP
 ];
-

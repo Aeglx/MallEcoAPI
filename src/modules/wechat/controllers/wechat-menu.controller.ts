@@ -50,10 +50,7 @@ export class WechatMenuController {
   @ApiOperation({ summary: '更新菜单' })
   @ApiParam({ name: 'id', description: '菜单ID' })
   @ApiResponse({ status: 200, description: '菜单更新成功' })
-  updateMenu(
-    @Param('id') id: string,
-    @Body() updateDto: UpdateMenuDto,
-  ) {
+  updateMenu(@Param('id') id: string, @Body() updateDto: UpdateMenuDto) {
     return this.wechatMenuService.updateMenu(id, updateDto);
   }
 
@@ -108,10 +105,7 @@ export class WechatMenuController {
   @ApiOperation({ summary: '更新菜单关键词' })
   @ApiParam({ name: 'id', description: '菜单关键词ID' })
   @ApiResponse({ status: 200, description: '菜单关键词更新成功' })
-  updateMenuKeyword(
-    @Param('id') id: string,
-    @Body() updateDto: UpdateMenuKeywordDto,
-  ) {
+  updateMenuKeyword(@Param('id') id: string, @Body() updateDto: UpdateMenuKeywordDto) {
     return this.wechatMenuService.updateMenuKeyword(id, updateDto);
   }
 

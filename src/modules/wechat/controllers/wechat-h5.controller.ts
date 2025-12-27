@@ -43,10 +43,7 @@ export class WechatH5Controller {
   @ApiOperation({ summary: '更新H5页面' })
   @ApiParam({ name: 'id', description: 'H5页面ID' })
   @ApiResponse({ status: 200, description: 'H5页面更新成功' })
-  updateH5Page(
-    @Param('id') id: string,
-    @Body() updateDto: UpdateH5PageDto,
-  ) {
+  updateH5Page(@Param('id') id: string, @Body() updateDto: UpdateH5PageDto) {
     return this.wechatH5Service.updateH5Page(id, updateDto);
   }
 
@@ -101,10 +98,7 @@ export class WechatH5Controller {
   @ApiOperation({ summary: '更新H5模板' })
   @ApiParam({ name: 'id', description: 'H5模板ID' })
   @ApiResponse({ status: 200, description: 'H5模板更新成功' })
-  updateH5Template(
-    @Param('id') id: string,
-    @Body() updateDto: UpdateH5TemplateDto,
-  ) {
+  updateH5Template(@Param('id') id: string, @Body() updateDto: UpdateH5TemplateDto) {
     return this.wechatH5Service.updateH5Template(id, updateDto);
   }
 

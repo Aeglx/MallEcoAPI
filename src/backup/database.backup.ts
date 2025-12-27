@@ -47,7 +47,7 @@ export class DatabaseBackupService implements OnModuleInit {
 
   constructor(
     @InjectConnection() private readonly connection: Connection,
-    private readonly configService: ConfigService
+    private readonly configService: ConfigService,
   ) {
     this.initializeConfig();
   }
@@ -72,8 +72,8 @@ export class DatabaseBackupService implements OnModuleInit {
       cloudConfig: {
         provider: this.configService.get('BACKUP_CLOUD_PROVIDER'),
         bucket: this.configService.get('BACKUP_CLOUD_BUCKET'),
-        region: this.configService.get('BACKUP_CLOUD_REGION')
-      }
+        region: this.configService.get('BACKUP_CLOUD_REGION'),
+      },
     };
 
     // 确保备份目录存在
@@ -93,9 +93,9 @@ export class DatabaseBackupService implements OnModuleInit {
 
     // 创建备份记录表
     await this.createBackupTable();
-    
+
     this.logger.log(`Database backup system initialized. Backup path: ${this.config.backupPath}`);
-    
+
     // 立即执行一次备份检查
     await this.checkBackupHealth();
   }
@@ -120,7 +120,7 @@ export class DatabaseBackupService implements OnModuleInit {
         INDEX idx_created_at (created_at)
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
     `;
-    
+
     await this.connection.query(query);
   }
 
@@ -135,7 +135,7 @@ export class DatabaseBackupService implements OnModuleInit {
         size: 0,
         duration: 0,
         checksum: '',
-        error: 'Backup is disabled'
+        error: 'Backup is disabled',
       };
     }
 
@@ -154,11 +154,11 @@ export class DatabaseBackupService implements OnModuleInit {
 
       // 构建mysqldump命令
       let dumpCommand = `mysqldump -h ${host} -P ${port} -u ${username}`;
-      
+
       if (password) {
         dumpCommand += ` -p${password}`;
       }
-      
+
       dumpCommand += ` ${database} > ${backupFilePath}`;
 
       // 执行备份
@@ -201,29 +201,30 @@ export class DatabaseBackupService implements OnModuleInit {
       // 记录备份成功
       await this.recordBackupSuccess('full', finalBackupFile, fileSize, checksum, duration);
 
-      this.logger.log(`Full backup completed: ${finalBackupFile} (${this.formatFileSize(fileSize)})`);
+      this.logger.log(
+        `Full backup completed: ${finalBackupFile} (${this.formatFileSize(fileSize)})`,
+      );
 
       return {
         success: true,
         backupFile: finalBackupFile,
         size: fileSize,
         duration,
-        checksum
+        checksum,
       };
-
     } catch (error) {
       const duration = Date.now() - startTime;
       await this.recordBackupFailure('full', backupFileName, duration, error.message);
-      
+
       this.logger.error(`Full backup failed: ${error.message}`);
-      
+
       return {
         success: false,
         backupFile: backupFilePath,
         size: 0,
         duration,
         checksum: '',
-        error: error.message
+        error: error.message,
       };
     }
   }
@@ -243,7 +244,7 @@ export class DatabaseBackupService implements OnModuleInit {
 
       // 获取当前的二进制日志位置
       const masterStatus = await this.connection.query('SHOW MASTER STATUS');
-      
+
       if (!masterStatus || masterStatus.length === 0) {
         throw new Error('Binary logging is not enabled');
       }
@@ -254,7 +255,7 @@ export class DatabaseBackupService implements OnModuleInit {
       const incrementalData = {
         logFile,
         logPosition,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       };
 
       fs.writeFileSync(backupFilePath, JSON.stringify(incrementalData, null, 2));
@@ -272,22 +273,21 @@ export class DatabaseBackupService implements OnModuleInit {
         backupFile: backupFilePath,
         size: stats.size,
         duration,
-        checksum
+        checksum,
       };
-
     } catch (error) {
       const duration = Date.now() - startTime;
       await this.recordBackupFailure('incremental', backupFileName, duration, error.message);
-      
+
       this.logger.error(`Incremental backup failed: ${error.message}`);
-      
+
       return {
         success: false,
         backupFile: backupFilePath,
         size: 0,
         duration,
         checksum: '',
-        error: error.message
+        error: error.message,
       };
     }
   }
@@ -321,11 +321,11 @@ export class DatabaseBackupService implements OnModuleInit {
 
       // 构建恢复命令
       let restoreCommand = `mysql -h ${host} -P ${port} -u ${username}`;
-      
+
       if (password) {
         restoreCommand += ` -p${password}`;
       }
-      
+
       restoreCommand += ` ${database} < ${restoreFile}`;
 
       // 执行恢复
@@ -343,19 +343,18 @@ export class DatabaseBackupService implements OnModuleInit {
       return {
         success: true,
         restoredFile: backupFile,
-        duration
+        duration,
       };
-
     } catch (error) {
       const duration = Date.now() - startTime;
-      
+
       this.logger.error(`Database restore failed: ${error.message}`);
-      
+
       return {
         success: false,
         restoredFile: backupFile,
         duration,
-        error: error.message
+        error: error.message,
       };
     }
   }
@@ -390,12 +389,12 @@ export class DatabaseBackupService implements OnModuleInit {
       cutoffDate.setDate(cutoffDate.getDate() - this.config.retentionDays);
 
       const files = fs.readdirSync(this.config.backupPath);
-      
+
       for (const file of files) {
         if (file.startsWith('malleco_')) {
           const filePath = path.join(this.config.backupPath, file);
           const stats = fs.statSync(filePath);
-          
+
           if (stats.mtime < cutoffDate) {
             fs.unlinkSync(filePath);
             this.logger.log(`Deleted old backup: ${file}`);
@@ -404,11 +403,9 @@ export class DatabaseBackupService implements OnModuleInit {
       }
 
       // 清理数据库中的旧记录
-      await this.connection.query(
-        'DELETE FROM mall_backup_records WHERE created_at < ?',
-        [cutoffDate]
-      );
-
+      await this.connection.query('DELETE FROM mall_backup_records WHERE created_at < ?', [
+        cutoffDate,
+      ]);
     } catch (error) {
       this.logger.error('Failed to cleanup old backups', error);
     }
@@ -424,14 +421,14 @@ export class DatabaseBackupService implements OnModuleInit {
         `SELECT * FROM mall_backup_records 
          WHERE status = 'success' 
          ORDER BY created_at DESC 
-         LIMIT 1`
+         LIMIT 1`,
       );
 
       const health = {
         lastSuccessfulBackup: recentBackup[0]?.created_at || null,
         backupCount: await this.getBackupCount(),
         diskUsage: await this.getBackupDiskUsage(),
-        status: recentBackup.length > 0 ? 'healthy' : 'unhealthy'
+        status: recentBackup.length > 0 ? 'healthy' : 'unhealthy',
       };
 
       return health;
@@ -470,8 +467,8 @@ export class DatabaseBackupService implements OnModuleInit {
     return new Promise((resolve, reject) => {
       const hash = crypto.createHash('sha256');
       const stream = fs.createReadStream(filePath);
-      
-      stream.on('data', (data) => hash.update(data));
+
+      stream.on('data', data => hash.update(data));
       stream.on('end', () => resolve(hash.digest('hex')));
       stream.on('error', reject);
     });
@@ -514,33 +511,44 @@ export class DatabaseBackupService implements OnModuleInit {
     const sizes = ['B', 'KB', 'MB', 'GB'];
     if (bytes === 0) return '0 B';
     const i = Math.floor(Math.log(bytes) / Math.log(1024));
-    return Math.round(bytes / Math.pow(1024, i) * 100) / 100 + ' ' + sizes[i];
+    return Math.round((bytes / Math.pow(1024, i)) * 100) / 100 + ' ' + sizes[i];
   }
 
   private async recordBackupStart(type: 'full' | 'incremental', fileName: string) {
     await this.connection.query(
-      'INSERT INTO mall_backup_records (backup_type, backup_file, file_size, checksum, status, duration_seconds) VALUES (?, ?, 0, \'\', \'in_progress\', 0)',
-      [type, fileName]
+      "INSERT INTO mall_backup_records (backup_type, backup_file, file_size, checksum, status, duration_seconds) VALUES (?, ?, 0, '', 'in_progress', 0)",
+      [type, fileName],
     );
   }
 
-  private async recordBackupSuccess(type: 'full' | 'incremental', fileName: string, size: number, checksum: string, duration: number) {
+  private async recordBackupSuccess(
+    type: 'full' | 'incremental',
+    fileName: string,
+    size: number,
+    checksum: string,
+    duration: number,
+  ) {
     await this.connection.query(
-      'UPDATE mall_backup_records SET status = \'success\', file_size = ?, checksum = ?, duration_seconds = ? WHERE backup_file = ? AND status = \'in_progress\'',
-      [size, checksum, Math.round(duration / 1000), fileName]
+      "UPDATE mall_backup_records SET status = 'success', file_size = ?, checksum = ?, duration_seconds = ? WHERE backup_file = ? AND status = 'in_progress'",
+      [size, checksum, Math.round(duration / 1000), fileName],
     );
   }
 
-  private async recordBackupFailure(type: 'full' | 'incremental', fileName: string, duration: number, error: string) {
+  private async recordBackupFailure(
+    type: 'full' | 'incremental',
+    fileName: string,
+    duration: number,
+    error: string,
+  ) {
     await this.connection.query(
-      'UPDATE mall_backup_records SET status = \'failed\', duration_seconds = ?, error_message = ? WHERE backup_file = ? AND status = \'in_progress\'',
-      [Math.round(duration / 1000), error, fileName]
+      "UPDATE mall_backup_records SET status = 'failed', duration_seconds = ?, error_message = ? WHERE backup_file = ? AND status = 'in_progress'",
+      [Math.round(duration / 1000), error, fileName],
     );
   }
 
   private async getBackupCount(): Promise<number> {
     const result = await this.connection.query(
-      'SELECT COUNT(*) as count FROM mall_backup_records WHERE status = \'success\''
+      "SELECT COUNT(*) as count FROM mall_backup_records WHERE status = 'success'",
     );
     return parseInt(result[0]?.count || '0');
   }
@@ -548,7 +556,7 @@ export class DatabaseBackupService implements OnModuleInit {
   private async getBackupDiskUsage(): Promise<number> {
     let totalSize = 0;
     const files = fs.readdirSync(this.config.backupPath);
-    
+
     for (const file of files) {
       if (file.startsWith('malleco_')) {
         const filePath = path.join(this.config.backupPath, file);
@@ -556,7 +564,7 @@ export class DatabaseBackupService implements OnModuleInit {
         totalSize += stats.size;
       }
     }
-    
+
     return totalSize;
   }
 }

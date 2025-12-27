@@ -8,9 +8,5 @@ import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
  * @param auth 是否需要认证，默认为true
  */
 export function ApiController(path: string, tag: string, auth: boolean = true) {
-  return applyDecorators(
-    Controller(path),
-    ApiTags(tag),
-    ...(auth ? [ApiBearerAuth('token')] : [])
-  );
+  return applyDecorators(Controller(path), ApiTags(tag), ...(auth ? [ApiBearerAuth('token')] : []));
 }

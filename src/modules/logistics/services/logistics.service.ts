@@ -70,7 +70,13 @@ export class LogisticsService {
    * @param from 出发地
    * @param to 目的地
    */
-  async pollMapTrack(logisticsId: string, expNo: string, phone?: string, from?: string, to?: string): Promise<Traces> {
+  async pollMapTrack(
+    logisticsId: string,
+    expNo: string,
+    phone?: string,
+    from?: string,
+    to?: string,
+  ): Promise<Traces> {
     const logistics = await this.logisticsRepository.findOneBy({ id: logisticsId });
     if (!logistics) {
       throw new NotFoundException('Logistics not found');

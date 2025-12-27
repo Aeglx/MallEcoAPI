@@ -1,4 +1,12 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+  ManyToOne,
+  JoinColumn,
+} from 'typeorm';
 import { User } from '../../users/entities/user.entity';
 
 export enum FeedbackType {
@@ -6,14 +14,14 @@ export enum FeedbackType {
   COMPLAINT = 'complaint',
   QUESTION = 'question',
   BUG = 'bug',
-  OTHER = 'other'
+  OTHER = 'other',
 }
 
 export enum FeedbackStatus {
   PENDING = 'pending',
   PROCESSING = 'processing',
   RESOLVED = 'resolved',
-  CLOSED = 'closed'
+  CLOSED = 'closed',
 }
 
 @Entity('mall_feedback')

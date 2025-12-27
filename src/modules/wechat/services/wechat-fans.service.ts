@@ -120,7 +120,7 @@ export class WechatFansService {
    */
   async update(id: string, updateWechatFansDto: UpdateWechatFansDto): Promise<WechatFans> {
     const fans = await this.findOne(id);
-    
+
     Object.assign(fans, updateWechatFansDto);
     return await this.wechatFansRepository.save(fans);
   }
@@ -151,14 +151,18 @@ export class WechatFansService {
    * 更新关注状态
    */
   async updateSubscribeStatus(openid: string, subscribeStatus: number): Promise<void> {
-    const updateTime = subscribeStatus === 1 ? 
-      { subscribeTime: new Date(), unsubscribeTime: null } : 
-      { unsubscribeTime: new Date() };
+    const updateTime =
+      subscribeStatus === 1
+        ? { subscribeTime: new Date(), unsubscribeTime: null }
+        : { unsubscribeTime: new Date() };
 
-    await this.wechatFansRepository.update({ openid }, { 
-      subscribeStatus, 
-      ...updateTime 
-    });
+    await this.wechatFansRepository.update(
+      { openid },
+      {
+        subscribeStatus,
+        ...updateTime,
+      },
+    );
   }
 
   /**
@@ -166,14 +170,14 @@ export class WechatFansService {
    */
   async getFansStats(): Promise<any> {
     const total = await this.wechatFansRepository.count();
-    const subscribed = await this.wechatFansRepository.count({ 
-      where: { subscribeStatus: 1 } 
+    const subscribed = await this.wechatFansRepository.count({
+      where: { subscribeStatus: 1 },
     });
-    const unsubscribed = await this.wechatFansRepository.count({ 
-      where: { subscribeStatus: 0 } 
+    const unsubscribed = await this.wechatFansRepository.count({
+      where: { subscribeStatus: 0 },
     });
-    const blacklisted = await this.wechatFansRepository.count({ 
-      where: { blacklist: 1 } 
+    const blacklisted = await this.wechatFansRepository.count({
+      where: { blacklist: 1 },
     });
 
     // 今日新增
@@ -191,7 +195,7 @@ export class WechatFansService {
       unsubscribed,
       blacklisted,
       todayNew,
-      subscribeRate: total > 0 ? (subscribed / total * 100).toFixed(2) : 0,
+      subscribeRate: total > 0 ? ((subscribed / total) * 100).toFixed(2) : 0,
     };
   }
 

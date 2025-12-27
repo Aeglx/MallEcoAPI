@@ -1,4 +1,12 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToMany, OneToMany } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+  ManyToMany,
+  OneToMany,
+} from 'typeorm';
 import { Role } from './role.entity';
 import { RolePermission } from './role-permission.entity';
 
@@ -47,7 +55,7 @@ export class Permission {
   isExternal: boolean; // 是否外部链接
 
   @Column({ nullable: true })
-  redirect: string; // 重定向路�?
+  redirect: string; // 重定向路�?
 
   @Column({ default: false })
   hidden: boolean; // 是否隐藏

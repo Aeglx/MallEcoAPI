@@ -10,7 +10,7 @@ export class ArticleService {
       content: '这是公司介绍的内容...',
       createTime: new Date('2025-01-01'),
       categoryId: '1-1',
-      type: 'about'
+      type: 'about',
     },
     {
       id: '2',
@@ -18,7 +18,7 @@ export class ArticleService {
       content: '这是联系我们的内容...',
       createTime: new Date('2025-01-02'),
       categoryId: '1-2',
-      type: 'contact'
+      type: 'contact',
     },
     {
       id: '3',
@@ -26,7 +26,7 @@ export class ArticleService {
       content: '这是购物流程的内容...',
       createTime: new Date('2025-01-03'),
       categoryId: '2-1',
-      type: 'shopping'
+      type: 'shopping',
     },
     {
       id: '4',
@@ -34,7 +34,7 @@ export class ArticleService {
       content: '这是支付方式的内容...',
       createTime: new Date('2025-01-04'),
       categoryId: '2-2',
-      type: 'payment'
+      type: 'payment',
     },
     {
       id: '5',
@@ -42,7 +42,7 @@ export class ArticleService {
       content: '这是退换货政策的内容...',
       createTime: new Date('2025-01-05'),
       categoryId: '3-1',
-      type: 'refund'
+      type: 'refund',
     },
     {
       id: '6',
@@ -50,8 +50,8 @@ export class ArticleService {
       content: '这是常见问题的内容...',
       createTime: new Date('2025-01-06'),
       categoryId: '3-2',
-      type: 'faq'
-    }
+      type: 'faq',
+    },
   ];
 
   // 分页获取文章列表
@@ -78,7 +78,7 @@ export class ArticleService {
       countId: null,
       maxLimit: null,
       searchCount: true,
-      pages: Math.ceil(filteredArticles.length / limit)
+      pages: Math.ceil(filteredArticles.length / limit),
     };
   }
 

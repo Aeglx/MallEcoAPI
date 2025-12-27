@@ -34,13 +34,13 @@ export class RedisTimeTriggerService implements TimeTrigger, OnModuleDestroy {
       port: parseInt(this.configService.get('REDIS_PORT') || '6379', 10),
       password: this.configService.get('REDIS_PASSWORD'),
       db: parseInt(this.configService.get('REDIS_DB') || '0', 10),
-      retryStrategy: (times) => {
+      retryStrategy: times => {
         const delay = Math.min(times * 50, 2000);
         return delay;
       },
     });
 
-    this.redisClient.on('error', (error) => {
+    this.redisClient.on('error', error => {
       this.logger.error('Redis connection error:', error);
     });
 
@@ -82,7 +82,7 @@ export class RedisTimeTriggerService implements TimeTrigger, OnModuleDestroy {
       this.logger.debug(`Found ${dueTasks.length} due tasks`);
 
       // 并发执行任务
-      const promises = dueTasks.map((taskKey) => this.executeTask(taskKey));
+      const promises = dueTasks.map(taskKey => this.executeTask(taskKey));
       await Promise.allSettled(promises);
     } catch (error) {
       this.logger.error('Error scanning and executing tasks:', error);
@@ -191,7 +191,12 @@ export class RedisTimeTriggerService implements TimeTrigger, OnModuleDestroy {
   /**
    * 删除延时任务
    */
-  async delete(executorName: string, triggerTime: number, uniqueKey: string, topic: string): Promise<void> {
+  async delete(
+    executorName: string,
+    triggerTime: number,
+    uniqueKey: string,
+    topic: string,
+  ): Promise<void> {
     const taskKey = this.buildKey(executorName, triggerTime, uniqueKey);
 
     // 从ZSET中删除
@@ -236,4 +241,3 @@ export class RedisTimeTriggerService implements TimeTrigger, OnModuleDestroy {
     }
   }
 }
-

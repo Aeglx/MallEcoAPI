@@ -13,8 +13,11 @@ export const PreventDuplicateSubmissions = (options?: {
 
   return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
     // 装饰器逻辑将在拦截器中实现
-    Reflect.defineMetadata('preventDuplicateSubmissions', { expire, userIsolation }, descriptor.value);
+    Reflect.defineMetadata(
+      'preventDuplicateSubmissions',
+      { expire, userIsolation },
+      descriptor.value,
+    );
     return descriptor;
   };
 };
-

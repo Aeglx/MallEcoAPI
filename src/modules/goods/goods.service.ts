@@ -12,8 +12,8 @@ export class GoodsService {
         name: '示例商品',
         price: 99.9,
         stock: 100,
-        description: '这是一个示例商品'
-      }
+        description: '这是一个示例商品',
+      },
     };
   }
 
@@ -28,19 +28,19 @@ export class GoodsService {
             goodsId: '1',
             name: '商品1',
             price: 99.9,
-            stock: 100
+            stock: 100,
           },
           {
             goodsId: '2',
             name: '商品2',
             price: 199.9,
-            stock: 50
-          }
+            stock: 50,
+          },
         ],
         total: 2,
         page: query.page || 1,
-        size: query.size || 10
-      }
+        size: query.size || 10,
+      },
     };
   }
 
@@ -54,15 +54,15 @@ export class GoodsService {
           {
             categoryId: '1',
             name: '分类1',
-            parentId: '0'
+            parentId: '0',
           },
           {
             categoryId: '2',
             name: '分类2',
-            parentId: '0'
-          }
-        ]
-      }
+            parentId: '0',
+          },
+        ],
+      },
     };
   }
 
@@ -78,16 +78,16 @@ export class GoodsService {
             skuId: '1',
             spec: '规格1',
             price: 99.9,
-            stock: 100
+            stock: 100,
           },
           {
             skuId: '2',
             spec: '规格2',
             price: 109.9,
-            stock: 80
-          }
-        ]
-      }
+            stock: 80,
+          },
+        ],
+      },
     };
   }
 
@@ -102,19 +102,19 @@ export class GoodsService {
             goodsId: '1',
             name: '搜索商品1',
             price: 99.9,
-            stock: 100
+            stock: 100,
           },
           {
             goodsId: '2',
             name: '搜索商品2',
             price: 199.9,
-            stock: 50
-          }
+            stock: 50,
+          },
         ],
         total: 2,
         page: query.page || 1,
-        size: query.size || 10
-      }
+        size: query.size || 10,
+      },
     };
   }
 
@@ -130,13 +130,13 @@ export class GoodsService {
             evaluationId: '1',
             content: '商品很好',
             rating: 5,
-            createTime: '2024-01-01'
-          }
+            createTime: '2024-01-01',
+          },
         ],
         total: 1,
         page: query.page || 1,
-        size: query.size || 10
-      }
+        size: query.size || 10,
+      },
     };
   }
 
@@ -152,13 +152,13 @@ export class GoodsService {
             consultationId: '1',
             question: '这个商品有现货吗？',
             answer: '有现货，可以立即发货',
-            createTime: '2024-01-01'
-          }
+            createTime: '2024-01-01',
+          },
         ],
         total: 1,
         page: query.page || 1,
-        size: query.size || 10
-      }
+        size: query.size || 10,
+      },
     };
   }
 
@@ -169,8 +169,8 @@ export class GoodsService {
       message: '添加商品咨询成功',
       data: {
         consultationId: 'new_1',
-        ...body
-      }
+        ...body,
+      },
     };
   }
 
@@ -186,13 +186,13 @@ export class GoodsService {
             goodsId: '1',
             goodsName: '收藏商品1',
             price: 99.9,
-            createTime: '2024-01-01'
-          }
+            createTime: '2024-01-01',
+          },
         ],
         total: 1,
         page: query.page || 1,
-        size: query.size || 10
-      }
+        size: query.size || 10,
+      },
     };
   }
 
@@ -203,8 +203,8 @@ export class GoodsService {
       message: '添加商品收藏成功',
       data: {
         collectionId: 'new_1',
-        goodsId
-      }
+        goodsId,
+      },
     };
   }
 
@@ -214,8 +214,8 @@ export class GoodsService {
       code: 200,
       message: '取消商品收藏成功',
       data: {
-        goodsId
-      }
+        goodsId,
+      },
     };
   }
 }

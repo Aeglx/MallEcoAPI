@@ -1,4 +1,11 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, Index } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+  Index,
+} from 'typeorm';
 
 @Entity('sales_statistics')
 @Index(['statDate', 'productId'])
@@ -37,7 +44,12 @@ export class SalesStatistics {
   @Column({ type: 'decimal', precision: 5, scale: 2, default: 0, comment: '转化率' })
   conversionRate: number;
 
-  @Column({ type: 'varchar', length: 50, default: 'daily', comment: '统计粒度: daily, weekly, monthly' })
+  @Column({
+    type: 'varchar',
+    length: 50,
+    default: 'daily',
+    comment: '统计粒度: daily, weekly, monthly',
+  })
   granularity: string;
 
   @CreateDateColumn({ type: 'timestamp', comment: '创建时间' })

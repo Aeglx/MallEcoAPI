@@ -47,6 +47,10 @@ export interface TimeTrigger {
   /**
    * 删除延时任务
    */
-  delete(executorName: string, triggerTime: number, uniqueKey: string, topic: string): Promise<void>;
+  delete(
+    executorName: string,
+    triggerTime: number,
+    uniqueKey: string,
+    topic: string,
+  ): Promise<void>;
 }
-

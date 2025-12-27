@@ -23,12 +23,9 @@ import { SystemManagementController } from './controllers/system-management.cont
 import { DatabaseManagementController } from './controllers/database-management.controller';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([
-    SystemConfigEntity,
-    SystemLogEntity,
-    SystemVersion,
-    SystemDiagnosis
-  ])],
+  imports: [
+    TypeOrmModule.forFeature([SystemConfigEntity, SystemLogEntity, SystemVersion, SystemDiagnosis]),
+  ],
   controllers: [
     SystemConfigController,
     SystemLogController,
@@ -38,7 +35,7 @@ import { DatabaseManagementController } from './controllers/database-management.
     SystemDiagnosisController,
     PerformanceMonitorController,
     SystemManagementController,
-    DatabaseManagementController
+    DatabaseManagementController,
   ],
   providers: [
     SystemConfigService,
@@ -48,8 +45,14 @@ import { DatabaseManagementController } from './controllers/database-management.
     SystemVersionService,
     SystemDiagnosisService,
     PerformanceMonitorService,
-    AuditLogService
+    AuditLogService,
   ],
-  exports: [SystemConfigService, SystemVersionService, SystemDiagnosisService, PerformanceMonitorService, AuditLogService]
+  exports: [
+    SystemConfigService,
+    SystemVersionService,
+    SystemDiagnosisService,
+    PerformanceMonitorService,
+    AuditLogService,
+  ],
 })
 export class SystemModule {}

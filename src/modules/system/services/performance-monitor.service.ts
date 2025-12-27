@@ -40,7 +40,12 @@ export class PerformanceMonitorService {
   /**
    * 记录缓存操作性能
    */
-  recordCacheOperation(operation: string, cacheType: string, hitRate: number, responseTime: number) {
+  recordCacheOperation(
+    operation: string,
+    cacheType: string,
+    hitRate: number,
+    responseTime: number,
+  ) {
     const metric = {
       timestamp: new Date(),
       operation,
@@ -73,13 +78,13 @@ export class PerformanceMonitorService {
   getApiPerformanceStats(endpoint?: string, timeRange?: string) {
     const prefix = endpoint ? `api:${endpoint}` : 'api:';
     const metrics = this.getMetricsByPrefix(prefix);
-    
+
     if (metrics.length === 0) {
       return null;
     }
 
     const filteredMetrics = this.filterByTimeRange(metrics, timeRange);
-    
+
     return {
       totalRequests: filteredMetrics.length,
       averageResponseTime: this.calculateAverage(filteredMetrics, 'responseTime'),
@@ -96,7 +101,7 @@ export class PerformanceMonitorService {
   getDatabasePerformanceStats(timeRange?: string) {
     const metrics = this.getMetrics('database:queries');
     const filteredMetrics = this.filterByTimeRange(metrics, timeRange);
-    
+
     if (filteredMetrics.length === 0) {
       return null;
     }
@@ -118,7 +123,7 @@ export class PerformanceMonitorService {
     const prefix = cacheType ? `cache:${cacheType}` : 'cache:';
     const metrics = this.getMetricsByPrefix(prefix);
     const filteredMetrics = this.filterByTimeRange(metrics, timeRange);
-    
+
     if (filteredMetrics.length === 0) {
       return null;
     }
@@ -138,7 +143,7 @@ export class PerformanceMonitorService {
   getSystemResourceStats(timeRange?: string) {
     const metrics = this.getMetrics('system:resources');
     const filteredMetrics = this.filterByTimeRange(metrics, timeRange);
-    
+
     if (filteredMetrics.length === 0) {
       return null;
     }
@@ -163,28 +168,28 @@ export class PerformanceMonitorService {
 
     const key = this.getMetricKey(metricType);
     const metrics = this.getMetrics(key);
-    
-    const filteredMetrics = metrics.filter(m => 
-      m.timestamp >= startDate && m.timestamp <= endDate
-    );
+
+    const filteredMetrics = metrics.filter(m => m.timestamp >= startDate && m.timestamp <= endDate);
 
     // 按小时分组
     const groupedMetrics = this.groupByHour(filteredMetrics);
-    
-    return Object.keys(groupedMetrics).map(hour => ({
-      timestamp: hour,
-      value: this.calculateAverage(groupedMetrics[hour], this.getValueField(metricType)),
-    })).sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
+
+    return Object.keys(groupedMetrics)
+      .map(hour => ({
+        timestamp: hour,
+        value: this.calculateAverage(groupedMetrics[hour], this.getValueField(metricType)),
+      }))
+      .sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
   }
 
   private addMetric(key: string, metric: any) {
     if (!this.performanceMetrics.has(key)) {
       this.performanceMetrics.set(key, []);
     }
-    
+
     const metrics = this.performanceMetrics.get(key);
     metrics.push(metric);
-    
+
     // 限制存储的指标数量
     if (metrics.length > this.maxMetricsCount) {
       metrics.shift();
@@ -263,7 +268,7 @@ export class PerformanceMonitorService {
 
   private groupByHour(metrics: any[]): { [hour: string]: any[] } {
     const grouped: { [hour: string]: any[] } = {};
-    
+
     metrics.forEach(metric => {
       const hour = new Date(metric.timestamp).toISOString().substring(0, 13) + ':00:00.000Z';
       if (!grouped[hour]) {
@@ -271,7 +276,7 @@ export class PerformanceMonitorService {
       }
       grouped[hour].push(metric);
     });
-    
+
     return grouped;
   }
 

@@ -12,10 +12,10 @@ export class FinancialStatisticsQueryDto {
   @IsOptional()
   endDate?: string;
 
-  @ApiProperty({ 
-    description: '账户类型', 
-    enum: ['income', 'expense'], 
-    required: false 
+  @ApiProperty({
+    description: '账户类型',
+    enum: ['income', 'expense'],
+    required: false,
   })
   @IsEnum(['income', 'expense'])
   @IsOptional()
@@ -26,11 +26,11 @@ export class FinancialStatisticsQueryDto {
   @IsOptional()
   transactionType?: string;
 
-  @ApiProperty({ 
-    description: '统计粒度', 
-    enum: ['daily', 'weekly', 'monthly'], 
+  @ApiProperty({
+    description: '统计粒度',
+    enum: ['daily', 'weekly', 'monthly'],
     default: 'daily',
-    required: false 
+    required: false,
   })
   @IsEnum(['daily', 'weekly', 'monthly'])
   @IsOptional()

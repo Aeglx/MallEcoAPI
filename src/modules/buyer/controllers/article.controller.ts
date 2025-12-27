@@ -8,7 +8,7 @@ import { ArticleCategoryService } from '../services/article-category.service';
 export class ArticleController {
   constructor(
     private readonly articleService: ArticleService,
-    private readonly articleCategoryService: ArticleCategoryService
+    private readonly articleCategoryService: ArticleCategoryService,
   ) {}
 
   @Get('articleCategory/list')
@@ -16,7 +16,7 @@ export class ArticleController {
     const categories = this.articleCategoryService.allChildren();
     return {
       success: true,
-      result: categories
+      result: categories,
     };
   }
 
@@ -25,7 +25,7 @@ export class ArticleController {
     const articles = this.articleService.articlePage(articleSearchParams);
     return {
       success: true,
-      result: articles
+      result: articles,
     };
   }
 
@@ -35,12 +35,12 @@ export class ArticleController {
     if (!article) {
       return {
         success: false,
-        message: '文章不存在'
+        message: '文章不存在',
       };
     }
     return {
       success: true,
-      result: article
+      result: article,
     };
   }
 
@@ -50,12 +50,12 @@ export class ArticleController {
     if (!article) {
       return {
         success: false,
-        message: '文章不存在'
+        message: '文章不存在',
       };
     }
     return {
       success: true,
-      result: article
+      result: article,
     };
   }
 }

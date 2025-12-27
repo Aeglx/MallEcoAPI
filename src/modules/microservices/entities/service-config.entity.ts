@@ -1,4 +1,10 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
 @Entity('microservices_service_config')
 export class ServiceConfigEntity {
@@ -14,7 +20,11 @@ export class ServiceConfigEntity {
   @Column({ type: 'text' })
   configValue: string;
 
-  @Column({ type: 'enum', enum: ['string', 'number', 'boolean', 'json', 'array'], default: 'string' })
+  @Column({
+    type: 'enum',
+    enum: ['string', 'number', 'boolean', 'json', 'array'],
+    default: 'string',
+  })
   valueType: string;
 
   @Column({ length: 500, nullable: true })

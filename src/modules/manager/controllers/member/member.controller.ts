@@ -4,7 +4,6 @@ import { ApiTags } from '@nestjs/swagger';
 @ApiTags('会员管理')
 @Controller('manager/member')
 export class MemberController {
-  
   @Get()
   findAll(@Query() query: any) {
     return { message: '获取会员列表', query };

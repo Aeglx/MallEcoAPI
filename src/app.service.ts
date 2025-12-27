@@ -18,9 +18,9 @@ export class AppService {
         distribution: '/distribution',
         content: '/content',
         live: '/live',
-        monitoring: '/monitoring'
+        monitoring: '/monitoring',
       },
-      documentation: '访问 /api 查看Swagger文档'
+      documentation: '访问 /api 查看Swagger文档',
     };
   }
 }

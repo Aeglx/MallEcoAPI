@@ -14,9 +14,7 @@
       "env": {
         "NODE_ENV": "development"
       },
-      "skipFiles": [
-        "<node_internals>/**"
-      ]
+      "skipFiles": ["<node_internals>/**"]
     },
     {
       "type": "node",
@@ -31,9 +29,7 @@
       "env": {
         "NODE_ENV": "development"
       },
-      "skipFiles": [
-        "<node_internals>/**"
-      ]
+      "skipFiles": ["<node_internals>/**"]
     },
     {
       "type": "node",
@@ -46,4 +42,3 @@
     }
   ]
 }
-

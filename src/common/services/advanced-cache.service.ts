@@ -33,17 +33,17 @@ export class AdvancedCacheService {
 
     try {
       const cached = await this.redis.get(cacheKey);
-      
+
       if (cached) {
         // 如果需要访问时刷新TTL
         if (refreshOnAccess) {
           await this.redis.expire(cacheKey, options.ttl || this.defaultTtl);
         }
-        
+
         this.logger.debug(`Cache hit: ${cacheKey}`);
         return JSON.parse(cached);
       }
-      
+
       this.logger.debug(`Cache miss: ${cacheKey}`);
       return null;
     } catch (error) {
@@ -55,11 +55,7 @@ export class AdvancedCacheService {
   /**
    * 缓存设置
    */
-  async set<T>(
-    key: string,
-    value: T,
-    options: CacheOptions = {},
-  ): Promise<void> {
+  async set<T>(key: string, value: T, options: CacheOptions = {}): Promise<void> {
     const { ttl = this.defaultTtl, prefix = 'cache' } = options;
     const cacheKey = `${prefix}:${key}`;
 
@@ -80,17 +76,17 @@ export class AdvancedCacheService {
     options: CacheOptions = {},
   ): Promise<T> {
     const cached = await this.get<T>(key, options);
-    
+
     if (cached !== null) {
       return cached;
     }
 
     // 缓存未命中，执行获取函数
     const value = await fetchFn();
-    
+
     // 设置缓存
     await this.set(key, value, options);
-    
+
     return value;
   }
 
@@ -99,10 +95,10 @@ export class AdvancedCacheService {
    */
   async mget<T>(keys: string[], prefix: string = 'cache'): Promise<(T | null)[]> {
     const cacheKeys = keys.map(key => `${prefix}:${key}`);
-    
+
     try {
       const values = await this.redis.mget(...cacheKeys);
-      return values.map(value => value ? JSON.parse(value) : null);
+      return values.map(value => (value ? JSON.parse(value) : null));
     } catch (error) {
       this.logger.error(`Batch cache get error:`, error);
       return keys.map(() => null);
@@ -112,14 +108,11 @@ export class AdvancedCacheService {
   /**
    * 批量设置缓存
    */
-  async mset<T>(
-    keyValuePairs: [string, T][],
-    options: CacheOptions = {},
-  ): Promise<void> {
+  async mset<T>(keyValuePairs: [string, T][], options: CacheOptions = {}): Promise<void> {
     const { ttl = this.defaultTtl, prefix = 'cache' } = options;
-    
+
     const pipeline = this.redis.pipeline();
-    
+
     keyValuePairs.forEach(([key, value]) => {
       const cacheKey = `${prefix}:${key}`;
       pipeline.setex(cacheKey, ttl, JSON.stringify(value));
@@ -138,7 +131,7 @@ export class AdvancedCacheService {
    */
   async delete(key: string, prefix: string = 'cache'): Promise<boolean> {
     const cacheKey = `${prefix}:${key}`;
-    
+
     try {
       const result = await this.redis.del(cacheKey);
       this.logger.debug(`Cache deleted: ${cacheKey}`);
@@ -155,11 +148,11 @@ export class AdvancedCacheService {
   async deleteByPattern(pattern: string): Promise<number> {
     try {
       const keys = await this.redis.keys(pattern);
-      
+
       if (keys.length === 0) {
         return 0;
       }
-      
+
       const result = await this.redis.del(...keys);
       this.logger.debug(`Deleted ${result} cache keys matching pattern: ${pattern}`);
       return result;
@@ -180,12 +173,12 @@ export class AdvancedCacheService {
     try {
       const info = await this.redis.info('stats');
       const keys = await this.redis.keys('cache:*');
-      
+
       // 解析Redis统计信息
       const totalKeys = keys.length;
       const memoryUsage = this.parseMemoryUsage(info);
       const hitRate = this.parseHitRate(info);
-      
+
       return {
         totalKeys,
         memoryUsage,
@@ -207,11 +200,11 @@ export class AdvancedCacheService {
   async clearAll(): Promise<number> {
     try {
       const keys = await this.redis.keys('cache:*');
-      
+
       if (keys.length === 0) {
         return 0;
       }
-      
+
       const result = await this.redis.del(...keys);
       this.logger.log(`Cleared all cache: ${result} keys deleted`);
       return result;
@@ -229,7 +222,7 @@ export class AdvancedCacheService {
   private parseHitRate(info: string): number {
     const keyspaceHits = parseInt(info.match(/keyspace_hits:(\d+)/)?.[1] || '0');
     const keyspaceMisses = parseInt(info.match(/keyspace_misses:(\d+)/)?.[1] || '0');
-    
+
     const total = keyspaceHits + keyspaceMisses;
     return total > 0 ? (keyspaceHits / total) * 100 : 0;
   }

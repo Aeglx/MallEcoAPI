@@ -11,7 +11,8 @@ export class SmsService {
   constructor(
     @InjectRepository(SmsLog) private readonly smsLogRepository: Repository<SmsLog>,
     @InjectRepository(SmsTemplate) private readonly smsTemplateRepository: Repository<SmsTemplate>,
-    @InjectRepository(SmsVerification) private readonly smsVerificationRepository: Repository<SmsVerification>,
+    @InjectRepository(SmsVerification)
+    private readonly smsVerificationRepository: Repository<SmsVerification>,
     private readonly aliyunSmsService: AliyunSmsService,
   ) {}
 
@@ -126,7 +127,12 @@ export class SmsService {
    * @param bizId 业务ID
    * @returns 发送结果
    */
-  async sendSms(phone: string, templateCode: string, params: Record<string, any>, bizId?: string): Promise<any> {
+  async sendSms(
+    phone: string,
+    templateCode: string,
+    params: Record<string, any>,
+    bizId?: string,
+  ): Promise<any> {
     try {
       // 调用阿里云短信服务发送短信
       const result = await this.aliyunSmsService.sendSms(phone, templateCode, params);
@@ -176,7 +182,7 @@ export class SmsService {
     }
 
     queryBuilder.orderBy('smsLog.createTime', 'DESC');
-    
+
     const [logs, total] = await queryBuilder
       .skip((page - 1) * limit)
       .take(limit)

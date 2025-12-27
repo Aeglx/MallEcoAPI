@@ -17,7 +17,12 @@ export class LiveRoom extends BaseEntity {
   @Column({ name: 'cover_image', length: 255, nullable: false, comment: '封面图片' })
   coverImage: string;
 
-  @Column({ name: 'status', type: 'tinyint', default: 0, comment: '状态：0-未开播，1-直播中，2-已结束' })
+  @Column({
+    name: 'status',
+    type: 'tinyint',
+    default: 0,
+    comment: '状态：0-未开播，1-直播中，2-已结束',
+  })
   status: number;
 
   @Column({ name: 'start_time', type: 'datetime', nullable: true, comment: '开始时间' })
@@ -47,4 +52,3 @@ export class LiveRoom extends BaseEntity {
   @OneToMany(() => LiveStatistics, statistics => statistics.liveRoom)
   statistics: LiveStatistics[];
 }
-

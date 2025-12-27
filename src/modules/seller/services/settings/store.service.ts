@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class StoreSettingService {
-  
   async getStoreInfo() {
     // 获取店铺信息的业务逻辑
     return {
@@ -12,9 +11,9 @@ export class StoreSettingService {
         storeDescription: '这是一个示例店铺',
         storeLogo: '/store-logo.png',
         contactPhone: '13800138000',
-        contactEmail: 'store@example.com'
+        contactEmail: 'store@example.com',
       },
-      message: '获取店铺信息成功'
+      message: '获取店铺信息成功',
     };
   }
 
@@ -23,7 +22,7 @@ export class StoreSettingService {
     return {
       success: true,
       data: storeData,
-      message: '更新店铺信息成功'
+      message: '更新店铺信息成功',
     };
   }
 
@@ -34,9 +33,9 @@ export class StoreSettingService {
       data: {
         shippingMethods: ['快递', '自提'],
         defaultShippingFee: 10,
-        freeShippingThreshold: 99
+        freeShippingThreshold: 99,
       },
-      message: '获取配送设置成功'
+      message: '获取配送设置成功',
     };
   }
 
@@ -45,7 +44,7 @@ export class StoreSettingService {
     return {
       success: true,
       data: shippingData,
-      message: '更新配送设置成功'
+      message: '更新配送设置成功',
     };
   }
 
@@ -56,9 +55,9 @@ export class StoreSettingService {
       data: {
         paymentMethods: ['支付宝', '微信支付', '银行卡'],
         autoConfirm: true,
-        settlementPeriod: 7
+        settlementPeriod: 7,
       },
-      message: '获取支付设置成功'
+      message: '获取支付设置成功',
     };
   }
 
@@ -67,7 +66,7 @@ export class StoreSettingService {
     return {
       success: true,
       data: paymentData,
-      message: '更新支付设置成功'
+      message: '更新支付设置成功',
     };
   }
 }

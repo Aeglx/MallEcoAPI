@@ -44,10 +44,7 @@ export class WechatCouponController {
   @ApiOperation({ summary: '更新卡券' })
   @ApiParam({ name: 'id', description: '卡券ID' })
   @ApiResponse({ status: 200, description: '卡券更新成功' })
-  updateCoupon(
-    @Param('id') id: string,
-    @Body() updateDto: UpdateCouponDto,
-  ) {
+  updateCoupon(@Param('id') id: string, @Body() updateDto: UpdateCouponDto) {
     return this.wechatCouponService.updateCoupon(id, updateDto);
   }
 
@@ -86,10 +83,7 @@ export class WechatCouponController {
   @ApiOperation({ summary: '更新卡券模板' })
   @ApiParam({ name: 'id', description: '卡券模板ID' })
   @ApiResponse({ status: 200, description: '卡券模板更新成功' })
-  updateCouponTemplate(
-    @Param('id') id: string,
-    @Body() updateDto: UpdateCouponTemplateDto,
-  ) {
+  updateCouponTemplate(@Param('id') id: string, @Body() updateDto: UpdateCouponTemplateDto) {
     return this.wechatCouponService.updateCouponTemplate(id, updateDto);
   }
 
@@ -121,10 +115,7 @@ export class WechatCouponController {
   @ApiOperation({ summary: '核销卡券' })
   @ApiParam({ name: 'id', description: '卡券记录ID' })
   @ApiResponse({ status: 200, description: '卡券核销成功' })
-  verifyCoupon(
-    @Param('id') id: string,
-    @Body() verifyData: { operatorId: string },
-  ) {
+  verifyCoupon(@Param('id') id: string, @Body() verifyData: { operatorId: string }) {
     return this.wechatCouponService.verifyCoupon(id, verifyData);
   }
 }

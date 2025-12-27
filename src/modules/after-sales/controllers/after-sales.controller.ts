@@ -23,7 +23,7 @@ export class AfterSalesController {
   @ApiBody({ type: UpdateAfterSalesDto })
   async reviewAfterSales(
     @Param('id') id: number,
-    @Body() updateAfterSalesDto: UpdateAfterSalesDto
+    @Body() updateAfterSalesDto: UpdateAfterSalesDto,
   ): Promise<AfterSales> {
     return await this.afterSalesService.reviewAfterSales(id, updateAfterSalesDto);
   }
@@ -34,7 +34,7 @@ export class AfterSalesController {
   @ApiBody({ type: UpdateAfterSalesDto })
   async submitReturnInfo(
     @Param('id') id: number,
-    @Body() updateAfterSalesDto: UpdateAfterSalesDto
+    @Body() updateAfterSalesDto: UpdateAfterSalesDto,
   ): Promise<AfterSales> {
     return await this.afterSalesService.submitReturnInfo(id, updateAfterSalesDto);
   }
@@ -45,7 +45,7 @@ export class AfterSalesController {
   @ApiBody({ type: UpdateAfterSalesDto })
   async completeAfterSales(
     @Param('id') id: number,
-    @Body() updateAfterSalesDto: UpdateAfterSalesDto
+    @Body() updateAfterSalesDto: UpdateAfterSalesDto,
   ): Promise<AfterSales> {
     return await this.afterSalesService.completeAfterSales(id, updateAfterSalesDto);
   }
@@ -56,7 +56,7 @@ export class AfterSalesController {
   @ApiQuery({ name: 'userId', description: '用户ID', required: true })
   async cancelAfterSales(
     @Param('id') id: number,
-    @Query('userId') userId: string
+    @Query('userId') userId: string,
   ): Promise<AfterSales> {
     return await this.afterSalesService.cancelAfterSales(id, userId);
   }

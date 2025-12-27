@@ -4,13 +4,13 @@ import { ApiProperty } from '@nestjs/swagger';
 export enum CacheType {
   REDIS = 'redis',
   MEMORY = 'memory',
-  MONGO = 'mongo'
+  MONGO = 'mongo',
 }
 
 export enum CacheStrategy {
   LRU = 'lru',
   LFU = 'lfu',
-  FIFO = 'fifo'
+  FIFO = 'fifo',
 }
 
 export class CreateCacheConfigDto {

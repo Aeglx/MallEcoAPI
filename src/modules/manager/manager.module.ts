@@ -10,6 +10,7 @@ import { OrderController } from './controllers/order/order.controller';
 import { PromotionController } from './controllers/promotion/promotion.controller';
 import { SystemSettingController } from './controllers/setting/system.controller';
 import { DashboardController } from './controllers/statistics/dashboard.controller';
+import { ManagerStatisticsController } from './controllers/statistics/statistics.controller';
 import { ManagerPassportController } from './controllers/passport/passport.controller';
 import { GoodsService } from './services/goods/goods.service';
 import { CategoryService } from './services/goods/category.service';
@@ -20,9 +21,11 @@ import { OrderService } from './services/order/order.service';
 import { PromotionService } from './services/promotion/promotion.service';
 import { SystemSettingService } from './services/setting/system.service';
 import { DashboardService } from './services/statistics/dashboard.service';
+import { ManagerPermissionController } from './controllers/permission/permission.controller';
+import { MenuModule } from '../menu/menu.module';
 
 @Module({
-  imports: [ConfigModule],
+  imports: [ConfigModule, MenuModule],
   controllers: [
     GoodsController,
     CategoryController,
@@ -33,7 +36,9 @@ import { DashboardService } from './services/statistics/dashboard.service';
     PromotionController,
     SystemSettingController,
     DashboardController,
-    ManagerPassportController
+    ManagerStatisticsController,
+    ManagerPassportController,
+    ManagerPermissionController,
   ],
   providers: [
     GoodsService,
@@ -45,7 +50,7 @@ import { DashboardService } from './services/statistics/dashboard.service';
     PromotionService,
     SystemSettingService,
     DashboardService,
-    PassportService
+    PassportService,
   ],
   exports: [],
 })

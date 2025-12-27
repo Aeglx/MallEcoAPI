@@ -128,13 +128,16 @@ export class DatabaseIndexOptimizer {
    * 获取当前索引
    */
   private async getCurrentIndexes(tableName: string): Promise<string[]> {
-    const result = await this.dataSource.query(`
+    const result = await this.dataSource.query(
+      `
       SELECT DISTINCT index_name 
       FROM information_schema.statistics 
       WHERE table_schema = DATABASE() 
       AND table_name = ?
       AND index_name != 'PRIMARY'
-    `, [tableName]);
+    `,
+      [tableName],
+    );
 
     return result.map((row: any) => row.index_name);
   }
@@ -144,13 +147,16 @@ export class DatabaseIndexOptimizer {
    */
   private async getSlowQueries(tableName: string): Promise<SlowQuery[]> {
     try {
-      const result = await this.dataSource.query(`
+      const result = await this.dataSource.query(
+        `
         SELECT sql_text, exec_time, timer_wait/1000000000 as execution_time
         FROM performance_schema.events_statements_history_long 
         WHERE DIGEST_TEXT LIKE ?
         ORDER BY timer_wait DESC 
         LIMIT 10
-      `, [`%${tableName}%`]);
+      `,
+        [`%${tableName}%`],
+      );
 
       return result.map((row: any) => ({
         query: row.sql_text,
@@ -174,10 +180,10 @@ export class DatabaseIndexOptimizer {
 
     const whereClause = whereMatch[1];
     const columnMatches = whereClause.match(/(\w+)\s*(?:=|>|<|LIKE|IN)/gi);
-    
+
     if (columnMatches && columnMatches.length > 0) {
       const columns = [...new Set(columnMatches.map(match => match.toLowerCase()))];
-      
+
       return {
         name: `idx_auto_${Date.now()}`,
         columns,
@@ -194,7 +200,10 @@ export class DatabaseIndexOptimizer {
   /**
    * 获取推荐索引
    */
-  private getRecommendedIndexes(tableName: string, currentIndexes: string[]): IndexRecommendation[] {
+  private getRecommendedIndexes(
+    tableName: string,
+    currentIndexes: string[],
+  ): IndexRecommendation[] {
     const recommendations: IndexRecommendation[] = [];
 
     // 基于表名推断推荐索引
@@ -260,7 +269,7 @@ export class DatabaseIndexOptimizer {
 
     // 检查常见字段的索引
     const commonFields = ['id', 'member_id', 'user_id', 'status', 'create_time', 'delete_flag'];
-    
+
     for (const field of commonFields) {
       const indexName = `idx_${field}`;
       if (!currentIndexes.includes(indexName)) {
@@ -283,7 +292,7 @@ export class DatabaseIndexOptimizer {
    */
   private generateCreateIndexSQL(tableName: string, index: IndexRecommendation): string {
     const columns = index.columns.join(', ');
-    
+
     if (index.type === 'UNIQUE') {
       return `CREATE UNIQUE INDEX ${index.name} ON ${tableName} (${columns});`;
     } else if (index.type === 'FULLTEXT') {
@@ -298,7 +307,7 @@ export class DatabaseIndexOptimizer {
    */
   async validateIndexes(tableName: string, indexNames: string[]): Promise<any> {
     const queryRunner = this.dataSource.createQueryRunner();
-    
+
     try {
       // 执行测试查询并比较执行计划
       const testQueries = this.getTestQueries(tableName);

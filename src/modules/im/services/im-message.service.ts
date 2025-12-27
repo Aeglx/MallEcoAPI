@@ -17,10 +17,7 @@ export class ImMessageService {
    * 阅读消息
    */
   async read(talkId: string, userId: string): Promise<void> {
-    await this.messageRepo.update(
-      { talkId, toUser: userId, isRead: false },
-      { isRead: true },
-    );
+    await this.messageRepo.update({ talkId, toUser: userId, isRead: false }, { isRead: true });
   }
 
   /**
@@ -80,10 +77,6 @@ export class ImMessageService {
    * 清空所有未读消息
    */
   async cleanUnreadMessage(userId: string): Promise<void> {
-    await this.messageRepo.update(
-      { toUser: userId, isRead: false },
-      { isRead: true },
-    );
+    await this.messageRepo.update({ toUser: userId, isRead: false }, { isRead: true });
   }
 }
-

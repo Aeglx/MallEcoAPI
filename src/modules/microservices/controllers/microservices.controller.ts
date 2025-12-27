@@ -48,10 +48,7 @@ export class MicroservicesController {
   @ApiOperation({ summary: '更新服务状态' })
   @ApiParam({ name: 'serviceId', description: '服务ID' })
   @ApiResponse({ status: 200, description: '更新成功' })
-  async updateServiceStatus(
-    @Param('serviceId') serviceId: string,
-    @Body('status') status: string
-  ) {
+  async updateServiceStatus(@Param('serviceId') serviceId: string, @Body('status') status: string) {
     return await this.microservicesService.updateServiceStatus(serviceId, status);
   }
 
@@ -77,7 +74,7 @@ export class MicroservicesController {
   @ApiResponse({ status: 200, description: '更新成功' })
   async updateServiceConfig(
     @Param('configId') configId: string,
-    @Body('configValue') configValue: string
+    @Body('configValue') configValue: string,
   ) {
     return await this.microservicesService.updateServiceConfig(configId, configValue);
   }
@@ -99,13 +96,16 @@ export class MicroservicesController {
   async getServiceMetrics(
     @Param('serviceName') serviceName: string,
     @Query('startTime') startTime?: string,
-    @Query('endTime') endTime?: string
+    @Query('endTime') endTime?: string,
   ) {
-    const timeRange = startTime && endTime ? {
-      start: new Date(startTime),
-      end: new Date(endTime)
-    } : undefined;
-    
+    const timeRange =
+      startTime && endTime
+        ? {
+            start: new Date(startTime),
+            end: new Date(endTime),
+          }
+        : undefined;
+
     return await this.microservicesService.getServiceMetrics(serviceName, timeRange);
   }
 
@@ -162,7 +162,7 @@ export class MicroservicesController {
   @ApiResponse({ status: 200, description: '更新成功' })
   async updateLoadBalancerMetrics(
     @Param('loadBalancerId') loadBalancerId: string,
-    @Body() metrics: { failedRequests: number; totalRequests: number }
+    @Body() metrics: { failedRequests: number; totalRequests: number },
   ) {
     return await this.microservicesService.updateLoadBalancerMetrics(loadBalancerId, metrics);
   }
@@ -189,12 +189,12 @@ export class MicroservicesController {
   @ApiResponse({ status: 200, description: '更新成功' })
   async updateCircuitBreakerState(
     @Param('circuitBreakerId') circuitBreakerId: string,
-    @Body() data: { newState: string; isSuccess?: boolean }
+    @Body() data: { newState: string; isSuccess?: boolean },
   ) {
     return await this.microservicesService.updateCircuitBreakerState(
       circuitBreakerId,
       data.newState,
-      data.isSuccess
+      data.isSuccess,
     );
   }
 
@@ -222,13 +222,13 @@ export class MicroservicesController {
   @ApiResponse({ status: 200, description: '获取成功' })
   async getServicePerformanceReport(
     @Query('startTime') startTime: string,
-    @Query('endTime') endTime: string
+    @Query('endTime') endTime: string,
   ) {
     const timeRange = {
       start: new Date(startTime),
-      end: new Date(endTime)
+      end: new Date(endTime),
     };
-    
+
     return await this.microservicesService.getServicePerformanceReport(timeRange);
   }
 }

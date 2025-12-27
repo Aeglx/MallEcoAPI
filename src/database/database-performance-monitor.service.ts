@@ -57,7 +57,7 @@ export class DatabasePerformanceMonitor {
   async collectMetrics(): Promise<PerformanceMetrics> {
     const metrics = await this.gatherMetrics();
     this.performanceHistory.push(metrics);
-    
+
     // 保留最近1小时的历史数据
     if (this.performanceHistory.length > 60) {
       this.performanceHistory.shift();
@@ -65,7 +65,7 @@ export class DatabasePerformanceMonitor {
 
     // 检查性能问题并发出警告
     this.checkPerformanceIssues(metrics);
-    
+
     return metrics;
   }
 
@@ -81,7 +81,7 @@ export class DatabasePerformanceMonitor {
    */
   getPerformanceTrends(minutes: number = 30): any {
     const recentHistory = this.performanceHistory.slice(-minutes);
-    
+
     return {
       avgConnections: this.calculateAverage(recentHistory, 'connectionCount'),
       avgSlowQueries: this.calculateAverage(recentHistory, 'slowQueries'),
@@ -230,7 +230,8 @@ export class DatabasePerformanceMonitor {
       `);
 
       return result.map((row: any) => {
-        const totalOperations = row.rows_read + row.rows_inserted + row.rows_updated + row.rows_deleted;
+        const totalOperations =
+          row.rows_read + row.rows_inserted + row.rows_updated + row.rows_deleted;
         const efficiency = totalOperations > 0 ? (row.rows_read / totalOperations) * 100 : 0;
 
         return {
@@ -252,12 +253,7 @@ export class DatabasePerformanceMonitor {
    */
   private async getMemoryUsage(): Promise<MemoryMetric> {
     try {
-      const [
-        innodbBufferPool,
-        keyBufferSize,
-        queryCacheSize,
-        sortBufferSize,
-      ] = await Promise.all([
+      const [innodbBufferPool, keyBufferSize, queryCacheSize, sortBufferSize] = await Promise.all([
         this.getVariableValue('innodb_buffer_pool_size'),
         this.getVariableValue('key_buffer_size'),
         this.getVariableValue('query_cache_size'),
@@ -331,16 +327,21 @@ export class DatabasePerformanceMonitor {
    */
   private logSlowQueries(slowQueries: SlowQueryMetric[]): void {
     for (const slowQuery of slowQueries.slice(0, 3)) {
-      this.logger.warn(`慢查询 [${slowQuery.executionTime}s]: ${slowQuery.query.substring(0, 200)}...`);
+      this.logger.warn(
+        `慢查询 [${slowQuery.executionTime}s]: ${slowQuery.query.substring(0, 200)}...`,
+      );
     }
   }
 
   /**
    * 计算平均值
    */
-  private calculateAverage(history: PerformanceMetrics[], property: keyof PerformanceMetrics): number {
+  private calculateAverage(
+    history: PerformanceMetrics[],
+    property: keyof PerformanceMetrics,
+  ): number {
     if (history.length === 0) return 0;
-    
+
     const values = history.map(h => h[property] as number).filter(v => typeof v === 'number');
     return values.reduce((sum, val) => sum + val, 0) / values.length;
   }
@@ -350,7 +351,7 @@ export class DatabasePerformanceMonitor {
    */
   private calculatePeak(history: PerformanceMetrics[], property: keyof PerformanceMetrics): number {
     if (history.length === 0) return 0;
-    
+
     const values = history.map(h => h[property] as number).filter(v => typeof v === 'number');
     return Math.max(...values);
   }
@@ -360,19 +361,19 @@ export class DatabasePerformanceMonitor {
    */
   private calculatePerformanceScore(history: PerformanceMetrics[]): number {
     if (history.length === 0) return 100;
-    
+
     const avgSlowQueries = this.calculateAverage(history, 'slowQueries');
     const avgConnections = this.calculateAverage(history, 'connectionCount');
-    
+
     // 简单的评分算法
     let score = 100;
-    
+
     // 慢查询影响 (最多扣40分)
     score -= Math.min(avgSlowQueries * 10, 40);
-    
+
     // 连接数影响 (最多扣30分)
     score -= Math.min((avgConnections / 100) * 30, 30);
-    
+
     return Math.max(score, 0);
   }
 }

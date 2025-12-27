@@ -2,16 +2,15 @@ import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class TradeService {
-  
   // 购物车相关服务
   async cartGoodsAll() {
     return {
       success: true,
       result: {
         cartList: [],
-        total: 0
+        total: 0,
       },
-      message: '获取购物车成功'
+      message: '获取购物车成功',
     };
   }
 
@@ -19,7 +18,7 @@ export class TradeService {
     return {
       success: true,
       result: 0,
-      message: '获取购物车数量成功'
+      message: '获取购物车数量成功',
     };
   }
 
@@ -28,9 +27,9 @@ export class TradeService {
       success: true,
       result: {
         cartList: [],
-        totalPrice: 0
+        totalPrice: 0,
       },
-      message: '获取结算购物车成功'
+      message: '获取结算购物车成功',
     };
   }
 
@@ -38,7 +37,7 @@ export class TradeService {
     return {
       success: true,
       result: {},
-      message: '添加购物车成功'
+      message: '添加购物车成功',
     };
   }
 
@@ -46,7 +45,7 @@ export class TradeService {
     return {
       success: true,
       result: {},
-      message: '清空购物车成功'
+      message: '清空购物车成功',
     };
   }
 
@@ -55,9 +54,9 @@ export class TradeService {
       success: true,
       result: {
         tradeSn: 'TRADE' + Date.now(),
-        totalPrice: 0
+        totalPrice: 0,
       },
-      message: '创建交易成功'
+      message: '创建交易成功',
     };
   }
 
@@ -65,7 +64,7 @@ export class TradeService {
     return {
       success: true,
       result: {},
-      message: '选择优惠券成功'
+      message: '选择优惠券成功',
     };
   }
 
@@ -73,7 +72,7 @@ export class TradeService {
     return {
       success: true,
       result: 0,
-      message: '获取优惠券数量成功'
+      message: '获取优惠券数量成功',
     };
   }
 
@@ -81,7 +80,7 @@ export class TradeService {
     return {
       success: true,
       result: {},
-      message: '选择地址成功'
+      message: '选择地址成功',
     };
   }
 
@@ -89,7 +88,7 @@ export class TradeService {
     return {
       success: true,
       result: {},
-      message: '设置全选成功'
+      message: '设置全选成功',
     };
   }
 
@@ -97,7 +96,7 @@ export class TradeService {
     return {
       success: true,
       result: {},
-      message: '设置商家选中状态成功'
+      message: '设置商家选中状态成功',
     };
   }
 
@@ -105,7 +104,7 @@ export class TradeService {
     return {
       success: true,
       result: {},
-      message: '设置商品选中状态成功'
+      message: '设置商品选中状态成功',
     };
   }
 
@@ -113,7 +112,7 @@ export class TradeService {
     return {
       success: true,
       result: {},
-      message: '设置商品数量成功'
+      message: '设置商品数量成功',
     };
   }
 
@@ -121,7 +120,7 @@ export class TradeService {
     return {
       success: true,
       result: {},
-      message: '删除购物车商品成功'
+      message: '删除购物车商品成功',
     };
   }
 
@@ -129,9 +128,9 @@ export class TradeService {
     return {
       success: true,
       result: {
-        shippingMethods: ['SELF_PICK_UP', 'LOCAL_TOWN_DELIVERY', 'LOGISTICS']
+        shippingMethods: ['SELF_PICK_UP', 'LOCAL_TOWN_DELIVERY', 'LOGISTICS'],
       },
-      message: '获取配送方式成功'
+      message: '获取配送方式成功',
     };
   }
 
@@ -139,7 +138,7 @@ export class TradeService {
     return {
       success: true,
       result: {},
-      message: '选择发票成功'
+      message: '选择发票成功',
     };
   }
 
@@ -147,9 +146,9 @@ export class TradeService {
     return {
       success: true,
       result: {
-        shippingMethods: ['SELF_PICK_UP', 'LOCAL_TOWN_DELIVERY', 'LOGISTICS']
+        shippingMethods: ['SELF_PICK_UP', 'LOCAL_TOWN_DELIVERY', 'LOGISTICS'],
       },
-      message: '获取配送方式列表成功'
+      message: '获取配送方式列表成功',
     };
   }
 
@@ -157,7 +156,7 @@ export class TradeService {
     return {
       success: true,
       result: {},
-      message: '设置自提地址成功'
+      message: '设置自提地址成功',
     };
   }
 
@@ -165,7 +164,7 @@ export class TradeService {
     return {
       success: true,
       result: {},
-      message: '设置配送方式成功'
+      message: '设置配送方式成功',
     };
   }
 
@@ -174,7 +173,7 @@ export class TradeService {
     return {
       success: true,
       result: [],
-      message: '获取发票列表成功'
+      message: '获取发票列表成功',
     };
   }
 
@@ -182,7 +181,7 @@ export class TradeService {
     return {
       success: true,
       result: {},
-      message: '保存发票成功'
+      message: '保存发票成功',
     };
   }
 
@@ -191,9 +190,9 @@ export class TradeService {
     return {
       success: true,
       result: {
-        rechargeSn: 'RECHARGE' + Date.now()
+        rechargeSn: 'RECHARGE' + Date.now(),
       },
-      message: '充值成功'
+      message: '充值成功',
     };
   }
 }

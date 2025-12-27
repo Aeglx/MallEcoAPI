@@ -17,9 +17,9 @@ export class ResponseInterceptor<T> implements NestInterceptor<T, Response<T>> {
     const ctx = context.switchToHttp();
     const request = ctx.getRequest();
     const response = ctx.getResponse();
-    
+
     return next.handle().pipe(
-      map((data) => {
+      map(data => {
         // 如果是流式响应，直接返回
         if (data && typeof data.pipe === 'function') {
           return data;

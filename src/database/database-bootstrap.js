@@ -28,20 +28,20 @@ class DatabaseBootstrap {
     try {
       // 1. 使用版本管理器进行智能更新
       const versionManager = new DatabaseVersionManager();
-      
+
       // 健康检查
       const health = await versionManager.healthCheck();
-      
+
       if (!health.healthy) {
         console.log('⚠️ 数据库健康检查异常，尝试自动修复...');
-        
+
         // 使用基础管理器进行修复
         const dbManager = new DatabaseManager();
         if (await dbManager.connect()) {
           await dbManager.initializeDatabase({
             createMissingTables: true,
             optimizeIndexes: false,
-            renameLegacyTables: false
+            renameLegacyTables: false,
           });
           await dbManager.disconnect();
         }
@@ -49,7 +49,7 @@ class DatabaseBootstrap {
 
       // 2. 执行版本更新
       const updateSuccess = await versionManager.updateDatabase();
-      
+
       if (updateSuccess) {
         console.log('✅ 数据库版本更新完成');
         this.initialized = true;
@@ -61,18 +61,20 @@ class DatabaseBootstrap {
       }
     } catch (error) {
       console.error('❌ 数据库初始化失败:', error.message);
-      
+
       // 重试机制
       if (this.retryCount < this.maxRetries) {
         this.retryCount++;
-        console.log(`🔄 等待 ${this.retryDelay / 1000} 秒后重试 (${this.retryCount}/${this.maxRetries})...`);
-        
+        console.log(
+          `🔄 等待 ${this.retryDelay / 1000} 秒后重试 (${this.retryCount}/${this.maxRetries})...`,
+        );
+
         await new Promise(resolve => setTimeout(resolve, this.retryDelay));
         return await this.initialize(); // 递归重试
       }
-      
+
       console.error(`❌ 数据库初始化失败，已达到最大重试次数 (${this.maxRetries})`);
-      
+
       // 如果数据库完全不可用，可以选择抛出错误阻止应用启动
       // 或者返回false让应用决定如何处理
       return false;
@@ -125,7 +127,7 @@ async function initializeDatabaseOnStartup() {
 
   // 检查是否在Docker环境中
   const isDocker = process.env.DOCKER_ENV === 'true' || process.env.IN_DOCKER === 'true';
-  
+
   if (isDocker) {
     console.log('🐳 Docker环境检测到，增加数据库连接等待时间...');
     // 在Docker环境中，数据库可能启动较慢，增加等待
@@ -144,15 +146,15 @@ function ensureDatabaseInitialized() {
     if (!databaseBootstrap.isInitialized()) {
       // 如果数据库未初始化，尝试初始化
       const success = await databaseBootstrap.initialize();
-      
+
       if (!success) {
         return res.status(503).json({
           error: '数据库未就绪',
-          message: '系统正在初始化数据库，请稍后重试'
+          message: '系统正在初始化数据库，请稍后重试',
         });
       }
     }
-    
+
     next();
   };
 }
@@ -164,27 +166,27 @@ function healthCheckEndpoint() {
   return async (req, res) => {
     try {
       const healthy = await databaseBootstrap.quickHealthCheck();
-      
+
       if (healthy) {
         res.json({
           status: 'healthy',
           database: 'connected',
           initialized: databaseBootstrap.isInitialized(),
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         });
       } else {
         res.status(503).json({
           status: 'unhealthy',
           database: 'disconnected',
           initialized: databaseBootstrap.isInitialized(),
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         });
       }
     } catch (error) {
       res.status(503).json({
         status: 'error',
         error: error.message,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     }
   };
@@ -195,7 +197,7 @@ module.exports = {
   initializeDatabaseOnStartup,
   ensureDatabaseInitialized,
   healthCheckEndpoint,
-  
+
   // 导出单例实例
-  getInstance: () => databaseBootstrap
+  getInstance: () => databaseBootstrap,
 };

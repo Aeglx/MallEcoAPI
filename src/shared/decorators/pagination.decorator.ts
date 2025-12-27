@@ -6,18 +6,18 @@ import { Request } from 'express';
  */
 export const Pagination = createParamDecorator((_, ctx: ExecutionContext) => {
   const request = ctx.switchToHttp().getRequest<Request>();
-  
+
   // 获取查询参数
   const page = parseInt(request.query.page as string) || 1;
   const limit = parseInt(request.query.limit as string) || 10;
-  
+
   // 确保页码和每页数量的有效性
   const validPage = Math.max(1, page);
   const validLimit = Math.max(1, Math.min(100, limit)); // 限制最大每页数量为100
-  
+
   // 计算跳过的记录数
   const skip = (validPage - 1) * validLimit;
-  
+
   return {
     page: validPage,
     limit: validLimit,

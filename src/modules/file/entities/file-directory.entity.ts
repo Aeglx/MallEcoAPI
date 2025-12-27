@@ -1,4 +1,10 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
 @Entity('mall_file_directory', { comment: '文件目录表' })
 export class FileDirectory {
@@ -17,12 +23,24 @@ export class FileDirectory {
   @Column({ name: 'level', type: 'tinyint', nullable: false, default: 1, comment: '目录层级' })
   level: number;
 
-  @Column({ name: 'status', type: 'tinyint', nullable: false, default: 1, comment: '状态: 0-禁用 1-启用' })
+  @Column({
+    name: 'status',
+    type: 'tinyint',
+    nullable: false,
+    default: 1,
+    comment: '状态: 0-禁用 1-启用',
+  })
   status: number;
 
   @CreateDateColumn({ name: 'create_time', type: 'datetime', nullable: false, comment: '创建时间' })
   createTime: Date;
 
-  @UpdateDateColumn({ name: 'update_time', type: 'datetime', nullable: false, onUpdate: 'CURRENT_TIMESTAMP', comment: '更新时间' })
+  @UpdateDateColumn({
+    name: 'update_time',
+    type: 'datetime',
+    nullable: false,
+    onUpdate: 'CURRENT_TIMESTAMP',
+    comment: '更新时间',
+  })
   updateTime: Date;
 }

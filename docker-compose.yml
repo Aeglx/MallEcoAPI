@@ -6,7 +6,7 @@ services:
     build: .
     container_name: mall-eco-api
     ports:
-      - "9000:9000"
+      - '9000:9000'
     environment:
       - NODE_ENV=production
       - DB_HOST=mysql
@@ -39,7 +39,7 @@ services:
     image: mysql:8.0
     container_name: malleco-mysql
     ports:
-      - "3306:3306"
+      - '3306:3306'
     environment:
       - MYSQL_ROOT_PASSWORD=qwerty123
       - MYSQL_DATABASE=malleco
@@ -52,7 +52,7 @@ services:
     image: redis:7.0-alpine
     container_name: malleco-redis
     ports:
-      - "6379:6379"
+      - '6379:6379'
     volumes:
       - redis_data:/data
     restart: unless-stopped
@@ -62,8 +62,8 @@ services:
     image: elasticsearch:8.11.0
     container_name: malleco-elasticsearch
     ports:
-      - "9200:9200"
-      - "9300:9300"
+      - '9200:9200'
+      - '9300:9300'
     environment:
       - discovery.type=single-node
       - ES_JAVA_OPTS=-Xms512m -Xmx512m
@@ -79,7 +79,7 @@ services:
     image: kibana:8.11.0
     container_name: malleco-kibana
     ports:
-      - "5601:5601"
+      - '5601:5601'
     depends_on:
       - elasticsearch
     environment:
@@ -93,8 +93,8 @@ services:
     image: rabbitmq:3.11-management-alpine
     container_name: mall-eco-rabbitmq
     ports:
-      - "5672:5672"
-      - "15672:15672"
+      - '5672:5672'
+      - '15672:15672'
     environment:
       - RABBITMQ_DEFAULT_USER=admin
       - RABBITMQ_DEFAULT_PASS=admin123
@@ -107,8 +107,8 @@ services:
     image: consul:1.16-alpine
     container_name: mall-eco-consul
     ports:
-      - "8500:8500"
-      - "8600:8600/udp"
+      - '8500:8500'
+      - '8600:8600/udp'
     volumes:
       - consul_data:/consul/data
     command: agent -server -bootstrap-expect=1 -ui -client=0.0.0.0

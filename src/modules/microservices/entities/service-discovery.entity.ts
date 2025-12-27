@@ -1,4 +1,10 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
 @Entity('microservices_service_discovery')
 export class ServiceDiscoveryEntity {
@@ -11,7 +17,11 @@ export class ServiceDiscoveryEntity {
   @Column({ length: 200 })
   discoveryUrl: string;
 
-  @Column({ type: 'enum', enum: ['consul', 'eureka', 'zookeeper', 'etcd', 'k8s'], default: 'consul' })
+  @Column({
+    type: 'enum',
+    enum: ['consul', 'eureka', 'zookeeper', 'etcd', 'k8s'],
+    default: 'consul',
+  })
   discoveryType: string;
 
   @Column({ type: 'json', nullable: true })

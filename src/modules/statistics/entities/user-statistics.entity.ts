@@ -1,4 +1,11 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, Index } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+  Index,
+} from 'typeorm';
 
 @Entity('user_statistics')
 @Index(['statDate', 'userType'])
@@ -40,7 +47,12 @@ export class UserStatistics {
   @Column({ type: 'int', default: 0, comment: '平均在线时长(分钟)' })
   avgOnlineTime: number;
 
-  @Column({ type: 'varchar', length: 50, default: 'daily', comment: '统计粒度: daily, weekly, monthly' })
+  @Column({
+    type: 'varchar',
+    length: 50,
+    default: 'daily',
+    comment: '统计粒度: daily, weekly, monthly',
+  })
   granularity: string;
 
   @CreateDateColumn({ type: 'timestamp', comment: '创建时间' })

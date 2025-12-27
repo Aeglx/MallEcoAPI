@@ -8,14 +8,9 @@ import { SmsModule } from '../sms/sms.module';
 import { MailModule } from '../mail/mail.module';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([Notification]),
-    UsersModule,
-    SmsModule,
-    MailModule
-  ],
+  imports: [TypeOrmModule.forFeature([Notification]), UsersModule, SmsModule, MailModule],
   controllers: [NotificationController],
   providers: [NotificationService],
-  exports: [NotificationService]
+  exports: [NotificationService],
 })
 export class NotificationModule {}

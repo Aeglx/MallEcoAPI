@@ -75,7 +75,9 @@ export class SystemLogController {
 
   @Post('batch-delete')
   @ApiOperation({ summary: '批量删除日志' })
-  @ApiBody({ schema: { type: 'object', properties: { ids: { type: 'array', items: { type: 'number' } } } } })
+  @ApiBody({
+    schema: { type: 'object', properties: { ids: { type: 'array', items: { type: 'number' } } } },
+  })
   @ApiResponse({ status: 200, description: '删除成功' })
   async removeBatch(@Body('ids') ids: number[]): Promise<void> {
     await this.logService.removeBatch(ids);
@@ -83,9 +85,13 @@ export class SystemLogController {
 
   @Post('clean-expired')
   @ApiOperation({ summary: '清理过期日志' })
-  @ApiBody({ schema: { type: 'object', properties: { keepDays: { type: 'number', default: 30 } } } })
+  @ApiBody({
+    schema: { type: 'object', properties: { keepDays: { type: 'number', default: 30 } } },
+  })
   @ApiResponse({ status: 200, description: '清理成功' })
-  async cleanExpiredLogs(@Body('keepDays') keepDays: number = 30): Promise<{ deletedCount: number }> {
+  async cleanExpiredLogs(
+    @Body('keepDays') keepDays: number = 30,
+  ): Promise<{ deletedCount: number }> {
     const deletedCount = await this.logService.cleanExpiredLogs(keepDays);
     return { deletedCount };
   }

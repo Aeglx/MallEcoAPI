@@ -1,4 +1,14 @@
-import { Get, Post, Put, Delete, Param, Query, Body, HttpStatus, HttpException } from '@nestjs/common';
+import {
+  Get,
+  Post,
+  Put,
+  Delete,
+  Param,
+  Query,
+  Body,
+  HttpStatus,
+  HttpException,
+} from '@nestjs/common';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 
 /**
@@ -29,7 +39,7 @@ export abstract class BaseController<T, CreateDto, UpdateDto> {
     } catch (error) {
       throw new HttpException(
         { message: '查询列表失败', error: error.message },
-        HttpStatus.INTERNAL_SERVER_ERROR
+        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
@@ -51,11 +61,12 @@ export abstract class BaseController<T, CreateDto, UpdateDto> {
       }
       return entity;
     } catch (error) {
-      throw error.status === HttpStatus.NOT_FOUND ? error :
-        new HttpException(
-          { message: '查询详情失败', error: error.message },
-          HttpStatus.INTERNAL_SERVER_ERROR
-        );
+      throw error.status === HttpStatus.NOT_FOUND
+        ? error
+        : new HttpException(
+            { message: '查询详情失败', error: error.message },
+            HttpStatus.INTERNAL_SERVER_ERROR,
+          );
     }
   }
 
@@ -74,8 +85,9 @@ export abstract class BaseController<T, CreateDto, UpdateDto> {
     } catch (error) {
       throw new HttpException(
         { message: '创建失败', error: error.message },
-        error.status === HttpStatus.BAD_REQUEST ? HttpStatus.BAD_REQUEST :
-          HttpStatus.INTERNAL_SERVER_ERROR
+        error.status === HttpStatus.BAD_REQUEST
+          ? HttpStatus.BAD_REQUEST
+          : HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
@@ -100,11 +112,12 @@ export abstract class BaseController<T, CreateDto, UpdateDto> {
       }
       return await this.service.update(id, updateDto);
     } catch (error) {
-      throw error.status ? error :
-        new HttpException(
-          { message: '更新失败', error: error.message },
-          HttpStatus.INTERNAL_SERVER_ERROR
-        );
+      throw error.status
+        ? error
+        : new HttpException(
+            { message: '更新失败', error: error.message },
+            HttpStatus.INTERNAL_SERVER_ERROR,
+          );
     }
   }
 
@@ -132,7 +145,7 @@ export abstract class BaseController<T, CreateDto, UpdateDto> {
       }
       throw new HttpException(
         { message: '删除失败', error: error.message },
-        HttpStatus.INTERNAL_SERVER_ERROR
+        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }

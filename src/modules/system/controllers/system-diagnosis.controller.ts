@@ -105,10 +105,7 @@ export class SystemDiagnosisController {
   @Roles('admin', 'system_manager')
   @ApiOperation({ summary: '更新诊断记录' })
   @ApiResponse({ status: 200, description: '更新成功' })
-  async update(
-    @Param('id') id: string,
-    @Body() updateData: any,
-  ) {
+  async update(@Param('id') id: string, @Body() updateData: any) {
     const diagnosis = await this.diagnosisService.update(+id, updateData);
     return {
       code: HttpStatus.OK,
@@ -156,7 +153,7 @@ export class SystemDiagnosisController {
   async getHealthSummary() {
     const statistics = await this.diagnosisService.getStatistics();
     const healthScore = this.calculateHealthScore(statistics);
-    
+
     return {
       code: HttpStatus.OK,
       message: '获取成功',
@@ -195,7 +192,7 @@ export class SystemDiagnosisController {
   async getDashboardMetrics() {
     const statistics = await this.diagnosisService.getStatistics();
     const recentTrend = await this.getRecentTrend();
-    
+
     return {
       code: HttpStatus.OK,
       message: '获取成功',
@@ -217,19 +214,19 @@ export class SystemDiagnosisController {
 
   private calculateHealthScore(statistics: any): number {
     const { total, unresolved, bySeverity } = statistics;
-    
+
     if (total === 0) return 100;
-    
+
     const criticalCount = bySeverity.find(s => s.severity === 'critical')?.count || 0;
     const highCount = bySeverity.find(s => s.severity === 'high')?.count || 0;
     const mediumCount = bySeverity.find(s => s.severity === 'medium')?.count || 0;
-    
+
     // 健康评分算法
     let score = 100;
-    score -= (criticalCount * 25); // 严重问题�?5�?
-    score -= (highCount * 15);     // 高优先级问题�?5�?
-    score -= (mediumCount * 8);    // 中优先级问题�?�?
-    
+    score -= criticalCount * 25; // 严重问题�?5�?
+    score -= highCount * 15; // 高优先级问题�?5�?
+    score -= mediumCount * 8; // 中优先级问题�?�?
+
     return Math.max(0, Math.min(100, score));
   }
 
@@ -237,15 +234,15 @@ export class SystemDiagnosisController {
     // 获取最�?天的诊断趋势
     const trend = [];
     const today = new Date();
-    
+
     for (let i = 6; i >= 0; i--) {
       const date = new Date(today);
       date.setDate(date.getDate() - i);
       date.setHours(0, 0, 0, 0);
-      
+
       const nextDate = new Date(date);
       nextDate.setDate(nextDate.getDate() + 1);
-      
+
       // 这里简化处理，实际应该查询数据�?
       trend.push({
         date: date.toISOString().split('T')[0],
@@ -253,7 +250,7 @@ export class SystemDiagnosisController {
         resolved: Math.floor(Math.random() * 8),
       });
     }
-    
+
     return trend;
   }
 }

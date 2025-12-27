@@ -109,4 +109,3 @@ export class StringUtil {
     return str.split(searchValue).join(replaceValue);
   }
 }
-

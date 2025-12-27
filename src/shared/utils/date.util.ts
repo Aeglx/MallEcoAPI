@@ -111,4 +111,3 @@ export class DateUtil {
     return date.getTime() > Date.now();
   }
 }
-

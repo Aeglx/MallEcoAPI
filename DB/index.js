@@ -8,7 +8,7 @@ const DatabaseManager = require('./database-manager');
 module.exports = {
   DatabaseManager,
   // 创建默认实例
-  databaseManager: new DatabaseManager()
+  databaseManager: new DatabaseManager(),
 };
 
 // 提供便捷的初始化函数

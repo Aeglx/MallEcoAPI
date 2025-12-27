@@ -18,7 +18,8 @@ export class PaymentService {
   constructor(
     @InjectRepository(PaymentRecord) private paymentRecordRepository: Repository<PaymentRecord>,
     @InjectRepository(PaymentMethod) private paymentMethodRepository: Repository<PaymentMethod>,
-    @InjectRepository(PaymentCallbackLog) private paymentCallbackLogRepository: Repository<PaymentCallbackLog>,
+    @InjectRepository(PaymentCallbackLog)
+    private paymentCallbackLogRepository: Repository<PaymentCallbackLog>,
     private readonly alipayService: AlipayService,
     private readonly wechatPayService: WechatPayService,
     private readonly ordersService: OrdersService,
@@ -122,7 +123,10 @@ export class PaymentService {
       });
 
       if (paymentRecord) {
-        await this.ordersService.updateOrderStatus(paymentRecord.orderId, { status: 1, adminNote: '支付成功' });
+        await this.ordersService.updateOrderStatus(paymentRecord.orderId, {
+          status: 1,
+          adminNote: '支付成功',
+        });
       }
     }
 

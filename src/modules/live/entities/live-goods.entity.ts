@@ -17,10 +17,24 @@ export class LiveGoods extends BaseEntity {
   @Column({ name: 'product_image', length: 255, nullable: false, comment: '商品图片' })
   productImage: string;
 
-  @Column({ name: 'original_price', type: 'decimal', precision: 10, scale: 2, nullable: false, comment: '原价' })
+  @Column({
+    name: 'original_price',
+    type: 'decimal',
+    precision: 10,
+    scale: 2,
+    nullable: false,
+    comment: '原价',
+  })
   originalPrice: number;
 
-  @Column({ name: 'live_price', type: 'decimal', precision: 10, scale: 2, nullable: false, comment: '直播价' })
+  @Column({
+    name: 'live_price',
+    type: 'decimal',
+    precision: 10,
+    scale: 2,
+    nullable: false,
+    comment: '直播价',
+  })
   livePrice: number;
 
   @Column({ name: 'stock', default: 0, comment: '库存' })
@@ -42,4 +56,3 @@ export class LiveGoods extends BaseEntity {
   @JoinColumn({ name: 'live_room_id' })
   liveRoom: LiveRoom;
 }
-

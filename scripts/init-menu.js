@@ -110,9 +110,9 @@ class MenuInitializer {
         menu.sortOrder || 0,
         menu.status || 1,
         menu.hidden || false,
-        menu.title
+        menu.title,
       ]);
-      
+
       return result.insertId;
     } catch (error) {
       console.error(`❌ 插入菜单失败: ${menu.title}`, error.message);
@@ -126,9 +126,9 @@ class MenuInitializer {
     try {
       const [rows] = await this.connection.query(
         'SELECT id FROM rbac_menus WHERE name = ? OR title = ? OR id = ? LIMIT 1',
-        [parentIdentifier, parentIdentifier, parseInt(parentIdentifier) || 0]
+        [parentIdentifier, parentIdentifier, parseInt(parentIdentifier) || 0],
       );
-      
+
       return rows.length > 0 ? rows[0].id : null;
     } catch (error) {
       console.error(`❌ 查找父菜单失败: ${parentIdentifier}`, error.message);
@@ -138,7 +138,7 @@ class MenuInitializer {
 
   async initializeMenus() {
     console.log('🌱 开始初始化菜单数据...');
-    
+
     try {
       // 1. 检查并创建菜单表
       if (!(await this.createMenuTable())) {
@@ -163,10 +163,10 @@ class MenuInitializer {
       }
 
       console.log(`🎉 菜单初始化完成！成功: ${successCount}/${sortedMenus.length}`);
-      
+
       // 4. 打印菜单树
       await this.printMenuTree();
-      
+
       return true;
     } catch (error) {
       console.error('❌ 菜单初始化失败:', error.message);
@@ -188,13 +188,13 @@ class MenuInitializer {
 
   async printMenuTree() {
     console.log('\n📊 菜单树结构:');
-    
+
     try {
       // 获取根菜单
       const [rootMenus] = await this.connection.query(
-        'SELECT * FROM rbac_menus WHERE parentId IS NULL ORDER BY sortWeight ASC'
+        'SELECT * FROM rbac_menus WHERE parentId IS NULL ORDER BY sortWeight ASC',
       );
-      
+
       for (const rootMenu of rootMenus) {
         await this.printSubMenu(rootMenu, 0);
       }
@@ -205,14 +205,16 @@ class MenuInitializer {
 
   async printSubMenu(menu, depth) {
     const indent = '  '.repeat(depth);
-    console.log(`${indent}├─ ${menu.title} (${menu.name}) - [ID: ${menu.id}, Order: ${menu.sortWeight}]`);
-    
+    console.log(
+      `${indent}├─ ${menu.title} (${menu.name}) - [ID: ${menu.id}, Order: ${menu.sortWeight}]`,
+    );
+
     try {
       const [children] = await this.connection.query(
         'SELECT * FROM rbac_menus WHERE parentId = ? ORDER BY sortWeight ASC',
-        [menu.id]
+        [menu.id],
       );
-      
+
       for (const child of children) {
         await this.printSubMenu(child, depth + 1);
       }
@@ -232,14 +234,14 @@ class MenuInitializer {
           COUNT(CASE WHEN hidden = 1 THEN 1 END) as hidden
         FROM rbac_menus
       `);
-      
+
       console.log('\n📈 菜单统计信息:');
       console.log(`  总菜单数: ${stats[0].total}`);
       console.log(`  根菜单数: ${stats[0].rootMenus}`);
       console.log(`  启用菜单: ${stats[0].enabled}`);
       console.log(`  禁用菜单: ${stats[0].disabled}`);
       console.log(`  隐藏菜单: ${stats[0].hidden}`);
-      
+
       return stats[0];
     } catch (error) {
       console.error('❌ 获取菜单统计失败:', error.message);
@@ -262,19 +264,19 @@ async function main() {
           await menuInit.initializeMenus();
           await menuInit.getMenuStatistics();
           break;
-          
+
         case 'tree':
           await menuInit.printMenuTree();
           break;
-          
+
         case 'stats':
           await menuInit.getMenuStatistics();
           break;
-          
+
         case 'clear':
           await menuInit.clearExistingMenus();
           break;
-          
+
         default:
           console.log(`
 📖 菜单初始化工具使用方法:

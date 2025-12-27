@@ -11,4 +11,3 @@ import { GatewayController } from './gateway.controller';
   exports: [GatewayService],
 })
 export class GatewayModule {}
-

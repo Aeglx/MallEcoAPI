@@ -26,7 +26,9 @@ describe('PreventDuplicateSubmissionsInterceptor', () => {
       ],
     }).compile();
 
-    interceptor = module.get<PreventDuplicateSubmissionsInterceptor>(PreventDuplicateSubmissionsInterceptor);
+    interceptor = module.get<PreventDuplicateSubmissionsInterceptor>(
+      PreventDuplicateSubmissionsInterceptor,
+    );
 
     // Mock ExecutionContext
     executionContext = {
@@ -78,4 +80,3 @@ describe('PreventDuplicateSubmissionsInterceptor', () => {
     expect(callHandler.handle).toHaveBeenCalled();
   });
 });
-

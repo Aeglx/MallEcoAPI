@@ -1,7 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { FeedbackType } from '../entities/feedback.entity';
 
-
 export class CreateFeedbackDto {
   @ApiProperty({ description: '用户ID', required: false, example: 1 })
   userId?: number;
@@ -18,6 +17,10 @@ export class CreateFeedbackDto {
   @ApiProperty({ description: '联系方式', required: false, example: 'user@example.com' })
   contact?: string;
 
-  @ApiProperty({ description: '反馈图片URL列表', required: false, example: ['https://example.com/image1.jpg'] })
+  @ApiProperty({
+    description: '反馈图片URL列表',
+    required: false,
+    example: ['https://example.com/image1.jpg'],
+  })
   images?: string[];
 }

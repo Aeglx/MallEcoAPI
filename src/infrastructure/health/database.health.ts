@@ -7,7 +7,7 @@ import { Logger } from '@nestjs/common';
 @Injectable()
 export class DatabaseHealthIndicator extends HealthIndicator implements OnModuleInit {
   private readonly logger = new Logger(DatabaseHealthIndicator.name);
-  
+
   constructor(@InjectConnection() private readonly connection: Connection) {
     super();
   }
@@ -45,7 +45,7 @@ export class DatabaseHealthIndicator extends HealthIndicator implements OnModule
         INDEX idx_created_at (created_at)
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
     `;
-    
+
     await this.connection.query(query);
   }
 
@@ -54,7 +54,7 @@ export class DatabaseHealthIndicator extends HealthIndicator implements OnModule
    */
   async checkConnection(): Promise<HealthIndicatorResult> {
     const key = 'database_connection';
-    
+
     try {
       const startTime = Date.now();
       await this.connection.query('SELECT 1');
@@ -66,16 +66,16 @@ export class DatabaseHealthIndicator extends HealthIndicator implements OnModule
       return this.getStatus(key, true, {
         responseTime: `${responseTime}ms`,
         database: this.connection.options.database,
-        driver: this.connection.driver.options.type
+        driver: this.connection.driver.options.type,
       });
     } catch (error) {
       await this.recordHealthCheck(key, 'unhealthy', null, error.message);
-      
+
       throw new HealthCheckError(
         'Database connection failed',
         this.getStatus(key, false, {
-          error: error.message
-        })
+          error: error.message,
+        }),
       );
     }
   }
@@ -85,11 +85,15 @@ export class DatabaseHealthIndicator extends HealthIndicator implements OnModule
    */
   async checkTableStructure(): Promise<HealthIndicatorResult> {
     const key = 'table_structure';
-    
+
     try {
       const requiredTables = [
-        'mall_users', 'mall_roles', 'mall_permissions',
-        'mall_products', 'mall_orders', 'mall_categories'
+        'mall_users',
+        'mall_roles',
+        'mall_permissions',
+        'mall_products',
+        'mall_orders',
+        'mall_categories',
       ];
 
       const missingTables = [];
@@ -99,7 +103,7 @@ export class DatabaseHealthIndicator extends HealthIndicator implements OnModule
         const result = await this.connection.query(
           `SELECT COUNT(*) as count FROM information_schema.tables 
            WHERE table_schema = ? AND table_name = ?`,
-          [this.connection.options.database, table]
+          [this.connection.options.database, table],
         );
 
         if (parseInt(result[0].count) === 0) {
@@ -110,22 +114,27 @@ export class DatabaseHealthIndicator extends HealthIndicator implements OnModule
       const responseTime = Date.now() - startTime;
 
       if (missingTables.length > 0) {
-        await this.recordHealthCheck(key, 'unhealthy', responseTime, `Missing tables: ${missingTables.join(', ')}`);
-        
+        await this.recordHealthCheck(
+          key,
+          'unhealthy',
+          responseTime,
+          `Missing tables: ${missingTables.join(', ')}`,
+        );
+
         throw new HealthCheckError(
           'Missing required tables',
           this.getStatus(key, false, {
             missingTables,
-            responseTime: `${responseTime}ms`
-          })
+            responseTime: `${responseTime}ms`,
+          }),
         );
       }
 
       await this.recordHealthCheck(key, 'healthy', responseTime);
-      
+
       return this.getStatus(key, true, {
         requiredTables: requiredTables.length,
-        responseTime: `${responseTime}ms`
+        responseTime: `${responseTime}ms`,
       });
     } catch (error) {
       await this.recordHealthCheck(key, 'unhealthy', null, error.message);
@@ -138,16 +147,17 @@ export class DatabaseHealthIndicator extends HealthIndicator implements OnModule
    */
   async checkIndexes(): Promise<HealthIndicatorResult> {
     const key = 'database_indexes';
-    
+
     try {
       const startTime = Date.now();
-      
+
       // 检查关键表的索引状态
       const criticalTables = ['mall_orders', 'mall_users', 'mall_products'];
       const indexIssues = [];
 
       for (const table of criticalTables) {
-        const indexes = await this.connection.query(`
+        const indexes = await this.connection.query(
+          `
           SELECT 
             INDEX_NAME,
             COUNT(*) as column_count,
@@ -156,7 +166,9 @@ export class DatabaseHealthIndicator extends HealthIndicator implements OnModule
           WHERE table_schema = ? AND table_name = ?
           GROUP BY INDEX_NAME
           ORDER BY INDEX_NAME, SEQ_IN_INDEX
-        `, [this.connection.options.database, table]);
+        `,
+          [this.connection.options.database, table],
+        );
 
         if (indexes.length === 0) {
           indexIssues.push(`${table}: No indexes found`);
@@ -166,22 +178,27 @@ export class DatabaseHealthIndicator extends HealthIndicator implements OnModule
       const responseTime = Date.now() - startTime;
 
       if (indexIssues.length > 0) {
-        await this.recordHealthCheck(key, 'unhealthy', responseTime, `Index issues: ${indexIssues.join('; ')}`);
-        
+        await this.recordHealthCheck(
+          key,
+          'unhealthy',
+          responseTime,
+          `Index issues: ${indexIssues.join('; ')}`,
+        );
+
         throw new HealthCheckError(
           'Index issues detected',
           this.getStatus(key, false, {
             issues: indexIssues,
-            responseTime: `${responseTime}ms`
-          })
+            responseTime: `${responseTime}ms`,
+          }),
         );
       }
 
       await this.recordHealthCheck(key, 'healthy', responseTime);
-      
+
       return this.getStatus(key, true, {
         tablesChecked: criticalTables.length,
-        responseTime: `${responseTime}ms`
+        responseTime: `${responseTime}ms`,
       });
     } catch (error) {
       await this.recordHealthCheck(key, 'unhealthy', null, error.message);
@@ -194,15 +211,15 @@ export class DatabaseHealthIndicator extends HealthIndicator implements OnModule
    */
   async checkPerformance(): Promise<HealthIndicatorResult> {
     const key = 'database_performance';
-    
+
     try {
       const startTime = Date.now();
-      
+
       // 执行简单的性能测试查询
       const queries = [
         'SELECT COUNT(*) as count FROM mall_users',
         'SELECT COUNT(*) as count FROM mall_orders WHERE created_at > DATE_SUB(NOW(), INTERVAL 1 DAY)',
-        'EXPLAIN SELECT * FROM mall_products WHERE status = 1 LIMIT 10'
+        'EXPLAIN SELECT * FROM mall_products WHERE status = 1 LIMIT 10',
       ];
 
       const performanceMetrics = [];
@@ -213,7 +230,7 @@ export class DatabaseHealthIndicator extends HealthIndicator implements OnModule
         const queryTime = Date.now() - queryStart;
         performanceMetrics.push({
           query: query.split(' ')[1], // 获取查询类型
-          executionTime: queryTime
+          executionTime: queryTime,
         });
       }
 
@@ -223,23 +240,28 @@ export class DatabaseHealthIndicator extends HealthIndicator implements OnModule
       const slowQueries = performanceMetrics.filter(metric => metric.executionTime > 1000);
 
       if (slowQueries.length > 0) {
-        await this.recordHealthCheck(key, 'unhealthy', responseTime, `Slow queries detected: ${JSON.stringify(slowQueries)}`);
-        
+        await this.recordHealthCheck(
+          key,
+          'unhealthy',
+          responseTime,
+          `Slow queries detected: ${JSON.stringify(slowQueries)}`,
+        );
+
         throw new HealthCheckError(
           'Performance issues detected',
           this.getStatus(key, false, {
             slowQueries,
-            responseTime: `${responseTime}ms`
-          })
+            responseTime: `${responseTime}ms`,
+          }),
         );
       }
 
       await this.recordHealthCheck(key, 'healthy', responseTime);
-      
+
       return this.getStatus(key, true, {
         queriesExecuted: queries.length,
         averageTime: `${(performanceMetrics.reduce((sum, m) => sum + m.executionTime, 0) / performanceMetrics.length).toFixed(2)}ms`,
-        responseTime: `${responseTime}ms`
+        responseTime: `${responseTime}ms`,
       });
     } catch (error) {
       await this.recordHealthCheck(key, 'unhealthy', null, error.message);
@@ -251,16 +273,16 @@ export class DatabaseHealthIndicator extends HealthIndicator implements OnModule
    * 记录健康检查结果
    */
   private async recordHealthCheck(
-    checkName: string, 
-    status: 'healthy' | 'unhealthy', 
-    responseTime?: number, 
-    errorMessage?: string
+    checkName: string,
+    status: 'healthy' | 'unhealthy',
+    responseTime?: number,
+    errorMessage?: string,
   ) {
     try {
       await this.connection.query(
         `INSERT INTO mall_health_checks (check_name, status, response_time_ms, error_message) 
          VALUES (?, ?, ?, ?)`,
-        [checkName, status, responseTime, errorMessage]
+        [checkName, status, responseTime, errorMessage],
       );
     } catch (error) {
       this.logger.error(`Failed to record health check: ${error.message}`);
@@ -277,7 +299,7 @@ export class DatabaseHealthIndicator extends HealthIndicator implements OnModule
          FROM mall_health_checks 
          WHERE created_at > DATE_SUB(NOW(), INTERVAL ? HOUR) 
          ORDER BY created_at DESC`,
-        [hours]
+        [hours],
       );
 
       return results;
@@ -294,9 +316,9 @@ export class DatabaseHealthIndicator extends HealthIndicator implements OnModule
     try {
       await this.connection.query(
         'DELETE FROM mall_health_checks WHERE created_at < DATE_SUB(NOW(), INTERVAL ? DAY)',
-        [daysToKeep]
+        [daysToKeep],
       );
-      
+
       this.logger.log(`Cleaned up health records older than ${daysToKeep} days`);
     } catch (error) {
       this.logger.error(`Failed to cleanup health records: ${error.message}`);

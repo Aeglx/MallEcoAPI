@@ -15,4 +15,3 @@ export enum VerificationEnums {
   /** 绑定手机号 */
   BIND_MOBILE = 'BIND_MOBILE',
 }
-

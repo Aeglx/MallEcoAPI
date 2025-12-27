@@ -11,8 +11,10 @@ import { SmtpEmailService } from './smtp-email.service';
 export class EmailService {
   constructor(
     @InjectRepository(EmailLog) private readonly emailLogRepository: Repository<EmailLog>,
-    @InjectRepository(EmailTemplate) private readonly emailTemplateRepository: Repository<EmailTemplate>,
-    @InjectRepository(EmailVerification) private readonly emailVerificationRepository: Repository<EmailVerification>,
+    @InjectRepository(EmailTemplate)
+    private readonly emailTemplateRepository: Repository<EmailTemplate>,
+    @InjectRepository(EmailVerification)
+    private readonly emailVerificationRepository: Repository<EmailVerification>,
     private readonly smtpEmailService: SmtpEmailService,
   ) {}
 
@@ -61,7 +63,7 @@ export class EmailService {
         email,
         template.subject,
         content,
-        `验证码：${code}`
+        `验证码：${code}`,
       );
 
       // 保存邮件日志
@@ -138,7 +140,12 @@ export class EmailService {
    * @param bizId 业务ID
    * @returns 发送结果
    */
-  async sendEmail(email: string, templateCode: string, params: Record<string, any>, bizId?: string): Promise<any> {
+  async sendEmail(
+    email: string,
+    templateCode: string,
+    params: Record<string, any>,
+    bizId?: string,
+  ): Promise<any> {
     try {
       // 查询邮件模板
       const template = await this.emailTemplateRepository.findOne({
@@ -156,11 +163,7 @@ export class EmailService {
       });
 
       // 调用SMTP服务发送邮件
-      const result = await this.smtpEmailService.sendMail(
-        email,
-        template.subject,
-        content
-      );
+      const result = await this.smtpEmailService.sendMail(email, template.subject, content);
 
       // 保存邮件日志
       const emailLog = new EmailLog();
@@ -204,7 +207,7 @@ export class EmailService {
     }
 
     queryBuilder.orderBy('emailLog.createTime', 'DESC');
-    
+
     const [logs, total] = await queryBuilder
       .skip((page - 1) * limit)
       .take(limit)

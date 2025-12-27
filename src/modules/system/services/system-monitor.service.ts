@@ -33,13 +33,13 @@ export class SystemMonitorService {
   }> {
     // 模拟数据库连接检查
     const dbStatus = await this.checkDatabaseConnection();
-    
+
     // 模拟Redis连接检查
     const redisStatus = await this.checkRedisConnection();
-    
+
     // 获取系统内存信息
     const memoryUsage = process.memoryUsage();
-    
+
     return {
       status: dbStatus.connected && redisStatus.connected ? 'healthy' : 'unhealthy',
       timestamp: new Date(),
@@ -47,16 +47,17 @@ export class SystemMonitorService {
       memory: {
         usage: Math.round((memoryUsage.heapUsed / 1024 / 1024) * 100) / 100,
         total: Math.round((memoryUsage.heapTotal / 1024 / 1024) * 100) / 100,
-        free: Math.round(((memoryUsage.heapTotal - memoryUsage.heapUsed) / 1024 / 1024) * 100) / 100
+        free:
+          Math.round(((memoryUsage.heapTotal - memoryUsage.heapUsed) / 1024 / 1024) * 100) / 100,
       },
       database: {
         status: dbStatus.connected ? 'connected' : 'disconnected',
-        latency: dbStatus.latency
+        latency: dbStatus.latency,
       },
       redis: {
         status: redisStatus.connected ? 'connected' : 'disconnected',
-        latency: redisStatus.latency
-      }
+        latency: redisStatus.latency,
+      },
     };
   }
 
@@ -85,36 +86,39 @@ export class SystemMonitorService {
     };
   }> {
     const memoryUsage = process.memoryUsage();
-    
+
     // 模拟CPU使用率计算
     const cpuUsage = await this.calculateCPUUsage();
-    
+
     // 模拟网络请求统计
     const networkStats = await this.getNetworkStats();
-    
+
     // 模拟数据库连接统计
     const dbStats = await this.getDatabaseStats();
-    
+
     return {
       cpu: {
         usage: cpuUsage,
-        loadAverage: process.cpuUsage() ? [process.cpuUsage().user, process.cpuUsage().system] : [0, 0]
+        loadAverage: process.cpuUsage()
+          ? [process.cpuUsage().user, process.cpuUsage().system]
+          : [0, 0],
       },
       memory: {
         usage: Math.round((memoryUsage.heapUsed / 1024 / 1024) * 100) / 100,
         total: Math.round((memoryUsage.heapTotal / 1024 / 1024) * 100) / 100,
-        free: Math.round(((memoryUsage.heapTotal - memoryUsage.heapUsed) / 1024 / 1024) * 100) / 100,
+        free:
+          Math.round(((memoryUsage.heapTotal - memoryUsage.heapUsed) / 1024 / 1024) * 100) / 100,
         heapUsed: memoryUsage.heapUsed,
-        heapTotal: memoryUsage.heapTotal
+        heapTotal: memoryUsage.heapTotal,
       },
       network: {
         requestsPerSecond: networkStats.requestsPerSecond,
-        responseTime: networkStats.responseTime
+        responseTime: networkStats.responseTime,
       },
       database: {
         connections: dbStats.connections,
-        queriesPerSecond: dbStats.queriesPerSecond
-      }
+        queriesPerSecond: dbStats.queriesPerSecond,
+      },
     };
   }
 
@@ -128,28 +132,30 @@ export class SystemMonitorService {
     const timestamp = new Date();
     const health = await this.healthCheck();
     const performance = await this.performanceMonitor();
-    
+
     return {
       timestamp,
       metrics: {
         health,
         performance,
-        custom: await this.getCustomMetrics()
-      }
+        custom: await this.getCustomMetrics(),
+      },
     };
   }
 
   /**
    * 获取告警信息
    */
-  async getAlerts(): Promise<Array<{
-    id: string;
-    level: string;
-    title: string;
-    message: string;
-    timestamp: Date;
-    resolved: boolean;
-  }>> {
+  async getAlerts(): Promise<
+    Array<{
+      id: string;
+      level: string;
+      title: string;
+      message: string;
+      timestamp: Date;
+      resolved: boolean;
+    }>
+  > {
     // 模拟告警数据
     return [
       {
@@ -158,7 +164,7 @@ export class SystemMonitorService {
         title: '内存使用率过高',
         message: '当前内存使用率已达到85%，请及时处理',
         timestamp: new Date(Date.now() - 30 * 60 * 1000), // 30分钟前
-        resolved: false
+        resolved: false,
       },
       {
         id: 'alert-002',
@@ -166,8 +172,8 @@ export class SystemMonitorService {
         title: '数据库连接数增加',
         message: '当前数据库连接数较平时增加20%',
         timestamp: new Date(Date.now() - 60 * 60 * 1000), // 1小时前
-        resolved: true
-      }
+        resolved: true,
+      },
     ];
   }
 
@@ -201,30 +207,30 @@ export class SystemMonitorService {
     const health = await this.healthCheck();
     const performance = await this.performanceMonitor();
     const alerts = await this.getAlerts();
-    
+
     return {
       systemStatus: {
         uptime: health.uptime,
         status: health.status,
-        version: 'v1.0.0'
+        version: 'v1.0.0',
       },
       performance: {
         cpuUsage: performance.cpu.usage,
         memoryUsage: performance.memory.usage,
         diskUsage: 45.6, // 模拟磁盘使用率
-        networkUsage: 12.3 // 模拟网络使用率
+        networkUsage: 12.3, // 模拟网络使用率
       },
       businessMetrics: {
         activeUsers: 1234, // 模拟活跃用户数
         requestsToday: 56789, // 模拟今日请求数
         ordersToday: 456, // 模拟今日订单数
-        revenueToday: 12345.67 // 模拟今日收入
+        revenueToday: 12345.67, // 模拟今日收入
       },
       alerts: alerts.map(alert => ({
         level: alert.level,
         title: alert.title,
-        timestamp: alert.timestamp
-      }))
+        timestamp: alert.timestamp,
+      })),
     };
   }
 
@@ -238,15 +244,15 @@ export class SystemMonitorService {
       // 模拟数据库查询
       await this.logRepository.count();
       const latency = Date.now() - startTime;
-      
+
       return {
         connected: true,
-        latency
+        latency,
       };
     } catch (error) {
       return {
         connected: false,
-        latency: -1
+        latency: -1,
       };
     }
   }
@@ -258,7 +264,7 @@ export class SystemMonitorService {
     // 模拟Redis连接检查
     return {
       connected: true,
-      latency: Math.random() * 10 + 1 // 模拟1-11ms延迟
+      latency: Math.random() * 10 + 1, // 模拟1-11ms延迟
     };
   }
 
@@ -277,7 +283,7 @@ export class SystemMonitorService {
     // 模拟网络统计
     return {
       requestsPerSecond: Math.random() * 100 + 50, // 模拟50-150请求/秒
-      responseTime: Math.random() * 200 + 50 // 模拟50-250ms响应时间
+      responseTime: Math.random() * 200 + 50, // 模拟50-250ms响应时间
     };
   }
 
@@ -288,7 +294,7 @@ export class SystemMonitorService {
     // 模拟数据库统计
     return {
       connections: Math.floor(Math.random() * 50 + 10), // 模拟10-60连接数
-      queriesPerSecond: Math.random() * 500 + 100 // 模拟100-600查询/秒
+      queriesPerSecond: Math.random() * 500 + 100, // 模拟100-600查询/秒
     };
   }
 
@@ -301,7 +307,7 @@ export class SystemMonitorService {
       errorRate: Math.random() * 0.1, // 错误率
       cacheHitRate: Math.random() * 0.8 + 0.2, // 缓存命中率
       queueLength: Math.floor(Math.random() * 100), // 队列长度
-      throughput: Math.random() * 1000 + 500 // 吞吐量
+      throughput: Math.random() * 1000 + 500, // 吞吐量
     };
   }
 }

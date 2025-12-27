@@ -5,9 +5,8 @@ import { User } from './entities/user.entity';
 export class UsersService {
   // 使用内存数组模拟数据库
   private readonly users: User[] = [];
-  
-  constructor() {}
 
+  constructor() {}
 
   /**
    * 创建用户
@@ -72,13 +71,13 @@ export class UsersService {
     if (index === -1) {
       return undefined;
     }
-    
+
     this.users[index] = {
       ...this.users[index],
       ...userData,
       updateTime: new Date(),
     };
-    
+
     return this.users[index];
   }
 
@@ -92,7 +91,7 @@ export class UsersService {
     if (index === -1) {
       return false;
     }
-    
+
     this.users.splice(index, 1);
     return true;
   }

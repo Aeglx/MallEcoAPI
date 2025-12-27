@@ -18,12 +18,12 @@ export class CouponService {
                 name: '新用户专享券',
                 amount: 10,
                 minAmount: 100,
-                expireTime: '2024-12-31'
-              }
-            ]
-          }
-        ]
-      }
+                expireTime: '2024-12-31',
+              },
+            ],
+          },
+        ],
+      },
     };
   }
 
@@ -42,7 +42,7 @@ export class CouponService {
             minAmount: 100,
             startTime: '2024-01-01',
             endTime: '2024-12-31',
-            status: 1
+            status: 1,
           },
           {
             couponId: '2',
@@ -52,13 +52,13 @@ export class CouponService {
             minAmount: 200,
             startTime: '2024-01-01',
             endTime: '2024-12-31',
-            status: 1
-          }
+            status: 1,
+          },
         ],
         total: 2,
         page: query.page || 1,
-        size: query.size || 10
-      }
+        size: query.size || 10,
+      },
     };
   }
 
@@ -69,8 +69,8 @@ export class CouponService {
       message: '领取优惠券成功',
       data: {
         couponId,
-        receiveTime: new Date().toISOString()
-      }
+        receiveTime: new Date().toISOString(),
+      },
     };
   }
 
@@ -89,13 +89,13 @@ export class CouponService {
             minAmount: 100,
             startTime: '2024-01-01',
             endTime: '2024-12-31',
-            status: 1
-          }
+            status: 1,
+          },
         ],
         total: 1,
         page: query.page || 1,
-        size: query.size || 10
-      }
+        size: query.size || 10,
+      },
     };
   }
 
@@ -106,8 +106,8 @@ export class CouponService {
       message: '使用优惠券成功',
       data: {
         userCouponId,
-        useTime: new Date().toISOString()
-      }
+        useTime: new Date().toISOString(),
+      },
     };
   }
 
@@ -124,8 +124,8 @@ export class CouponService {
         minAmount: 100,
         startTime: '2024-01-01',
         endTime: '2024-12-31',
-        description: '优惠券使用说明'
-      }
+        description: '优惠券使用说明',
+      },
     };
   }
 
@@ -144,11 +144,11 @@ export class CouponService {
             minAmount: 100,
             startTime: '2024-01-01',
             endTime: '2024-12-31',
-            canUse: amount >= 100
-          }
+            canUse: amount >= 100,
+          },
         ],
-        total: 1
-      }
+        total: 1,
+      },
     };
   }
 }

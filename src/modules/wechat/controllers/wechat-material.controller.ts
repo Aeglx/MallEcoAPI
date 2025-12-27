@@ -55,10 +55,7 @@ export class WechatMaterialController {
   @ApiOperation({ summary: '更新素材' })
   @ApiParam({ name: 'id', description: '素材ID' })
   @ApiResponse({ status: 200, description: '素材更新成功' })
-  updateMaterial(
-    @Param('id') id: string,
-    @Body() updateDto: UpdateMaterialDto,
-  ) {
+  updateMaterial(@Param('id') id: string, @Body() updateDto: UpdateMaterialDto) {
     return this.wechatMaterialService.updateMaterial(id, updateDto);
   }
 

@@ -1,4 +1,10 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
 @Entity('microservices_load_balancer')
 export class LoadBalancerEntity {
@@ -11,7 +17,11 @@ export class LoadBalancerEntity {
   @Column({ length: 50 })
   strategy: string;
 
-  @Column({ type: 'enum', enum: ['round-robin', 'weighted-round-robin', 'least-connections', 'ip-hash', 'random'], default: 'round-robin' })
+  @Column({
+    type: 'enum',
+    enum: ['round-robin', 'weighted-round-robin', 'least-connections', 'ip-hash', 'random'],
+    default: 'round-robin',
+  })
   algorithm: string;
 
   @Column({ type: 'json', nullable: true })

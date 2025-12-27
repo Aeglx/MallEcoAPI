@@ -26,7 +26,11 @@ export class LiveService {
   /**
    * 获取直播间列表
    */
-  async getLiveRooms(page: number = 1, pageSize: number = 10, status?: number): Promise<{ items: LiveRoom[], total: number }> {
+  async getLiveRooms(
+    page: number = 1,
+    pageSize: number = 10,
+    status?: number,
+  ): Promise<{ items: LiveRoom[]; total: number }> {
     const query = this.liveRoomRepository.createQueryBuilder('room');
 
     if (status !== undefined) {

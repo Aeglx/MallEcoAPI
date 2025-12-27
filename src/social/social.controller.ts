@@ -89,10 +89,7 @@ export class SocialController {
    */
   @UseGuards(AuthGuard('jwt'))
   @Post('unbind/:platform')
-  async unbindSocialAccount(
-    @Request() req,
-    @Param('platform') platform: SocialPlatform,
-  ) {
+  async unbindSocialAccount(@Request() req, @Param('platform') platform: SocialPlatform) {
     await this.socialService.unbindSocialAccount(req.user.id, platform);
     return {
       success: true,

@@ -45,8 +45,8 @@ export class WechatSubscribeService {
     }
 
     if (templateId) {
-      queryBuilder.andWhere('subscribe.templateId LIKE :templateId', { 
-        templateId: `%${templateId}%` 
+      queryBuilder.andWhere('subscribe.templateId LIKE :templateId', {
+        templateId: `%${templateId}%`,
       });
     }
 
@@ -59,8 +59,8 @@ export class WechatSubscribeService {
     }
 
     if (businessType) {
-      queryBuilder.andWhere('subscribe.businessType LIKE :businessType', { 
-        businessType: `%${businessType}%` 
+      queryBuilder.andWhere('subscribe.businessType LIKE :businessType', {
+        businessType: `%${businessType}%`,
       });
     }
 
@@ -103,9 +103,12 @@ export class WechatSubscribeService {
   /**
    * 更新订阅
    */
-  async update(id: string, updateWechatSubscribeDto: UpdateWechatSubscribeDto): Promise<WechatSubscribe> {
+  async update(
+    id: string,
+    updateWechatSubscribeDto: UpdateWechatSubscribeDto,
+  ): Promise<WechatSubscribe> {
     const subscribe = await this.findOne(id);
-    
+
     Object.assign(subscribe, updateWechatSubscribeDto);
     return await this.wechatSubscribeRepository.save(subscribe);
   }
@@ -193,7 +196,8 @@ export class WechatSubscribeService {
       errorMessage: errorMessage || null,
     };
 
-    if (status === 1) { // 发送失败，增加重试次数
+    if (status === 1) {
+      // 发送失败，增加重试次数
       updateData.retryCount = () => 'retryCount + 1';
       updateData.nextRetryTime = new Date(Date.now() + 5 * 60 * 1000); // 5分钟后重试
     }
@@ -217,14 +221,14 @@ export class WechatSubscribeService {
    */
   async getSubscribeStats(): Promise<any> {
     const total = await this.wechatSubscribeRepository.count();
-    const subscribed = await this.wechatSubscribeRepository.count({ 
-      where: { status: 1 } 
+    const subscribed = await this.wechatSubscribeRepository.count({
+      where: { status: 1 },
     });
-    const refused = await this.wechatSubscribeRepository.count({ 
-      where: { status: 2 } 
+    const refused = await this.wechatSubscribeRepository.count({
+      where: { status: 2 },
     });
-    const sent = await this.wechatSubscribeRepository.count({ 
-      where: { status: 3 } 
+    const sent = await this.wechatSubscribeRepository.count({
+      where: { status: 3 },
     });
 
     // 今日发送
@@ -242,8 +246,8 @@ export class WechatSubscribeService {
       refused,
       sent,
       todaySent,
-      subscribeRate: total > 0 ? (subscribed / total * 100).toFixed(2) : 0,
-      sendRate: subscribed > 0 ? (sent / subscribed * 100).toFixed(2) : 0,
+      subscribeRate: total > 0 ? ((subscribed / total) * 100).toFixed(2) : 0,
+      sendRate: subscribed > 0 ? ((sent / subscribed) * 100).toFixed(2) : 0,
     };
   }
 

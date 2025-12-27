@@ -16,7 +16,7 @@ export class SystemVersionService {
   async create(createVersionDto: CreateSystemVersionDto): Promise<SystemVersion> {
     // 检查版本号是否已存在
     const existingVersion = await this.versionRepository.findOne({
-      where: { version: createVersionDto.version }
+      where: { version: createVersionDto.version },
     });
 
     if (existingVersion) {
@@ -25,10 +25,7 @@ export class SystemVersionService {
 
     // 如果设置为当前版本，将其他版本的isCurrent设为false
     if (createVersionDto.isCurrent) {
-      await this.versionRepository.update(
-        { isCurrent: true },
-        { isCurrent: false }
-      );
+      await this.versionRepository.update({ isCurrent: true }, { isCurrent: false });
     }
 
     const version = this.versionRepository.create(createVersionDto);
@@ -48,7 +45,7 @@ export class SystemVersionService {
       page = 1,
       limit = 10,
       sortBy = 'createdAt',
-      sortOrder = 'DESC'
+      sortOrder = 'DESC',
     } = searchDto;
 
     const where: any = {};
@@ -78,10 +75,7 @@ export class SystemVersionService {
     }
 
     if (releaseDateStart && releaseDateEnd) {
-      where.releaseDate = Between(
-        new Date(releaseDateStart),
-        new Date(releaseDateEnd)
-      );
+      where.releaseDate = Between(new Date(releaseDateStart), new Date(releaseDateEnd));
     } else if (releaseDateStart) {
       where.releaseDate = MoreThanOrEqual(new Date(releaseDateStart));
     } else if (releaseDateEnd) {
@@ -113,8 +107,8 @@ export class SystemVersionService {
   }
 
   async findByVersion(version: string): Promise<SystemVersion> {
-    const versionEntity = await this.versionRepository.findOne({ 
-      where: { version } 
+    const versionEntity = await this.versionRepository.findOne({
+      where: { version },
     });
     if (!versionEntity) {
       throw new NotFoundException(`版本 ${version} 不存在`);
@@ -124,7 +118,7 @@ export class SystemVersionService {
 
   async getCurrentVersion(): Promise<SystemVersion> {
     const version = await this.versionRepository.findOne({
-      where: { isCurrent: true }
+      where: { isCurrent: true },
     });
     if (!version) {
       throw new NotFoundException('当前没有设置活跃版本');
@@ -138,7 +132,7 @@ export class SystemVersionService {
     // 如果更新版本号，检查是否重复
     if (updateVersionDto.version && updateVersionDto.version !== version.version) {
       const existingVersion = await this.versionRepository.findOne({
-        where: { version: updateVersionDto.version }
+        where: { version: updateVersionDto.version },
       });
       if (existingVersion) {
         throw new ConflictException(`版本 ${updateVersionDto.version} 已存在`);
@@ -147,10 +141,7 @@ export class SystemVersionService {
 
     // 如果设置为当前版本，将其他版本的isCurrent设为false
     if (updateVersionDto.isCurrent) {
-      await this.versionRepository.update(
-        { isCurrent: true },
-        { isCurrent: false }
-      );
+      await this.versionRepository.update({ isCurrent: true }, { isCurrent: false });
     }
 
     Object.assign(version, updateVersionDto);
@@ -159,7 +150,7 @@ export class SystemVersionService {
 
   async remove(id: number): Promise<void> {
     const version = await this.findOne(id);
-    
+
     // 不能删除当前版本
     if (version.isCurrent) {
       throw new ConflictException('不能删除当前活跃版本');
@@ -172,10 +163,7 @@ export class SystemVersionService {
     const version = await this.findOne(id);
 
     // 将所有版本的isCurrent设为false
-    await this.versionRepository.update(
-      { isCurrent: true },
-      { isCurrent: false }
-    );
+    await this.versionRepository.update({ isCurrent: true }, { isCurrent: false });
 
     // 设置当前版本
     version.isCurrent = true;
@@ -205,14 +193,23 @@ export class SystemVersionService {
   async getVersionHistory(): Promise<SystemVersion[]> {
     return await this.versionRepository.find({
       order: { releaseDate: 'DESC' },
-      select: ['id', 'version', 'type', 'description', 'releaseDate', 'isLts', 'isCurrent', 'isDeprecated']
+      select: [
+        'id',
+        'version',
+        'type',
+        'description',
+        'releaseDate',
+        'isLts',
+        'isCurrent',
+        'isDeprecated',
+      ],
     });
   }
 
   async getLTSVersions(): Promise<SystemVersion[]> {
     return await this.versionRepository.find({
       where: { isLts: true, isDeprecated: false },
-      order: { releaseDate: 'DESC' }
+      order: { releaseDate: 'DESC' },
     });
   }
 
@@ -227,7 +224,7 @@ export class SystemVersionService {
         features: v1.features,
         fixes: v1.fixes,
         improvements: v1.improvements,
-        releaseDate: v1.releaseDate
+        releaseDate: v1.releaseDate,
       },
       version2: {
         version: v2.version,
@@ -235,24 +232,24 @@ export class SystemVersionService {
         features: v2.features,
         fixes: v2.fixes,
         improvements: v2.improvements,
-        releaseDate: v2.releaseDate
+        releaseDate: v2.releaseDate,
       },
       differences: {
         features: this.compareArrays(v1.features, v2.features),
         fixes: this.compareArrays(v1.fixes, v2.fixes),
-        improvements: this.compareArrays(v1.improvements, v2.improvements)
-      }
+        improvements: this.compareArrays(v1.improvements, v2.improvements),
+      },
     };
   }
 
   private compareArrays(arr1: any[], arr2: any[]) {
     const set1 = new Set(arr1.map(item => JSON.stringify(item)));
     const set2 = new Set(arr2.map(item => JSON.stringify(item)));
-    
+
     return {
       added: arr2.filter(item => !set1.has(JSON.stringify(item))),
       removed: arr1.filter(item => !set2.has(JSON.stringify(item))),
-      unchanged: arr1.filter(item => set2.has(JSON.stringify(item)))
+      unchanged: arr1.filter(item => set2.has(JSON.stringify(item))),
     };
   }
 }

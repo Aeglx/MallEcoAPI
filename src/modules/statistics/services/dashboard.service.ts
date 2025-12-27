@@ -87,7 +87,7 @@ export class DashboardService {
       };
 
       const result = await this.elasticsearchService.search(realTimeQuery as any);
-      
+
       return {
         hourlyActivity: (result.aggregations?.hourly_activity as any)?.buckets || [],
         lastUpdated: new Date().toISOString(),
@@ -136,12 +136,15 @@ export class DashboardService {
     };
   }
 
-  async exportDashboardReport(queryDto: DashboardQueryDto, format: 'pdf' | 'excel' | 'csv' = 'pdf') {
+  async exportDashboardReport(
+    queryDto: DashboardQueryDto,
+    format: 'pdf' | 'excel' | 'csv' = 'pdf',
+  ) {
     const dashboardData = await this.getDashboardData(queryDto);
 
     // 这里可以根据格式生成不同的导出文件
     // 实际项目中会使用相应的库来生成PDF、Excel或CSV文件
-    
+
     return {
       data: dashboardData,
       format,

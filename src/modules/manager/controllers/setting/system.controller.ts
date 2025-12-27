@@ -4,7 +4,6 @@ import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 @ApiTags('管理端-系统设置')
 @Controller('manager/setting/system')
 export class SystemSettingController {
-  
   @Get('base')
   @ApiOperation({ summary: '获取基础设置' })
   getBaseSetting() {

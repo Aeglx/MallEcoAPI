@@ -24,7 +24,12 @@ export class Live extends BaseEntity {
   @Column({ name: 'end_time', type: 'datetime', nullable: true, comment: '结束时间' })
   endTime: Date;
 
-  @Column({ name: 'live_status', type: 'int', default: 0, comment: '直播状态：0-未开始，1-直播中，2-已结束，3-已取消' })
+  @Column({
+    name: 'live_status',
+    type: 'int',
+    default: 0,
+    comment: '直播状态：0-未开始，1-直播中，2-已结束，3-已取消',
+  })
   liveStatus: number;
 
   @Column({ name: 'live_url', length: 255, nullable: true, comment: '直播观看地址' })
@@ -51,4 +56,3 @@ export class Live extends BaseEntity {
   @Column({ name: 'live_intro', type: 'text', nullable: true, comment: '直播简介' })
   liveIntro: string;
 }
-

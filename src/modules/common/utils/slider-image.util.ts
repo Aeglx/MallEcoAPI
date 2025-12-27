@@ -156,4 +156,3 @@ async function addInterfereBlocks(
 async function bufferToBase64(buffer: Buffer, format: 'png' | 'jpg'): Promise<string> {
   return buffer.toString('base64');
 }
-

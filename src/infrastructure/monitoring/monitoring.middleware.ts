@@ -14,10 +14,10 @@ export class MonitoringMiddleware implements NestMiddleware {
     res.locals.startTime = startTime;
 
     // 重写send方法以捕获响应时�?
-    res.send = function(body?: any) {
+    res.send = function (body?: any) {
       const endTime = Date.now();
       const duration = endTime - startTime;
-      
+
       // 记录HTTP指标
       const route = req.route?.path || req.path;
       const method = req.method;

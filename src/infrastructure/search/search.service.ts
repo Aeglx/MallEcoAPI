@@ -3,9 +3,7 @@ import { DbConnectionService } from '../../common/database/db-connection.service
 
 @Injectable()
 export class SearchService {
-  constructor(
-    private readonly dbConnectionService: DbConnectionService,
-  ) {}
+  constructor(private readonly dbConnectionService: DbConnectionService) {}
 
   /**
    * 获取热门搜索关键词
@@ -20,7 +18,7 @@ export class SearchService {
       ORDER BY score DESC 
       LIMIT ?
     `;
-    
+
     const rows = await this.dbConnectionService.query(sql, [true, count]);
     return rows.map((row: any) => row.keyword);
   }
@@ -84,7 +82,7 @@ export class SearchService {
       ORDER BY MAX(created_at) DESC 
       LIMIT ?
     `;
-    
+
     const rows = await this.dbConnectionService.query(sql, [userId, limit]);
     return rows.map((row: any) => row.keyword);
   }
@@ -118,7 +116,11 @@ export class SearchService {
       ORDER BY score DESC 
       LIMIT ?
     `;
-    const hotWordsSuggestions = await this.dbConnectionService.query(hotWordsSql, [true, `${keyword}%`, limit]);
+    const hotWordsSuggestions = await this.dbConnectionService.query(hotWordsSql, [
+      true,
+      `${keyword}%`,
+      limit,
+    ]);
     const hotWordsList = hotWordsSuggestions.map((row: any) => row.keyword);
 
     // 如果热门关键词不足，从商品名称中获取联想
@@ -130,7 +132,11 @@ export class SearchService {
         ORDER BY sales DESC 
         LIMIT ?
       `;
-      const productSuggestions = await this.dbConnectionService.query(productsSql, [`%${keyword}%`, 1, limit - hotWordsList.length]);
+      const productSuggestions = await this.dbConnectionService.query(productsSql, [
+        `%${keyword}%`,
+        1,
+        limit - hotWordsList.length,
+      ]);
       const productNamesList = productSuggestions.map((row: any) => row.name);
 
       // 合并去重

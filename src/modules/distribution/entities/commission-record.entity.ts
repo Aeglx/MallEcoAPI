@@ -15,16 +15,42 @@ export class CommissionRecord extends BaseEntity {
   @Column({ name: 'user_id', length: 36, nullable: false, comment: '用户ID' })
   userId: string;
 
-  @Column({ name: 'order_amount', type: 'decimal', precision: 10, scale: 2, default: 0, comment: '订单金额' })
+  @Column({
+    name: 'order_amount',
+    type: 'decimal',
+    precision: 10,
+    scale: 2,
+    default: 0,
+    comment: '订单金额',
+  })
   orderAmount: number;
 
-  @Column({ name: 'commission_amount', type: 'decimal', precision: 10, scale: 2, default: 0, comment: '佣金金额' })
+  @Column({
+    name: 'commission_amount',
+    type: 'decimal',
+    precision: 10,
+    scale: 2,
+    default: 0,
+    comment: '佣金金额',
+  })
   commissionAmount: number;
 
-  @Column({ name: 'commission_rate', type: 'decimal', precision: 4, scale: 2, default: 0, comment: '佣金比例(%)' })
+  @Column({
+    name: 'commission_rate',
+    type: 'decimal',
+    precision: 4,
+    scale: 2,
+    default: 0,
+    comment: '佣金比例(%)',
+  })
   commissionRate: number;
 
-  @Column({ name: 'status', type: 'tinyint', default: 0, comment: '状态：0-待结算，1-已结算，2-已取消' })
+  @Column({
+    name: 'status',
+    type: 'tinyint',
+    default: 0,
+    comment: '状态：0-待结算，1-已结算，2-已取消',
+  })
   status: number;
 
   @Column({ name: 'settlement_time', type: 'datetime', nullable: true, comment: '结算时间' })
@@ -33,4 +59,3 @@ export class CommissionRecord extends BaseEntity {
   @Column({ name: 'remark', type: 'varchar', length: 255, nullable: true, comment: '备注' })
   remark: string;
 }
-

@@ -19,9 +19,9 @@ export class HotWordsService {
       '数据线',
       '充电器',
       '内存卡',
-      'U盘'
+      'U盘',
     ];
-    
+
     // 根据count参数返回指定数量的热搜词
     return allHotWords.slice(0, count);
   }

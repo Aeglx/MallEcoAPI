@@ -73,14 +73,16 @@ export class SystemMonitorController {
   @Get('alerts')
   @ApiOperation({ summary: '获取告警信息' })
   @ApiResponse({ status: 200, description: '告警信息获取成功' })
-  async getAlerts(): Promise<Array<{
-    id: string;
-    level: string;
-    title: string;
-    message: string;
-    timestamp: Date;
-    resolved: boolean;
-  }>> {
+  async getAlerts(): Promise<
+    Array<{
+      id: string;
+      level: string;
+      title: string;
+      message: string;
+      timestamp: Date;
+      resolved: boolean;
+    }>
+  > {
     return await this.monitorService.getAlerts();
   }
 

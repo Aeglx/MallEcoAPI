@@ -140,4 +140,3 @@ export class CacheProtectionService {
     this.logger.debug(`Deleted batch cache: ${keys.length} keys`);
   }
 }
-

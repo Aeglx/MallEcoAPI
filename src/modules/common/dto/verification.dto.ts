@@ -45,4 +45,3 @@ export class SliderCaptchaResponseDto {
   /** 有效时间（秒） */
   effectiveTime?: number;
 }
-

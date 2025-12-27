@@ -22,11 +22,11 @@ export class SalesStatisticsQueryDto {
   @IsOptional()
   categoryId?: number;
 
-  @ApiProperty({ 
-    description: '统计粒度', 
-    enum: ['daily', 'weekly', 'monthly'], 
+  @ApiProperty({
+    description: '统计粒度',
+    enum: ['daily', 'weekly', 'monthly'],
     default: 'daily',
-    required: false 
+    required: false,
   })
   @IsEnum(['daily', 'weekly', 'monthly'])
   @IsOptional()

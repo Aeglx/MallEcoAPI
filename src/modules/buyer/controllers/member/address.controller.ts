@@ -4,7 +4,6 @@ import { ApiTags } from '@nestjs/swagger';
 @ApiTags('地址管理')
 @Controller('buyer/member/address')
 export class MemberAddressController {
-  
   @Get()
   findAll() {
     // 获取会员地址列表

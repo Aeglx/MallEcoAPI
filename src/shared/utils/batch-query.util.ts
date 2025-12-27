@@ -28,7 +28,7 @@ export class BatchQueryUtil {
 
     // 构建Map
     const map = new Map<string, T>();
-    entities.forEach((entity) => {
+    entities.forEach(entity => {
       const key = String(entity[keyField]);
       map.set(key, entity);
     });
@@ -81,7 +81,7 @@ export class BatchQueryUtil {
     // 控制并发
     for (let i = 0; i < batches.length; i += concurrency) {
       const concurrentBatches = batches.slice(i, i + concurrency);
-      const promises = concurrentBatches.map((batch) => loader(batch));
+      const promises = concurrentBatches.map(batch => loader(batch));
       const batchResults = await Promise.all(promises);
       results.push(...batchResults.flat());
     }
@@ -89,4 +89,3 @@ export class BatchQueryUtil {
     return results;
   }
 }
-

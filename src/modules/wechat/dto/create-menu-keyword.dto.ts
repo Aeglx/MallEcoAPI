@@ -23,7 +23,11 @@ export class CreateMenuKeywordDto {
   @IsString({ message: '关键词类型必须是字符串' })
   keywordType?: string;
 
-  @ApiProperty({ description: '关键词状态', enum: MenuKeywordStatus, default: MenuKeywordStatus.DRAFT })
+  @ApiProperty({
+    description: '关键词状态',
+    enum: MenuKeywordStatus,
+    default: MenuKeywordStatus.DRAFT,
+  })
   @IsOptional()
   @IsEnum(MenuKeywordStatus, { message: '关键词状态格式不正确' })
   status?: MenuKeywordStatus;

@@ -6,16 +6,9 @@ import { Product } from './entities/product.entity';
 import { RabbitMQModule } from '../infrastructure/rabbitmq/rabbitmq.module';
 
 @Module({
-  imports: [
-    forwardRef(() => RabbitMQModule),
-    TypeOrmModule.forFeature([Product]),
-  ],
+  imports: [forwardRef(() => RabbitMQModule), TypeOrmModule.forFeature([Product])],
   controllers: [ProductsController],
   providers: [ProductsService],
-  exports: [
-    ProductsService,
-    TypeOrmModule.forFeature([Product]),
-  ],
+  exports: [ProductsService, TypeOrmModule.forFeature([Product])],
 })
 export class ProductsModule {}
-

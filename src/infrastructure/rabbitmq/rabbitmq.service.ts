@@ -20,7 +20,7 @@ export class RabbitMQService {
     if (!isEnabled) {
       return null;
     }
-    
+
     if (!this.client) {
       try {
         this.client = ClientProxyFactory.create({
@@ -53,7 +53,7 @@ export class RabbitMQService {
       console.warn('RabbitMQ client is not available, skipping send operation');
       return null as any;
     }
-    
+
     try {
       return await client.send<T>(pattern, data).toPromise();
     } catch (error) {
@@ -73,7 +73,7 @@ export class RabbitMQService {
       console.warn('RabbitMQ client is not available, skipping emit operation');
       return;
     }
-    
+
     try {
       await client.emit(pattern, data).toPromise();
     } catch (error) {

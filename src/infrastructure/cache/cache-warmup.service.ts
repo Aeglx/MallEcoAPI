@@ -19,7 +19,7 @@ export class CacheWarmupService implements OnModuleInit {
   async onModuleInit() {
     // 延迟预热，等待应用完全启动
     setTimeout(() => {
-      this.warmup().catch((error) => {
+      this.warmup().catch(error => {
         this.logger.error('Cache warmup failed:', error);
       });
     }, 5000); // 5秒后开始预热
@@ -109,4 +109,3 @@ export class CacheWarmupService implements OnModuleInit {
     await this.warmup();
   }
 }
-

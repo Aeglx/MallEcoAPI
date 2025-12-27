@@ -107,7 +107,7 @@ export class GatewayService {
     for (const instance of instances) {
       const instanceKey = `${instance.ServiceAddress}:${instance.ServicePort}`;
       const connections = instanceConnections.get(instanceKey) || 0;
-      
+
       if (connections < minConnections) {
         minConnections = connections;
         selectedInstance = instance;
@@ -122,7 +122,7 @@ export class GatewayService {
    */
   private incrementConnection(serviceName: string, instance: any): void {
     const instanceKey = `${instance.ServiceAddress}:${instance.ServicePort}`;
-    
+
     if (!this.connectionCounters.has(serviceName)) {
       this.connectionCounters.set(serviceName, new Map());
     }
@@ -137,14 +137,14 @@ export class GatewayService {
    */
   private decrementConnection(serviceName: string, instance: any): void {
     const instanceKey = `${instance.ServiceAddress}:${instance.ServicePort}`;
-    
+
     if (!this.connectionCounters.has(serviceName)) {
       return;
     }
 
     const instanceConnections = this.connectionCounters.get(serviceName);
     const currentConnections = instanceConnections.get(instanceKey) || 1;
-    
+
     if (currentConnections > 0) {
       instanceConnections.set(instanceKey, currentConnections - 1);
     }

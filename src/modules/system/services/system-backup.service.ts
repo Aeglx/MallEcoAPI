@@ -34,15 +34,15 @@ export class SystemBackupService {
       details: JSON.stringify({
         backupId,
         size,
-        type: 'database'
-      })
+        type: 'database',
+      }),
     });
 
     return {
       backupId,
       filename,
       size,
-      createdAt
+      createdAt,
     };
   }
 
@@ -70,29 +70,31 @@ export class SystemBackupService {
       details: JSON.stringify({
         backupId,
         size,
-        type: 'files'
-      })
+        type: 'files',
+      }),
     });
 
     return {
       backupId,
       filename,
       size,
-      createdAt
+      createdAt,
     };
   }
 
   /**
    * 获取备份列表
    */
-  async getBackupList(type?: string): Promise<Array<{
-    id: string;
-    type: string;
-    filename: string;
-    size: number;
-    createdAt: Date;
-    status: string;
-  }>> {
+  async getBackupList(type?: string): Promise<
+    Array<{
+      id: string;
+      type: string;
+      filename: string;
+      size: number;
+      createdAt: Date;
+      status: string;
+    }>
+  > {
     // 模拟备份列表数据
     const backups = [
       {
@@ -101,7 +103,7 @@ export class SystemBackupService {
         filename: 'database_backup_001.sql',
         size: 1024000,
         createdAt: new Date(Date.now() - 24 * 60 * 60 * 1000), // 1天前
-        status: 'completed'
+        status: 'completed',
       },
       {
         id: this.generateBackupId(),
@@ -109,7 +111,7 @@ export class SystemBackupService {
         filename: 'file_backup_001.zip',
         size: 5120000,
         createdAt: new Date(Date.now() - 12 * 60 * 60 * 1000), // 12小时前
-        status: 'completed'
+        status: 'completed',
       },
       {
         id: this.generateBackupId(),
@@ -117,8 +119,8 @@ export class SystemBackupService {
         filename: 'database_backup_002.sql',
         size: 1050000,
         createdAt: new Date(Date.now() - 6 * 60 * 60 * 1000), // 6小时前
-        status: 'completed'
-      }
+        status: 'completed',
+      },
     ];
 
     if (type) {
@@ -139,7 +141,8 @@ export class SystemBackupService {
     nextBackupTime: Date;
   }> {
     const backups = await this.getBackupList();
-    const lastBackup = backups.length > 0 ? new Date(Math.max(...backups.map(b => b.createdAt.getTime()))) : null;
+    const lastBackup =
+      backups.length > 0 ? new Date(Math.max(...backups.map(b => b.createdAt.getTime()))) : null;
     const totalSize = backups.reduce((sum, backup) => sum + backup.size, 0);
 
     return {
@@ -147,7 +150,7 @@ export class SystemBackupService {
       backupCount: backups.length,
       totalSize,
       autoBackupEnabled: true,
-      nextBackupTime: new Date(Date.now() + 6 * 60 * 60 * 1000) // 6小时后
+      nextBackupTime: new Date(Date.now() + 6 * 60 * 60 * 1000), // 6小时后
     };
   }
 
@@ -162,8 +165,8 @@ export class SystemBackupService {
       module: 'backup',
       description: `备份删除成功: ${id}`,
       details: JSON.stringify({
-        backupId: id
-      })
+        backupId: id,
+      }),
     });
   }
 
@@ -187,14 +190,14 @@ export class SystemBackupService {
       details: JSON.stringify({
         restoreId,
         backupId: id,
-        estimatedTime
-      })
+        estimatedTime,
+      }),
     });
 
     return {
       restoreId,
       status: 'in_progress',
-      estimatedTime
+      estimatedTime,
     };
   }
 
@@ -213,7 +216,7 @@ export class SystemBackupService {
     return {
       status: progress < 100 ? 'in_progress' : 'completed',
       progress,
-      estimatedTime
+      estimatedTime,
     };
   }
 
@@ -235,13 +238,13 @@ export class SystemBackupService {
       description: `备份计划设置成功: ${schedule}`,
       details: JSON.stringify({
         schedule,
-        nextBackupTime
-      })
+        nextBackupTime,
+      }),
     });
 
     return {
       schedule,
-      nextBackupTime
+      nextBackupTime,
     };
   }
 
@@ -256,7 +259,7 @@ export class SystemBackupService {
   }> {
     const backups = await this.getBackupList();
     const backupSpace = backups.reduce((sum, backup) => sum + backup.size, 0);
-    
+
     // 模拟存储空间信息
     const totalSpace = 100 * 1024 * 1024 * 1024; // 100GB
     const usedSpace = 45 * 1024 * 1024 * 1024; // 45GB
@@ -266,7 +269,7 @@ export class SystemBackupService {
       totalSpace,
       usedSpace,
       freeSpace,
-      backupSpace
+      backupSpace,
     };
   }
 
@@ -282,7 +285,7 @@ export class SystemBackupService {
    */
   private calculateNextBackupTime(schedule: string): Date {
     const now = new Date();
-    
+
     switch (schedule) {
       case 'daily':
         return new Date(now.getTime() + 24 * 60 * 60 * 1000);

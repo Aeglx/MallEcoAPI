@@ -4,7 +4,6 @@ import { ApiTags } from '@nestjs/swagger';
 @ApiTags('商品分类')
 @Controller('buyer/goods/category')
 export class CategoryController {
-  
   @Get()
   findAll(@Query() query: any) {
     // 获取所有商品分类

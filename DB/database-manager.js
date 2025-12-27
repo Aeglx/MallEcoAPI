@@ -13,7 +13,7 @@ const config = {
   user: process.env.DB_USERNAME || 'root',
   password: process.env.DB_PASSWORD || '',
   database: process.env.DB_NAME || 'malleco',
-  charset: process.env.DB_CHARSET || 'utf8mb4'
+  charset: process.env.DB_CHARSET || 'utf8mb4',
 };
 
 /**
@@ -29,7 +29,7 @@ class DatabaseManager {
    */
   async initialize() {
     console.log('🔍 开始初始化数据库...');
-    
+
     try {
       // 1. 连接到MySQL服务器（不指定数据库）
       const connection = await mysql.createConnection({
@@ -37,18 +37,20 @@ class DatabaseManager {
         port: this.config.port,
         user: this.config.user,
         password: this.config.password,
-        charset: this.config.charset
+        charset: this.config.charset,
       });
-      
+
       console.log('✅ 成功连接到MySQL服务器');
-      
+
       // 2. 创建数据库（如果不存在）
-      await connection.query(`CREATE DATABASE IF NOT EXISTS \`${this.config.database}\` DEFAULT CHARACTER SET ${this.config.charset}`);
+      await connection.query(
+        `CREATE DATABASE IF NOT EXISTS \`${this.config.database}\` DEFAULT CHARACTER SET ${this.config.charset}`,
+      );
       console.log(`✅ 成功创建数据库: ${this.config.database}`);
-      
+
       // 3. 关闭当前连接并重新连接到指定的数据库
       await connection.end();
-      
+
       // 4. 重新连接到指定的数据库
       const dbConnection = await mysql.createConnection({
         host: this.config.host,
@@ -57,19 +59,19 @@ class DatabaseManager {
         password: this.config.password,
         database: this.config.database,
         charset: this.config.charset,
-        multipleStatements: true // 支持多语句执行
+        multipleStatements: true, // 支持多语句执行
       });
-      
+
       // 5. 读取并执行SQL初始化脚本
       const sqlPath = path.join(__dirname, 'database-initialization.sql');
       const sqlContent = fs.readFileSync(sqlPath, 'utf8');
-      
+
       // 6. 执行SQL脚本
       await dbConnection.query(sqlContent);
-      
+
       // 7. 关闭连接
       await dbConnection.end();
-      
+
       console.log('✅ 所有SQL语句执行完成');
       console.log('🎉 数据库初始化完成！');
       console.log('');
@@ -88,7 +90,6 @@ class DatabaseManager {
       console.log('   角色：运营管理员');
       console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
       console.log('⚠️  请登录后立即修改默认密码！');
-      
     } catch (error) {
       console.error('❌ 数据库初始化失败:', error.message);
       throw error;
@@ -108,11 +109,11 @@ class DatabaseManager {
     let inDoubleQuote = false;
     let inComment = false;
     let inMultiLineComment = false;
-    
+
     for (let i = 0; i < sqlContent.length; i++) {
       const char = sqlContent[i];
       const nextChar = sqlContent[i + 1];
-      
+
       // 处理注释
       if (!inSingleQuote && !inDoubleQuote) {
         // 单行注释
@@ -121,14 +122,14 @@ class DatabaseManager {
           statement += char;
           continue;
         }
-        
+
         // 多行注释开始
         if (char === '/' && nextChar === '*') {
           inMultiLineComment = true;
           statement += char;
           continue;
         }
-        
+
         // 多行注释结束
         if (char === '*' && nextChar === '/') {
           inMultiLineComment = false;
@@ -137,7 +138,7 @@ class DatabaseManager {
           continue;
         }
       }
-      
+
       // 处理字符串
       if (!inComment && !inMultiLineComment) {
         if (char === "'" && !inDoubleQuote) {
@@ -146,7 +147,7 @@ class DatabaseManager {
           inDoubleQuote = !inDoubleQuote;
         }
       }
-      
+
       // 处理分号（语句结束符）
       if (char === ';' && !inSingleQuote && !inDoubleQuote && !inComment && !inMultiLineComment) {
         statements.push(statement.trim());
@@ -154,18 +155,18 @@ class DatabaseManager {
       } else {
         statement += char;
       }
-      
+
       // 单行注释结束
       if (inComment && char === '\n') {
         inComment = false;
       }
     }
-    
+
     // 添加最后一个语句（如果有）
     if (statement.trim()) {
       statements.push(statement.trim());
     }
-    
+
     return statements;
   }
 
@@ -188,7 +189,9 @@ class DatabaseManager {
   async getDatabaseInfo() {
     try {
       const connection = await mysql.createConnection(this.config);
-      const [rows] = await connection.execute('SELECT DATABASE() as db_name, VERSION() as mysql_version');
+      const [rows] = await connection.execute(
+        'SELECT DATABASE() as db_name, VERSION() as mysql_version',
+      );
       await connection.end();
       return rows[0];
     } catch (error) {

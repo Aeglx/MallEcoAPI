@@ -10,7 +10,7 @@ export class SeataInterceptor implements NestInterceptor {
   async intercept(context: ExecutionContext, next: CallHandler): Promise<Observable<any>> {
     const request = context.switchToHttp().getRequest();
     const methodName = `${context.getClass().name}.${context.getHandler().name}`;
-    
+
     let xid: string | null = null;
 
     // 检查是否已经存在全局事务
@@ -34,7 +34,7 @@ export class SeataInterceptor implements NestInterceptor {
           });
         }
       }),
-      catchError((error) => {
+      catchError(error => {
         // 请求失败，回滚事�?
         if (xid) {
           this.seataService.rollbackTransaction(xid).catch(rollbackError => {
@@ -42,7 +42,7 @@ export class SeataInterceptor implements NestInterceptor {
           });
         }
         throw error;
-      })
+      }),
     );
   }
 }
@@ -51,16 +51,16 @@ export class SeataInterceptor implements NestInterceptor {
 export function GlobalTransaction(timeout: number = 60000) {
   return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
     const originalMethod = descriptor.value;
-    
+
     descriptor.value = async function (...args: any[]) {
       const seataService: SeataService = (this as any).seataService;
-      
+
       if (!seataService) {
         return originalMethod.apply(this, args);
       }
 
       let xid: string | null = null;
-      
+
       // 检查是否已经存在全局事务
       if (!seataService.isInGlobalTransaction()) {
         try {
@@ -73,12 +73,12 @@ export function GlobalTransaction(timeout: number = 60000) {
 
       try {
         const result = await originalMethod.apply(this, args);
-        
+
         // 提交事务
         if (xid) {
           await seataService.commitTransaction(xid);
         }
-        
+
         return result;
       } catch (error) {
         // 回滚事务
@@ -88,7 +88,7 @@ export function GlobalTransaction(timeout: number = 60000) {
         throw error;
       }
     };
-    
+
     return descriptor;
   };
 }
@@ -97,10 +97,10 @@ export function GlobalTransaction(timeout: number = 60000) {
 export function BranchTransaction(resourceId: string, branchType: string = 'AT') {
   return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
     const originalMethod = descriptor.value;
-    
+
     descriptor.value = async function (...args: any[]) {
       const seataService: SeataService = (this as any).seataService;
-      
+
       if (!seataService || !seataService.isInGlobalTransaction()) {
         return originalMethod.apply(this, args);
       }
@@ -111,23 +111,20 @@ export function BranchTransaction(resourceId: string, branchType: string = 'AT')
       }
 
       let branchId: number | null = null;
-      
+
       try {
         // 注册分支事务
-        branchId = await seataService.registerBranchTransaction(
-          xid,
-          resourceId,
-          branchType,
-          { method: propertyKey }
-        );
-        
+        branchId = await seataService.registerBranchTransaction(xid, resourceId, branchType, {
+          method: propertyKey,
+        });
+
         const result = await originalMethod.apply(this, args);
-        
+
         // 报告分支事务成功
         if (branchId !== null) {
           await seataService.reportBranchStatus(xid, branchId, 1, { status: 'committed' });
         }
-        
+
         return result;
       } catch (error) {
         // 报告分支事务失败
@@ -137,7 +134,7 @@ export function BranchTransaction(resourceId: string, branchType: string = 'AT')
         throw error;
       }
     };
-    
+
     return descriptor;
   };
 }

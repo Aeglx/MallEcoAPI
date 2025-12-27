@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class SystemSettingService {
-  
   async getSettings() {
     // 获取系统设置的业务逻辑
     return {
@@ -11,9 +10,9 @@ export class SystemSettingService {
         siteName: 'MallEco',
         siteDescription: '电商平台',
         logo: '/logo.png',
-        favicon: '/favicon.ico'
+        favicon: '/favicon.ico',
       },
-      message: '获取系统设置成功'
+      message: '获取系统设置成功',
     };
   }
 
@@ -22,7 +21,7 @@ export class SystemSettingService {
     return {
       success: true,
       data: settingsData,
-      message: '更新系统设置成功'
+      message: '更新系统设置成功',
     };
   }
 
@@ -34,9 +33,9 @@ export class SystemSettingService {
         smtpHost: 'smtp.example.com',
         smtpPort: 587,
         smtpUsername: 'noreply@example.com',
-        smtpPassword: '********'
+        smtpPassword: '********',
       },
-      message: '获取邮件设置成功'
+      message: '获取邮件设置成功',
     };
   }
 
@@ -45,7 +44,7 @@ export class SystemSettingService {
     return {
       success: true,
       data: emailSettings,
-      message: '更新邮件设置成功'
+      message: '更新邮件设置成功',
     };
   }
 }

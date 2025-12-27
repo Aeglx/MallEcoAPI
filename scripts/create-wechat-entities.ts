@@ -30,7 +30,7 @@ export class WechatH5Template extends BaseWechatEntity {
 
   @Column({ type: 'int', default: 0, comment: '使用次数' })
   usageCount: number;
-}`
+}`,
   },
   {
     name: 'wechat-coupon.entity.ts',
@@ -65,7 +65,7 @@ export class WechatCoupon extends BaseWechatEntity {
 
   @Column({ type: 'datetime', nullable: true, comment: '使用时间' })
   consumeTime: Date;
-}`
+}`,
   },
   {
     name: 'wechat-coupon-template.entity.ts',
@@ -100,7 +100,7 @@ export class WechatCouponTemplate extends BaseWechatEntity {
 
   @Column({ type: 'int', default: 0, comment: '已使用数量' })
   usedCount: number;
-}`
+}`,
   },
   {
     name: 'wechat-coupon-record.entity.ts',
@@ -132,7 +132,7 @@ export class WechatCouponRecord extends BaseWechatEntity {
 
   @Column({ length: 100, nullable: true, comment: '订单号' })
   orderId: string;
-}`
+}`,
   },
   {
     name: 'wechat-material-image.entity.ts',
@@ -161,7 +161,7 @@ export class WechatMaterialImage extends BaseWechatEntity {
 
   @Column({ type: 'int', default: 0, comment: '使用次数' })
   usageCount: number;
-}`
+}`,
   },
   {
     name: 'wechat-material-video.entity.ts',
@@ -193,7 +193,7 @@ export class WechatMaterialVideo extends BaseWechatEntity {
 
   @Column({ type: 'int', default: 0, comment: '播放次数' })
   playCount: number;
-}`
+}`,
   },
   {
     name: 'wechat-material-voice.entity.ts',
@@ -222,7 +222,7 @@ export class WechatMaterialVoice extends BaseWechatEntity {
 
   @Column({ type: 'int', default: 0, comment: '播放次数' })
   playCount: number;
-}`
+}`,
   },
   {
     name: 'wechat-material-article.entity.ts',
@@ -257,7 +257,7 @@ export class WechatMaterialArticle extends BaseWechatEntity {
 
   @Column({ type: 'int', default: 0, comment: '分享次数' })
   shareCount: number;
-}`
+}`,
   },
   {
     name: 'wechat-menu.entity.ts',
@@ -295,7 +295,7 @@ export class WechatMenu extends BaseWechatEntity {
 
   @Column({ type: 'json', nullable: true, comment: '子菜单' })
   subButtons: any[];
-}`
+}`,
   },
   {
     name: 'wechat-menu-keyword.entity.ts',
@@ -327,7 +327,7 @@ export class WechatMenuKeyword extends BaseWechatEntity {
 
   @Column({ type: 'text', nullable: true, comment: '备注' })
   remark: string;
-}`
+}`,
   },
   {
     name: 'wechat-oauth-user.entity.ts',
@@ -365,7 +365,7 @@ export class WechatOauthUser extends BaseWechatEntity {
 
   @Column({ type: 'int', default: 0, comment: '访问次数' })
   accessCount: number;
-}`
+}`,
   },
   {
     name: 'wechat-oauth-app.entity.ts',
@@ -400,7 +400,7 @@ export class WechatOauthApp extends BaseWechatEntity {
 
   @Column({ type: 'datetime', nullable: true, comment: '最后授权时间' })
   lastAuthTime: Date;
-}`
+}`,
   },
   {
     name: 'wechat-oauth-token.entity.ts',
@@ -438,8 +438,8 @@ export class WechatOauthToken extends BaseWechatEntity {
 
   @Column({ type: 'int', default: 0, comment: '使用次数' })
   usageCount: number;
-}`
-  }
+}`,
+  },
 ];
 
 const entityDir = path.join(__dirname, '../src/modules/wechat/entities');

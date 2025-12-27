@@ -2,13 +2,12 @@ import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class GradeService {
-  
   async findAll() {
     // 获取会员等级列表的业务逻辑
     return {
       success: true,
       data: [],
-      message: '获取会员等级列表成功'
+      message: '获取会员等级列表成功',
     };
   }
 
@@ -17,7 +16,7 @@ export class GradeService {
     return {
       success: true,
       data: { id, name: '普通会员', discount: 1.0 },
-      message: '获取会员等级详情成功'
+      message: '获取会员等级详情成功',
     };
   }
 
@@ -26,7 +25,7 @@ export class GradeService {
     return {
       success: true,
       data: { id: 'new-grade-id', ...gradeData },
-      message: '创建会员等级成功'
+      message: '创建会员等级成功',
     };
   }
 
@@ -35,7 +34,7 @@ export class GradeService {
     return {
       success: true,
       data: { id, ...gradeData },
-      message: '更新会员等级成功'
+      message: '更新会员等级成功',
     };
   }
 
@@ -43,7 +42,7 @@ export class GradeService {
     // 删除会员等级的业务逻辑
     return {
       success: true,
-      message: '删除会员等级成功'
+      message: '删除会员等级成功',
     };
   }
 }

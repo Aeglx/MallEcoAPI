@@ -19,4 +19,3 @@ export class Tag extends BaseEntity {
   @ManyToMany(() => Article, article => article.tags)
   articles: Article[];
 }
-

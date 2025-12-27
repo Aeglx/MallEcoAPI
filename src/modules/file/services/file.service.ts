@@ -13,7 +13,8 @@ import { v4 as uuidv4 } from 'uuid';
 export class FileService {
   constructor(
     @InjectRepository(MallFile) private readonly fileRepository: Repository<MallFile>,
-    @InjectRepository(MallFileDirectory) private readonly directoryRepository: Repository<MallFileDirectory>,
+    @InjectRepository(MallFileDirectory)
+    private readonly directoryRepository: Repository<MallFileDirectory>,
   ) {}
 
   async uploadFile(file: any, dto: Partial<CreateFileDto>): Promise<MallFile> {
@@ -118,7 +119,8 @@ export class FileService {
   }
 
   async getDirectoryList(parentId?: string): Promise<MallFileDirectory[]> {
-    const query = this.directoryRepository.createQueryBuilder('directory')
+    const query = this.directoryRepository
+      .createQueryBuilder('directory')
       .where('directory.status = 1');
 
     if (parentId) {

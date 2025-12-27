@@ -1,7 +1,11 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Not } from 'typeorm';
-import { Notification, NotificationStatus, NotificationType } from '../entities/notification.entity';
+import {
+  Notification,
+  NotificationStatus,
+  NotificationType,
+} from '../entities/notification.entity';
 import { CreateNotificationDto } from '../dto/create-notification.dto';
 import { UpdateNotificationDto } from '../dto/update-notification.dto';
 import { UsersService } from '../../users/users.service';
@@ -11,7 +15,8 @@ import { MailService } from '../../mail/services/mail.service';
 @Injectable()
 export class NotificationService {
   constructor(
-    @InjectRepository(Notification) private readonly notificationRepository: Repository<Notification>,
+    @InjectRepository(Notification)
+    private readonly notificationRepository: Repository<Notification>,
     private readonly userService: UsersService,
     private readonly smsService: SmsService,
     private readonly mailService: MailService,
@@ -31,11 +36,10 @@ export class NotificationService {
     if (savedNotification.isSms === 1 && savedNotification.userId) {
       const user = await this.userService.findById(savedNotification.userId.toString());
       if (user && user.phone) {
-        await this.smsService.sendSms(
-          user.phone,
-          'NOTIFICATION_TEMPLATE',
-          { title: savedNotification.title, content: savedNotification.content }
-        );
+        await this.smsService.sendSms(user.phone, 'NOTIFICATION_TEMPLATE', {
+          title: savedNotification.title,
+          content: savedNotification.content,
+        });
       }
     }
 
@@ -46,7 +50,7 @@ export class NotificationService {
         await this.mailService.sendMail(
           user.email,
           savedNotification.title,
-          savedNotification.content
+          savedNotification.content,
         );
       }
     }
@@ -67,7 +71,7 @@ export class NotificationService {
     for (const userId of userIds) {
       await this.createNotification({
         ...createNotificationDto,
-        userId
+        userId,
       });
     }
   }
@@ -77,7 +81,10 @@ export class NotificationService {
    * @param id 通知ID
    * @param updateNotificationDto 更新通知DTO
    */
-  async updateNotification(id: number, updateNotificationDto: UpdateNotificationDto): Promise<Notification> {
+  async updateNotification(
+    id: number,
+    updateNotificationDto: UpdateNotificationDto,
+  ): Promise<Notification> {
     const notification = await this.findNotificationById(id);
     Object.assign(notification, updateNotificationDto);
     return await this.notificationRepository.save(notification);
@@ -98,7 +105,7 @@ export class NotificationService {
   async markAllAsRead(userId: string): Promise<void> {
     await this.notificationRepository.update(
       { userId, status: NotificationStatus.UNREAD },
-      { status: NotificationStatus.READ }
+      { status: NotificationStatus.READ },
     );
   }
 
@@ -142,7 +149,7 @@ export class NotificationService {
   async findNotificationsByUserId(
     userId: string,
     type?: NotificationType,
-    status?: NotificationStatus
+    status?: NotificationStatus,
   ): Promise<Notification[]> {
     const where: any = { userId };
     if (type) {
@@ -156,7 +163,7 @@ export class NotificationService {
 
     return await this.notificationRepository.find({
       where,
-      order: { createdAt: 'DESC' }
+      order: { createdAt: 'DESC' },
     });
   }
 
@@ -166,7 +173,7 @@ export class NotificationService {
    */
   async countUnreadNotifications(userId: string): Promise<number> {
     return await this.notificationRepository.count({
-      where: { userId, status: NotificationStatus.UNREAD }
+      where: { userId, status: NotificationStatus.UNREAD },
     });
   }
 
@@ -182,7 +189,7 @@ export class NotificationService {
 
     return await this.notificationRepository.find({
       where,
-      order: { createdAt: 'DESC' }
+      order: { createdAt: 'DESC' },
     });
   }
 }

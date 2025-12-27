@@ -32,7 +32,11 @@ export class ImMessageEntity {
   @Column({ name: 'create_time', type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
   createTime!: Date;
 
-  @Column({ name: 'update_time', type: 'datetime', default: () => 'CURRENT_TIMESTAMP', onUpdate: 'CURRENT_TIMESTAMP' })
+  @Column({
+    name: 'update_time',
+    type: 'datetime',
+    default: () => 'CURRENT_TIMESTAMP',
+    onUpdate: 'CURRENT_TIMESTAMP',
+  })
   updateTime!: Date;
 }
-

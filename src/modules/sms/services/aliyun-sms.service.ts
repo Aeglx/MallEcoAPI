@@ -29,11 +29,15 @@ export class AliyunSmsService {
    * @param templateParam 短信模板参数
    * @returns 发送结果
    */
-  async sendSms(phoneNumbers: string, templateCode: string, templateParam: Record<string, any>): Promise<any> {
+  async sendSms(
+    phoneNumbers: string,
+    templateCode: string,
+    templateParam: Record<string, any>,
+  ): Promise<any> {
     if (!this.smsClient) {
       throw new Error('阿里云短信服务未初始化，请检查配置');
     }
-    
+
     const config = this.configService.get('config');
     const params = {
       RegionId: 'cn-hangzhou',
@@ -61,11 +65,16 @@ export class AliyunSmsService {
    * @param currentPage 当前页码
    * @returns 查询结果
    */
-  async querySendDetails(phoneNumber: string, sendDate: string, pageSize: number = 10, currentPage: number = 1): Promise<any> {
+  async querySendDetails(
+    phoneNumber: string,
+    sendDate: string,
+    pageSize: number = 10,
+    currentPage: number = 1,
+  ): Promise<any> {
     if (!this.smsClient) {
       throw new Error('阿里云短信服务未初始化，请检查配置');
     }
-    
+
     const params = {
       RegionId: 'cn-hangzhou',
       PhoneNumber: phoneNumber,

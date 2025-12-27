@@ -1,4 +1,11 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, Index } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+  Index,
+} from 'typeorm';
 
 @Entity('order_statistics')
 @Index(['statDate', 'orderStatus'])
@@ -43,7 +50,12 @@ export class OrderStatistics {
   @Column({ type: 'int', default: 0, comment: '取消订单数' })
   canceledOrders: number;
 
-  @Column({ type: 'varchar', length: 50, default: 'daily', comment: '统计粒度: daily, weekly, monthly' })
+  @Column({
+    type: 'varchar',
+    length: 50,
+    default: 'daily',
+    comment: '统计粒度: daily, weekly, monthly',
+  })
   granularity: string;
 
   @CreateDateColumn({ type: 'timestamp', comment: '创建时间' })

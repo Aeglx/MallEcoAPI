@@ -41,16 +41,22 @@ export class ContentService {
 
   async getArticles(paginationDto: PaginationDto): Promise<{ articles: Article[]; total: number }> {
     const { page, pageSize, keyword } = paginationDto;
-    const query = this.articleRepository.createQueryBuilder('article')
+    const query = this.articleRepository
+      .createQueryBuilder('article')
       .leftJoinAndSelect('article.category', 'category')
       .leftJoinAndSelect('article.tags', 'tags')
       .orderBy('article.createdAt', 'DESC');
 
     if (keyword) {
-      query.where('article.title LIKE :keyword OR article.content LIKE :keyword', { keyword: `%${keyword}%` });
+      query.where('article.title LIKE :keyword OR article.content LIKE :keyword', {
+        keyword: `%${keyword}%`,
+      });
     }
 
-    const [articles, total] = await query.skip((page - 1) * pageSize).take(pageSize).getManyAndCount();
+    const [articles, total] = await query
+      .skip((page - 1) * pageSize)
+      .take(pageSize)
+      .getManyAndCount();
     return { articles, total };
   }
 
@@ -108,9 +114,12 @@ export class ContentService {
     return await this.categoryRepository.save(category);
   }
 
-  async getCategories(paginationDto: PaginationDto): Promise<{ categories: Category[]; total: number }> {
+  async getCategories(
+    paginationDto: PaginationDto,
+  ): Promise<{ categories: Category[]; total: number }> {
     const { page, pageSize, keyword } = paginationDto;
-    const query = this.categoryRepository.createQueryBuilder('category')
+    const query = this.categoryRepository
+      .createQueryBuilder('category')
       .orderBy('category.sortOrder', 'ASC')
       .addOrderBy('category.createdAt', 'DESC');
 
@@ -118,7 +127,10 @@ export class ContentService {
       query.where('category.categoryName LIKE :keyword', { keyword: `%${keyword}%` });
     }
 
-    const [categories, total] = await query.skip((page - 1) * pageSize).take(pageSize).getManyAndCount();
+    const [categories, total] = await query
+      .skip((page - 1) * pageSize)
+      .take(pageSize)
+      .getManyAndCount();
     return { categories, total };
   }
 
@@ -150,7 +162,9 @@ export class ContentService {
 
   // 标签相关方法
   async createTag(createTagDto: CreateTagDto): Promise<Tag> {
-    const existingTag = await this.tagRepository.findOne({ where: { tagName: createTagDto.tagName } });
+    const existingTag = await this.tagRepository.findOne({
+      where: { tagName: createTagDto.tagName },
+    });
     if (existingTag) {
       throw new ConflictException('标签名称已存在');
     }
@@ -161,14 +175,18 @@ export class ContentService {
 
   async getTags(paginationDto: PaginationDto): Promise<{ tags: Tag[]; total: number }> {
     const { page, pageSize, keyword } = paginationDto;
-    const query = this.tagRepository.createQueryBuilder('tag')
-      .orderBy('tag.createdAt', 'DESC');
+    const query = this.tagRepository.createQueryBuilder('tag').orderBy('tag.createdAt', 'DESC');
 
     if (keyword) {
-      query.where('tag.tagName LIKE :keyword OR tag.description LIKE :keyword', { keyword: `%${keyword}%` });
+      query.where('tag.tagName LIKE :keyword OR tag.description LIKE :keyword', {
+        keyword: `%${keyword}%`,
+      });
     }
 
-    const [tags, total] = await query.skip((page - 1) * pageSize).take(pageSize).getManyAndCount();
+    const [tags, total] = await query
+      .skip((page - 1) * pageSize)
+      .take(pageSize)
+      .getManyAndCount();
     return { tags, total };
   }
 
@@ -182,9 +200,11 @@ export class ContentService {
 
   async updateTag(id: string, updateTagDto: UpdateTagDto): Promise<Tag> {
     const tag = await this.getTagById(id);
-    
+
     if (updateTagDto.tagName && updateTagDto.tagName !== tag.tagName) {
-      const existingTag = await this.tagRepository.findOne({ where: { tagName: updateTagDto.tagName } });
+      const existingTag = await this.tagRepository.findOne({
+        where: { tagName: updateTagDto.tagName },
+      });
       if (existingTag) {
         throw new ConflictException('标签名称已存在');
       }

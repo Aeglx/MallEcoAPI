@@ -11,7 +11,13 @@ export class SmsVerification {
   @Column({ name: 'code', type: 'varchar', length: 10, nullable: false, comment: '验证码' })
   code: string;
 
-  @Column({ name: 'business_type', type: 'varchar', length: 50, nullable: false, comment: '业务类型' })
+  @Column({
+    name: 'business_type',
+    type: 'varchar',
+    length: 50,
+    nullable: false,
+    comment: '业务类型',
+  })
   businessType: string;
 
   @Column({ name: 'ip', type: 'varchar', length: 50, nullable: true, comment: '请求IP' })
@@ -20,9 +26,21 @@ export class SmsVerification {
   @Column({ name: 'expire_time', type: 'datetime', nullable: false, comment: '过期时间' })
   expireTime: Date;
 
-  @Column({ name: 'used', type: 'tinyint', nullable: false, default: 0, comment: '是否使用: 0-未使用 1-已使用' })
+  @Column({
+    name: 'used',
+    type: 'tinyint',
+    nullable: false,
+    default: 0,
+    comment: '是否使用: 0-未使用 1-已使用',
+  })
   used: number;
 
-  @Column({ name: 'create_time', type: 'datetime', nullable: false, default: () => 'CURRENT_TIMESTAMP', comment: '创建时间' })
+  @Column({
+    name: 'create_time',
+    type: 'datetime',
+    nullable: false,
+    default: () => 'CURRENT_TIMESTAMP',
+    comment: '创建时间',
+  })
   createTime: Date;
 }

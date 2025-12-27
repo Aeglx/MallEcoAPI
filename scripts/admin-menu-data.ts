@@ -17,7 +17,7 @@ export const adminMenus = [
     icon: 'user',
     description: '会员管理',
     type: 0,
-    appType: 1
+    appType: 1,
   },
   // 会员管理
   {
@@ -33,7 +33,7 @@ export const adminMenus = [
     icon: 'team',
     description: '会员管理',
     type: 0,
-    appType: 1
+    appType: 1,
   },
   {
     id: 'admin-member-list',
@@ -48,7 +48,7 @@ export const adminMenus = [
     icon: 'unordered-list',
     description: '会员列表',
     type: 1,
-    appType: 1
+    appType: 1,
   },
   {
     id: 'admin-member-recycle',
@@ -63,7 +63,7 @@ export const adminMenus = [
     icon: 'delete',
     description: '会员回收站',
     type: 1,
-    appType: 1
+    appType: 1,
   },
   // 预存款
   {
@@ -79,7 +79,7 @@ export const adminMenus = [
     icon: 'wallet',
     description: '预存款管理',
     type: 0,
-    appType: 1
+    appType: 1,
   },
   {
     id: 'admin-member-funds',
@@ -94,7 +94,7 @@ export const adminMenus = [
     icon: 'money-collect',
     description: '会员资金管理',
     type: 1,
-    appType: 1
+    appType: 1,
   },
   {
     id: 'admin-member-recharge',
@@ -109,7 +109,7 @@ export const adminMenus = [
     icon: 'plus-circle',
     description: '充值记录管理',
     type: 1,
-    appType: 1
+    appType: 1,
   },
   {
     id: 'admin-member-withdraw',
@@ -124,7 +124,7 @@ export const adminMenus = [
     icon: 'bank',
     description: '提现申请管理',
     type: 1,
-    appType: 1
+    appType: 1,
   },
   // 评价
   {
@@ -140,7 +140,7 @@ export const adminMenus = [
     icon: 'star',
     description: '评价管理',
     type: 0,
-    appType: 1
+    appType: 1,
   },
   {
     id: 'admin-member-reviews',
@@ -155,7 +155,7 @@ export const adminMenus = [
     icon: 'message',
     description: '会员评价管理',
     type: 1,
-    appType: 1
+    appType: 1,
   },
   // 积分
   {
@@ -171,7 +171,7 @@ export const adminMenus = [
     icon: 'gift',
     description: '积分管理',
     type: 0,
-    appType: 1
+    appType: 1,
   },
   {
     id: 'admin-member-points-history',
@@ -186,7 +186,7 @@ export const adminMenus = [
     icon: 'history',
     description: '积分历史记录',
     type: 1,
-    appType: 1
+    appType: 1,
   },
 
   // ========== 2. 订单 (order) ==========
@@ -203,7 +203,7 @@ export const adminMenus = [
     icon: 'shopping-cart',
     description: '订单管理',
     type: 0,
-    appType: 1
+    appType: 1,
   },
   // 订单
   {
@@ -219,7 +219,7 @@ export const adminMenus = [
     icon: 'ordered-list',
     description: '订单管理',
     type: 0,
-    appType: 1
+    appType: 1,
   },
   {
     id: 'admin-order-goods',
@@ -234,7 +234,7 @@ export const adminMenus = [
     icon: 'shopping',
     description: '商品订单管理',
     type: 1,
-    appType: 1
+    appType: 1,
   },
   {
     id: 'admin-order-virtual',
@@ -249,7 +249,7 @@ export const adminMenus = [
     icon: 'cloud',
     description: '虚拟订单管理',
     type: 1,
-    appType: 1
+    appType: 1,
   },
   // 售后
   {
@@ -265,7 +265,7 @@ export const adminMenus = [
     icon: 'customer-service',
     description: '售后管理',
     type: 0,
-    appType: 1
+    appType: 1,
   },
   {
     id: 'admin-order-after-sale-manage',
@@ -280,7 +280,7 @@ export const adminMenus = [
     icon: 'tool',
     description: '售后管理',
     type: 1,
-    appType: 1
+    appType: 1,
   },
   {
     id: 'admin-order-complaint',
@@ -295,7 +295,7 @@ export const adminMenus = [
     icon: 'exclamation-circle',
     description: '交易投诉管理',
     type: 1,
-    appType: 1
+    appType: 1,
   },
   {
     id: 'admin-order-reason',
@@ -310,7 +310,7 @@ export const adminMenus = [
     icon: 'question-circle',
     description: '售后原因管理',
     type: 1,
-    appType: 1
+    appType: 1,
   },
   // 流水
   {
@@ -326,7 +326,7 @@ export const adminMenus = [
     icon: 'transaction',
     description: '流水管理',
     type: 0,
-    appType: 1
+    appType: 1,
   },
   {
     id: 'admin-order-payment-record',
@@ -341,7 +341,7 @@ export const adminMenus = [
     icon: 'dollar',
     description: '收款记录管理',
     type: 1,
-    appType: 1
+    appType: 1,
   },
   {
     id: 'admin-order-refund-flow',
@@ -356,7 +356,7 @@ export const adminMenus = [
     icon: 'rollback',
     description: '退款流水管理',
     type: 1,
-    appType: 1
+    appType: 1,
   },
 
   // ========== 3. 商品 (goods) ==========
@@ -373,7 +373,7 @@ export const adminMenus = [
     icon: 'shopping',
     description: '商品管理',
     type: 0,
-    appType: 1
+    appType: 1,
   },
   // 商品管理
   {
@@ -389,7 +389,7 @@ export const adminMenus = [
     icon: 'tool',
     description: '商品管理',
     type: 0,
-    appType: 1
+    appType: 1,
   },
   {
     id: 'admin-goods-platform',
@@ -404,7 +404,7 @@ export const adminMenus = [
     icon: 'appstore',
     description: '平台商品管理',
     type: 1,
-    appType: 1
+    appType: 1,
   },
   {
     id: 'admin-goods-audit',
@@ -419,7 +419,7 @@ export const adminMenus = [
     icon: 'audit',
     description: '商品审核管理',
     type: 1,
-    appType: 1
+    appType: 1,
   },
   // 关联管理
   {
@@ -435,7 +435,7 @@ export const adminMenus = [
     icon: 'link',
     description: '关联管理',
     type: 0,
-    appType: 1
+    appType: 1,
   },
   {
     id: 'admin-goods-category',
@@ -450,7 +450,7 @@ export const adminMenus = [
     icon: 'folder-open',
     description: '商品分类管理',
     type: 1,
-    appType: 1
+    appType: 1,
   },
   {
     id: 'admin-goods-brand',
@@ -465,7 +465,7 @@ export const adminMenus = [
     icon: 'trademark',
     description: '品牌列表管理',
     type: 1,
-    appType: 1
+    appType: 1,
   },
   {
     id: 'admin-goods-spec',
@@ -480,7 +480,7 @@ export const adminMenus = [
     icon: 'tool',
     description: '规格列表管理',
     type: 1,
-    appType: 1
+    appType: 1,
   },
   {
     id: 'admin-goods-unit',
@@ -495,7 +495,7 @@ export const adminMenus = [
     icon: 'calculator',
     description: '计量单位管理',
     type: 1,
-    appType: 1
+    appType: 1,
   },
 
   // ========== 4. 促销 (promotion) ==========
@@ -512,7 +512,7 @@ export const adminMenus = [
     icon: 'rocket',
     description: '促销管理',
     type: 0,
-    appType: 1
+    appType: 1,
   },
   // 促销管理
   {
@@ -528,7 +528,7 @@ export const adminMenus = [
     icon: 'fire',
     description: '促销管理',
     type: 0,
-    appType: 1
+    appType: 1,
   },
   {
     id: 'admin-promotion-coupon',
@@ -543,7 +543,7 @@ export const adminMenus = [
     icon: 'gift',
     description: '优惠券管理',
     type: 1,
-    appType: 1
+    appType: 1,
   },
   {
     id: 'admin-promotion-full',
@@ -558,7 +558,7 @@ export const adminMenus = [
     icon: 'dollar',
     description: '满额活动管理',
     type: 1,
-    appType: 1
+    appType: 1,
   },
   {
     id: 'admin-promotion-seckill',
@@ -573,7 +573,7 @@ export const adminMenus = [
     icon: 'clock-circle',
     description: '秒杀活动管理',
     type: 1,
-    appType: 1
+    appType: 1,
   },
   {
     id: 'admin-promotion-group',
@@ -588,7 +588,7 @@ export const adminMenus = [
     icon: 'team',
     description: '拼团活动管理',
     type: 1,
-    appType: 1
+    appType: 1,
   },
 
   // ========== 5. 店铺 (shop) ==========
@@ -605,7 +605,7 @@ export const adminMenus = [
     icon: 'shop',
     description: '店铺管理',
     type: 0,
-    appType: 1
+    appType: 1,
   },
   // 店铺管理
   {
@@ -621,7 +621,7 @@ export const adminMenus = [
     icon: 'tool',
     description: '店铺管理',
     type: 0,
-    appType: 1
+    appType: 1,
   },
   {
     id: 'admin-shop-list',
@@ -636,7 +636,7 @@ export const adminMenus = [
     icon: 'unordered-list',
     description: '店铺列表管理',
     type: 1,
-    appType: 1
+    appType: 1,
   },
   {
     id: 'admin-shop-audit',
@@ -651,7 +651,7 @@ export const adminMenus = [
     icon: 'audit',
     description: '店铺审核管理',
     type: 1,
-    appType: 1
+    appType: 1,
   },
   // 店铺结算
   {
@@ -667,7 +667,7 @@ export const adminMenus = [
     icon: 'calculator',
     description: '店铺结算',
     type: 0,
-    appType: 1
+    appType: 1,
   },
   {
     id: 'admin-shop-settlement-manage',
@@ -682,7 +682,7 @@ export const adminMenus = [
     icon: 'transaction',
     description: '店铺结算管理',
     type: 1,
-    appType: 1
+    appType: 1,
   },
   {
     id: 'admin-shop-reconciliation',
@@ -697,7 +697,7 @@ export const adminMenus = [
     icon: 'file-excel',
     description: '商家对账管理',
     type: 1,
-    appType: 1
+    appType: 1,
   },
 
   // ========== 6. 运营 (operate) ==========
@@ -714,7 +714,7 @@ export const adminMenus = [
     icon: 'tool',
     description: '运营管理',
     type: 0,
-    appType: 1
+    appType: 1,
   },
   // 楼层装修
   {
@@ -730,7 +730,7 @@ export const adminMenus = [
     icon: 'layout',
     description: '楼层装修',
     type: 0,
-    appType: 1
+    appType: 1,
   },
   {
     id: 'admin-operate-pc',
@@ -745,7 +745,7 @@ export const adminMenus = [
     icon: 'desktop',
     description: 'PC端楼层装修',
     type: 1,
-    appType: 1
+    appType: 1,
   },
   {
     id: 'admin-operate-mobile',
@@ -760,7 +760,7 @@ export const adminMenus = [
     icon: 'mobile',
     description: '移动端楼层装修',
     type: 1,
-    appType: 1
+    appType: 1,
   },
   // 文章管理
   {
@@ -776,7 +776,7 @@ export const adminMenus = [
     icon: 'file-text',
     description: '文章管理',
     type: 0,
-    appType: 1
+    appType: 1,
   },
   {
     id: 'admin-operate-hotwords',
@@ -791,7 +791,7 @@ export const adminMenus = [
     icon: 'fire',
     description: '搜索热词管理',
     type: 1,
-    appType: 1
+    appType: 1,
   },
   {
     id: 'admin-operate-article-category',
@@ -806,7 +806,7 @@ export const adminMenus = [
     icon: 'folder',
     description: '文章分类管理',
     type: 1,
-    appType: 1
+    appType: 1,
   },
   {
     id: 'admin-operate-article-manage',
@@ -821,7 +821,7 @@ export const adminMenus = [
     icon: 'read',
     description: '文章管理',
     type: 1,
-    appType: 1
+    appType: 1,
   },
   // 意见反馈
   {
@@ -837,7 +837,7 @@ export const adminMenus = [
     icon: 'message',
     description: '意见反馈管理',
     type: 1,
-    appType: 1
+    appType: 1,
   },
 
   // ========== 7. 公众号 (wechat) ==========
@@ -854,7 +854,7 @@ export const adminMenus = [
     icon: 'wechat',
     description: '公众号管理',
     type: 0,
-    appType: 1
+    appType: 1,
   },
   // 消息管理
   {
@@ -870,7 +870,7 @@ export const adminMenus = [
     icon: 'message',
     description: '消息管理',
     type: 0,
-    appType: 1
+    appType: 1,
   },
   {
     id: 'admin-wechat-fans',
@@ -885,7 +885,7 @@ export const adminMenus = [
     icon: 'team',
     description: '粉丝管理',
     type: 1,
-    appType: 1
+    appType: 1,
   },
   {
     id: 'admin-wechat-subscribe',
@@ -900,7 +900,7 @@ export const adminMenus = [
     icon: 'notification',
     description: '订阅通知管理',
     type: 1,
-    appType: 1
+    appType: 1,
   },
   {
     id: 'admin-wechat-template',
@@ -915,7 +915,7 @@ export const adminMenus = [
     icon: 'file-text',
     description: '模板消息管理',
     type: 1,
-    appType: 1
+    appType: 1,
   },
   // H5网页
   {
@@ -931,7 +931,7 @@ export const adminMenus = [
     icon: 'mobile',
     description: 'H5网页管理',
     type: 0,
-    appType: 1
+    appType: 1,
   },
   {
     id: 'admin-wechat-h5-pages',
@@ -946,7 +946,7 @@ export const adminMenus = [
     icon: 'file',
     description: 'H5页面管理',
     type: 1,
-    appType: 1
+    appType: 1,
   },
   {
     id: 'admin-wechat-h5-template',
@@ -961,7 +961,7 @@ export const adminMenus = [
     icon: 'layout',
     description: 'H5模板管理',
     type: 1,
-    appType: 1
+    appType: 1,
   },
   // 微信卡券
   {
@@ -977,7 +977,7 @@ export const adminMenus = [
     icon: 'gift',
     description: '微信卡券管理',
     type: 0,
-    appType: 1
+    appType: 1,
   },
   {
     id: 'admin-wechat-coupon-list',
@@ -992,7 +992,7 @@ export const adminMenus = [
     icon: 'unordered-list',
     description: '卡券列表管理',
     type: 1,
-    appType: 1
+    appType: 1,
   },
   {
     id: 'admin-wechat-coupon-template',
@@ -1007,7 +1007,7 @@ export const adminMenus = [
     icon: 'file-add',
     description: '卡券模板管理',
     type: 1,
-    appType: 1
+    appType: 1,
   },
   {
     id: 'admin-wechat-coupon-record',
@@ -1022,7 +1022,7 @@ export const adminMenus = [
     icon: 'check-circle',
     description: '卡券核销记录',
     type: 1,
-    appType: 1
+    appType: 1,
   },
   // 素材管理
   {
@@ -1038,7 +1038,7 @@ export const adminMenus = [
     icon: 'folder',
     description: '素材管理',
     type: 0,
-    appType: 1
+    appType: 1,
   },
   {
     id: 'admin-wechat-material-image',
@@ -1053,7 +1053,7 @@ export const adminMenus = [
     icon: 'picture',
     description: '图片素材管理',
     type: 1,
-    appType: 1
+    appType: 1,
   },
   {
     id: 'admin-wechat-material-video',
@@ -1068,7 +1068,7 @@ export const adminMenus = [
     icon: 'video-camera',
     description: '视频素材管理',
     type: 1,
-    appType: 1
+    appType: 1,
   },
   {
     id: 'admin-wechat-material-voice',
@@ -1083,7 +1083,7 @@ export const adminMenus = [
     icon: 'audio',
     description: '语音素材管理',
     type: 1,
-    appType: 1
+    appType: 1,
   },
   {
     id: 'admin-wechat-material-article',
@@ -1098,7 +1098,7 @@ export const adminMenus = [
     icon: 'file-text',
     description: '图文素材管理',
     type: 1,
-    appType: 1
+    appType: 1,
   },
   // 自定义菜单
   {
@@ -1114,7 +1114,7 @@ export const adminMenus = [
     icon: 'menu',
     description: '自定义菜单管理',
     type: 0,
-    appType: 1
+    appType: 1,
   },
   {
     id: 'admin-wechat-menu-config',
@@ -1129,7 +1129,7 @@ export const adminMenus = [
     icon: 'setting',
     description: '自定义菜单配置',
     type: 1,
-    appType: 1
+    appType: 1,
   },
   {
     id: 'admin-wechat-menu-keywords',
@@ -1144,7 +1144,7 @@ export const adminMenus = [
     icon: 'message',
     description: '菜单点击关键词回复',
     type: 1,
-    appType: 1
+    appType: 1,
   },
   // 授权管理
   {
@@ -1160,7 +1160,7 @@ export const adminMenus = [
     icon: 'safety',
     description: '授权管理',
     type: 0,
-    appType: 1
+    appType: 1,
   },
   {
     id: 'admin-wechat-oauth-user',
@@ -1175,7 +1175,7 @@ export const adminMenus = [
     icon: 'user',
     description: '用户授权管理',
     type: 1,
-    appType: 1
+    appType: 1,
   },
   {
     id: 'admin-wechat-oauth-app',
@@ -1190,7 +1190,7 @@ export const adminMenus = [
     icon: 'appstore',
     description: '应用授权管理',
     type: 1,
-    appType: 1
+    appType: 1,
   },
   {
     id: 'admin-wechat-oauth-token',
@@ -1205,7 +1205,7 @@ export const adminMenus = [
     icon: 'key',
     description: 'OAuth令牌管理',
     type: 1,
-    appType: 1
+    appType: 1,
   },
 
   // ========== 8. 直播 (live) ==========
@@ -1222,7 +1222,7 @@ export const adminMenus = [
     icon: 'video-camera',
     description: '直播管理',
     type: 0,
-    appType: 1
+    appType: 1,
   },
   // 直播管理
   {
@@ -1238,7 +1238,7 @@ export const adminMenus = [
     icon: 'play-circle',
     description: '直播管理',
     type: 0,
-    appType: 1
+    appType: 1,
   },
   {
     id: 'admin-live-room',
@@ -1253,7 +1253,7 @@ export const adminMenus = [
     icon: 'home',
     description: '直播间管理',
     type: 1,
-    appType: 1
+    appType: 1,
   },
   {
     id: 'admin-live-goods',
@@ -1268,7 +1268,7 @@ export const adminMenus = [
     icon: 'shopping',
     description: '直播商品管理',
     type: 1,
-    appType: 1
+    appType: 1,
   },
   {
     id: 'admin-live-statistics',
@@ -1283,7 +1283,7 @@ export const adminMenus = [
     icon: 'bar-chart',
     description: '直播数据统计',
     type: 1,
-    appType: 1
+    appType: 1,
   },
 
   // ========== 9. 统计 (statistics) ==========
@@ -1300,7 +1300,7 @@ export const adminMenus = [
     icon: 'bar-chart',
     description: '统计管理',
     type: 0,
-    appType: 1
+    appType: 1,
   },
   // 统计
   {
@@ -1316,7 +1316,7 @@ export const adminMenus = [
     icon: 'pie-chart',
     description: '统计管理',
     type: 0,
-    appType: 1
+    appType: 1,
   },
   {
     id: 'admin-statistics-member',
@@ -1331,7 +1331,7 @@ export const adminMenus = [
     icon: 'user',
     description: '会员统计',
     type: 1,
-    appType: 1
+    appType: 1,
   },
   {
     id: 'admin-statistics-order',
@@ -1346,7 +1346,7 @@ export const adminMenus = [
     icon: 'shopping-cart',
     description: '订单统计',
     type: 1,
-    appType: 1
+    appType: 1,
   },
   {
     id: 'admin-statistics-goods',
@@ -1361,7 +1361,7 @@ export const adminMenus = [
     icon: 'shopping',
     description: '商品统计',
     type: 1,
-    appType: 1
+    appType: 1,
   },
   {
     id: 'admin-statistics-traffic',
@@ -1376,7 +1376,7 @@ export const adminMenus = [
     icon: 'line-chart',
     description: '流量统计',
     type: 1,
-    appType: 1
+    appType: 1,
   },
 
   // ========== 10. 设置 (settings) ==========
@@ -1393,7 +1393,7 @@ export const adminMenus = [
     icon: 'setting',
     description: '系统设置',
     type: 0,
-    appType: 1
+    appType: 1,
   },
   // 系统设置
   {
@@ -1409,7 +1409,7 @@ export const adminMenus = [
     icon: 'tool',
     description: '系统设置',
     type: 0,
-    appType: 1
+    appType: 1,
   },
   {
     id: 'admin-settings-basic',
@@ -1424,7 +1424,7 @@ export const adminMenus = [
     icon: 'setting',
     description: '系统设置',
     type: 1,
-    appType: 1
+    appType: 1,
   },
   {
     id: 'admin-settings-oss',
@@ -1439,7 +1439,7 @@ export const adminMenus = [
     icon: 'cloud',
     description: 'OSS资源管理',
     type: 1,
-    appType: 1
+    appType: 1,
   },
   {
     id: 'admin-settings-region',
@@ -1454,7 +1454,7 @@ export const adminMenus = [
     icon: 'environment',
     description: '行政地区管理',
     type: 1,
-    appType: 1
+    appType: 1,
   },
   {
     id: 'admin-settings-logistics',
@@ -1469,7 +1469,7 @@ export const adminMenus = [
     icon: 'car',
     description: '物流公司管理',
     type: 1,
-    appType: 1
+    appType: 1,
   },
   {
     id: 'admin-settings-trust-login',
@@ -1484,7 +1484,7 @@ export const adminMenus = [
     icon: 'safety',
     description: '信任登录设置',
     type: 1,
-    appType: 1
+    appType: 1,
   },
   {
     id: 'admin-settings-payment',
@@ -1499,7 +1499,7 @@ export const adminMenus = [
     icon: 'credit-card',
     description: '支付设置',
     type: 1,
-    appType: 1
+    appType: 1,
   },
   {
     id: 'admin-settings-sensitive',
@@ -1514,7 +1514,7 @@ export const adminMenus = [
     icon: 'exclamation-circle',
     description: '敏感词管理',
     type: 1,
-    appType: 1
+    appType: 1,
   },
   {
     id: 'admin-settings-app',
@@ -1529,7 +1529,7 @@ export const adminMenus = [
     icon: 'mobile',
     description: 'APP版本管理',
     type: 1,
-    appType: 1
+    appType: 1,
   },
   // 用户管理
   {
@@ -1545,7 +1545,7 @@ export const adminMenus = [
     icon: 'team',
     description: '用户管理',
     type: 0,
-    appType: 1
+    appType: 1,
   },
   {
     id: 'admin-settings-user-manage',
@@ -1560,7 +1560,7 @@ export const adminMenus = [
     icon: 'user',
     description: '用户管理',
     type: 1,
-    appType: 1
+    appType: 1,
   },
   {
     id: 'admin-settings-menu',
@@ -1575,7 +1575,7 @@ export const adminMenus = [
     icon: 'menu',
     description: '菜单管理',
     type: 1,
-    appType: 1
+    appType: 1,
   },
   {
     id: 'admin-settings-department',
@@ -1590,7 +1590,7 @@ export const adminMenus = [
     icon: 'apartment',
     description: '部门管理',
     type: 1,
-    appType: 1
+    appType: 1,
   },
   {
     id: 'admin-settings-role',
@@ -1605,7 +1605,7 @@ export const adminMenus = [
     icon: 'safety',
     description: '角色权限管理',
     type: 1,
-    appType: 1
+    appType: 1,
   },
 
   // ========== 11. 日志 (log) ==========
@@ -1622,7 +1622,7 @@ export const adminMenus = [
     icon: 'file-text',
     description: '日志管理',
     type: 0,
-    appType: 1
+    appType: 1,
   },
   // 系统监控
   {
@@ -1638,7 +1638,7 @@ export const adminMenus = [
     icon: 'monitor',
     description: '系统监控',
     type: 0,
-    appType: 1
+    appType: 1,
   },
   {
     id: 'admin-log-management',
@@ -1653,6 +1653,6 @@ export const adminMenus = [
     icon: 'file-text',
     description: '日志管理',
     type: 1,
-    appType: 1
-  }
+    appType: 1,
+  },
 ];

@@ -1,14 +1,14 @@
-import { 
-  Controller, 
-  Get, 
-  Post, 
-  Body, 
-  Patch, 
-  Param, 
-  Delete, 
-  Query, 
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Query,
   UseGuards,
-  BadRequestException
+  BadRequestException,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiParam } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../../../infrastructure/auth/guards/jwt-auth.guard';
@@ -71,17 +71,20 @@ export class WechatSubscribeController {
   @Post('send')
   @ApiOperation({ summary: '发送订阅消息' })
   @ApiResponse({ status: 200, description: '订阅消息发送成功' })
-  sendSubscribeMessage(@Body() messageData: {
-    openid: string;
-    templateId: string;
-    data: any;
-    url?: string;
-    miniprogram?: {
-      appid: string;
-      pagepath: string;
-    };
-    scene?: string;
-  }) {
+  sendSubscribeMessage(
+    @Body()
+    messageData: {
+      openid: string;
+      templateId: string;
+      data: any;
+      url?: string;
+      miniprogram?: {
+        appid: string;
+        pagepath: string;
+      };
+      scene?: string;
+    },
+  ) {
     return this.wechatSubscribeService.sendSubscribeMessage(messageData);
   }
 
@@ -101,7 +104,7 @@ export class WechatSubscribeController {
   @ApiParam({ name: 'id', description: '订阅ID' })
   updateSendStatus(
     @Param('id') id: string,
-    @Body() body: { status: number; errorMessage?: string }
+    @Body() body: { status: number; errorMessage?: string },
   ) {
     return this.wechatSubscribeService.updateSendStatus(id, body.status, body.errorMessage);
   }
@@ -110,10 +113,7 @@ export class WechatSubscribeController {
   @ApiOperation({ summary: '记录点击事件' })
   @ApiResponse({ status: 200, description: '点击事件记录成功' })
   @ApiParam({ name: 'id', description: '订阅ID' })
-  recordClick(
-    @Param('id') id: string,
-    @Body() body: { clickUrl: string }
-  ) {
+  recordClick(@Param('id') id: string, @Body() body: { clickUrl: string }) {
     return this.wechatSubscribeService.recordClick(id, body.clickUrl);
   }
 

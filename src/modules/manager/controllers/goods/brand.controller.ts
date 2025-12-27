@@ -6,7 +6,7 @@ import { BrandService } from '../../services/goods/brand.service';
 @Controller('manager/goods/brand')
 export class BrandController {
   constructor(private readonly brandService: BrandService) {}
-  
+
   @Get()
   async findAll(@Query() query: any) {
     return await this.brandService.findAll(query);

@@ -15,7 +15,9 @@ export class Traces {
   @ApiProperty({ description: '物流单号' })
   logisticCode: string;
 
-  @ApiProperty({ description: '快递状态：0在途中，1已揽收，2疑难，3已签收，4退签，5同城派送中，6退回' })
+  @ApiProperty({
+    description: '快递状态：0在途中，1已揽收，2疑难，3已签收，4退签，5同城派送中，6退回',
+  })
   state: string;
 
   @ApiProperty({ description: '物流轨迹' })

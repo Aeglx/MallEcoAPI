@@ -10,7 +10,7 @@ export class RecommendationService {
     @InjectRepository(UserPreferenceEntity)
     private readonly userPreferenceRepository: Repository<UserPreferenceEntity>,
     @InjectRepository(RecommendationHistoryEntity)
-    private readonly recommendationHistoryRepository: Repository<RecommendationHistoryEntity>
+    private readonly recommendationHistoryRepository: Repository<RecommendationHistoryEntity>,
   ) {}
 
   async getUserRecommendations(userId: string, limit: number = 10) {
@@ -22,7 +22,7 @@ export class RecommendationService {
   async updateUserPreference(preferenceData: any) {
     const { userId, preferenceType, preferenceData: data } = preferenceData;
     let preference = await this.userPreferenceRepository.findOne({
-      where: { userId, preferenceType }
+      where: { userId, preferenceType },
     });
 
     if (preference) {
@@ -32,7 +32,7 @@ export class RecommendationService {
       preference = this.userPreferenceRepository.create({
         userId,
         preferenceType,
-        preferenceData: data
+        preferenceData: data,
       });
       return await this.userPreferenceRepository.save(preference);
     }

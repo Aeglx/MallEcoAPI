@@ -47,4 +47,3 @@ export class EventPublisherService {
     this.eventEmitter.emit(`goods.${eventType}`, goodsData);
   }
 }
-

@@ -43,4 +43,3 @@ export class MessageResponseDto {
   result?: string;
   error?: string;
 }
-

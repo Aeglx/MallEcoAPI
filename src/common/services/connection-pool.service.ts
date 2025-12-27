@@ -40,10 +40,10 @@ export class ConnectionPoolService implements OnModuleInit, OnModuleDestroy {
         password: this.configService.get('DB_PASSWORD'),
         database: this.configService.get('DB_NAME'),
         charset: this.configService.get('DB_CHARSET'),
-        
+
         // 连接池配置
         connectionLimit: this.configService.get('database.connectionLimit') || 20,
-        
+
         // 性能优化配置
         enableKeepAlive: true,
         keepAliveInitialDelay: 0,
@@ -56,11 +56,11 @@ export class ConnectionPoolService implements OnModuleInit, OnModuleDestroy {
         port: this.configService.get('REDIS_PORT'),
         password: this.configService.get('REDIS_PASSWORD'),
         db: this.configService.get('REDIS_DB'),
-        
+
         // 连接池配置
         maxRetriesPerRequest: this.configService.get('redis.maxRetriesPerRequest') || 3,
         enableReadyCheck: true,
-        
+
         // 性能优化配置
         lazyConnect: true,
         enableOfflineQueue: true,
@@ -81,9 +81,9 @@ export class ConnectionPoolService implements OnModuleInit, OnModuleDestroy {
   async getMysqlConnection() {
     try {
       const connection = await this.mysqlPool.getConnection();
-      
+
       // 设置连接超时
-      connection.on('error', (err) => {
+      connection.on('error', err => {
         this.logger.error('MySQL connection error:', err);
       });
 
@@ -128,10 +128,10 @@ export class ConnectionPoolService implements OnModuleInit, OnModuleDestroy {
     try {
       // MySQL连接池统计
       const mysqlStats = await this.getMysqlPoolStats();
-      
+
       // Redis连接统计
       const redisStats = await this.getRedisStats();
-      
+
       return {
         mysql: mysqlStats,
         redis: redisStats,
@@ -149,7 +149,7 @@ export class ConnectionPoolService implements OnModuleInit, OnModuleDestroy {
     try {
       // 获取连接池状态
       const pool = this.mysqlPool as any;
-      
+
       return {
         activeConnections: pool._allConnections.length - pool._freeConnections.length,
         idleConnections: pool._freeConnections.length,
@@ -179,11 +179,11 @@ export class ConnectionPoolService implements OnModuleInit, OnModuleDestroy {
       const info = await this.redisClient.info('memory');
       const status = await this.redisClient.status;
       const connected = this.redisClient.status === 'ready';
-      
+
       // 解析内存使用情况
       const memoryMatch = info.match(/used_memory_human:(\S+)/);
       const memory = memoryMatch ? memoryMatch[1] : 'unknown';
-      
+
       return {
         status,
         connected,
@@ -210,10 +210,10 @@ export class ConnectionPoolService implements OnModuleInit, OnModuleDestroy {
     try {
       // 检查MySQL连接
       const mysqlHealthy = await this.checkMysqlHealth();
-      
+
       // 检查Redis连接
       const redisHealthy = await this.checkRedisHealth();
-      
+
       return {
         mysql: mysqlHealthy,
         redis: redisHealthy,
@@ -258,16 +258,20 @@ export class ConnectionPoolService implements OnModuleInit, OnModuleDestroy {
     try {
       // 获取当前负载情况
       const stats = await this.getPoolStats();
-      
+
       // 根据负载情况动态调整连接池配置
       if (stats.mysql.waitingClients > 10) {
-        this.logger.warn('MySQL connection pool under high load, consider increasing connection limit');
+        this.logger.warn(
+          'MySQL connection pool under high load, consider increasing connection limit',
+        );
       }
-      
+
       if (stats.mysql.idleConnections > stats.mysql.activeConnections * 2) {
-        this.logger.warn('MySQL connection pool has too many idle connections, consider reducing connection limit');
+        this.logger.warn(
+          'MySQL connection pool has too many idle connections, consider reducing connection limit',
+        );
       }
-      
+
       this.logger.log('Connection pool optimization completed');
     } catch (error) {
       this.logger.error('Failed to optimize pools:', error);
@@ -283,7 +287,7 @@ export class ConnectionPoolService implements OnModuleInit, OnModuleDestroy {
         await this.mysqlPool.end();
         this.logger.log('MySQL connection pool closed');
       }
-      
+
       if (this.redisClient) {
         await this.redisClient.quit();
         this.logger.log('Redis connection closed');

@@ -30,7 +30,7 @@ export class JwtConfigValidation {
  */
 export default registerAs<JwtConfig>('jwt', () => {
   const secret = process.env.JWT_SECRET || 'your-secret-key-change-this-in-production';
-  
+
   if (secret === 'your-secret-key-change-this-in-production') {
     console.warn('⚠️  警告: 使用默认JWT密钥，生产环境请修改JWT_SECRET');
   }
@@ -42,4 +42,3 @@ export default registerAs<JwtConfig>('jwt', () => {
     refreshExpiresIn: process.env.JWT_REFRESH_EXPIRES_IN || '30d',
   };
 });
-

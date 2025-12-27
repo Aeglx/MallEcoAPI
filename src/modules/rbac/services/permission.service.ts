@@ -25,8 +25,17 @@ export class PermissionService {
   }
 
   async findAll(searchDto: PermissionSearchDto): Promise<Permission[]> {
-    const { name, code, type, module, page = 1, limit = 10, sortBy = 'id', sortOrder = 'DESC' } = searchDto;
-    
+    const {
+      name,
+      code,
+      type,
+      module,
+      page = 1,
+      limit = 10,
+      sortBy = 'id',
+      sortOrder = 'DESC',
+    } = searchDto;
+
     const queryBuilder = this.permissionRepository
       .createQueryBuilder('permission')
       .leftJoinAndSelect('permission.parent', 'parent');
@@ -69,26 +78,26 @@ export class PermissionService {
 
   async update(id: number, updatePermissionDto: UpdatePermissionDto): Promise<Permission> {
     const permission = await this.findOne(id);
-    
+
     Object.assign(permission, updatePermissionDto);
     return await this.permissionRepository.save(permission);
   }
 
   async remove(id: number): Promise<void> {
     const permission = await this.findOne(id);
-    
+
     // 检查是否有子权限
     const childCount = await this.permissionRepository.count({ where: { parentId: id } });
     if (childCount > 0) {
       throw new Error('该权限存在子权限，无法删除');
     }
-    
+
     // 检查是否有角色关联该权限
     const roleCount = await this.rolePermissionRepository.count({ where: { permissionId: id } });
     if (roleCount > 0) {
       throw new Error('该权限已被角色使用，无法删除');
     }
-    
+
     await this.permissionRepository.remove(permission);
   }
 
@@ -146,14 +155,14 @@ export class PermissionService {
 
   async movePermission(permissionId: number, parentId: number | null): Promise<void> {
     const permission = await this.findOne(permissionId);
-    
+
     if (parentId !== null) {
       const parent = await this.findOne(parentId);
       permission.parentId = parent.id;
     } else {
       permission.parentId = null;
     }
-    
+
     await this.permissionRepository.save(permission);
   }
 }

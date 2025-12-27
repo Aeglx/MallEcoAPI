@@ -9,22 +9,60 @@ export class Order extends BaseEntity {
   @Column({ name: 'user_id', nullable: false, comment: '用户ID' })
   userId: string;
 
-  @Column({ name: 'total_amount', type: 'decimal', precision: 10, scale: 2, default: 0, comment: '订单总金额' })
+  @Column({
+    name: 'total_amount',
+    type: 'decimal',
+    precision: 10,
+    scale: 2,
+    default: 0,
+    comment: '订单总金额',
+  })
   totalAmount: number;
 
-  @Column({ name: 'pay_amount', type: 'decimal', precision: 10, scale: 2, default: 0, comment: '实际支付金额' })
+  @Column({
+    name: 'pay_amount',
+    type: 'decimal',
+    precision: 10,
+    scale: 2,
+    default: 0,
+    comment: '实际支付金额',
+  })
   payAmount: number;
 
-  @Column({ name: 'coupon_amount', type: 'decimal', precision: 10, scale: 2, default: 0, comment: '优惠券金额' })
+  @Column({
+    name: 'coupon_amount',
+    type: 'decimal',
+    precision: 10,
+    scale: 2,
+    default: 0,
+    comment: '优惠券金额',
+  })
   couponAmount: number;
 
-  @Column({ name: 'shipping_fee', type: 'decimal', precision: 10, scale: 2, default: 0, comment: '运费' })
+  @Column({
+    name: 'shipping_fee',
+    type: 'decimal',
+    precision: 10,
+    scale: 2,
+    default: 0,
+    comment: '运费',
+  })
   shippingFee: number;
 
-  @Column({ name: 'pay_type', nullable: false, default: 0, comment: '支付方式：0-未选择，1-支付宝，2-微信' })
+  @Column({
+    name: 'pay_type',
+    nullable: false,
+    default: 0,
+    comment: '支付方式：0-未选择，1-支付宝，2-微信',
+  })
   payType: number;
 
-  @Column({ name: 'status', nullable: false, default: 0, comment: '订单状态：0-待付款，1-待发货，2-待收货，3-待评价，4-已完成，5-已取消' })
+  @Column({
+    name: 'status',
+    nullable: false,
+    default: 0,
+    comment: '订单状态：0-待付款，1-待发货，2-待收货，3-待评价，4-已完成，5-已取消',
+  })
   status: number;
 
   @Column({ name: 'shipping_name', nullable: true, comment: '配送方式名称' })
@@ -75,4 +113,3 @@ export class Order extends BaseEntity {
   @Column({ name: 'is_deleted', nullable: false, default: 0, comment: '是否删除：0-否，1-是' })
   isDeleted: number;
 }
-

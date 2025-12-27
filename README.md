@@ -44,36 +44,44 @@ MallEcoAPI是一个基于NestJS框架构建的企业级电商平台后端系统�
 ## 🛠 技术栈
 
 ### 后端框架
+
 - **NestJS 11.x** - Node.js企业级应用框架
 - **TypeScript 5.x** - 类型安全的JavaScript超集
 - **Express.js** - HTTP服务器框架
 
 ### 数据存储
+
 - **MySQL 8.0** - 主数据库，存储核心业务数据
 - **Redis 7.0** - 缓存数据库，提供高速缓存和会话存储
 - **Elasticsearch 8.x** - 搜索引擎，提供全文搜索能力
 
 ### 消息队列
+
 - **RabbitMQ 3.11+** - 异步消息处理
 
 ### 服务发现
+
 - **Consul 1.16+** - 服务注册与发现
 
 ### 认证安全
+
 - **JWT (jsonwebtoken)** - 无状态身份认证
 - **BCrypt** - 密码加密
 - **Helmet** - 安全头部设置
 - **Rate Limiting** - API访问频率限制
 
 ### 支付集成
+
 - **支付宝SDK** - 支付宝支付接口
 - **微信支付** - 微信支付接口
 
 ### 云服务
+
 - **阿里云SMS** - 短信服务
 - **腾讯云服务** - 云服务集成
 
 ### 开发工具
+
 - **Docker & Docker Compose** - 容器化
 - **Jest** - 单元测试
 - **ESLint & Prettier** - 代码规范
@@ -88,30 +96,30 @@ graph TB
         B[移动APP]
         C[小程序]
     end
-    
+
     subgraph "API网关层"
         D[Nginx反向代理]
         E[负载均衡]
     end
-    
+
     subgraph "应用层"
         F[NestJS应用]
         G[认证模块]
         H[业务模块]
     end
-    
+
     subgraph "数据层"
         I[MySQL]
         J[Redis]
         K[Elasticsearch]
     end
-    
+
     subgraph "基础设施"
         L[RabbitMQ]
         M[Consul]
         N[监控系统]
     end
-    
+
     A --> D
     B --> D
     C --> D
@@ -133,6 +141,7 @@ graph TB
 ### 🛍 核心电商功能
 
 #### 商品管理系统
+
 - 商品CRUD操作
 - 商品分类和品牌管理
 - 库存管理和预警
@@ -141,6 +150,7 @@ graph TB
 - 商品评价系统
 
 #### 订单管理系统
+
 - 订单创建和状态管理
 - 订单分表存储（大数据量支持）
 - 订单项处理和计算
@@ -149,6 +159,7 @@ graph TB
 - 退款和售后处理
 
 #### 支付系统
+
 - 多渠道支付集成（支付宝、微信支付）
 - 支付回调处理和验证
 - 交易记录管理
@@ -157,6 +168,7 @@ graph TB
 - 支付统计分析
 
 #### 用户管理系统
+
 - 多角色用户体系（买家、卖家、管理员）
 - 用户注册和认证
 - 权限控制（RBAC）
@@ -167,6 +179,7 @@ graph TB
 ### 📈 营销推广功能
 
 #### 促销系统
+
 - 优惠券管理
 - 满减活动
 - 限时折扣
@@ -174,6 +187,7 @@ graph TB
 - 营销活动管理
 
 #### 分销系统
+
 - 多级分销网络
 - 佣金管理和结算
 - 分销商管理
@@ -181,6 +195,7 @@ graph TB
 - 分销统计和报表
 
 #### 内容系统
+
 - 文章管理
 - 内容分类和标签
 - 内容发布和审核
@@ -190,6 +205,7 @@ graph TB
 ### 🎥 互动服务功能
 
 #### 直播系统
+
 - 直播间管理
 - 直播带货
 - 实时互动功能
@@ -197,6 +213,7 @@ graph TB
 - 礼物和打赏
 
 #### 即时通讯
+
 - 消息推送
 - 客服系统
 - 用户聊天
@@ -204,6 +221,7 @@ graph TB
 - 群组管理
 
 #### 物流系统
+
 - 物流跟踪
 - 发货管理
 - 物流配置
@@ -213,6 +231,7 @@ graph TB
 ### 📊 管理分析功能
 
 #### 统计系统
+
 - 销售统计和分析
 - 用户行为统计
 - 订单统计分析
@@ -220,6 +239,7 @@ graph TB
 - 数据可视化
 
 #### 监控系统
+
 - 性能监控
 - 业务监控
 - 系统健康检查
@@ -241,39 +261,46 @@ graph TB
 ### 本地开发环境
 
 1. **克隆项目**
+
 ```bash
 git clone https://github.com/your-repo/MallEcoAPI.git
 cd MallEcoAPI
 ```
 
 2. **安装依赖**
+
 ```bash
 npm install
 ```
 
 3. **环境配置**
+
 ```bash
 cp config/.env.example config/.env
 # 编辑 config/.env 文件，配置数据库等信息
 ```
 
 4. **启动基础服务**
+
 ```bash
 docker-compose up -d mysql redis elasticsearch rabbitmq consul
 ```
 
 5. **数据库初始化**
+
 ```bash
 npm run db:migrate
 npm run db:seed
 ```
 
 6. **启动开发服务器**
+
 ```bash
 npm run start:dev
 ```
 
 7. **访问服务**
+
 - API服务：http://localhost:9000
 - API文档：http://localhost:9000/api-docs
 - 管理后台：http://localhost:9000/admin
@@ -437,16 +464,16 @@ spec:
         app: mall-eco-api
     spec:
       containers:
-      - name: mall-eco-api
-        image: mall-eco-api:latest
-        ports:
-        - containerPort: 9000
-        env:
-        - name: NODE_ENV
-          value: "production"
-        - name: DB_HOST
-          value: "mysql-service"
-        # ... 其他环境变量
+        - name: mall-eco-api
+          image: mall-eco-api:latest
+          ports:
+            - containerPort: 9000
+          env:
+            - name: NODE_ENV
+              value: 'production'
+            - name: DB_HOST
+              value: 'mysql-service'
+          # ... 其他环境变量
 ---
 apiVersion: v1
 kind: Service
@@ -456,9 +483,9 @@ spec:
   selector:
     app: mall-eco-api
   ports:
-  - protocol: TCP
-    port: 80
-    targetPort: 9000
+    - protocol: TCP
+      port: 80
+      targetPort: 9000
   type: LoadBalancer
 ```
 
@@ -532,6 +559,7 @@ interface OrderResponse {
 ### 核心数据表
 
 #### 用户相关
+
 - `users` - 用户基础信息
 - `members` - 会员信息
 - `buyers` - 买家信息
@@ -539,6 +567,7 @@ interface OrderResponse {
 - `managers` - 管理员信息
 
 #### 商品相关
+
 - `goods` - 商品信息
 - `products` - 商品SKU
 - `categories` - 商品分类
@@ -546,17 +575,20 @@ interface OrderResponse {
 - `goods_attributes` - 商品属性
 
 #### 订单相关
+
 - `orders` - 订单主表
 - `order_items` - 订单明细
 - `shopping_cart` - 购物车
 - `order_logs` - 订单日志
 
 #### 支付相关
+
 - `payment_records` - 支付记录
 - `payment_methods` - 支付方式
 - `refunds` - 退款记录
 
 #### 权限相关
+
 - `roles` - 角色表
 - `permissions` - 权限表
 - `role_permissions` - 角色权限关联
@@ -705,10 +737,7 @@ import { WinstonModule } from 'nest-winston';
 
 export const loggerConfig = WinstonModule.createLogger({
   level: 'info',
-  format: winston.format.combine(
-    winston.format.timestamp(),
-    winston.format.json()
-  ),
+  format: winston.format.combine(winston.format.timestamp(), winston.format.json()),
   transports: [
     new winston.transports.File({ filename: 'logs/error.log', level: 'error' }),
     new winston.transports.File({ filename: 'logs/combined.log' }),
@@ -740,10 +769,9 @@ export class AllExceptionsFilter implements ExceptionFilter {
   catch(exception: unknown, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
-    const status = exception instanceof HttpException 
-      ? exception.getStatus() 
-      : HttpStatus.INTERNAL_SERVER_ERROR;
-    
+    const status =
+      exception instanceof HttpException ? exception.getStatus() : HttpStatus.INTERNAL_SERVER_ERROR;
+
     response.status(status).json({
       statusCode: status,
       timestamp: new Date().toISOString(),
@@ -783,7 +811,7 @@ services:
   app:
     image: mall-eco-api
     deploy:
-      replicas: 3  # 扩展到3个实例
+      replicas: 3 # 扩展到3个实例
 ```
 
 ### Q4: 如何查看服务日志？
@@ -841,6 +869,7 @@ chore: 构建或工具相关
 ### 代码审查
 
 所有PR都需要通过代码审查，确保：
+
 - 代码符合项目规范
 - 包含适当的测试
 - 文档已更新
@@ -849,6 +878,7 @@ chore: 构建或工具相关
 ### 问题报告
 
 如果发现bug或有功能建议，请在GitHub Issues中创建issue，包含：
+
 - 详细的问题描述
 - 复现步骤
 - 期望的行为

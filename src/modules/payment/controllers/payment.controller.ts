@@ -27,11 +27,7 @@ export class PaymentController {
     @Param('paymentClient') paymentClient: string,
     @Query() queryPaymentDto: QueryPaymentDto,
   ): Promise<ApiResponseDto> {
-    const result = await this.paymentService.payment(
-      paymentMethod,
-      paymentClient,
-      queryPaymentDto,
-    );
+    const result = await this.paymentService.payment(paymentMethod, paymentClient, queryPaymentDto);
     return ApiResponseDto.success(result, '支付接口调用成功');
   }
 

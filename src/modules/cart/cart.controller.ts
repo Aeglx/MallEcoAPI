@@ -35,7 +35,10 @@ export class CartController {
   @ApiResponse({ status: 201, description: '添加成功', type: Cart })
   @ApiResponse({ status: 400, description: '参数错误' })
   @Post()
-  async addItem(@Query('userId') userId: string, @Body() addCartItemDto: AddCartItemDto): Promise<Cart> {
+  async addItem(
+    @Query('userId') userId: string,
+    @Body() addCartItemDto: AddCartItemDto,
+  ): Promise<Cart> {
     return this.cartService.addItem(userId, addCartItemDto);
   }
 
@@ -45,7 +48,10 @@ export class CartController {
   @ApiResponse({ status: 200, description: '更新成功', type: Cart })
   @ApiResponse({ status: 404, description: '购物车商品不存在' })
   @Put(':id')
-  async updateItem(@Param('id') id: string, @Body() updateCartItemDto: UpdateCartItemDto): Promise<Cart> {
+  async updateItem(
+    @Param('id') id: string,
+    @Body() updateCartItemDto: UpdateCartItemDto,
+  ): Promise<Cart> {
     return this.cartService.updateItem(id, updateCartItemDto);
   }
 
@@ -56,7 +62,7 @@ export class CartController {
   async updateItemsSelected(
     @Query('userId') userId: string,
     @Body('selected') selected: boolean,
-    @Body('ids') ids?: string[]
+    @Body('ids') ids?: string[],
   ): Promise<void> {
     return this.cartService.updateItemsSelected(userId, selected, ids);
   }

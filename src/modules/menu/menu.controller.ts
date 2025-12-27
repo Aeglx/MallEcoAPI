@@ -48,9 +48,13 @@ export class MenuController {
   @UseGuards(JwtAuthGuard)
   getUserMenuTree(
     @Query('userType') userType: 'admin' | 'seller',
-    @Query('permissions') permissions?: string[]
+    @Query('permissions') permissions?: string[],
   ) {
-    const permissionList = permissions ? (Array.isArray(permissions) ? permissions : [permissions]) : [];
+    const permissionList = permissions
+      ? Array.isArray(permissions)
+        ? permissions
+        : [permissions]
+      : [];
     return this.menuService.getUserMenuTree(userType, permissionList);
   }
 }

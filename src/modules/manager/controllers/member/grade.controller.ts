@@ -4,7 +4,6 @@ import { ApiTags } from '@nestjs/swagger';
 @ApiTags('会员管理')
 @Controller('manager/member/grade')
 export class GradeController {
-  
   @Get()
   findAll() {
     return { message: '获取会员等级列表' };

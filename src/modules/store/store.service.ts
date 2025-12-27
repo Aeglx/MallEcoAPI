@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class StoreService {
-  
   // 获取店铺详情
   getStoreDetail(storeId: string) {
     return {
@@ -16,8 +15,8 @@ export class StoreService {
         storeScore: 4.8,
         salesVolume: 1000,
         isCollection: false,
-        createTime: '2024-01-01 00:00:00'
-      }
+        createTime: '2024-01-01 00:00:00',
+      },
     };
   }
 
@@ -34,7 +33,7 @@ export class StoreService {
             storeLogo: '/images/store/store1.jpg',
             storeScore: 4.5,
             salesVolume: 500,
-            isCollection: false
+            isCollection: false,
           },
           {
             id: '2',
@@ -42,13 +41,13 @@ export class StoreService {
             storeLogo: '/images/store/store2.jpg',
             storeScore: 4.8,
             salesVolume: 800,
-            isCollection: true
-          }
+            isCollection: true,
+          },
         ],
         total: 2,
         size: query.size || 10,
-        current: query.current || 1
-      }
+        current: query.current || 1,
+      },
     };
   }
 
@@ -65,13 +64,13 @@ export class StoreService {
             price: 100,
             originalPrice: 120,
             sales: 50,
-            thumbnail: '/images/goods/goods1.jpg'
-          }
+            thumbnail: '/images/goods/goods1.jpg',
+          },
         ],
         total: 1,
         size: query.size || 10,
-        current: query.current || 1
-      }
+        current: query.current || 1,
+      },
     };
   }
 
@@ -84,14 +83,14 @@ export class StoreService {
         {
           id: '1',
           name: '分类1',
-          parentId: '0'
+          parentId: '0',
         },
         {
           id: '2',
           name: '分类2',
-          parentId: '0'
-        }
-      ]
+          parentId: '0',
+        },
+      ],
     };
   }
 
@@ -100,7 +99,7 @@ export class StoreService {
     return {
       code: 200,
       message: '关注成功',
-      result: null
+      result: null,
     };
   }
 
@@ -109,7 +108,7 @@ export class StoreService {
     return {
       code: 200,
       message: '取消关注成功',
-      result: null
+      result: null,
     };
   }
 
@@ -126,13 +125,13 @@ export class StoreService {
             storeLogo: '/images/store/store2.jpg',
             storeScore: 4.8,
             salesVolume: 800,
-            isCollection: true
-          }
+            isCollection: true,
+          },
         ],
         total: 1,
         size: query.size || 10,
-        current: query.current || 1
-      }
+        current: query.current || 1,
+      },
     };
   }
 }

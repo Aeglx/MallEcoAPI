@@ -23,10 +23,23 @@ export class MallFile {
   @Column({ name: 'mime_type', type: 'varchar', length: 100, nullable: true, comment: 'MIME类型' })
   mimeType: string;
 
-  @Column({ name: 'storage_type', type: 'varchar', length: 50, nullable: false, default: 'local', comment: '存储类型: local-本地 oss-阿里云OSS' })
+  @Column({
+    name: 'storage_type',
+    type: 'varchar',
+    length: 50,
+    nullable: false,
+    default: 'local',
+    comment: '存储类型: local-本地 oss-阿里云OSS',
+  })
   storageType: string;
 
-  @Column({ name: 'business_type', type: 'varchar', length: 50, nullable: true, comment: '业务类型' })
+  @Column({
+    name: 'business_type',
+    type: 'varchar',
+    length: 50,
+    nullable: true,
+    comment: '业务类型',
+  })
   businessType: string;
 
   @Column({ name: 'business_id', type: 'varchar', length: 36, nullable: true, comment: '业务ID' })
@@ -35,10 +48,22 @@ export class MallFile {
   @Column({ name: 'uploader_id', type: 'varchar', length: 36, nullable: true, comment: '上传人ID' })
   uploaderId: string;
 
-  @Column({ name: 'uploader_name', type: 'varchar', length: 50, nullable: true, comment: '上传人名称' })
+  @Column({
+    name: 'uploader_name',
+    type: 'varchar',
+    length: 50,
+    nullable: true,
+    comment: '上传人名称',
+  })
   uploaderName: string;
 
-  @Column({ name: 'status', type: 'tinyint', nullable: false, default: 1, comment: '状态: 0-禁用 1-启用' })
+  @Column({
+    name: 'status',
+    type: 'tinyint',
+    nullable: false,
+    default: 1,
+    comment: '状态: 0-禁用 1-启用',
+  })
   status: number;
 
   @Column({ name: 'md5', type: 'varchar', length: 100, nullable: true, comment: '文件MD5' })
@@ -47,7 +72,13 @@ export class MallFile {
   @Column({ name: 'sha1', type: 'varchar', length: 100, nullable: true, comment: '文件SHA1' })
   sha1: string;
 
-  @Column({ name: 'upload_time', type: 'datetime', nullable: false, default: () => 'CURRENT_TIMESTAMP', comment: '上传时间' })
+  @Column({
+    name: 'upload_time',
+    type: 'datetime',
+    nullable: false,
+    default: () => 'CURRENT_TIMESTAMP',
+    comment: '上传时间',
+  })
   uploadTime: Date;
 
   @CreateDateColumn({ name: 'create_time', type: 'datetime', nullable: false, comment: '创建时间' })

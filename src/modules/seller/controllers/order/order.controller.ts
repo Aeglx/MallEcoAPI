@@ -4,7 +4,6 @@ import { ApiTags } from '@nestjs/swagger';
 @ApiTags('订单管理')
 @Controller('seller/order')
 export class OrderController {
-  
   @Get()
   findAll(@Query() query: any) {
     return { message: '获取卖家订单列表', query };

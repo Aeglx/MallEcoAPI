@@ -19,9 +19,9 @@ export class SystemConfigService {
   async create(createDto: CreateSystemConfigDto): Promise<SystemConfigEntity> {
     // 检查配置键是否已存在
     const existingConfig = await this.configRepository.findOne({
-      where: { configKey: createDto.configKey }
+      where: { configKey: createDto.configKey },
     });
-    
+
     if (existingConfig) {
       throw new Error('配置键名已存在');
     }
@@ -43,15 +43,15 @@ export class SystemConfigService {
     const skip = (page - 1) * limit;
 
     const where: any = {};
-    
+
     if (configKey) {
       where.configKey = Like(`%${configKey}%`);
     }
-    
+
     if (configGroup) {
       where.configGroup = configGroup;
     }
-    
+
     if (description) {
       where.description = Like(`%${description}%`);
     }
@@ -60,14 +60,14 @@ export class SystemConfigService {
       where,
       order: { sortOrder: 'ASC', createdAt: 'DESC' },
       skip,
-      take: limit
+      take: limit,
     });
 
     return {
       list,
       total,
       page,
-      limit
+      limit,
     };
   }
 
@@ -98,7 +98,7 @@ export class SystemConfigService {
    */
   async update(id: number, updateDto: UpdateSystemConfigDto): Promise<SystemConfigEntity> {
     const config = await this.findOne(id);
-    
+
     // 检查是否允许修改
     if (!config.editable) {
       throw new Error('该配置不允许修改');
@@ -107,9 +107,9 @@ export class SystemConfigService {
     // 如果修改了配置键名，检查是否重复
     if (updateDto.configKey && updateDto.configKey !== config.configKey) {
       const existingConfig = await this.configRepository.findOne({
-        where: { configKey: updateDto.configKey }
+        where: { configKey: updateDto.configKey },
       });
-      
+
       if (existingConfig) {
         throw new Error('配置键名已存在');
       }
@@ -124,7 +124,7 @@ export class SystemConfigService {
    */
   async remove(id: number): Promise<void> {
     const config = await this.findOne(id);
-    
+
     // 检查是否允许删除
     if (!config.editable) {
       throw new Error('该配置不允许删除');
@@ -138,7 +138,7 @@ export class SystemConfigService {
    */
   async getConfigValues(keys: string[]): Promise<Record<string, any>> {
     const configs = await this.configRepository.find({
-      where: keys.map(key => ({ configKey: key }))
+      where: keys.map(key => ({ configKey: key })),
     });
 
     const result: Record<string, any> = {};
@@ -185,11 +185,11 @@ export class SystemConfigService {
   }> {
     // 获取配置总数
     const totalConfigs = await this.configRepository.count();
-    
+
     // 获取配置分组数
     const groups = await this.getConfigGroups();
     const totalGroups = groups.length;
-    
+
     // 获取活跃配置数（假设active为true表示活跃）
     const activeConfigs = await this.configRepository.count({ where: { active: true } });
 

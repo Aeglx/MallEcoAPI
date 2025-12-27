@@ -12,13 +12,13 @@ export class CreateProductDto {
   @IsString({ message: '商品描述必须是字符串' })
   description?: string;
 
-  @ApiProperty({ description: '商品价格', example: 2999.00 })
+  @ApiProperty({ description: '商品价格', example: 2999.0 })
   @IsNotEmpty({ message: '商品价格不能为空' })
   @IsNumber({}, { message: '商品价格必须是数字' })
   @IsPositive({ message: '商品价格必须大于0' })
   price: number;
 
-  @ApiProperty({ description: '原价', example: 3999.00, required: false })
+  @ApiProperty({ description: '原价', example: 3999.0, required: false })
   @IsOptional()
   @IsNumber({}, { message: '原价必须是数字' })
   @IsPositive({ message: '原价必须大于0' })
@@ -35,7 +35,11 @@ export class CreateProductDto {
   @IsNumber({}, { message: '销量必须是数字' })
   sales?: number;
 
-  @ApiProperty({ description: '主图', example: 'https://example.com/smartphone.jpg', required: false })
+  @ApiProperty({
+    description: '主图',
+    example: 'https://example.com/smartphone.jpg',
+    required: false,
+  })
   @IsOptional()
   @IsString({ message: '主图必须是字符串' })
   mainImage?: string;
@@ -71,7 +75,11 @@ export class CreateProductDto {
   @IsNumber({}, { message: '排序必须是数字' })
   sortOrder?: number;
 
-  @ApiProperty({ description: '规格参数', example: { color: ['红色', '蓝色'], storage: ['64GB', '128GB'] }, required: false })
+  @ApiProperty({
+    description: '规格参数',
+    example: { color: ['红色', '蓝色'], storage: ['64GB', '128GB'] },
+    required: false,
+  })
   @IsOptional()
   specifications?: any;
 

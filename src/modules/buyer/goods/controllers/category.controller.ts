@@ -12,7 +12,7 @@ export class CategoryController {
     const categories = this.categoryService.listAllChildren(parentId);
     return {
       success: true,
-      result: categories
+      result: categories,
     };
   }
 }

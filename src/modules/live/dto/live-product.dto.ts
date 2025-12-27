@@ -4,12 +4,22 @@ import { ApiProperty } from '@nestjs/swagger';
 export class CreateLiveProductDto {
   @IsNotEmpty({ message: '直播ID不能为空' })
   @IsString({ message: '直播ID必须是字符串' })
-  @ApiProperty({ name: 'liveId', description: '直播ID', example: '1234567890abcdef12345678', required: true })
+  @ApiProperty({
+    name: 'liveId',
+    description: '直播ID',
+    example: '1234567890abcdef12345678',
+    required: true,
+  })
   liveId: string;
 
   @IsNotEmpty({ message: '商品ID不能为空' })
   @IsString({ message: '商品ID必须是字符串' })
-  @ApiProperty({ name: 'productId', description: '商品ID', example: '1234567890abcdef12345678', required: true })
+  @ApiProperty({
+    name: 'productId',
+    description: '商品ID',
+    example: '1234567890abcdef12345678',
+    required: true,
+  })
   productId: string;
 
   @IsOptional()

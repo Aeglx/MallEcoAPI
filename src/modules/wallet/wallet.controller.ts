@@ -24,7 +24,10 @@ export class WalletController {
   @ApiResponse({ status: 200, description: '充值成功' })
   @ApiResponse({ status: 400, description: '请求参数错误' })
   @Post(':userId/recharge')
-  recharge(@Param('userId') userId: string, @Body() dto: RechargeDto): { success: boolean; data: WalletTransaction } {
+  recharge(
+    @Param('userId') userId: string,
+    @Body() dto: RechargeDto,
+  ): { success: boolean; data: WalletTransaction } {
     const result = this.walletService.recharge(userId, dto);
     return { success: result.success, data: result.transaction };
   }
@@ -34,7 +37,10 @@ export class WalletController {
   @ApiResponse({ status: 400, description: '请求参数错误或余额不足' })
   @ApiResponse({ status: 404, description: '钱包不存在' })
   @Post(':userId/withdraw')
-  withdraw(@Param('userId') userId: string, @Body() dto: WithdrawDto): { success: boolean; data: WalletTransaction } {
+  withdraw(
+    @Param('userId') userId: string,
+    @Body() dto: WithdrawDto,
+  ): { success: boolean; data: WalletTransaction } {
     try {
       const result = this.walletService.withdraw(userId, dto);
       return { success: result.success, data: result.transaction };
@@ -48,7 +54,10 @@ export class WalletController {
   @ApiResponse({ status: 400, description: '余额不足' })
   @ApiResponse({ status: 404, description: '钱包不存在' })
   @Post(':userId/pay-order')
-  payOrder(@Param('userId') userId: string, @Body() body: { amount: number; orderId: string }): { success: boolean; data: WalletTransaction } {
+  payOrder(
+    @Param('userId') userId: string,
+    @Body() body: { amount: number; orderId: string },
+  ): { success: boolean; data: WalletTransaction } {
     try {
       const result = this.walletService.payOrder(userId, body.amount, body.orderId);
       return { success: result.success, data: result.transaction };
@@ -61,7 +70,10 @@ export class WalletController {
   @ApiResponse({ status: 200, description: '退款成功' })
   @ApiResponse({ status: 404, description: '钱包不存在' })
   @Post(':userId/refund-order')
-  refundOrder(@Param('userId') userId: string, @Body() body: { amount: number; orderId: string }): { success: boolean; data: WalletTransaction } {
+  refundOrder(
+    @Param('userId') userId: string,
+    @Body() body: { amount: number; orderId: string },
+  ): { success: boolean; data: WalletTransaction } {
     try {
       const result = this.walletService.refundOrder(userId, body.amount, body.orderId);
       return { success: result.success, data: result.transaction };
@@ -78,7 +90,7 @@ export class WalletController {
   getTransactions(
     @Param('userId') userId: string,
     @Query('page') page: number = 1,
-    @Query('pageSize') pageSize: number = 10
+    @Query('pageSize') pageSize: number = 10,
   ): { success: boolean; data: WalletTransaction[] } {
     const transactions = this.walletService.getTransactions(userId, page, pageSize);
     return { success: true, data: transactions };

@@ -20,33 +20,39 @@ export class Kuaidi100Plugin implements LogisticsPlugin {
       traces: [
         {
           acceptTime: '2024-01-15 10:30:00',
-          acceptStation: '【北京市朝阳区】 已签收，签收人：本人'
+          acceptStation: '【北京市朝阳区】 已签收，签收人：本人',
         },
         {
           acceptTime: '2024-01-15 08:15:00',
-          acceptStation: '【北京市朝阳区】 快递员正在派件中（联系电话：138****8888）'
+          acceptStation: '【北京市朝阳区】 快递员正在派件中（联系电话：138****8888）',
         },
         {
           acceptTime: '2024-01-14 18:30:00',
-          acceptStation: '【北京市朝阳区】 已到达朝阳区派送点'
+          acceptStation: '【北京市朝阳区】 已到达朝阳区派送点',
         },
         {
           acceptTime: '2024-01-14 10:20:00',
-          acceptStation: '【北京市】 已从北京转运中心发出'
+          acceptStation: '【北京市】 已从北京转运中心发出',
         },
         {
           acceptTime: '2024-01-13 16:45:00',
-          acceptStation: '【上海市】 已到达上海转运中心'
+          acceptStation: '【上海市】 已到达上海转运中心',
         },
         {
           acceptTime: '2024-01-13 09:15:00',
-          acceptStation: '【上海市】 已揽件（揽件人：张三，联系电话：136****6666）'
-        }
-      ]
+          acceptStation: '【上海市】 已揽件（揽件人：张三，联系电话：136****6666）',
+        },
+      ],
     };
   }
 
-  async pollMapTrack(logistics: MallLogistics, expNo: string, phone?: string, from?: string, to?: string): Promise<Traces> {
+  async pollMapTrack(
+    logistics: MallLogistics,
+    expNo: string,
+    phone?: string,
+    from?: string,
+    to?: string,
+  ): Promise<Traces> {
     // 模拟地图轨迹查询结果
     // 实际实现中应该调用快递100的地图轨迹API
     return {
@@ -56,29 +62,29 @@ export class Kuaidi100Plugin implements LogisticsPlugin {
       traces: [
         {
           acceptTime: '2024-01-14 18:30:00',
-          acceptStation: '【北京市朝阳区】 已到达朝阳区派送点'
+          acceptStation: '【北京市朝阳区】 已到达朝阳区派送点',
         },
         {
           acceptTime: '2024-01-14 10:20:00',
-          acceptStation: '【北京市】 已从北京转运中心发出'
+          acceptStation: '【北京市】 已从北京转运中心发出',
         },
         {
           acceptTime: '2024-01-13 23:45:00',
-          acceptStation: '【天津市】 已到达天津转运中心'
+          acceptStation: '【天津市】 已到达天津转运中心',
         },
         {
           acceptTime: '2024-01-13 18:20:00',
-          acceptStation: '【河北省】 已从河北转运中心发出'
+          acceptStation: '【河北省】 已从河北转运中心发出',
         },
         {
           acceptTime: '2024-01-13 16:45:00',
-          acceptStation: '【上海市】 已到达上海转运中心'
+          acceptStation: '【上海市】 已到达上海转运中心',
         },
         {
           acceptTime: '2024-01-13 09:15:00',
-          acceptStation: '【上海市】 已揽件'
-        }
-      ]
+          acceptStation: '【上海市】 已揽件',
+        },
+      ],
     };
   }
 

@@ -56,7 +56,7 @@ export class ServiceMeshService {
     // 模拟部署逻辑
     config.status = 'active';
     config.lastDeployTime = new Date();
-    
+
     return await this.meshConfigRepository.save(config);
   }
 
@@ -88,10 +88,8 @@ export class ServiceMeshService {
   }
 
   async getPolicies(serviceName?: string) {
-    const where = serviceName 
-      ? { targetServices: { $like: `%${serviceName}%` } as any }
-      : {};
-    
+    const where = serviceName ? { targetServices: { $like: `%${serviceName}%` } as any } : {};
+
     return await this.meshPolicyRepository.find({
       where,
       order: { priority: 'DESC', createdAt: 'DESC' },
@@ -104,9 +102,9 @@ export class ServiceMeshService {
 
   async evaluatePolicy(serviceName: string, context: Record<string, any>) {
     const policies = await this.meshPolicyRepository.find({
-      where: { 
+      where: {
         status: 'enabled',
-        targetServices: { $like: `%${serviceName}%` } as any
+        targetServices: { $like: `%${serviceName}%` } as any,
       },
       order: { priority: 'DESC' },
     });
@@ -169,19 +167,22 @@ export class ServiceMeshService {
 
   async getServiceMetrics(serviceName: string, timeRange: { start: Date; end: Date }) {
     const telemetryData = await this.getTelemetryData(serviceName, timeRange);
-    
+
     if (telemetryData.length === 0) {
       return null;
     }
 
     const requests = telemetryData.filter(t => t.eventType === 'request');
     const errors = telemetryData.filter(t => t.statusCode >= 400);
-    
-    const avgResponseTime = telemetryData.reduce((sum, t) => sum + Number(t.duration), 0) / telemetryData.length;
+
+    const avgResponseTime =
+      telemetryData.reduce((sum, t) => sum + Number(t.duration), 0) / telemetryData.length;
     const errorRate = requests.length > 0 ? (errors.length / requests.length) * 100 : 0;
     const totalRequests = requests.length;
-    const avgRequestSize = telemetryData.reduce((sum, t) => sum + t.requestSize, 0) / telemetryData.length;
-    const avgResponseSize = telemetryData.reduce((sum, t) => sum + t.responseSize, 0) / telemetryData.length;
+    const avgRequestSize =
+      telemetryData.reduce((sum, t) => sum + t.requestSize, 0) / telemetryData.length;
+    const avgResponseSize =
+      telemetryData.reduce((sum, t) => sum + t.responseSize, 0) / telemetryData.length;
 
     return {
       serviceName,
@@ -211,10 +212,10 @@ export class ServiceMeshService {
 
   async evaluateSecurityPolicy(serviceName: string, context: Record<string, any>) {
     const policies = await this.meshSecurityRepository.find({
-      where: { 
+      where: {
         serviceName,
         status: 'active',
-        isEnforced: true
+        isEnforced: true,
       },
     });
 
@@ -231,7 +232,10 @@ export class ServiceMeshService {
     return { action: 'deny', policyName: 'default', allowed: false };
   }
 
-  private evaluateSecurityConditions(conditions: Array<any>, context: Record<string, any>): boolean {
+  private evaluateSecurityConditions(
+    conditions: Array<any>,
+    context: Record<string, any>,
+  ): boolean {
     if (!conditions || conditions.length === 0) {
       return true;
     }
@@ -293,7 +297,7 @@ export class ServiceMeshService {
 
   async getTrafficStatistics(serviceName: string, timeRange: { start: Date; end: Date }) {
     const trafficData = await this.getTrafficData(serviceName, timeRange);
-    
+
     if (trafficData.length === 0) {
       return null;
     }
@@ -301,9 +305,12 @@ export class ServiceMeshService {
     const totalRequests = trafficData.length;
     const successfulRequests = trafficData.filter(t => t.statusCode < 400).length;
     const errorRequests = totalRequests - successfulRequests;
-    const avgResponseTime = trafficData.reduce((sum, t) => sum + Number(t.responseTime), 0) / trafficData.length;
-    const avgCpuUsage = trafficData.reduce((sum, t) => sum + Number(t.cpuUsage), 0) / trafficData.length;
-    const avgMemoryUsage = trafficData.reduce((sum, t) => sum + Number(t.memoryUsage), 0) / trafficData.length;
+    const avgResponseTime =
+      trafficData.reduce((sum, t) => sum + Number(t.responseTime), 0) / trafficData.length;
+    const avgCpuUsage =
+      trafficData.reduce((sum, t) => sum + Number(t.cpuUsage), 0) / trafficData.length;
+    const avgMemoryUsage =
+      trafficData.reduce((sum, t) => sum + Number(t.memoryUsage), 0) / trafficData.length;
     const totalRequestSize = trafficData.reduce((sum, t) => sum + t.requestSize, 0);
     const totalResponseSize = trafficData.reduce((sum, t) => sum + t.responseSize, 0);
     const errorRate = (errorRequests / totalRequests) * 100;
@@ -326,26 +333,27 @@ export class ServiceMeshService {
   // 服务网格整体统计
   async getMeshStatistics() {
     const activeConfigs = await this.meshConfigRepository.count({ where: { status: 'active' } });
-    const activeGateways = await this.meshGatewayRepository.count({ where: { status: 'active', isEnabled: true } });
+    const activeGateways = await this.meshGatewayRepository.count({
+      where: { status: 'active', isEnabled: true },
+    });
     const activePolicies = await this.meshPolicyRepository.count({ where: { status: 'enabled' } });
-    const activeSecurityPolicies = await this.meshSecurityRepository.count({ where: { status: 'active', isEnforced: true } });
-    
+    const activeSecurityPolicies = await this.meshSecurityRepository.count({
+      where: { status: 'active', isEnforced: true },
+    });
+
     const recentTelemetry = await this.meshTelemetryRepository.count({
       where: {
         createdAt: Between(
           new Date(Date.now() - 24 * 60 * 60 * 1000), // 24小时前
-          new Date()
-        )
-      }
+          new Date(),
+        ),
+      },
     });
 
     const recentTraffic = await this.meshTrafficRepository.count({
       where: {
-        timestamp: Between(
-          new Date(Date.now() - 24 * 60 * 60 * 1000),
-          new Date()
-        )
-      }
+        timestamp: Between(new Date(Date.now() - 24 * 60 * 60 * 1000), new Date()),
+      },
     });
 
     return {
@@ -361,10 +369,12 @@ export class ServiceMeshService {
   // 服务网格健康检查
   async performMeshHealthCheck() {
     const configs = await this.meshConfigRepository.find({ where: { status: 'active' } });
-    const gateways = await this.meshGatewayRepository.find({ where: { status: 'active', isEnabled: true } });
-    
+    const gateways = await this.meshGatewayRepository.find({
+      where: { status: 'active', isEnabled: true },
+    });
+
     const healthResults = [];
-    
+
     for (const config of configs) {
       const health = await this.checkMeshConfigHealth(config);
       healthResults.push(health);
@@ -390,7 +400,7 @@ export class ServiceMeshService {
   private async checkMeshConfigHealth(config: MeshConfigEntity) {
     // 模拟健康检查逻辑
     const isHealthy = Math.random() > 0.1; // 90% 概率健康
-    
+
     return {
       component: config.meshName,
       type: 'mesh-config',
@@ -402,7 +412,7 @@ export class ServiceMeshService {
   private async checkGatewayHealth(gateway: MeshGatewayEntity) {
     // 模拟网关健康检查
     const isHealthy = Math.random() > 0.05; // 95% 概率健康
-    
+
     return {
       component: gateway.gatewayName,
       type: 'gateway',

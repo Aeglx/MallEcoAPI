@@ -58,4 +58,3 @@ export class CommonUtil {
     return `PAY${Date.now()}${this.getRandomNum()}`;
   }
 }
-

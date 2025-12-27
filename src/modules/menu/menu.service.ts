@@ -18,12 +18,25 @@ export class MenuService implements OnModuleInit {
    */
   async initializeMenus(): Promise<void> {
     console.log('🚀 开始初始化菜单系统...');
-    
+
     try {
+      // 检查菜单数据是否加载成功
+      console.log(`📊 管理端菜单数据: ${adminMenus.length} 项`);
+      console.log(`📊 卖家端菜单数据: ${sellerMenus.length} 项`);
+
+      if (adminMenus.length === 0) {
+        console.error('❌ 管理端菜单数据为空！请检查 menu-data.ts 文件加载逻辑');
+        console.error('💡 提示: 可能需要检查 scripts/admin-menu-data.js 文件是否存在');
+      }
+
       // 构建管理端菜单树
       const adminMenuTree = this.buildMenuTree(adminMenus, 1);
       this.menuCache.set('admin', adminMenuTree);
       console.log(`✅ 管理端菜单初始化完成，共 ${adminMenuTree.length} 个顶级菜单`);
+
+      if (adminMenuTree.length > 0) {
+        console.log(`📋 顶级菜单列表: ${adminMenuTree.map(m => m.title).join(', ')}`);
+      }
 
       // 构建卖家端菜单树
       const sellerMenuTree = this.buildMenuTree(sellerMenus, 2);
@@ -32,33 +45,32 @@ export class MenuService implements OnModuleInit {
 
       // 初始化微信菜单
       await this.initializeWechatMenus();
-      
+
       console.log('🎉 所有菜单初始化完成');
     } catch (error) {
       console.error('❌ 菜单初始化失败:', error);
+      console.error('错误堆栈:', error instanceof Error ? error.stack : String(error));
     }
   }
-
-
 
   /**
    * 构建菜单树结构
    */
   private buildMenuTree(menus: MenuItem[], appType: number): MenuTree[] {
-    const topLevelMenus = menus.filter(menu => 
-      menu.level === 0 && menu.appType === appType
-    );
+    const topLevelMenus = menus.filter(menu => menu.level === 0 && menu.appType === appType);
 
-    return topLevelMenus.map(topMenu => {
-      const children = this.getChildrenMenus(menus, topMenu.id, appType);
-      
-      return {
-        ...topMenu,
-        children: children.length > 0 ? children : undefined
-      };
-    }).sort((a, b) => {
-      return (a.sortOrder || 0) - (b.sortOrder || 0);
-    });
+    return topLevelMenus
+      .map(topMenu => {
+        const children = this.getChildrenMenus(menus, topMenu.id, appType);
+
+        return {
+          ...topMenu,
+          children: children.length > 0 ? children : undefined,
+        };
+      })
+      .sort((a, b) => {
+        return (a.sortOrder || 0) - (b.sortOrder || 0);
+      });
   }
 
   /**
@@ -69,10 +81,10 @@ export class MenuService implements OnModuleInit {
       .filter(menu => menu.parentId === parentId && menu.appType === appType)
       .map(menu => {
         const children = this.getChildrenMenus(menus, menu.id, appType);
-        
+
         return {
           ...menu,
-          children: children.length > 0 ? children : undefined
+          children: children.length > 0 ? children : undefined,
         };
       })
       .sort((a, b) => {
@@ -85,17 +97,17 @@ export class MenuService implements OnModuleInit {
    */
   private displayWechatMenuStats(wechatMenus: MenuItem[]): void {
     const categorizedMenus = this.categorizeWechatMenus(wechatMenus);
-    
+
     console.log('📊 微信菜单统计信息:');
     console.log(`🎯 总模块数: ${Object.keys(categorizedMenus).length}`);
     console.log(`📋 总菜单项: ${wechatMenus.length}`);
     console.log(`🔗 权限配置: ${wechatMenus.filter(m => m.permission).length} 个`);
-    
+
     Object.keys(categorizedMenus).forEach(category => {
       const categoryInfo = categorizedMenus[category];
       console.log(`\n${this.getCategoryIcon(category)} ${category}`);
       console.log(`└── 路径: /admin/wechat/${categoryInfo.path}`);
-      
+
       if (categoryInfo.submenus && categoryInfo.submenus.length > 0) {
         categoryInfo.submenus.forEach(submenu => {
           console.log(`    ├── ${submenu.title}`);
@@ -110,19 +122,19 @@ export class MenuService implements OnModuleInit {
    */
   private categorizeWechatMenus(menus: MenuItem[]): Record<string, any> {
     const categories = {};
-    
+
     menus.forEach(menu => {
       if (menu.level === 1 && menu.parentId === 'admin-wechat') {
         const categoryName = menu.title;
         const categoryPath = menu.path.replace('/admin/wechat/', '');
-        
+
         categories[categoryName] = {
           path: categoryPath,
-          submenus: menus.filter(m => m.parentId === menu.id)
+          submenus: menus.filter(m => m.parentId === menu.id),
         };
       }
     });
-    
+
     return categories;
   }
 
@@ -131,14 +143,14 @@ export class MenuService implements OnModuleInit {
    */
   private getCategoryIcon(category: string): string {
     const icons = {
-      '消息管理': '💬',
-      'H5网页': '📱',
-      '微信卡券': '🎫',
-      '素材管理': '🖼️',
-      '自定义菜单': '📋',
-      '授权管理': '🔑'
+      消息管理: '💬',
+      H5网页: '📱',
+      微信卡券: '🎫',
+      素材管理: '🖼️',
+      自定义菜单: '📋',
+      授权管理: '🔑',
     };
-    
+
     return icons[category] || '📄';
   }
 
@@ -146,7 +158,18 @@ export class MenuService implements OnModuleInit {
    * 获取管理端菜单树
    */
   getAdminMenuTree(): MenuTree[] {
-    return this.menuCache.get('admin') || [];
+    const menuTree = this.menuCache.get('admin') || [];
+
+    // 如果缓存为空，尝试重新初始化
+    if (menuTree.length === 0 && adminMenus.length > 0) {
+      console.warn('⚠️ 菜单缓存为空，但菜单数据存在，尝试重新构建菜单树...');
+      const adminMenuTree = this.buildMenuTree(adminMenus, 1);
+      this.menuCache.set('admin', adminMenuTree);
+      console.log(`✅ 重新构建完成，共 ${adminMenuTree.length} 个顶级菜单`);
+      return adminMenuTree;
+    }
+
+    return menuTree;
   }
 
   /**
@@ -168,19 +191,21 @@ export class MenuService implements OnModuleInit {
    */
   getWechatMenu(): WechatMenu {
     const wechatMenus = this.menuCache.get('wechat') || [];
-    
+
     // 将菜单树转换为微信菜单格式
     return {
       button: wechatMenus.map(menu => ({
         name: menu.title,
         type: 'view',
         url: menu.path,
-        sub_button: menu.children ? menu.children.map(child => ({
-          name: child.title,
-          type: 'view',
-          url: child.path
-        })) : undefined
-      }))
+        sub_button: menu.children
+          ? menu.children.map(child => ({
+              name: child.title,
+              type: 'view',
+              url: child.path,
+            }))
+          : undefined,
+      })),
     };
   }
 
@@ -190,16 +215,16 @@ export class MenuService implements OnModuleInit {
   private async initializeWechatMenus(): Promise<void> {
     try {
       // 从管理端菜单中筛选出微信相关菜单
-      const wechatMenus = adminMenus.filter(menu => 
-        menu.parentId === 'admin-wechat' || menu.parentId?.startsWith('admin-wechat-')
+      const wechatMenus = adminMenus.filter(
+        menu => menu.parentId === 'admin-wechat' || menu.parentId?.startsWith('admin-wechat-'),
       );
-      
+
       // 构建微信菜单树
       const wechatMenuTree = this.buildMenuTree(wechatMenus, 1);
       this.menuCache.set('wechat', wechatMenuTree);
-      
+
       console.log(`✅ 微信菜单初始化完成，共 ${wechatMenus.length} 个菜单项`);
-      
+
       // 显示微信菜单统计
       this.displayWechatMenuStats(wechatMenus);
     } catch (error) {
@@ -212,7 +237,7 @@ export class MenuService implements OnModuleInit {
    */
   getUserMenuTree(userType: 'admin' | 'seller', permissions: string[]): MenuTree[] {
     const menuTree = userType === 'admin' ? this.getAdminMenuTree() : this.getSellerMenuTree();
-    
+
     return this.filterMenuByPermissions(menuTree, permissions);
   }
 
@@ -222,23 +247,23 @@ export class MenuService implements OnModuleInit {
   private filterMenuByPermissions(menuTree: MenuTree[], permissions: string[]): MenuTree[] {
     return menuTree
       .map(menu => {
-        const filteredChildren = menu.children 
+        const filteredChildren = menu.children
           ? this.filterMenuByPermissions(menu.children, permissions)
           : undefined;
-        
+
         // 如果菜单有权限要求，检查用户是否有权限
         if (menu.permission && !permissions.includes(menu.permission)) {
           return null;
         }
-        
+
         // 如果有子菜单且子菜单被过滤后为空，则隐藏该菜单
         if (filteredChildren && filteredChildren.length === 0) {
           return null;
         }
-        
+
         return {
           ...menu,
-          children: filteredChildren
+          children: filteredChildren,
         };
       })
       .filter(menu => menu !== null) as MenuTree[];

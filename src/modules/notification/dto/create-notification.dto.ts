@@ -1,12 +1,15 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { NotificationType } from '../entities/notification.entity';
 
-
 export class CreateNotificationDto {
   @ApiProperty({ description: '用户ID', required: false, example: '1' })
   userId?: string;
 
-  @ApiProperty({ description: '通知类型', enum: NotificationType, example: NotificationType.SYSTEM })
+  @ApiProperty({
+    description: '通知类型',
+    enum: NotificationType,
+    example: NotificationType.SYSTEM,
+  })
   type: NotificationType;
 
   @ApiProperty({ description: '通知标题', example: '系统通知' })

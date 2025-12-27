@@ -22,15 +22,7 @@ import { DepartmentController } from './controllers/department.controller';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([
-      User,
-      Role,
-      Permission,
-      Menu,
-      Department,
-      UserRole,
-      RolePermission,
-    ]),
+    TypeOrmModule.forFeature([User, Role, Permission, Menu, Department, UserRole, RolePermission]),
   ],
   controllers: [
     UserController,
@@ -39,18 +31,7 @@ import { DepartmentController } from './controllers/department.controller';
     MenuController,
     DepartmentController,
   ],
-  providers: [
-    UserService,
-    RoleService,
-    PermissionService,
-    MenuService,
-    DepartmentService,
-  ],
-  exports: [
-    TypeOrmModule,
-    UserService,
-    RoleService,
-    PermissionService,
-  ],
+  providers: [UserService, RoleService, PermissionService, MenuService, DepartmentService],
+  exports: [TypeOrmModule, UserService, RoleService, PermissionService],
 })
 export class RbacModule {}

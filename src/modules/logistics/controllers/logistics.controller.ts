@@ -62,10 +62,7 @@ export class LogisticsController {
   @Post('create-order/:id')
   @ApiOperation({ summary: '创建物流订单' })
   @ApiParam({ name: 'id', description: '物流ID' })
-  async createOrder(
-    @Param('id') id: string,
-    @Body() orderDetailVO: any,
-  ): Promise<string> {
+  async createOrder(@Param('id') id: string, @Body() orderDetailVO: any): Promise<string> {
     return await this.logisticsService.createOrder(id, orderDetailVO);
   }
 

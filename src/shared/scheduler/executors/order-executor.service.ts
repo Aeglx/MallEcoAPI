@@ -23,7 +23,7 @@ export class OrderExecutorService implements DelayTaskExecutor {
       // 这里实现订单自动取消逻辑
       // 例如：检查订单状态，如果未支付则取消订单
       // await this.orderService.cancelOrderIfUnpaid(orderId);
-      
+
       this.logger.log(`Order auto cancel completed: ${orderId}`);
     } catch (error) {
       this.logger.error(`Failed to cancel order ${orderId}:`, error);
@@ -31,4 +31,3 @@ export class OrderExecutorService implements DelayTaskExecutor {
     }
   }
 }
-

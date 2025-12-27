@@ -113,11 +113,10 @@ export class CacheMonitorService {
     this.logger.log(`Total Misses: ${stats.totalMisses}`);
     this.logger.log(`Total Requests: ${stats.totalRequests}`);
     this.logger.log('--- Key Prefix Statistics ---');
-    stats.keyStats.forEach((keyStat) => {
+    stats.keyStats.forEach(keyStat => {
       this.logger.log(
         `${keyStat.prefix}: ${keyStat.hitRate.toFixed(2)}% (${keyStat.hits}/${keyStat.hits + keyStat.misses})`,
       );
     });
   }
 }
-

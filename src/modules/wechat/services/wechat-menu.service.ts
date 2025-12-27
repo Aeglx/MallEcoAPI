@@ -164,9 +164,9 @@ export class WechatMenuService {
   }
 
   async getMenuKeywordById(id: string) {
-    const keyword = await this.menuKeywordRepository.findOne({ 
+    const keyword = await this.menuKeywordRepository.findOne({
       where: { id },
-      relations: ['menu'] 
+      relations: ['menu'],
     });
     if (!keyword) {
       throw new NotFoundException(`菜单关键词不存在: ${id}`);
@@ -194,7 +194,7 @@ export class WechatMenuService {
   // 同步菜单到微信
   async syncMenuToWechat() {
     const menuTree = await this.getMenuTree();
-    
+
     // 这里应该调用微信API同步菜单
     // 暂时返回模拟数据
     return {

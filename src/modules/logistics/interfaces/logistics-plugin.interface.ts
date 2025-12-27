@@ -28,11 +28,11 @@ export interface LogisticsPlugin {
    * @returns 物流信息
    */
   pollMapTrack(
-    logistics: MallLogistics, 
-    expNo: string, 
-    phone?: string, 
-    from?: string, 
-    to?: string
+    logistics: MallLogistics,
+    expNo: string,
+    phone?: string,
+    from?: string,
+    to?: string,
   ): Promise<Traces>;
 
   /**

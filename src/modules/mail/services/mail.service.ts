@@ -16,7 +16,11 @@ export class MailService {
     }
   }
 
-  async sendTemplateMail(to: string, templateCode: string, params: Record<string, any>): Promise<boolean> {
+  async sendTemplateMail(
+    to: string,
+    templateCode: string,
+    params: Record<string, any>,
+  ): Promise<boolean> {
     try {
       // 这里是模板邮件发送的模拟实现
       // 实际项目中应该集成邮件服务提供商的模板功能

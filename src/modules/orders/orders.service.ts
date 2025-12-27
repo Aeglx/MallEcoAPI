@@ -28,7 +28,7 @@ export class OrdersService {
    */
   async createOrder(dto: CreateOrderDto): Promise<Order> {
     // 计算订单总金额
-    const totalAmount = dto.items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    const totalAmount = dto.items.reduce((sum, item) => sum + item.price * item.quantity, 0);
     const shippingFee = dto.shippingFee || 0;
     const couponAmount = dto.couponAmount || 0;
     const payAmount = totalAmount + shippingFee - couponAmount;
@@ -88,7 +88,7 @@ export class OrdersService {
    * @returns 订单详情
    */
   async getOrderById(id: string): Promise<Order> {
-    const order = this.orders.find((o) => o.id === id && o.isDel === 0);
+    const order = this.orders.find(o => o.id === id && o.isDel === 0);
     if (!order) {
       return null;
     }
@@ -107,7 +107,7 @@ export class OrdersService {
       return null;
     }
 
-    const items = this.orderItems.filter((item) => item.orderId === id && item.isDel === 0);
+    const items = this.orderItems.filter(item => item.orderId === id && item.isDel === 0);
 
     return { order, items };
   }
@@ -119,10 +119,10 @@ export class OrdersService {
    * @returns 订单列表
    */
   async getOrdersByUserId(userId: string, status?: number): Promise<Order[]> {
-    let orders = this.orders.filter((o) => o.userId === userId && o.isDel === 0);
+    let orders = this.orders.filter(o => o.userId === userId && o.isDel === 0);
 
     if (status !== undefined) {
-      orders = orders.filter((o) => o.status === status);
+      orders = orders.filter(o => o.status === status);
     }
 
     // 按创建时间倒序排序
@@ -136,7 +136,7 @@ export class OrdersService {
    * @returns 更新后的订单
    */
   async updateOrderStatus(id: string, dto: UpdateOrderStatusDto): Promise<Order> {
-    const order = this.orders.find((o) => o.id === id && o.isDel === 0);
+    const order = this.orders.find(o => o.id === id && o.isDel === 0);
     if (!order) {
       return null;
     }
@@ -176,7 +176,7 @@ export class OrdersService {
    * @returns 是否删除成功
    */
   async deleteOrder(id: string): Promise<boolean> {
-    const order = this.orders.find((o) => o.id === id && o.isDel === 0);
+    const order = this.orders.find(o => o.id === id && o.isDel === 0);
     if (!order) {
       return false;
     }
@@ -187,11 +187,11 @@ export class OrdersService {
 
     // 同时删除订单商品
     for (const item of this.orderItems) {
-        if (item.orderId === id && item.isDel === 0) {
-          item.isDel = 1;
-          item.updateTime = new Date();
-        }
+      if (item.orderId === id && item.isDel === 0) {
+        item.isDel = 1;
+        item.updateTime = new Date();
       }
+    }
 
     return true;
   }

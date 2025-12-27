@@ -12,7 +12,7 @@ export class SystemManagementController {
   constructor(
     private readonly monitorService: SystemMonitorService,
     private readonly versionService: SystemVersionService,
-    private readonly configService: SystemConfigService
+    private readonly configService: SystemConfigService,
   ) {}
 
   @Get('overview')

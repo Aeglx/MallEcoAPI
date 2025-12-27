@@ -4,7 +4,6 @@ import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 @ApiTags('管理端-数据统计')
 @Controller('manager/statistics/dashboard')
 export class DashboardController {
-  
   @Get('overview')
   @ApiOperation({ summary: '获取数据总览' })
   getOverview(@Query('dateRange') dateRange: string) {
@@ -12,7 +11,7 @@ export class DashboardController {
       totalUsers: 1500,
       totalOrders: 2500,
       totalRevenue: 125000,
-      growthRate: 15.5
+      growthRate: 15.5,
     };
   }
 
@@ -23,9 +22,9 @@ export class DashboardController {
       dailySales: [
         { date: '2024-01-01', amount: 5000 },
         { date: '2024-01-02', amount: 6200 },
-        { date: '2024-01-03', amount: 5800 }
+        { date: '2024-01-03', amount: 5800 },
       ],
-      totalSales: 17000
+      totalSales: 17000,
     };
   }
 
@@ -35,7 +34,7 @@ export class DashboardController {
     return {
       newUsers: 50,
       activeUsers: 1200,
-      userGrowth: 12.3
+      userGrowth: 12.3,
     };
   }
 
@@ -46,7 +45,7 @@ export class DashboardController {
       totalGoods: 1500,
       onSaleGoods: 1200,
       soldOutGoods: 300,
-      avgPrice: 89.5
+      avgPrice: 89.5,
     };
   }
 }

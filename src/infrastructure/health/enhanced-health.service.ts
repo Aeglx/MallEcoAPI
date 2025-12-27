@@ -42,13 +42,8 @@ export class EnhancedHealthService {
 
   async getHealthStatus(): Promise<HealthStatus> {
     const startTime = Date.now();
-    
-    const [
-      databaseCheck,
-      redisCheck,
-      elasticsearchCheck,
-      systemChecks,
-    ] = await Promise.allSettled([
+
+    const [databaseCheck, redisCheck, elasticsearchCheck, systemChecks] = await Promise.allSettled([
       this.checkDatabase(),
       this.checkRedis(),
       this.checkElasticsearch(),
@@ -59,9 +54,18 @@ export class EnhancedHealthService {
       database: this.getHealthCheckResult(databaseCheck),
       redis: this.getHealthCheckResult(redisCheck),
       elasticsearch: this.getHealthCheckResult(elasticsearchCheck),
-      memory: systemChecks.status === 'fulfilled' ? systemChecks.value.memory : this.createUnhealthyCheck('Failed to check memory'),
-      disk: systemChecks.status === 'fulfilled' ? systemChecks.value.disk : this.createUnhealthyCheck('Failed to check disk'),
-      cpu: systemChecks.status === 'fulfilled' ? systemChecks.value.cpu : this.createUnhealthyCheck('Failed to check CPU'),
+      memory:
+        systemChecks.status === 'fulfilled'
+          ? systemChecks.value.memory
+          : this.createUnhealthyCheck('Failed to check memory'),
+      disk:
+        systemChecks.status === 'fulfilled'
+          ? systemChecks.value.disk
+          : this.createUnhealthyCheck('Failed to check disk'),
+      cpu:
+        systemChecks.status === 'fulfilled'
+          ? systemChecks.value.cpu
+          : this.createUnhealthyCheck('Failed to check CPU'),
     };
 
     const overallStatus = this.determineOverallStatus(checks);
@@ -84,17 +88,17 @@ export class EnhancedHealthService {
   private async checkDatabase(): Promise<HealthCheck> {
     try {
       const startTime = Date.now();
-      
+
       // 执行简单查询测试连接
       // 注意：由于connection是一个Promise，需要先await它
       const connection = await this.databaseConnectionService.getConnection();
       await connection.query('SELECT 1');
-      
+
       const responseTime = Date.now() - startTime;
-      
+
       // 检查连接池状态
       const poolStats = this.getConnectionPoolStats();
-      
+
       return {
         status: responseTime < 1000 ? 'healthy' : 'degraded',
         responseTime,
@@ -113,13 +117,13 @@ export class EnhancedHealthService {
   private async checkRedis(): Promise<HealthCheck> {
     try {
       const startTime = Date.now();
-      
+
       // 这里应该注入Redis服务并测试连接
       // const redis = this.redisService.getClient();
       // await redis.ping();
-      
+
       const responseTime = Date.now() - startTime;
-      
+
       return {
         status: responseTime < 500 ? 'healthy' : 'degraded',
         responseTime,
@@ -135,13 +139,13 @@ export class EnhancedHealthService {
   private async checkElasticsearch(): Promise<HealthCheck> {
     try {
       const startTime = Date.now();
-      
+
       // 这里应该注入Elasticsearch服务并测试连接
       // const esClient = this.elasticsearchService.getClient();
       // await esClient.ping();
-      
+
       const responseTime = Date.now() - startTime;
-      
+
       return {
         status: responseTime < 1000 ? 'healthy' : 'degraded',
         responseTime,
@@ -162,12 +166,13 @@ export class EnhancedHealthService {
     const memUsage = process.memoryUsage();
     const totalMemory = require('os').totalmem();
     const freeMemory = require('os').freemem();
-    
-    const memoryUsagePercent = ((memUsage.heapUsed / memUsage.heapTotal) * 100);
-    const systemMemoryUsagePercent = ((totalMemory - freeMemory) / totalMemory * 100);
-    
+
+    const memoryUsagePercent = (memUsage.heapUsed / memUsage.heapTotal) * 100;
+    const systemMemoryUsagePercent = ((totalMemory - freeMemory) / totalMemory) * 100;
+
     const memory: HealthCheck = {
-      status: memoryUsagePercent < 80 ? 'healthy' : memoryUsagePercent < 90 ? 'degraded' : 'unhealthy',
+      status:
+        memoryUsagePercent < 80 ? 'healthy' : memoryUsagePercent < 90 ? 'degraded' : 'unhealthy',
       details: {
         heapUsed: Math.round(memUsage.heapUsed / 1024 / 1024) + 'MB',
         heapTotal: Math.round(memUsage.heapTotal / 1024 / 1024) + 'MB',

@@ -12,10 +12,10 @@ export class UserStatisticsQueryDto {
   @IsOptional()
   endDate?: string;
 
-  @ApiProperty({ 
-    description: '用户类型', 
-    enum: ['buyer', 'seller'], 
-    required: false 
+  @ApiProperty({
+    description: '用户类型',
+    enum: ['buyer', 'seller'],
+    required: false,
   })
   @IsEnum(['buyer', 'seller'])
   @IsOptional()
@@ -26,11 +26,11 @@ export class UserStatisticsQueryDto {
   @IsOptional()
   source?: string;
 
-  @ApiProperty({ 
-    description: '统计粒度', 
-    enum: ['daily', 'weekly', 'monthly'], 
+  @ApiProperty({
+    description: '统计粒度',
+    enum: ['daily', 'weekly', 'monthly'],
     default: 'daily',
-    required: false 
+    required: false,
   })
   @IsEnum(['daily', 'weekly', 'monthly'])
   @IsOptional()

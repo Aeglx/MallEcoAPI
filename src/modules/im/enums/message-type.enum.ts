@@ -19,4 +19,3 @@ export enum MessageTypeEnum {
   /** 系统通知 */
   SYSTEM = 'SYSTEM',
 }
-

@@ -1,4 +1,15 @@
-import { Controller, Post, Get, Put, Delete, Body, Param, Query, HttpStatus, HttpException } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Get,
+  Put,
+  Delete,
+  Body,
+  Param,
+  Query,
+  HttpStatus,
+  HttpException,
+} from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiQuery, ApiBody } from '@nestjs/swagger';
 import { PreventDuplicateSubmissions } from '../../shared/aop/decorators/prevent-duplicate-submissions.decorator';
 import { OrdersService } from './orders.service';
@@ -46,11 +57,14 @@ export class OrdersController {
         message: '订单创建成功',
       };
     } catch (error) {
-      throw new HttpException({
-        success: false,
-        message: '订单创建失败',
-        error: error.message,
-      }, HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        {
+          success: false,
+          message: '订单创建失败',
+          error: error.message,
+        },
+        HttpStatus.BAD_REQUEST,
+      );
     }
   }
 
@@ -80,10 +94,13 @@ export class OrdersController {
   async getOrderById(@Param('id') id: string) {
     const orderWithItems = await this.ordersService.getOrderWithItemsById(id);
     if (!orderWithItems) {
-      throw new HttpException({
-        success: false,
-        message: '订单不存在',
-      }, HttpStatus.NOT_FOUND);
+      throw new HttpException(
+        {
+          success: false,
+          message: '订单不存在',
+        },
+        HttpStatus.NOT_FOUND,
+      );
     }
 
     return {
@@ -160,10 +177,13 @@ export class OrdersController {
   async updateOrderStatus(@Param('id') id: string, @Body() dto: UpdateOrderStatusDto) {
     const order = await this.ordersService.updateOrderStatus(id, dto);
     if (!order) {
-      throw new HttpException({
-        success: false,
-        message: '订单不存在',
-      }, HttpStatus.NOT_FOUND);
+      throw new HttpException(
+        {
+          success: false,
+          message: '订单不存在',
+        },
+        HttpStatus.NOT_FOUND,
+      );
     }
 
     return {
@@ -199,10 +219,13 @@ export class OrdersController {
   async deleteOrder(@Param('id') id: string) {
     const result = await this.ordersService.deleteOrder(id);
     if (!result) {
-      throw new HttpException({
-        success: false,
-        message: '订单不存在',
-      }, HttpStatus.NOT_FOUND);
+      throw new HttpException(
+        {
+          success: false,
+          message: '订单不存在',
+        },
+        HttpStatus.NOT_FOUND,
+      );
     }
 
     return {

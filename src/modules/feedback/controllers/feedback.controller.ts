@@ -56,12 +56,23 @@ export class FeedbackController {
   @Roles(Role.ADMIN)
   @ApiOperation({ summary: '回复反馈（管理员）' })
   @ApiParam({ name: 'id', description: '反馈ID', type: Number })
-  @ApiBody({ schema: { type: 'object', properties: { reply: { type: 'string', description: '回复内容' }, adminId: { type: 'number', description: '管理员ID' } } } })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        reply: { type: 'string', description: '回复内容' },
+        adminId: { type: 'number', description: '管理员ID' },
+      },
+    },
+  })
   @ApiResponse({ status: 200, description: '回复反馈成功', type: Feedback })
   @ApiResponse({ status: 401, description: '未授权' })
   @ApiResponse({ status: 403, description: '禁止访问' })
   @ApiResponse({ status: 404, description: '反馈记录不存在' })
-  async replyFeedback(@Param('id') id: number, @Body() { reply, adminId }: { reply: string; adminId: number }): Promise<Feedback> {
+  async replyFeedback(
+    @Param('id') id: number,
+    @Body() { reply, adminId }: { reply: string; adminId: number },
+  ): Promise<Feedback> {
     return this.feedbackService.replyFeedback(id, reply, adminId);
   }
 
@@ -70,12 +81,17 @@ export class FeedbackController {
   @Roles(Role.ADMIN)
   @ApiOperation({ summary: '更新反馈状态（管理员）' })
   @ApiParam({ name: 'id', description: '反馈ID', type: Number })
-  @ApiBody({ schema: { type: 'object', properties: { status: { type: 'string', description: '反馈状态' } } } })
+  @ApiBody({
+    schema: { type: 'object', properties: { status: { type: 'string', description: '反馈状态' } } },
+  })
   @ApiResponse({ status: 200, description: '更新反馈状态成功', type: Feedback })
   @ApiResponse({ status: 401, description: '未授权' })
   @ApiResponse({ status: 403, description: '禁止访问' })
   @ApiResponse({ status: 404, description: '反馈记录不存在' })
-  async updateFeedbackStatus(@Param('id') id: number, @Body() { status }: { status: string }): Promise<Feedback> {
+  async updateFeedbackStatus(
+    @Param('id') id: number,
+    @Body() { status }: { status: string },
+  ): Promise<Feedback> {
     return this.feedbackService.updateFeedbackStatus(id, status as any);
   }
 

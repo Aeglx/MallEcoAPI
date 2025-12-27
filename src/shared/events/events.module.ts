@@ -18,4 +18,3 @@ import { EventPublisherService } from './event-publisher.service';
   exports: [EventPublisherService],
 })
 export class EventsModule {}
-

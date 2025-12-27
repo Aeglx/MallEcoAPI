@@ -7,11 +7,7 @@ import { RbacModule } from '../rbac/rbac.module';
 import { AuthModule } from '../auth/auth.module';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([Feedback]),
-    RbacModule,
-    AuthModule,
-  ],
+  imports: [TypeOrmModule.forFeature([Feedback]), RbacModule, AuthModule],
   controllers: [FeedbackController],
   providers: [FeedbackService],
   exports: [FeedbackService],

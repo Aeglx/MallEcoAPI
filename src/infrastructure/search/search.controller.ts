@@ -43,10 +43,7 @@ export class SearchController {
   @ApiQuery({ name: 'userId', description: '用户ID', required: true })
   @ApiQuery({ name: 'limit', description: '获取数量', required: false, type: Number })
   @ApiResponse({ status: 200, description: '获取成功' })
-  async getSearchHistory(
-    @Query('userId') userId: string,
-    @Query('limit') limit?: number,
-  ) {
+  async getSearchHistory(@Query('userId') userId: string, @Query('limit') limit?: number) {
     return await this.searchService.getSearchHistory(userId, limit);
   }
 
@@ -70,11 +67,7 @@ export class SearchController {
   @ApiQuery({ name: 'keyword', description: '搜索关键词', required: true })
   @ApiQuery({ name: 'limit', description: '获取数量', required: false, type: Number })
   @ApiResponse({ status: 200, description: '获取成功' })
-  async getSearchSuggestions(
-    @Query('keyword') keyword: string,
-    @Query('limit') limit?: number,
-  ) {
+  async getSearchSuggestions(@Query('keyword') keyword: string, @Query('limit') limit?: number) {
     return await this.searchService.getSearchSuggestions(keyword, limit);
   }
 }
-

@@ -12,10 +12,10 @@ export class OrderStatisticsQueryDto {
   @IsOptional()
   endDate?: string;
 
-  @ApiProperty({ 
-    description: '订单状态', 
-    enum: ['pending', 'paid', 'shipped', 'completed', 'cancelled', 'refunded'], 
-    required: false 
+  @ApiProperty({
+    description: '订单状态',
+    enum: ['pending', 'paid', 'shipped', 'completed', 'cancelled', 'refunded'],
+    required: false,
   })
   @IsEnum(['pending', 'paid', 'shipped', 'completed', 'cancelled', 'refunded'])
   @IsOptional()
@@ -26,11 +26,11 @@ export class OrderStatisticsQueryDto {
   @IsOptional()
   paymentMethod?: string;
 
-  @ApiProperty({ 
-    description: '统计粒度', 
-    enum: ['daily', 'weekly', 'monthly'], 
+  @ApiProperty({
+    description: '统计粒度',
+    enum: ['daily', 'weekly', 'monthly'],
     default: 'daily',
-    required: false 
+    required: false,
   })
   @IsEnum(['daily', 'weekly', 'monthly'])
   @IsOptional()

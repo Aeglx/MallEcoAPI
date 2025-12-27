@@ -12,31 +12,31 @@ export class DashboardQueryDto {
   @IsOptional()
   endDate?: string;
 
-  @ApiProperty({ 
-    description: '统计粒度', 
-    enum: ['daily', 'weekly', 'monthly'], 
+  @ApiProperty({
+    description: '统计粒度',
+    enum: ['daily', 'weekly', 'monthly'],
     default: 'daily',
-    required: false 
+    required: false,
   })
   @IsEnum(['daily', 'weekly', 'monthly'])
   @IsOptional()
   granularity?: string;
 
-  @ApiProperty({ 
-    description: '数据范围', 
-    enum: ['today', 'yesterday', 'last7days', 'last30days', 'custom'], 
+  @ApiProperty({
+    description: '数据范围',
+    enum: ['today', 'yesterday', 'last7days', 'last30days', 'custom'],
     default: 'last7days',
-    required: false 
+    required: false,
   })
   @IsEnum(['today', 'yesterday', 'last7days', 'last30days', 'custom'])
   @IsOptional()
   range?: string;
 
-  @ApiProperty({ 
-    description: '图表类型', 
-    enum: ['line', 'bar', 'pie', 'table'], 
+  @ApiProperty({
+    description: '图表类型',
+    enum: ['line', 'bar', 'pie', 'table'],
     default: 'line',
-    required: false 
+    required: false,
   })
   @IsEnum(['line', 'bar', 'pie', 'table'])
   @IsOptional()

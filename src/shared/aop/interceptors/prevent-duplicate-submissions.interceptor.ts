@@ -26,7 +26,7 @@ export class PreventDuplicateSubmissionsInterceptor implements NestInterceptor {
   async intercept(context: ExecutionContext, next: CallHandler): Promise<Observable<any>> {
     const request = context.switchToHttp().getRequest();
     const handler = context.getHandler();
-    
+
     const metadata = Reflect.getMetadata('preventDuplicateSubmissions', handler);
     if (!metadata) {
       return next.handle();
@@ -56,4 +56,3 @@ export class PreventDuplicateSubmissionsInterceptor implements NestInterceptor {
     return next.handle();
   }
 }
-

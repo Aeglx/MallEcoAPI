@@ -5,7 +5,6 @@ import { ApiTags, ApiOperation, ApiConsumes, ApiBody } from '@nestjs/swagger';
 @ApiTags('通用-文件上传')
 @Controller('common/upload')
 export class UploadController {
-  
   @Post('single')
   @UseInterceptors(FileInterceptor('file'))
   @ApiConsumes('multipart/form-data')
@@ -26,7 +25,7 @@ export class UploadController {
       filename: file.originalname,
       size: file.size,
       mimetype: file.mimetype,
-      url: `/uploads/${file.filename}`
+      url: `/uploads/${file.filename}`,
     };
   }
 
@@ -53,7 +52,7 @@ export class UploadController {
       filename: file.originalname,
       size: file.size,
       mimetype: file.mimetype,
-      url: `/uploads/${file.filename}`
+      url: `/uploads/${file.filename}`,
     }));
   }
 
@@ -77,11 +76,11 @@ export class UploadController {
     if (!allowedMimeTypes.includes(image.mimetype)) {
       throw new Error('不支持的文件类型');
     }
-    
+
     return {
       filename: image.originalname,
       size: image.size,
-      url: `/uploads/images/${image.filename}`
+      url: `/uploads/images/${image.filename}`,
     };
   }
 }

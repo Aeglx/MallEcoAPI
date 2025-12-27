@@ -8,7 +8,7 @@ import { GoodsService } from '../services/goods.service';
 export class GoodsController {
   constructor(
     private readonly hotWordsService: HotWordsService,
-    private readonly goodsService: GoodsService
+    private readonly goodsService: GoodsService,
   ) {}
 
   @Get('hot-words')
@@ -16,7 +16,7 @@ export class GoodsController {
     const hotWords = this.hotWordsService.getHotWords(count);
     return {
       success: true,
-      result: hotWords
+      result: hotWords,
     };
   }
 
@@ -26,12 +26,12 @@ export class GoodsController {
     if (!goods) {
       return {
         success: false,
-        message: '商品不存在'
+        message: '商品不存在',
       };
     }
     return {
       success: true,
-      result: goods
+      result: goods,
     };
   }
 
@@ -41,12 +41,12 @@ export class GoodsController {
     if (!skuDetail) {
       return {
         success: false,
-        message: 'SKU不存在'
+        message: 'SKU不存在',
       };
     }
     return {
       success: true,
-      result: skuDetail
+      result: skuDetail,
     };
   }
 
@@ -67,8 +67,8 @@ export class GoodsController {
         countId: null,
         maxLimit: null,
         searchCount: true,
-        pages: 1
-      }
+        pages: 1,
+      },
     };
   }
 
@@ -78,7 +78,7 @@ export class GoodsController {
     const skuList = this.goodsService.getAllSku();
     return {
       success: true,
-      result: skuList
+      result: skuList,
     };
   }
 
@@ -99,8 +99,8 @@ export class GoodsController {
         countId: null,
         maxLimit: null,
         searchCount: true,
-        pages: Math.ceil(goodsList.length / (pageVO.size || goodsList.length))
-      }
+        pages: Math.ceil(goodsList.length / (pageVO.size || goodsList.length)),
+      },
     };
   }
 
@@ -113,12 +113,12 @@ export class GoodsController {
         brandVos: [
           { id: '1', name: '品牌1', logo: 'https://via.placeholder.com/100x100?text=Brand1' },
           { id: '2', name: '品牌2', logo: 'https://via.placeholder.com/100x100?text=Brand2' },
-          { id: '3', name: '品牌3', logo: 'https://via.placeholder.com/100x100?text=Brand3' }
+          { id: '3', name: '品牌3', logo: 'https://via.placeholder.com/100x100?text=Brand3' },
         ],
         categoryVos: [
           { id: '1', name: '分类1', parentId: '0' },
           { id: '2', name: '分类2', parentId: '0' },
-          { id: '3', name: '分类3', parentId: '0' }
+          { id: '3', name: '分类3', parentId: '0' },
         ],
         specVos: [
           {
@@ -127,8 +127,8 @@ export class GoodsController {
             specValueVos: [
               { id: '1', name: '红色' },
               { id: '2', name: '蓝色' },
-              { id: '3', name: '黑色' }
-            ]
+              { id: '3', name: '黑色' },
+            ],
           },
           {
             id: '2',
@@ -136,11 +136,11 @@ export class GoodsController {
             specValueVos: [
               { id: '4', name: 'S' },
               { id: '5', name: 'M' },
-              { id: '6', name: 'L' }
-            ]
-          }
-        ]
-      }
+              { id: '6', name: 'L' },
+            ],
+          },
+        ],
+      },
     };
   }
 }

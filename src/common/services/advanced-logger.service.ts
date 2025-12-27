@@ -100,11 +100,7 @@ export class AdvancedLoggerService {
   /**
    * 记录性能日志
    */
-  performance(
-    operation: string,
-    duration: number,
-    metadata?: Record<string, any>,
-  ): void {
+  performance(operation: string, duration: number, metadata?: Record<string, any>): void {
     if (this.config.enablePerformanceLogging && this.shouldLog('info')) {
       this.log('info', `Performance: ${operation}`, {
         ...metadata,
@@ -117,12 +113,7 @@ export class AdvancedLoggerService {
   /**
    * 记录审计日志
    */
-  audit(
-    action: string,
-    resource: string,
-    userId: string,
-    metadata?: Record<string, any>,
-  ): void {
+  audit(action: string, resource: string, userId: string, metadata?: Record<string, any>): void {
     if (this.config.enableAuditLogging && this.shouldLog('info')) {
       this.log('info', `Audit: ${action}`, {
         ...metadata,
@@ -139,7 +130,7 @@ export class AdvancedLoggerService {
    */
   createTimer(operation: string): Timer {
     const startTime = Date.now();
-    
+
     return {
       stop: (metadata?: Record<string, any>) => {
         const duration = Date.now() - startTime;
@@ -162,7 +153,7 @@ export class AdvancedLoggerService {
 
     this.logBuffer.forEach(entry => {
       byLevel[entry.level] = (byLevel[entry.level] || 0) + 1;
-      
+
       const context = entry.context || 'unknown';
       byContext[context] = (byContext[context] || 0) + 1;
     });
@@ -177,26 +168,22 @@ export class AdvancedLoggerService {
   /**
    * 导出日志数据
    */
-  exportLogs(
-    level?: string,
-    startTime?: number,
-    endTime?: number,
-  ): LogEntry[] {
+  exportLogs(level?: string, startTime?: number, endTime?: number): LogEntry[] {
     return this.logBuffer.filter(entry => {
       let match = true;
-      
+
       if (level && entry.level !== level) {
         match = false;
       }
-      
+
       if (startTime && entry.timestamp < startTime) {
         match = false;
       }
-      
+
       if (endTime && entry.timestamp > endTime) {
         match = false;
       }
-      
+
       return match;
     });
   }
@@ -207,9 +194,9 @@ export class AdvancedLoggerService {
   cleanupLogs(retentionHours: number = 24): void {
     const cutoffTime = Date.now() - retentionHours * 60 * 60 * 1000;
     const initialLength = this.logBuffer.length;
-    
+
     this.logBuffer = this.logBuffer.filter(entry => entry.timestamp >= cutoffTime);
-    
+
     const removedCount = initialLength - this.logBuffer.length;
     if (removedCount > 0) {
       this.info(`Cleaned up ${removedCount} old log entries`);
@@ -219,11 +206,7 @@ export class AdvancedLoggerService {
   /**
    * 内部日志记录方法
    */
-  private log(
-    level: LogEntry['level'],
-    message: string,
-    metadata?: Record<string, any>,
-  ): void {
+  private log(level: LogEntry['level'], message: string, metadata?: Record<string, any>): void {
     const logEntry: LogEntry = {
       timestamp: Date.now(),
       level,
@@ -234,7 +217,7 @@ export class AdvancedLoggerService {
 
     // 添加到缓冲区
     this.logBuffer.push(logEntry);
-    
+
     // 保持缓冲区大小
     if (this.logBuffer.length > this.maxBufferSize) {
       this.logBuffer.shift();
@@ -252,7 +235,7 @@ export class AdvancedLoggerService {
    */
   private outputLog(entry: LogEntry): void {
     const formattedLog = this.formatLog(entry);
-    
+
     switch (entry.level) {
       case 'debug':
         console.debug(formattedLog);
@@ -288,7 +271,7 @@ export class AdvancedLoggerService {
       const level = entry.level.toUpperCase().padEnd(5);
       const context = entry.context ? `[${entry.context}]` : '';
       const metadata = entry.metadata ? ` ${JSON.stringify(entry.metadata)}` : '';
-      
+
       return `${timestamp} ${level} ${context} ${entry.message}${metadata}`;
     }
   }
@@ -300,7 +283,7 @@ export class AdvancedLoggerService {
     const levels = ['debug', 'info', 'warn', 'error', 'fatal'];
     const currentLevelIndex = levels.indexOf(this.config.level);
     const targetLevelIndex = levels.indexOf(level);
-    
+
     return targetLevelIndex >= currentLevelIndex;
   }
 }

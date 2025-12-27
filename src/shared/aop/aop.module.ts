@@ -30,4 +30,3 @@ import { LimitPointInterceptor } from './interceptors/limit-point.interceptor';
   exports: [],
 })
 export class AopModule {}
-

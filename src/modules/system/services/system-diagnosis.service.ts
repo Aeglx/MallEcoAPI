@@ -39,7 +39,7 @@ export class SystemDiagnosisService {
       page = 1,
       limit = 10,
       sortBy = 'createdAt',
-      sortOrder = 'DESC'
+      sortOrder = 'DESC',
     } = searchDto;
 
     const where: any = {};
@@ -77,10 +77,7 @@ export class SystemDiagnosisService {
     }
 
     if (createdAtStart && createdAtEnd) {
-      where.createdAt = Between(
-        new Date(createdAtStart),
-        new Date(createdAtEnd)
-      );
+      where.createdAt = Between(new Date(createdAtStart), new Date(createdAtEnd));
     } else if (createdAtStart) {
       where.createdAt = MoreThanOrEqual(new Date(createdAtStart));
     } else if (createdAtEnd) {
@@ -88,10 +85,7 @@ export class SystemDiagnosisService {
     }
 
     if (resolvedAtStart && resolvedAtEnd) {
-      where.resolvedAt = Between(
-        new Date(resolvedAtStart),
-        new Date(resolvedAtEnd)
-      );
+      where.resolvedAt = Between(new Date(resolvedAtStart), new Date(resolvedAtEnd));
     } else if (resolvedAtStart) {
       where.resolvedAt = MoreThanOrEqual(new Date(resolvedAtStart));
     } else if (resolvedAtEnd) {
@@ -149,7 +143,7 @@ export class SystemDiagnosisService {
     diagnosis.resolvedAt = new Date();
     diagnosis.resolvedBy = resolvedBy;
     diagnosis.status = 'normal';
-    
+
     return await this.diagnosisRepository.save(diagnosis);
   }
 
@@ -226,7 +220,8 @@ export class SystemDiagnosisService {
     const loadAvg = os.loadavg();
 
     // 检查系统运行时间
-    if (uptime < 300) { // 5分钟内
+    if (uptime < 300) {
+      // 5分钟内
       issues.push({
         title: '系统刚启动',
         description: '系统运行时间较短，可能存在不稳定情况',
@@ -234,7 +229,7 @@ export class SystemDiagnosisService {
         severity: 'low',
         type: 'health',
         metrics: { uptime },
-        suggestion: '观察系统运行状态，确保服务正常启动'
+        suggestion: '观察系统运行状态，确保服务正常启动',
       });
     }
 
@@ -247,7 +242,7 @@ export class SystemDiagnosisService {
         severity: 'high',
         type: 'performance',
         metrics: { loadAvg },
-        suggestion: '检查CPU密集型进程，考虑扩容或优化'
+        suggestion: '检查CPU密集型进程，考虑扩容或优化',
       });
     }
 
@@ -256,11 +251,11 @@ export class SystemDiagnosisService {
 
   private async diagnoseDatabase(): Promise<any[]> {
     const issues = [];
-    
+
     try {
       // 这里应该实现实际的数据库连接检查
       // 示例：检查连接池状态、查询响应时间等
-      
+
       // 模拟数据库连接测试
       const connectionTest = true; // 实际应该是测试结果
       const queryTime = Math.random() * 1000; // 模拟查询时间
@@ -273,7 +268,7 @@ export class SystemDiagnosisService {
           severity: 'critical',
           type: 'connectivity',
           metrics: { connected: false },
-          suggestion: '检查数据库服务状态和网络连接'
+          suggestion: '检查数据库服务状态和网络连接',
         });
       }
 
@@ -285,10 +280,9 @@ export class SystemDiagnosisService {
           severity: 'medium',
           type: 'performance',
           metrics: { queryTime },
-          suggestion: '优化查询语句，检查数据库索引'
+          suggestion: '优化查询语句，检查数据库索引',
         });
       }
-
     } catch (error) {
       issues.push({
         title: '数据库诊断失败',
@@ -296,7 +290,7 @@ export class SystemDiagnosisService {
         status: 'error',
         severity: 'high',
         type: 'health',
-        suggestion: '检查数据库配置和服务状态'
+        suggestion: '检查数据库配置和服务状态',
       });
     }
 
@@ -305,7 +299,7 @@ export class SystemDiagnosisService {
 
   private async diagnoseCache(): Promise<any[]> {
     const issues = [];
-    
+
     try {
       // 这里应该实现实际的缓存检查
       // 模拟缓存状态检查
@@ -320,7 +314,7 @@ export class SystemDiagnosisService {
           status: 'error',
           severity: 'high',
           type: 'connectivity',
-          suggestion: '检查Redis服务状态和配置'
+          suggestion: '检查Redis服务状态和配置',
         });
       }
 
@@ -332,10 +326,9 @@ export class SystemDiagnosisService {
           severity: 'medium',
           type: 'performance',
           metrics: { hitRate },
-          suggestion: '优化缓存策略，调整缓存过期时间'
+          suggestion: '优化缓存策略，调整缓存过期时间',
         });
       }
-
     } catch (error) {
       issues.push({
         title: '缓存诊断失败',
@@ -343,7 +336,7 @@ export class SystemDiagnosisService {
         status: 'error',
         severity: 'high',
         type: 'health',
-        suggestion: '检查缓存服务配置'
+        suggestion: '检查缓存服务配置',
       });
     }
 
@@ -352,7 +345,7 @@ export class SystemDiagnosisService {
 
   private async diagnoseDisk(): Promise<any[]> {
     const issues = [];
-    
+
     try {
       const stats = fs.statSync(process.cwd());
       const freeSpace = os.freemem(); // 简化示例
@@ -367,7 +360,7 @@ export class SystemDiagnosisService {
           severity: 'critical',
           type: 'health',
           metrics: { usagePercent, freeSpace, totalSpace },
-          suggestion: '清理无用文件，扩展存储空间'
+          suggestion: '清理无用文件，扩展存储空间',
         });
       } else if (usagePercent > 80) {
         issues.push({
@@ -377,10 +370,9 @@ export class SystemDiagnosisService {
           severity: 'medium',
           type: 'health',
           metrics: { usagePercent, freeSpace, totalSpace },
-          suggestion: '关注磁盘使用情况，准备清理方案'
+          suggestion: '关注磁盘使用情况，准备清理方案',
         });
       }
-
     } catch (error) {
       issues.push({
         title: '磁盘诊断失败',
@@ -388,7 +380,7 @@ export class SystemDiagnosisService {
         status: 'error',
         severity: 'high',
         type: 'health',
-        suggestion: '检查磁盘权限和状态'
+        suggestion: '检查磁盘权限和状态',
       });
     }
 
@@ -397,7 +389,7 @@ export class SystemDiagnosisService {
 
   private async diagnoseMemory(): Promise<any[]> {
     const issues = [];
-    
+
     try {
       const totalMem = os.totalmem();
       const freeMem = os.freemem();
@@ -412,7 +404,7 @@ export class SystemDiagnosisService {
           severity: 'critical',
           type: 'performance',
           metrics: { totalMem, freeMem, usedMem, usagePercent },
-          suggestion: '检查内存泄漏，考虑扩容'
+          suggestion: '检查内存泄漏，考虑扩容',
         });
       } else if (usagePercent > 80) {
         issues.push({
@@ -422,10 +414,9 @@ export class SystemDiagnosisService {
           severity: 'medium',
           type: 'performance',
           metrics: { totalMem, freeMem, usedMem, usagePercent },
-          suggestion: '监控内存使用趋势，优化内存使用'
+          suggestion: '监控内存使用趋势，优化内存使用',
         });
       }
-
     } catch (error) {
       issues.push({
         title: '内存诊断失败',
@@ -433,7 +424,7 @@ export class SystemDiagnosisService {
         status: 'error',
         severity: 'high',
         type: 'health',
-        suggestion: '检查系统状态'
+        suggestion: '检查系统状态',
       });
     }
 
@@ -442,7 +433,7 @@ export class SystemDiagnosisService {
 
   private async diagnoseCPU(): Promise<any[]> {
     const issues = [];
-    
+
     try {
       const cpus = os.cpus();
       const loadAvg = os.loadavg();
@@ -457,7 +448,7 @@ export class SystemDiagnosisService {
           severity: 'critical',
           type: 'performance',
           metrics: { loadAvg, cpuCount, loadPercent },
-          suggestion: '检查CPU密集型进程，考虑负载均衡'
+          suggestion: '检查CPU密集型进程，考虑负载均衡',
         });
       } else if (loadPercent > 70) {
         issues.push({
@@ -467,10 +458,9 @@ export class SystemDiagnosisService {
           severity: 'medium',
           type: 'performance',
           metrics: { loadAvg, cpuCount, loadPercent },
-          suggestion: '监控CPU使用趋势，优化计算逻辑'
+          suggestion: '监控CPU使用趋势，优化计算逻辑',
         });
       }
-
     } catch (error) {
       issues.push({
         title: 'CPU诊断失败',
@@ -478,7 +468,7 @@ export class SystemDiagnosisService {
         status: 'error',
         severity: 'high',
         type: 'health',
-        suggestion: '检查系统状态'
+        suggestion: '检查系统状态',
       });
     }
 
@@ -487,12 +477,12 @@ export class SystemDiagnosisService {
 
   private async diagnoseNetwork(): Promise<any[]> {
     const issues = [];
-    
+
     try {
       // 模拟网络连接检查
       const networkInterfaces = os.networkInterfaces();
-      const hasActiveInterface = Object.values(networkInterfaces).some(
-        interfaces => interfaces.some(iface => !iface.internal && iface.family === 'IPv4')
+      const hasActiveInterface = Object.values(networkInterfaces).some(interfaces =>
+        interfaces.some(iface => !iface.internal && iface.family === 'IPv4'),
       );
 
       if (!hasActiveInterface) {
@@ -502,12 +492,11 @@ export class SystemDiagnosisService {
           status: 'error',
           severity: 'high',
           type: 'connectivity',
-          suggestion: '检查网络配置和硬件连接'
+          suggestion: '检查网络配置和硬件连接',
         });
       }
 
       // 可以添加更多网络检查，如：DNS解析、外网连通性等
-
     } catch (error) {
       issues.push({
         title: '网络诊断失败',
@@ -515,7 +504,7 @@ export class SystemDiagnosisService {
         status: 'error',
         severity: 'high',
         type: 'health',
-        suggestion: '检查网络配置'
+        suggestion: '检查网络配置',
       });
     }
 
@@ -524,7 +513,7 @@ export class SystemDiagnosisService {
 
   private async diagnoseAPI(): Promise<any[]> {
     const issues = [];
-    
+
     try {
       // 模拟API健康检查
       const responseTime = Math.random() * 1000;
@@ -538,7 +527,7 @@ export class SystemDiagnosisService {
           severity: 'medium',
           type: 'performance',
           metrics: { responseTime },
-          suggestion: '优化API逻辑，添加缓存机制'
+          suggestion: '优化API逻辑，添加缓存机制',
         });
       }
 
@@ -550,10 +539,9 @@ export class SystemDiagnosisService {
           severity: 'high',
           type: 'health',
           metrics: { errorRate },
-          suggestion: '检查API日志，修复异常问题'
+          suggestion: '检查API日志，修复异常问题',
         });
       }
-
     } catch (error) {
       issues.push({
         title: 'API诊断失败',
@@ -561,7 +549,7 @@ export class SystemDiagnosisService {
         status: 'error',
         severity: 'high',
         type: 'health',
-        suggestion: '检查API服务状态'
+        suggestion: '检查API服务状态',
       });
     }
 
@@ -569,42 +557,36 @@ export class SystemDiagnosisService {
   }
 
   async getStatistics(): Promise<any> {
-    const [
-      total,
-      resolved,
-      unresolved,
-      byType,
-      byCategory,
-      bySeverity,
-      recent
-    ] = await Promise.all([
-      this.diagnosisRepository.count(),
-      this.diagnosisRepository.count({ where: { isResolved: true } }),
-      this.diagnosisRepository.count({ where: { isResolved: false } }),
-      this.diagnosisRepository
-        .createQueryBuilder('diagnosis')
-        .select('diagnosis.type', 'type')
-        .addSelect('COUNT(*)', 'count')
-        .groupBy('diagnosis.type')
-        .getRawMany(),
-      this.diagnosisRepository
-        .createQueryBuilder('diagnosis')
-        .select('diagnosis.category', 'category')
-        .addSelect('COUNT(*)', 'count')
-        .groupBy('diagnosis.category')
-        .getRawMany(),
-      this.diagnosisRepository
-        .createQueryBuilder('diagnosis')
-        .select('diagnosis.severity', 'severity')
-        .addSelect('COUNT(*)', 'count')
-        .groupBy('diagnosis.severity')
-        .getRawMany(),
-      this.diagnosisRepository.find({
-        where: { requiresAttention: true, isResolved: false },
-        order: { createdAt: 'DESC' },
-        take: 10,
-      }),
-    ]);
+    const [total, resolved, unresolved, byType, byCategory, bySeverity, recent] = await Promise.all(
+      [
+        this.diagnosisRepository.count(),
+        this.diagnosisRepository.count({ where: { isResolved: true } }),
+        this.diagnosisRepository.count({ where: { isResolved: false } }),
+        this.diagnosisRepository
+          .createQueryBuilder('diagnosis')
+          .select('diagnosis.type', 'type')
+          .addSelect('COUNT(*)', 'count')
+          .groupBy('diagnosis.type')
+          .getRawMany(),
+        this.diagnosisRepository
+          .createQueryBuilder('diagnosis')
+          .select('diagnosis.category', 'category')
+          .addSelect('COUNT(*)', 'count')
+          .groupBy('diagnosis.category')
+          .getRawMany(),
+        this.diagnosisRepository
+          .createQueryBuilder('diagnosis')
+          .select('diagnosis.severity', 'severity')
+          .addSelect('COUNT(*)', 'count')
+          .groupBy('diagnosis.severity')
+          .getRawMany(),
+        this.diagnosisRepository.find({
+          where: { requiresAttention: true, isResolved: false },
+          order: { createdAt: 'DESC' },
+          take: 10,
+        }),
+      ],
+    );
 
     return {
       total,

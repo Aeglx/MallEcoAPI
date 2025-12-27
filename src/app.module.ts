@@ -110,9 +110,7 @@ import { ServeStaticModule } from '@nestjs/serve-static';
             password: configService.get('DB_PASSWORD'),
             database: configService.get('DB_NAME'),
             charset: configService.get('DB_CHARSET'),
-            entities: [
-              join(__dirname, '**/*.entity{.ts,.js}'),
-            ],
+            entities: [join(__dirname, '**/*.entity{.ts,.js}')],
             synchronize: false,
             logging: false,
           }),

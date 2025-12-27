@@ -21,7 +21,7 @@ export class DatabaseOptimizerService implements OnModuleInit {
   private async initializeQueryOptimizations() {
     // 设置数据库会话级别的优化参数
     await this.optimizeSessionSettings();
-    
+
     // 创建必要的索引（如果不存在）
     await this.createRecommendedIndexes();
   }
@@ -32,21 +32,21 @@ export class DatabaseOptimizerService implements OnModuleInit {
   private async optimizeSessionSettings() {
     const optimizationQueries = [
       // 设置查询缓存大小
-      "SET SESSION query_cache_type = 1",
-      "SET SESSION query_cache_size = 67108864", // 64MB
-      
+      'SET SESSION query_cache_type = 1',
+      'SET SESSION query_cache_size = 67108864', // 64MB
+
       // 优化排序和分组操作
-      "SET SESSION sort_buffer_size = 262144",
-      "SET SESSION read_buffer_size = 131072",
-      "SET SESSION read_rnd_buffer_size = 262144",
-      
+      'SET SESSION sort_buffer_size = 262144',
+      'SET SESSION read_buffer_size = 131072',
+      'SET SESSION read_rnd_buffer_size = 262144',
+
       // 优化连接设置
-      "SET SESSION net_read_timeout = 30",
-      "SET SESSION net_write_timeout = 60",
-      
+      'SET SESSION net_read_timeout = 30',
+      'SET SESSION net_write_timeout = 60',
+
       // 优化临时表
-      "SET SESSION tmp_table_size = 67108864",
-      "SET SESSION max_heap_table_size = 67108864"
+      'SET SESSION tmp_table_size = 67108864',
+      'SET SESSION max_heap_table_size = 67108864',
     ];
 
     try {
@@ -73,7 +73,7 @@ export class DatabaseOptimizerService implements OnModuleInit {
       `CREATE INDEX IF NOT EXISTS idx_users_mobile ON users(mobile)`,
       `CREATE INDEX IF NOT EXISTS idx_users_email ON users(email)`,
       `CREATE INDEX IF NOT EXISTS idx_distribution_member_id ON distribution(member_id)`,
-      `CREATE INDEX IF NOT EXISTS idx_distribution_status ON distribution(distribution_status)`
+      `CREATE INDEX IF NOT EXISTS idx_distribution_status ON distribution(distribution_status)`,
     ];
 
     try {
@@ -123,20 +123,20 @@ export class DatabaseOptimizerService implements OnModuleInit {
         WHERE avg_timer_wait > 1000000000
         ORDER BY avg_timer_wait DESC
         LIMIT 10
-      `
+      `,
     };
 
     try {
       const [tableStats, indexStats, slowQueries] = await Promise.all([
         this.dataSource.query(statsQueries.tableStats),
         this.dataSource.query(statsQueries.indexStats),
-        this.dataSource.query(statsQueries.slowQueries)
+        this.dataSource.query(statsQueries.slowQueries),
       ]);
 
       return {
         tableStats,
         indexStats,
-        slowQueries
+        slowQueries,
       };
     } catch (error) {
       console.error('Failed to get performance stats:', error);
@@ -151,7 +151,7 @@ export class DatabaseOptimizerService implements OnModuleInit {
     try {
       // 使用EXPLAIN分析查询
       const explainResult = await this.dataSource.query(`EXPLAIN ${query}`, params);
-      
+
       // 获取查询执行时间
       const startTime = Date.now();
       await this.dataSource.query(query, params);
@@ -161,7 +161,7 @@ export class DatabaseOptimizerService implements OnModuleInit {
         explain: explainResult,
         executionTime,
         isSlow: executionTime > 1000, // 超过1秒视为慢查询
-        recommendations: this.generateOptimizationRecommendations(explainResult)
+        recommendations: this.generateOptimizationRecommendations(explainResult),
       };
     } catch (error) {
       throw new Error(`Query analysis failed: ${error.message}`);
@@ -174,7 +174,7 @@ export class DatabaseOptimizerService implements OnModuleInit {
   private generateOptimizationRecommendations(explainResult: any[]) {
     const recommendations: string[] = [];
 
-    explainResult.forEach((row) => {
+    explainResult.forEach(row => {
       const { type, key, rows, Extra } = row;
 
       if (type === 'ALL') {
@@ -203,20 +203,20 @@ export class DatabaseOptimizerService implements OnModuleInit {
   async cleanupDatabase() {
     const cleanupQueries = [
       // 清理过期的会话数据
-      "DELETE FROM sessions WHERE expires < NOW()",
-      
+      'DELETE FROM sessions WHERE expires < NOW()',
+
       // 清理过期的验证码
-      "DELETE FROM verification_codes WHERE expires_at < NOW()",
-      
+      'DELETE FROM verification_codes WHERE expires_at < NOW()',
+
       // 清理软删除的数据（保留30天）
-      "DELETE FROM products WHERE delete_flag = 1 AND updated_at < DATE_SUB(NOW(), INTERVAL 30 DAY)",
-      "DELETE FROM orders WHERE delete_flag = 1 AND updated_at < DATE_SUB(NOW(), INTERVAL 30 DAY)",
-      "DELETE FROM users WHERE delete_flag = 1 AND updated_at < DATE_SUB(NOW(), INTERVAL 30 DAY)"
+      'DELETE FROM products WHERE delete_flag = 1 AND updated_at < DATE_SUB(NOW(), INTERVAL 30 DAY)',
+      'DELETE FROM orders WHERE delete_flag = 1 AND updated_at < DATE_SUB(NOW(), INTERVAL 30 DAY)',
+      'DELETE FROM users WHERE delete_flag = 1 AND updated_at < DATE_SUB(NOW(), INTERVAL 30 DAY)',
     ];
 
     try {
       let totalCleaned = 0;
-      
+
       for (const query of cleanupQueries) {
         const result = await this.dataSource.query(query);
         totalCleaned += result.affectedRows || 0;

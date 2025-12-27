@@ -16,7 +16,7 @@ export class AuthService {
   async validateUser(username: string, password: string): Promise<User | null> {
     // 尝试通过用户名、邮箱或手机号查找用户
     let user: User | undefined;
-    
+
     user = await this.usersService.findByUsername(username);
     if (!user) {
       user = await this.usersService.findByEmail(username);
@@ -35,7 +35,9 @@ export class AuthService {
     return null;
   }
 
-  async login(loginDto: LoginDto): Promise<{ accessToken: string; refreshToken: string; user: User }> {
+  async login(
+    loginDto: LoginDto,
+  ): Promise<{ accessToken: string; refreshToken: string; user: User }> {
     const { username, password } = loginDto;
     const user = await this.validateUser(username, password);
 
@@ -51,7 +53,9 @@ export class AuthService {
 
     const refreshToken = this.jwtService.sign(payload, {
       secret: process.env.JWT_REFRESH_SECRET || 'your-refresh-secret-key',
-      expiresIn: process.env.JWT_REFRESH_EXPIRES_IN ? parseInt(process.env.JWT_REFRESH_EXPIRES_IN) : 604800, // 7天
+      expiresIn: process.env.JWT_REFRESH_EXPIRES_IN
+        ? parseInt(process.env.JWT_REFRESH_EXPIRES_IN)
+        : 604800, // 7天
     });
 
     // 更新用户最后登录时间

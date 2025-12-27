@@ -8,7 +8,7 @@ import { CacheAnalysisService } from '../services/cache-analysis.service';
 export class CacheOptimizationController {
   constructor(
     private readonly optimizationService: CacheOptimizationService,
-    private readonly analysisService: CacheAnalysisService
+    private readonly analysisService: CacheAnalysisService,
   ) {}
 
   @Get('performance/metrics')
@@ -18,11 +18,11 @@ export class CacheOptimizationController {
   @ApiResponse({ status: 200, description: '获取成功' })
   async getPerformanceMetrics(
     @Query('startDate') startDate: string,
-    @Query('endDate') endDate: string
+    @Query('endDate') endDate: string,
   ) {
     return await this.optimizationService.getCachePerformanceMetrics(
       new Date(startDate),
-      new Date(endDate)
+      new Date(endDate),
     );
   }
 
@@ -56,12 +56,12 @@ export class CacheOptimizationController {
   async getInvalidationHistory(
     @Query('startDate') startDate?: string,
     @Query('endDate') endDate?: string,
-    @Query('cacheType') cacheType?: string
+    @Query('cacheType') cacheType?: string,
   ) {
     return await this.optimizationService.getInvalidationHistory(
       startDate ? new Date(startDate) : undefined,
       endDate ? new Date(endDate) : undefined,
-      cacheType
+      cacheType,
     );
   }
 
@@ -94,7 +94,7 @@ export class CacheOptimizationController {
   @ApiResponse({ status: 200, description: '清理成功' })
   async clearCache(
     @Query('cacheType') cacheType?: string,
-    @Query('keyPattern') keyPattern?: string
+    @Query('keyPattern') keyPattern?: string,
   ) {
     return await this.optimizationService.clearCache(cacheType, keyPattern);
   }
@@ -104,10 +104,7 @@ export class CacheOptimizationController {
   @ApiParam({ name: 'cacheKey', description: '缓存键' })
   @ApiBody({ description: '配置更新' })
   @ApiResponse({ status: 200, description: '更新成功' })
-  async updateCacheConfig(
-    @Param('cacheKey') cacheKey: string,
-    @Body() updates: any
-  ) {
+  async updateCacheConfig(@Param('cacheKey') cacheKey: string, @Body() updates: any) {
     return await this.optimizationService.updateCacheConfig(cacheKey, updates);
   }
 
@@ -136,12 +133,12 @@ export class CacheOptimizationController {
   async simulateCachePerformanceTest(
     @Query('cacheType') cacheType: string,
     @Query('operation') operation: string,
-    @Query('count') count?: number
+    @Query('count') count?: number,
   ) {
     return await this.optimizationService.simulateCachePerformanceTest(
       cacheType,
       operation,
-      count || 100
+      count || 100,
     );
   }
 

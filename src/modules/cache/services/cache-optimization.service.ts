@@ -20,9 +20,9 @@ export class CacheOptimizationService {
   async getCachePerformanceMetrics(startDate: Date, endDate: Date) {
     return await this.performanceRepository.find({
       where: {
-        metricDate: Between(startDate, endDate)
+        metricDate: Between(startDate, endDate),
       },
-      order: { metricDate: 'DESC', cacheType: 'ASC' }
+      order: { metricDate: 'DESC', cacheType: 'ASC' },
     });
   }
 
@@ -34,7 +34,7 @@ export class CacheOptimizationService {
     for (const cacheType of cacheTypes) {
       const latestMetric = await this.performanceRepository.findOne({
         where: { cacheType },
-        order: { metricDate: 'DESC' }
+        order: { metricDate: 'DESC' },
       });
 
       results.push({
@@ -43,7 +43,7 @@ export class CacheOptimizationService {
         hitRate: latestMetric?.hitRate || 0,
         memoryUsage: latestMetric?.memoryUsage || 0,
         memoryLimit: latestMetric?.memoryLimit || 0,
-        lastUpdated: latestMetric?.createdAt || null
+        lastUpdated: latestMetric?.createdAt || null,
       });
     }
 
@@ -62,7 +62,7 @@ export class CacheOptimizationService {
   // 获取缓存配置列表
   async getCacheConfigs() {
     return await this.configRepository.find({
-      order: { accessFrequency: 'DESC', hitRate: 'DESC' }
+      order: { accessFrequency: 'DESC', hitRate: 'DESC' },
     });
   }
 
@@ -74,23 +74,22 @@ export class CacheOptimizationService {
         { accessFrequency: MoreThan(1000) }, // 访问频率过高
         { isWarmedUp: false }, // 未预热的缓存
       ],
-      order: { accessFrequency: 'DESC' }
+      order: { accessFrequency: 'DESC' },
     });
 
-    return targets.filter(config => 
-      config.hitRate < 70 || 
-      config.accessFrequency > 1000 || 
-      !config.isWarmedUp
+    return targets.filter(
+      config => config.hitRate < 70 || config.accessFrequency > 1000 || !config.isWarmedUp,
     );
   }
 
   // 获取缓存失效记录
   async getInvalidationHistory(startDate?: Date, endDate?: Date, cacheType?: string) {
     const query = this.invalidationRepository.createQueryBuilder('invalidation');
-    
+
     if (startDate && endDate) {
-      query.where('invalidation.invalidationDate BETWEEN :startDate AND :endDate', { 
-        startDate, endDate 
+      query.where('invalidation.invalidationDate BETWEEN :startDate AND :endDate', {
+        startDate,
+        endDate,
       });
     }
 
@@ -98,9 +97,7 @@ export class CacheOptimizationService {
       query.andWhere('invalidation.cacheType = :cacheType', { cacheType });
     }
 
-    return await query
-      .orderBy('invalidation.invalidationDate', 'DESC')
-      .getMany();
+    return await query.orderBy('invalidation.invalidationDate', 'DESC').getMany();
   }
 
   // 分析缓存失效模式
@@ -122,14 +119,14 @@ export class CacheOptimizationService {
       count: parseInt(pattern.count),
       avgKeysCount: parseFloat(pattern.avgKeysCount),
       avgExecutionTime: parseFloat(pattern.avgExecutionTime),
-      impact: this.calculateImpact(pattern)
+      impact: this.calculateImpact(pattern),
     }));
   }
 
   // 计算失效影响
   private calculateImpact(pattern: any): string {
     const { count, avgKeysCount, avgExecutionTime } = pattern;
-    
+
     if (count > 100 && avgKeysCount > 50 && avgExecutionTime > 1000) {
       return 'HIGH';
     }
@@ -155,8 +152,8 @@ export class CacheOptimizationService {
         suggestions: lowHitRateConfigs.map(config => ({
           key: config.cacheKey,
           hitRate: config.hitRate,
-          suggestion: '考虑调整TTL或缓存策略，提高命中率'
-        }))
+          suggestion: '考虑调整TTL或缓存策略，提高命中率',
+        })),
       });
     }
 
@@ -170,8 +167,8 @@ export class CacheOptimizationService {
         suggestions: highFrequencyConfigs.map(config => ({
           key: config.cacheKey,
           frequency: config.accessFrequency,
-          suggestion: '考虑使用更快的缓存存储或实现缓存预热'
-        }))
+          suggestion: '考虑使用更快的缓存存储或实现缓存预热',
+        })),
       });
     }
 
@@ -185,8 +182,8 @@ export class CacheOptimizationService {
         suggestions: highImpactInvalidations.map(invalidation => ({
           type: invalidation.type,
           source: invalidation.source,
-          suggestion: '优化失效策略，考虑异步失效或批量处理'
-        }))
+          suggestion: '优化失效策略，考虑异步失效或批量处理',
+        })),
       });
     }
 
@@ -200,8 +197,8 @@ export class CacheOptimizationService {
         suggestions: unwarmedConfigs.map(config => ({
           key: config.cacheKey,
           frequency: config.accessFrequency,
-          suggestion: '实现缓存预热机制，提高初次访问性能'
-        }))
+          suggestion: '实现缓存预热机制，提高初次访问性能',
+        })),
       });
     }
 
@@ -211,7 +208,7 @@ export class CacheOptimizationService {
   // 执行缓存预热
   async warmupCache(cacheKeys: string[]) {
     const results = [];
-    
+
     for (const cacheKey of cacheKeys) {
       try {
         // 这里应该实现具体的预热逻辑
@@ -220,19 +217,19 @@ export class CacheOptimizationService {
           cacheKey,
           status: 'SUCCESS',
           warmpupTime: Math.random() * 100 + 50,
-          dataSize: Math.floor(Math.random() * 1000) + 100
+          dataSize: Math.floor(Math.random() * 1000) + 100,
         });
-        
+
         // 更新配置状�?
         await this.configRepository.update(
           { cacheKey },
-          { isWarmedUp: true, updatedAt: new Date() }
+          { isWarmedUp: true, updatedAt: new Date() },
         );
       } catch (error) {
         results.push({
           cacheKey,
           status: 'FAILED',
-          error: error.message
+          error: error.message,
         });
       }
     }
@@ -246,10 +243,10 @@ export class CacheOptimizationService {
 
     if (cacheType) {
       // 清理指定类型的缓�?
-      const configs = await this.configRepository.find({ 
-        where: { cacheType } 
+      const configs = await this.configRepository.find({
+        where: { cacheType },
       });
-      
+
       for (const config of configs) {
         try {
           // 执行缓存清理
@@ -257,14 +254,14 @@ export class CacheOptimizationService {
             cacheKey: config.cacheKey,
             cacheType: config.cacheType,
             status: 'CLEARED',
-            timestamp: new Date()
+            timestamp: new Date(),
           });
         } catch (error) {
           results.push({
             cacheKey: config.cacheKey,
             cacheType: config.cacheType,
             status: 'FAILED',
-            error: error.message
+            error: error.message,
           });
         }
       }
@@ -288,14 +285,18 @@ export class CacheOptimizationService {
   // 获取缓存统计信息
   async getCacheStatistics(cacheType?: string) {
     const query = this.configRepository.createQueryBuilder('config');
-    
+
     if (cacheType) {
       query.where('config.cacheType = :cacheType', { cacheType });
     }
 
     const total = await query.getCount();
-    const active = await query.andWhere('config.isActive = :isActive', { isActive: true }).getCount();
-    const warmedUp = await query.andWhere('config.isWarmedUp = :isWarmedUp', { isWarmedUp: true }).getCount();
+    const active = await query
+      .andWhere('config.isActive = :isActive', { isActive: true })
+      .getCount();
+    const warmedUp = await query
+      .andWhere('config.isWarmedUp = :isWarmedUp', { isWarmedUp: true })
+      .getCount();
 
     // 重新查询以避免重复条�?
     const avgHitRate = await this.configRepository
@@ -309,7 +310,7 @@ export class CacheOptimizationService {
       active,
       warmedUp,
       avgHitRate: parseFloat(avgHitRate.avgHitRate) || 0,
-      cacheType: cacheType || 'ALL'
+      cacheType: cacheType || 'ALL',
     };
   }
 
@@ -319,37 +320,38 @@ export class CacheOptimizationService {
     cutoffDate.setDate(cutoffDate.getDate() - daysToKeep);
 
     await this.performanceRepository.delete({
-      metricDate: MoreThan(cutoffDate)
+      metricDate: MoreThan(cutoffDate),
     });
 
     await this.invalidationRepository.delete({
-      invalidationDate: MoreThan(cutoffDate)
+      invalidationDate: MoreThan(cutoffDate),
     });
   }
 
   // 模拟缓存性能测试
   async simulateCachePerformanceTest(cacheType: string, operation: string, count: number) {
     const results = [];
-    
+
     for (let i = 0; i < count; i++) {
       const startTime = Date.now();
-      
+
       // 模拟缓存操作
       const delay = cacheType === 'REDIS' ? 5 : cacheType === 'MEMCACHED' ? 8 : 2;
       await new Promise(resolve => setTimeout(resolve, delay));
-      
+
       const endTime = Date.now();
-      
+
       results.push({
         iteration: i + 1,
         operation,
         responseTime: endTime - startTime,
-        success: Math.random() > 0.01 // 99% 成功�?
+        success: Math.random() > 0.01, // 99% 成功�?
       });
     }
 
     const successfulOps = results.filter(r => r.success);
-    const avgResponseTime = successfulOps.reduce((sum, r) => sum + r.responseTime, 0) / successfulOps.length;
+    const avgResponseTime =
+      successfulOps.reduce((sum, r) => sum + r.responseTime, 0) / successfulOps.length;
     const maxResponseTime = Math.max(...successfulOps.map(r => r.responseTime));
     const minResponseTime = Math.min(...successfulOps.map(r => r.responseTime));
 
@@ -363,7 +365,7 @@ export class CacheOptimizationService {
       avgResponseTime,
       maxResponseTime,
       minResponseTime,
-      testTime: new Date()
+      testTime: new Date(),
     };
   }
 }

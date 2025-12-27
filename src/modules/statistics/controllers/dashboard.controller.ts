@@ -34,7 +34,7 @@ export class DashboardController {
   @ApiResponse({ status: 200, description: '导出仪表盘报告成功' })
   exportDashboardReport(
     @Query() queryDto: DashboardQueryDto,
-    @Param('format') format: 'pdf' | 'excel' | 'csv'
+    @Param('format') format: 'pdf' | 'excel' | 'csv',
   ) {
     return this.dashboardService.exportDashboardReport(queryDto, format);
   }

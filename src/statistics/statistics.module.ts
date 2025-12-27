@@ -6,12 +6,8 @@ import { Product } from '../products/entities/product.entity';
 import { User } from '../modules/users/entities/user.entity';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([Product, User]),
-  ],
+  imports: [TypeOrmModule.forFeature([Product, User])],
   controllers: [StatisticsController],
   providers: [StatisticsService],
 })
 export class StatisticsModule {}
-
-

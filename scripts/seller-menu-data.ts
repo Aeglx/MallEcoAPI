@@ -17,7 +17,7 @@ export const sellerMenus = [
     icon: 'shopping',
     description: '商品管理',
     type: 0,
-    appType: 2
+    appType: 2,
   },
   // 商品管理
   {
@@ -33,7 +33,7 @@ export const sellerMenus = [
     icon: 'tool',
     description: '商品管理',
     type: 0,
-    appType: 2
+    appType: 2,
   },
   {
     id: 'seller-goods-publish',
@@ -48,7 +48,7 @@ export const sellerMenus = [
     icon: 'plus-circle',
     description: '商品发布',
     type: 1,
-    appType: 2
+    appType: 2,
   },
   {
     id: 'seller-goods-list',
@@ -63,7 +63,7 @@ export const sellerMenus = [
     icon: 'unordered-list',
     description: '商品列表',
     type: 1,
-    appType: 2
+    appType: 2,
   },
   {
     id: 'seller-goods-template',
@@ -78,7 +78,7 @@ export const sellerMenus = [
     icon: 'file-text',
     description: '商品模板',
     type: 1,
-    appType: 2
+    appType: 2,
   },
   {
     id: 'seller-goods-category',
@@ -93,7 +93,7 @@ export const sellerMenus = [
     icon: 'folder-open',
     description: '店铺分类',
     type: 1,
-    appType: 2
+    appType: 2,
   },
   {
     id: 'seller-goods-stock-warning',
@@ -108,7 +108,7 @@ export const sellerMenus = [
     icon: 'warning',
     description: '库存预警',
     type: 1,
-    appType: 2
+    appType: 2,
   },
 
   // ========== 2. 订单 (order) ==========
@@ -125,7 +125,7 @@ export const sellerMenus = [
     icon: 'shopping-cart',
     description: '订单管理',
     type: 0,
-    appType: 2
+    appType: 2,
   },
   // 订单管理
   {
@@ -141,7 +141,7 @@ export const sellerMenus = [
     icon: 'ordered-list',
     description: '订单管理',
     type: 0,
-    appType: 2
+    appType: 2,
   },
   {
     id: 'seller-order-goods',
@@ -156,7 +156,7 @@ export const sellerMenus = [
     icon: 'shopping',
     description: '商品订单',
     type: 1,
-    appType: 2
+    appType: 2,
   },
   {
     id: 'seller-order-virtual',
@@ -171,7 +171,7 @@ export const sellerMenus = [
     icon: 'cloud',
     description: '虚拟订单',
     type: 1,
-    appType: 2
+    appType: 2,
   },
   // 评价管理
   {
@@ -187,7 +187,7 @@ export const sellerMenus = [
     icon: 'star',
     description: '评价管理',
     type: 0,
-    appType: 2
+    appType: 2,
   },
   {
     id: 'seller-order-evaluation-manage',
@@ -202,7 +202,7 @@ export const sellerMenus = [
     icon: 'message',
     description: '评价管理',
     type: 1,
-    appType: 2
+    appType: 2,
   },
   // 售后管理
   {
@@ -218,7 +218,7 @@ export const sellerMenus = [
     icon: 'customer-service',
     description: '售后管理',
     type: 0,
-    appType: 2
+    appType: 2,
   },
   {
     id: 'seller-order-return',
@@ -233,7 +233,7 @@ export const sellerMenus = [
     icon: 'rollback',
     description: '退货管理',
     type: 1,
-    appType: 2
+    appType: 2,
   },
   {
     id: 'seller-order-refund',
@@ -248,7 +248,7 @@ export const sellerMenus = [
     icon: 'dollar',
     description: '退款管理',
     type: 1,
-    appType: 2
+    appType: 2,
   },
   {
     id: 'seller-order-complaint',
@@ -263,7 +263,7 @@ export const sellerMenus = [
     icon: 'exclamation-circle',
     description: '投诉管理',
     type: 1,
-    appType: 2
+    appType: 2,
   },
 
   // ========== 3. 财务 (bill) ==========
@@ -280,7 +280,7 @@ export const sellerMenus = [
     icon: 'dollar',
     description: '财务管理',
     type: 0,
-    appType: 2
+    appType: 2,
   },
   // 财务管理
   {
@@ -296,7 +296,7 @@ export const sellerMenus = [
     icon: 'calculator',
     description: '财务管理',
     type: 0,
-    appType: 2
+    appType: 2,
   },
   {
     id: 'seller-bill-reconciliation',
@@ -311,7 +311,7 @@ export const sellerMenus = [
     icon: 'file-excel',
     description: '财务对账',
     type: 1,
-    appType: 2
+    appType: 2,
   },
   {
     id: 'seller-bill-settlement',
@@ -326,7 +326,7 @@ export const sellerMenus = [
     icon: 'transaction',
     description: '店铺结算',
     type: 1,
-    appType: 2
+    appType: 2,
   },
   // 发票管理
   {
@@ -342,7 +342,7 @@ export const sellerMenus = [
     icon: 'file-text',
     description: '发票管理',
     type: 0,
-    appType: 2
+    appType: 2,
   },
   {
     id: 'seller-bill-invoice-manage',
@@ -357,7 +357,7 @@ export const sellerMenus = [
     icon: 'file-text',
     description: '发票管理',
     type: 1,
-    appType: 2
+    appType: 2,
   },
 
   // ========== 4. 营销 (promotion) ==========
@@ -374,7 +374,7 @@ export const sellerMenus = [
     icon: 'rocket',
     description: '营销管理',
     type: 0,
-    appType: 2
+    appType: 2,
   },
   // 平台活动
   {
@@ -390,7 +390,7 @@ export const sellerMenus = [
     icon: 'appstore',
     description: '平台活动',
     type: 0,
-    appType: 2
+    appType: 2,
   },
   {
     id: 'seller-promotion-group',
@@ -405,7 +405,7 @@ export const sellerMenus = [
     icon: 'team',
     description: '拼团活动',
     type: 1,
-    appType: 2
+    appType: 2,
   },
   {
     id: 'seller-promotion-seckill',
@@ -420,7 +420,7 @@ export const sellerMenus = [
     icon: 'clock-circle',
     description: '秒杀活动',
     type: 1,
-    appType: 2
+    appType: 2,
   },
   // 直播活动
   {
@@ -436,7 +436,7 @@ export const sellerMenus = [
     icon: 'video-camera',
     description: '直播活动',
     type: 0,
-    appType: 2
+    appType: 2,
   },
   {
     id: 'seller-promotion-live-manage',
@@ -451,7 +451,7 @@ export const sellerMenus = [
     icon: 'play-circle',
     description: '直播管理',
     type: 1,
-    appType: 2
+    appType: 2,
   },
   {
     id: 'seller-promotion-live-goods',
@@ -466,7 +466,7 @@ export const sellerMenus = [
     icon: 'shopping',
     description: '直播商品',
     type: 1,
-    appType: 2
+    appType: 2,
   },
   // 商家活动
   {
@@ -482,7 +482,7 @@ export const sellerMenus = [
     icon: 'shop',
     description: '商家活动',
     type: 0,
-    appType: 2
+    appType: 2,
   },
   {
     id: 'seller-promotion-full',
@@ -497,7 +497,7 @@ export const sellerMenus = [
     icon: 'dollar',
     description: '满额活动',
     type: 1,
-    appType: 2
+    appType: 2,
   },
   {
     id: 'seller-promotion-coupon',
@@ -512,7 +512,7 @@ export const sellerMenus = [
     icon: 'gift',
     description: '优惠券',
     type: 1,
-    appType: 2
+    appType: 2,
   },
   // 分销管理
   {
@@ -528,7 +528,7 @@ export const sellerMenus = [
     icon: 'share-alt',
     description: '分销管理',
     type: 0,
-    appType: 2
+    appType: 2,
   },
   {
     id: 'seller-promotion-distribution-goods',
@@ -543,7 +543,7 @@ export const sellerMenus = [
     icon: 'shopping',
     description: '分销商品',
     type: 1,
-    appType: 2
+    appType: 2,
   },
   {
     id: 'seller-promotion-distribution-order',
@@ -558,7 +558,7 @@ export const sellerMenus = [
     icon: 'shopping-cart',
     description: '分销订单',
     type: 1,
-    appType: 2
+    appType: 2,
   },
 
   // ========== 5. 统计 (statistics) ==========
@@ -575,7 +575,7 @@ export const sellerMenus = [
     icon: 'bar-chart',
     description: '统计管理',
     type: 0,
-    appType: 2
+    appType: 2,
   },
   // 统计管理
   {
@@ -591,7 +591,7 @@ export const sellerMenus = [
     icon: 'pie-chart',
     description: '统计管理',
     type: 0,
-    appType: 2
+    appType: 2,
   },
   {
     id: 'seller-statistics-goods',
@@ -606,7 +606,7 @@ export const sellerMenus = [
     icon: 'shopping',
     description: '商品统计',
     type: 1,
-    appType: 2
+    appType: 2,
   },
   {
     id: 'seller-statistics-order',
@@ -621,7 +621,7 @@ export const sellerMenus = [
     icon: 'shopping-cart',
     description: '订单统计',
     type: 1,
-    appType: 2
+    appType: 2,
   },
   {
     id: 'seller-statistics-traffic',
@@ -636,7 +636,7 @@ export const sellerMenus = [
     icon: 'line-chart',
     description: '流量统计',
     type: 1,
-    appType: 2
+    appType: 2,
   },
 
   // ========== 6. 设置 (settings) ==========
@@ -653,7 +653,7 @@ export const sellerMenus = [
     icon: 'setting',
     description: '系统设置',
     type: 0,
-    appType: 2
+    appType: 2,
   },
   // 配送设置
   {
@@ -669,7 +669,7 @@ export const sellerMenus = [
     icon: 'car',
     description: '配送设置',
     type: 0,
-    appType: 2
+    appType: 2,
   },
   {
     id: 'seller-settings-template',
@@ -684,7 +684,7 @@ export const sellerMenus = [
     icon: 'car',
     description: '配送模板',
     type: 1,
-    appType: 2
+    appType: 2,
   },
   {
     id: 'seller-settings-logistics',
@@ -699,7 +699,7 @@ export const sellerMenus = [
     icon: 'truck',
     description: '物流公司',
     type: 1,
-    appType: 2
+    appType: 2,
   },
   // 店铺管理
   {
@@ -715,7 +715,7 @@ export const sellerMenus = [
     icon: 'shop',
     description: '店铺管理',
     type: 0,
-    appType: 2
+    appType: 2,
   },
   {
     id: 'seller-settings-shop-basic',
@@ -730,7 +730,7 @@ export const sellerMenus = [
     icon: 'setting',
     description: '店铺设置',
     type: 1,
-    appType: 2
+    appType: 2,
   },
   {
     id: 'seller-settings-pickup',
@@ -745,7 +745,7 @@ export const sellerMenus = [
     icon: 'shop',
     description: '自提管理',
     type: 1,
-    appType: 2
+    appType: 2,
   },
   {
     id: 'seller-settings-pc',
@@ -760,7 +760,7 @@ export const sellerMenus = [
     icon: 'desktop',
     description: 'PC端',
     type: 1,
-    appType: 2
+    appType: 2,
   },
   {
     id: 'seller-settings-mobile',
@@ -775,7 +775,7 @@ export const sellerMenus = [
     icon: 'mobile',
     description: '移动端',
     type: 1,
-    appType: 2
+    appType: 2,
   },
   // 店员设置
   {
@@ -791,7 +791,7 @@ export const sellerMenus = [
     icon: 'team',
     description: '店员设置',
     type: 0,
-    appType: 2
+    appType: 2,
   },
   {
     id: 'seller-settings-staff-manage',
@@ -806,7 +806,7 @@ export const sellerMenus = [
     icon: 'user',
     description: '店员管理',
     type: 1,
-    appType: 2
+    appType: 2,
   },
   {
     id: 'seller-settings-department',
@@ -821,7 +821,7 @@ export const sellerMenus = [
     icon: 'apartment',
     description: '部门管理',
     type: 1,
-    appType: 2
+    appType: 2,
   },
   {
     id: 'seller-settings-role',
@@ -836,7 +836,7 @@ export const sellerMenus = [
     icon: 'safety',
     description: '角色权限',
     type: 1,
-    appType: 2
+    appType: 2,
   },
 
   // ========== 7. 消息 (Main) ==========
@@ -853,7 +853,7 @@ export const sellerMenus = [
     icon: 'message',
     description: '消息管理',
     type: 0,
-    appType: 2
+    appType: 2,
   },
   // 系统消息
   {
@@ -869,7 +869,7 @@ export const sellerMenus = [
     icon: 'notification',
     description: '系统消息',
     type: 0,
-    appType: 2
+    appType: 2,
   },
   {
     id: 'seller-message-system-manage',
@@ -884,6 +884,6 @@ export const sellerMenus = [
     icon: 'message',
     description: '系统消息',
     type: 1,
-    appType: 2
-  }
+    appType: 2,
+  },
 ];

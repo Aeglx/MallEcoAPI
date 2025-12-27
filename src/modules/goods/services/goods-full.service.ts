@@ -2,13 +2,12 @@ import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class GoodsFullService {
-  
   // 商品相关方法
   async getGoodsList(query: any) {
     return {
       success: true,
       data: { records: [], total: 0 },
-      message: '获取商品列表成功'
+      message: '获取商品列表成功',
     };
   }
 
@@ -16,7 +15,7 @@ export class GoodsFullService {
     return {
       success: true,
       data: { records: [], total: 0 },
-      message: '获取商品SKU列表成功'
+      message: '获取商品SKU列表成功',
     };
   }
 
@@ -24,7 +23,7 @@ export class GoodsFullService {
     return {
       success: true,
       data: { id, name: '示例商品', price: 100 },
-      message: '获取商品详情成功'
+      message: '获取商品详情成功',
     };
   }
 
@@ -32,7 +31,7 @@ export class GoodsFullService {
     return {
       success: true,
       data: { id: 'new-goods-id', ...goodsData },
-      message: '创建商品成功'
+      message: '创建商品成功',
     };
   }
 
@@ -40,21 +39,21 @@ export class GoodsFullService {
     return {
       success: true,
       data: { id, ...goodsData },
-      message: '更新商品成功'
+      message: '更新商品成功',
     };
   }
 
   async upGoods(goodsData: any) {
     return {
       success: true,
-      message: '商品上架成功'
+      message: '商品上架成功',
     };
   }
 
   async lowGoods(goodsData: any) {
     return {
       success: true,
-      message: '商品下架成功'
+      message: '商品下架成功',
     };
   }
 
@@ -63,7 +62,7 @@ export class GoodsFullService {
     return {
       success: true,
       data: [],
-      message: '获取全部分类成功'
+      message: '获取全部分类成功',
     };
   }
 
@@ -71,7 +70,7 @@ export class GoodsFullService {
     return {
       success: true,
       data: [],
-      message: '获取分类层级列表成功'
+      message: '获取分类层级列表成功',
     };
   }
 
@@ -79,7 +78,7 @@ export class GoodsFullService {
     return {
       success: true,
       data: { id: 'new-category-id', ...categoryData },
-      message: '创建分类成功'
+      message: '创建分类成功',
     };
   }
 
@@ -87,14 +86,14 @@ export class GoodsFullService {
     return {
       success: true,
       data: categoryData,
-      message: '更新分类成功'
+      message: '更新分类成功',
     };
   }
 
   async delCategory(id: string) {
     return {
       success: true,
-      message: '删除分类成功'
+      message: '删除分类成功',
     };
   }
 
@@ -103,7 +102,7 @@ export class GoodsFullService {
     return {
       success: true,
       data: { records: [], total: 0 },
-      message: '获取品牌列表成功'
+      message: '获取品牌列表成功',
     };
   }
 
@@ -111,7 +110,7 @@ export class GoodsFullService {
     return {
       success: true,
       data: { id: 'new-brand-id', ...brandData },
-      message: '保存品牌成功'
+      message: '保存品牌成功',
     };
   }
 
@@ -120,7 +119,7 @@ export class GoodsFullService {
     return {
       success: true,
       data: { records: [], total: 0 },
-      message: '获取规格列表成功'
+      message: '获取规格列表成功',
     };
   }
 
@@ -128,7 +127,7 @@ export class GoodsFullService {
     return {
       success: true,
       data: { id: 'new-spec-id', ...specData },
-      message: '保存规格成功'
+      message: '保存规格成功',
     };
   }
 
@@ -137,7 +136,7 @@ export class GoodsFullService {
     return {
       success: true,
       data: [],
-      message: '获取店铺标签列表成功'
+      message: '获取店铺标签列表成功',
     };
   }
 
@@ -145,7 +144,7 @@ export class GoodsFullService {
     return {
       success: true,
       data: { id: 'new-label-id', ...labelData },
-      message: '添加标签成功'
+      message: '添加标签成功',
     };
   }
 
@@ -153,14 +152,14 @@ export class GoodsFullService {
     return {
       success: true,
       data: labelData,
-      message: '编辑标签成功'
+      message: '编辑标签成功',
     };
   }
 
   async delShopGoodsLabel(id: string) {
     return {
       success: true,
-      message: '删除标签成功'
+      message: '删除标签成功',
     };
   }
 
@@ -169,7 +168,7 @@ export class GoodsFullService {
     return {
       success: true,
       data: [],
-      message: '获取分类参数列表成功'
+      message: '获取分类参数列表成功',
     };
   }
 
@@ -177,7 +176,7 @@ export class GoodsFullService {
     return {
       success: true,
       data: { id: 'new-params-id', ...paramsData },
-      message: '保存参数成功'
+      message: '保存参数成功',
     };
   }
 
@@ -186,14 +185,14 @@ export class GoodsFullService {
     return {
       success: true,
       data: { url: '/export/stock.xlsx' },
-      message: '导出库存查询成功'
+      message: '导出库存查询成功',
     };
   }
 
   async importStockExcel(importData: any) {
     return {
       success: true,
-      message: '导入库存成功'
+      message: '导入库存成功',
     };
   }
 }

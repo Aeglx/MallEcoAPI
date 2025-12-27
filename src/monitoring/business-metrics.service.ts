@@ -52,29 +52,29 @@ export class BusinessMetricsService {
     user_login_success: { unit: 'count', aggregation: 'sum' },
     user_login_failure: { unit: 'count', aggregation: 'sum' },
     user_active_daily: { unit: 'count', aggregation: 'sum' },
-    
+
     // 商品相关指标
     product_views: { unit: 'count', aggregation: 'sum' },
     product_add_to_cart: { unit: 'count', aggregation: 'sum' },
     product_purchases: { unit: 'count', aggregation: 'sum' },
     product_inventory_changes: { unit: 'count', aggregation: 'sum' },
-    
+
     // 订单相关指标
     order_created: { unit: 'count', aggregation: 'sum' },
     order_completed: { unit: 'count', aggregation: 'sum' },
     order_cancelled: { unit: 'count', aggregation: 'sum' },
     order_revenue: { unit: 'currency', aggregation: 'sum' },
-    
+
     // 分销相关指标
     distributor_registrations: { unit: 'count', aggregation: 'sum' },
     distributor_commissions: { unit: 'currency', aggregation: 'sum' },
     distribution_sales: { unit: 'currency', aggregation: 'sum' },
-    
+
     // 性能相关指标
     api_response_time: { unit: 'ms', aggregation: 'avg' },
     api_error_rate: { unit: 'percent', aggregation: 'avg' },
     cache_hit_rate: { unit: 'percent', aggregation: 'avg' },
-    
+
     // 业务流程指标
     checkout_conversion_rate: { unit: 'percent', aggregation: 'avg' },
     cart_abandonment_rate: { unit: 'percent', aggregation: 'avg' },
@@ -89,11 +89,7 @@ export class BusinessMetricsService {
   /**
    * 记录业务指标
    */
-  recordMetric(
-    name: string, 
-    value: number, 
-    tags?: Record<string, string>
-  ): void {
+  recordMetric(name: string, value: number, tags?: Record<string, string>): void {
     const metric: BusinessMetric = {
       name,
       value,
@@ -106,10 +102,10 @@ export class BusinessMetricsService {
     if (!this.metrics.has(name)) {
       this.metrics.set(name, []);
     }
-    
+
     const metricList = this.metrics.get(name)!;
     metricList.push(metric);
-    
+
     // 保留最近1小时的数据（假设每秒一个数据点）
     const maxAge = 3600 * 1000;
     const now = Date.now();
@@ -123,11 +119,7 @@ export class BusinessMetricsService {
   /**
    * 增量记录指标
    */
-  incrementMetric(
-    name: string, 
-    increment: number = 1, 
-    tags?: Record<string, string>
-  ): void {
+  incrementMetric(name: string, increment: number = 1, tags?: Record<string, string>): void {
     // 获取当前值并增加
     const currentValue = this.getCurrentMetricValue(name) || 0;
     this.recordMetric(name, currentValue + increment, tags);
@@ -136,11 +128,7 @@ export class BusinessMetricsService {
   /**
    * 记录计时指标
    */
-  recordTiming(
-    name: string, 
-    duration: number, 
-    tags?: Record<string, string>
-  ): void {
+  recordTiming(name: string, duration: number, tags?: Record<string, string>): void {
     this.recordMetric(`${name}_duration`, duration, tags);
     this.recordMetric(name, 1, tags); // 计数
   }
@@ -148,11 +136,7 @@ export class BusinessMetricsService {
   /**
    * 记录成功率
    */
-  recordSuccessRate(
-    name: string, 
-    success: boolean, 
-    tags?: Record<string, string>
-  ): void {
+  recordSuccessRate(name: string, success: boolean, tags?: Record<string, string>): void {
     const rate = success ? 100 : 0;
     this.recordMetric(`${name}_success_rate`, rate, tags);
     this.recordMetric(`${name}_attempts`, 1, tags);
@@ -163,18 +147,13 @@ export class BusinessMetricsService {
    */
   getCurrentMetricValue(name: string): number | null {
     const metricList = this.metrics.get(name);
-    return metricList && metricList.length > 0 
-      ? metricList[metricList.length - 1].value 
-      : null;
+    return metricList && metricList.length > 0 ? metricList[metricList.length - 1].value : null;
   }
 
   /**
    * 获取指标聚合数据
    */
-  getMetricAggregation(
-    name: string, 
-    windowMinutes: number = 5
-  ): MetricAggregation | null {
+  getMetricAggregation(name: string, windowMinutes: number = 5): MetricAggregation | null {
     const metricList = this.metrics.get(name);
     if (!metricList || metricList.length === 0) {
       return null;
@@ -182,11 +161,9 @@ export class BusinessMetricsService {
 
     const now = Date.now();
     const windowMs = windowMinutes * 60 * 1000;
-    
+
     // 过滤时间窗口内的数据
-    const filtered = metricList.filter(m => 
-      now - m.timestamp.getTime() < windowMs
-    );
+    const filtered = metricList.filter(m => now - m.timestamp.getTime() < windowMs);
 
     if (filtered.length === 0) {
       return null;
@@ -232,7 +209,7 @@ export class BusinessMetricsService {
       const current = this.getCurrentMetricValue(metric);
       const aggregation = this.getMetricAggregation(metric, 60); // 1小时
       const trend = this.calculateTrend(metric, 60); // 1小时趋势
-      
+
       dashboard[metric] = {
         current,
         aggregation,
@@ -243,7 +220,7 @@ export class BusinessMetricsService {
 
     // 告警信息
     const activeAlerts = Array.from(this.alerts.values()).filter(alert => !alert.resolved);
-    
+
     return {
       timestamp: now,
       metrics: dashboard,
@@ -279,7 +256,7 @@ export class BusinessMetricsService {
     if (!this.thresholds.has(threshold.metric)) {
       this.thresholds.set(threshold.metric, []);
     }
-    
+
     this.thresholds.get(threshold.metric)!.push(threshold);
     this.logger.log(`设置指标阈值: ${threshold.metric} ${threshold.operator} ${threshold.value}`);
   }
@@ -301,9 +278,10 @@ export class BusinessMetricsService {
       if (aggregation) {
         report.summary[metricName] = aggregation;
       }
-      
-      const trend = this.calculateTrend(metricName, 
-        Math.floor((endDate.getTime() - startDate.getTime()) / (1000 * 60))
+
+      const trend = this.calculateTrend(
+        metricName,
+        Math.floor((endDate.getTime() - startDate.getTime()) / (1000 * 60)),
       );
       if (trend) {
         report.trends[metricName] = trend;
@@ -340,7 +318,7 @@ export class BusinessMetricsService {
         severity: 'MEDIUM',
         message: 'API错误率过高',
       },
-      
+
       // 缓存性能阈值
       {
         metric: 'cache_hit_rate',
@@ -349,7 +327,7 @@ export class BusinessMetricsService {
         severity: 'MEDIUM',
         message: '缓存命中率过低',
       },
-      
+
       // 业务阈值
       {
         metric: 'order_revenue',
@@ -393,14 +371,14 @@ export class BusinessMetricsService {
   private aggregateMetrics(): void {
     for (const [metricName, metricList] of this.metrics) {
       if (metricList.length === 0) continue;
-      
+
       const definition = this.metricDefinitions[metricName];
       if (!definition) continue;
 
       const now = Date.now();
       const windowMs = 5 * 60 * 1000; // 5分钟窗口
       const filtered = metricList.filter(m => now - m.timestamp.getTime() < windowMs);
-      
+
       if (filtered.length === 0) continue;
 
       const values = filtered.map(m => m.value);
@@ -443,9 +421,7 @@ export class BusinessMetricsService {
     const now = Date.now();
 
     for (const [metricName, metricList] of this.metrics) {
-      const filtered = metricList.filter(m => 
-        now - m.timestamp.getTime() < maxAge
-      );
+      const filtered = metricList.filter(m => now - m.timestamp.getTime() < maxAge);
       this.metrics.set(metricName, filtered);
     }
   }
@@ -513,7 +489,7 @@ export class BusinessMetricsService {
     const now = Date.now();
     const windowMs = windowMinutes * 60 * 1000;
     const recent = metricList.filter(m => now - m.timestamp.getTime() < windowMs);
-    
+
     if (recent.length < 2) return null;
 
     // 简单线性回归计算趋势
@@ -521,7 +497,7 @@ export class BusinessMetricsService {
     const last = recent[recent.length - 1];
     const timeDiff = last.timestamp.getTime() - first.timestamp.getTime();
     const valueDiff = last.value - first.value;
-    
+
     return timeDiff > 0 ? (valueDiff / timeDiff) * 60000 : 0; // 每分钟变化率
   }
 
@@ -530,27 +506,27 @@ export class BusinessMetricsService {
    */
   private calculateBusinessHealth(): number {
     let score = 100;
-    
+
     // API响应时间影响
     const responseTime = this.getCurrentMetricValue('api_response_time');
     if (responseTime > 2000) score -= 20;
     else if (responseTime > 1000) score -= 10;
-    
+
     // 错误率影响
     const errorRate = this.getCurrentMetricValue('api_error_rate');
     if (errorRate > 10) score -= 30;
     else if (errorRate > 5) score -= 15;
-    
+
     // 缓存命中率影响
     const cacheHitRate = this.getCurrentMetricValue('cache_hit_rate');
     if (cacheHitRate < 70) score -= 20;
     else if (cacheHitRate < 85) score -= 10;
-    
+
     // 活跃告警影响
     const activeAlerts = this.getActiveAlerts();
     score -= activeAlerts.filter(a => a.severity === 'CRITICAL').length * 10;
     score -= activeAlerts.filter(a => a.severity === 'HIGH').length * 5;
-    
+
     return Math.max(0, score);
   }
 
@@ -558,16 +534,14 @@ export class BusinessMetricsService {
    * 计算期间聚合
    */
   private calculatePeriodAggregation(
-    metricName: string, 
-    startDate: Date, 
-    endDate: Date
+    metricName: string,
+    startDate: Date,
+    endDate: Date,
   ): MetricAggregation | null {
     const metricList = this.metrics.get(metricName);
     if (!metricList) return null;
 
-    const filtered = metricList.filter(m => 
-      m.timestamp >= startDate && m.timestamp <= endDate
-    );
+    const filtered = metricList.filter(m => m.timestamp >= startDate && m.timestamp <= endDate);
 
     if (filtered.length === 0) return null;
 

@@ -4,16 +4,16 @@ import { Counter, Gauge, Histogram, Registry } from 'prom-client';
 @Injectable()
 export class PerformanceService implements OnModuleInit {
   private registry: Registry;
-  
+
   // API性能指标
   private apiRequestCounter: Counter<string>;
   private apiResponseTimeHistogram: Histogram<string>;
   private apiErrorCounter: Counter<string>;
-  
+
   // 数据库性能指标
   private dbQueryCounter: Counter<string>;
   private dbQueryTimeHistogram: Histogram<string>;
-  
+
   // 系统资源指标
   private memoryUsageGauge: Gauge<string>;
   private cpuUsageGauge: Gauge<string>;
@@ -114,7 +114,7 @@ export class PerformanceService implements OnModuleInit {
   recordApiRequest(method: string, path: string, duration: number, status: number) {
     this.apiRequestCounter.labels(method, path, status.toString()).inc();
     this.apiResponseTimeHistogram.labels(method, path, status.toString()).observe(duration);
-    
+
     if (status >= 400) {
       const errorType = status >= 500 ? 'server_error' : 'client_error';
       this.apiErrorCounter.labels(method, path, errorType).inc();

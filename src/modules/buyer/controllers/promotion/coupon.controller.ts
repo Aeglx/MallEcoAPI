@@ -2,7 +2,6 @@ import { Controller, Get, Post, Param, Delete } from '@nestjs/common';
 
 @Controller('buyer/promotion/coupon')
 export class CouponController {
-  
   @Get()
   findAll() {
     // 获取优惠券列表

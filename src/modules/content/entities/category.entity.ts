@@ -28,4 +28,3 @@ export class Category extends BaseEntity {
   @OneToMany(() => Article, article => article.category)
   articles: Article[];
 }
-

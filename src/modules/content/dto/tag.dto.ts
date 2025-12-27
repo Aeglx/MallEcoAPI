@@ -14,7 +14,12 @@ export class CreateTagDto {
 
   @IsOptional()
   @IsString({ message: '标签描述必须是字符串' })
-  @ApiProperty({ name: 'description', description: '标签描述', example: '科技相关内容标签', required: false })
+  @ApiProperty({
+    name: 'description',
+    description: '标签描述',
+    example: '科技相关内容标签',
+    required: false,
+  })
   description: string;
 }
 
@@ -31,6 +36,11 @@ export class UpdateTagDto {
 
   @IsOptional()
   @IsString({ message: '标签描述必须是字符串' })
-  @ApiProperty({ name: 'description', description: '标签描述', example: '科技相关内容标签', required: false })
+  @ApiProperty({
+    name: 'description',
+    description: '标签描述',
+    example: '科技相关内容标签',
+    required: false,
+  })
   description?: string;
 }

@@ -4,12 +4,22 @@ import { ApiProperty } from '@nestjs/swagger';
 export class CreateCategoryDto {
   @IsNotEmpty({ message: '分类名称不能为空' })
   @IsString({ message: '分类名称必须是字符串' })
-  @ApiProperty({ name: 'categoryName', description: '分类名称', example: '新闻资讯', required: true })
+  @ApiProperty({
+    name: 'categoryName',
+    description: '分类名称',
+    example: '新闻资讯',
+    required: true,
+  })
   categoryName: string;
 
   @IsOptional()
   @IsString({ message: '父分类ID必须是字符串' })
-  @ApiProperty({ name: 'parentId', description: '父分类ID', example: '1234567890abcdef12345678', required: false })
+  @ApiProperty({
+    name: 'parentId',
+    description: '父分类ID',
+    example: '1234567890abcdef12345678',
+    required: false,
+  })
   parentId: string;
 
   @IsOptional()
@@ -26,12 +36,22 @@ export class CreateCategoryDto {
 export class UpdateCategoryDto {
   @IsOptional()
   @IsString({ message: '分类名称必须是字符串' })
-  @ApiProperty({ name: 'categoryName', description: '分类名称', example: '新闻资讯', required: false })
+  @ApiProperty({
+    name: 'categoryName',
+    description: '分类名称',
+    example: '新闻资讯',
+    required: false,
+  })
   categoryName?: string;
 
   @IsOptional()
   @IsString({ message: '父分类ID必须是字符串' })
-  @ApiProperty({ name: 'parentId', description: '父分类ID', example: '1234567890abcdef12345678', required: false })
+  @ApiProperty({
+    name: 'parentId',
+    description: '父分类ID',
+    example: '1234567890abcdef12345678',
+    required: false,
+  })
   parentId?: string;
 
   @IsOptional()

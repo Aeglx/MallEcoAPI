@@ -4,7 +4,7 @@ import { Injectable, OnModuleInit } from '@nestjs/common';
 @Injectable()
 export class SeataService implements OnModuleInit {
   private seataClient: any;
-  
+
   async onModuleInit() {
     // await this.initSeataClient();
   }
@@ -25,7 +25,7 @@ export class SeataService implements OnModuleInit {
       //     namespace: process.env.NACOS_NAMESPACE || '',
       //   },
       // });
-      
+
       console.log('Seata client initialized successfully');
     } catch (error) {
       console.error('Failed to initialize Seata client:', error);
@@ -96,7 +96,7 @@ export class SeataService implements OnModuleInit {
     xid: string,
     resourceId: string,
     branchType: string,
-    applicationData: any
+    applicationData: any,
   ): Promise<number> {
     if (!this.seataClient) {
       throw new Error('Seata client not initialized');
@@ -107,7 +107,7 @@ export class SeataService implements OnModuleInit {
         xid,
         resourceId,
         branchType,
-        applicationData
+        applicationData,
       );
       return branchId;
     } catch (error) {
@@ -121,19 +121,14 @@ export class SeataService implements OnModuleInit {
     xid: string,
     branchId: number,
     status: number,
-    applicationData: any
+    applicationData: any,
   ): Promise<void> {
     if (!this.seataClient) {
       throw new Error('Seata client not initialized');
     }
 
     try {
-      await this.seataClient.reportBranchStatus(
-        xid,
-        branchId,
-        status,
-        applicationData
-      );
+      await this.seataClient.reportBranchStatus(xid, branchId, status, applicationData);
     } catch (error) {
       console.error('Failed to report branch status:', error);
       throw error;

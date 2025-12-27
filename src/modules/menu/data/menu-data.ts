@@ -1,345 +1,71 @@
 import { MenuItem } from '../types/menu.types';
+import * as path from 'path';
+import * as fs from 'fs';
 
-export const adminMenus: MenuItem[] = [
-  // ========== 7. 公众号 (wechat) ==========
-  {
-    id: 'admin-wechat',
-    title: '公众号',
-    name: 'admin-wechat',
-    path: '/admin/wechat',
-    level: 0,
-    frontRoute: 'admin/wechat',
-    parentId: null,
-    sortOrder: 7,
-    permission: '',
-    icon: 'wechat',
-    description: '公众号管理',
-    type: 0,
-    appType: 1
-  },
-  // 消息管理
-  {
-    id: 'admin-wechat-message',
-    title: '消息管理',
-    name: 'admin-wechat-message',
-    path: '/admin/wechat/message',
-    level: 1,
-    frontRoute: 'admin/wechat/message',
-    parentId: 'admin-wechat',
-    sortOrder: 0,
-    permission: '/admin/wechat/message',
-    icon: 'message',
-    description: '消息管理',
-    type: 0,
-    appType: 1
-  },
-  {
-    id: 'admin-wechat-fans',
-    title: '粉丝管理',
-    name: 'admin-wechat-fans',
-    path: '/admin/wechat/fans',
-    level: 2,
-    frontRoute: 'admin/wechat/fans',
-    parentId: 'admin-wechat-message',
-    sortOrder: 0,
-    permission: '/admin/wechat/fans',
-    icon: 'team',
-    description: '粉丝管理',
-    type: 1,
-    appType: 1
-  },
-  {
-    id: 'admin-wechat-subscribe',
-    title: '订阅通知',
-    name: 'admin-wechat-subscribe',
-    path: '/admin/wechat/subscribe',
-    level: 2,
-    frontRoute: 'admin/wechat/subscribe',
-    parentId: 'admin-wechat-message',
-    sortOrder: 1,
-    permission: '/admin/wechat/subscribe',
-    icon: 'notification',
-    description: '订阅通知管理',
-    type: 1,
-    appType: 1
-  },
-  {
-    id: 'admin-wechat-template',
-    title: '模板消息',
-    name: 'admin-wechat-template',
-    path: '/admin/wechat/template',
-    level: 2,
-    frontRoute: 'admin/wechat/template',
-    parentId: 'admin-wechat-message',
-    sortOrder: 2,
-    permission: '/admin/wechat/template',
-    icon: 'file-text',
-    description: '模板消息管理',
-    type: 1,
-    appType: 1
-  },
-  // H5网页
-  {
-    id: 'admin-wechat-h5',
-    title: 'H5网页',
-    name: 'admin-wechat-h5',
-    path: '/admin/wechat/h5',
-    level: 1,
-    frontRoute: 'admin/wechat/h5',
-    parentId: 'admin-wechat',
-    sortOrder: 1,
-    permission: '/admin/wechat/h5',
-    icon: 'mobile',
-    description: 'H5网页管理',
-    type: 0,
-    appType: 1
-  },
-  {
-    id: 'admin-wechat-h5-pages',
-    title: '页面管理',
-    name: 'admin-wechat-h5-pages',
-    path: '/admin/wechat/h5-pages',
-    level: 2,
-    frontRoute: 'admin/wechat/h5-pages',
-    parentId: 'admin-wechat-h5',
-    sortOrder: 0,
-    permission: '/admin/wechat/h5-pages',
-    icon: 'file',
-    description: 'H5页面管理',
-    type: 1,
-    appType: 1
-  },
-  {
-    id: 'admin-wechat-h5-template',
-    title: '模板管理',
-    name: 'admin-wechat-h5-template',
-    path: '/admin/wechat/h5-template',
-    level: 2,
-    frontRoute: 'admin/wechat/h5-template',
-    parentId: 'admin-wechat-h5',
-    sortOrder: 1,
-    permission: '/admin/wechat/h5-template',
-    icon: 'layout',
-    description: 'H5模板管理',
-    type: 1,
-    appType: 1
-  },
-  // 微信卡券
-  {
-    id: 'admin-wechat-coupon',
-    title: '微信卡券',
-    name: 'admin-wechat-coupon',
-    path: '/admin/wechat/coupon',
-    level: 1,
-    frontRoute: 'admin/wechat/coupon',
-    parentId: 'admin-wechat',
-    sortOrder: 2,
-    permission: '/admin/wechat/coupon',
-    icon: 'gift',
-    description: '微信卡券管理',
-    type: 0,
-    appType: 1
-  },
-  {
-    id: 'admin-wechat-coupon-list',
-    title: '卡券列表',
-    name: 'admin-wechat-coupon-list',
-    path: '/admin/wechat/coupon/list',
-    level: 2,
-    frontRoute: 'admin/wechat/coupon/list',
-    parentId: 'admin-wechat-coupon',
-    sortOrder: 0,
-    permission: '/admin/wechat/coupon/list',
-    icon: 'unordered-list',
-    description: '卡券列表管理',
-    type: 1,
-    appType: 1
-  },
-  {
-    id: 'admin-wechat-coupon-template',
-    title: '卡券模板',
-    name: 'admin-wechat-coupon-template',
-    path: '/admin/wechat/coupon/template',
-    level: 2,
-    frontRoute: 'admin/wechat/coupon/template',
-    parentId: 'admin-wechat-coupon',
-    sortOrder: 1,
-    permission: '/admin/wechat/coupon/template',
-    icon: 'file-protect',
-    description: '卡券模板管理',
-    type: 1,
-    appType: 1
-  },
-  // 素材管理
-  {
-    id: 'admin-wechat-material',
-    title: '素材管理',
-    name: 'admin-wechat-material',
-    path: '/admin/wechat/material',
-    level: 1,
-    frontRoute: 'admin/wechat/material',
-    parentId: 'admin-wechat',
-    sortOrder: 3,
-    permission: '/admin/wechat/material',
-    icon: 'picture',
-    description: '素材管理',
-    type: 0,
-    appType: 1
-  },
-  {
-    id: 'admin-wechat-material-image',
-    title: '图片素材',
-    name: 'admin-wechat-material-image',
-    path: '/admin/wechat/material/image',
-    level: 2,
-    frontRoute: 'admin/wechat/material/image',
-    parentId: 'admin-wechat-material',
-    sortOrder: 0,
-    permission: '/admin/wechat/material/image',
-    icon: 'file-image',
-    description: '图片素材管理',
-    type: 1,
-    appType: 1
-  },
-  {
-    id: 'admin-wechat-material-video',
-    title: '视频素材',
-    name: 'admin-wechat-material-video',
-    path: '/admin/wechat/material/video',
-    level: 2,
-    frontRoute: 'admin/wechat/material/video',
-    parentId: 'admin-wechat-material',
-    sortOrder: 1,
-    permission: '/admin/wechat/material/video',
-    icon: 'video-camera',
-    description: '视频素材管理',
-    type: 1,
-    appType: 1
-  },
-  {
-    id: 'admin-wechat-material-voice',
-    title: '语音素材',
-    name: 'admin-wechat-material-voice',
-    path: '/admin/wechat/material/voice',
-    level: 2,
-    frontRoute: 'admin/wechat/material/voice',
-    parentId: 'admin-wechat-material',
-    sortOrder: 2,
-    permission: '/admin/wechat/material/voice',
-    icon: 'sound',
-    description: '语音素材管理',
-    type: 1,
-    appType: 1
-  },
-  {
-    id: 'admin-wechat-material-news',
-    title: '图文素材',
-    name: 'admin-wechat-material-news',
-    path: '/admin/wechat/material/news',
-    level: 2,
-    frontRoute: 'admin/wechat/material/news',
-    parentId: 'admin-wechat-material',
-    sortOrder: 3,
-    permission: '/admin/wechat/material/news',
-    icon: 'read',
-    description: '图文素材管理',
-    type: 1,
-    appType: 1
-  },
-  // 自定义菜单
-  {
-    id: 'admin-wechat-custom',
-    title: '自定义菜单',
-    name: 'admin-wechat-custom',
-    path: '/admin/wechat/custom',
-    level: 1,
-    frontRoute: 'admin/wechat/custom',
-    parentId: 'admin-wechat',
-    sortOrder: 4,
-    permission: '/admin/wechat/custom',
-    icon: 'menu',
-    description: '自定义菜单管理',
-    type: 0,
-    appType: 1
-  },
-  {
-    id: 'admin-wechat-custom-menu',
-    title: '菜单管理',
-    name: 'admin-wechat-custom-menu',
-    path: '/admin/wechat/custom/menu',
-    level: 2,
-    frontRoute: 'admin/wechat/custom/menu',
-    parentId: 'admin-wechat-custom',
-    sortOrder: 0,
-    permission: '/admin/wechat/custom/menu',
-    icon: 'bars',
-    description: '自定义菜单管理',
-    type: 1,
-    appType: 1
-  },
-  {
-    id: 'admin-wechat-custom-preview',
-    title: '菜单预览',
-    name: 'admin-wechat-custom-preview',
-    path: '/admin/wechat/custom/preview',
-    level: 2,
-    frontRoute: 'admin/wechat/custom/preview',
-    parentId: 'admin-wechat-custom',
-    sortOrder: 1,
-    permission: '/admin/wechat/custom/preview',
-    icon: 'eye',
-    description: '菜单预览',
-    type: 1,
-    appType: 1
-  },
-  // 授权管理
-  {
-    id: 'admin-wechat-auth',
-    title: '授权管理',
-    name: 'admin-wechat-auth',
-    path: '/admin/wechat/auth',
-    level: 1,
-    frontRoute: 'admin/wechat/auth',
-    parentId: 'admin-wechat',
-    sortOrder: 5,
-    permission: '/admin/wechat/auth',
-    icon: 'safety-certificate',
-    description: '授权管理',
-    type: 0,
-    appType: 1
-  },
-  {
-    id: 'admin-wechat-auth-config',
-    title: '授权配置',
-    name: 'admin-wechat-auth-config',
-    path: '/admin/wechat/auth/config',
-    level: 2,
-    frontRoute: 'admin/wechat/auth/config',
-    parentId: 'admin-wechat-auth',
-    sortOrder: 0,
-    permission: '/admin/wechat/auth/config',
-    icon: 'setting',
-    description: '授权配置管理',
-    type: 1,
-    appType: 1
-  },
-  {
-    id: 'admin-wechat-auth-log',
-    title: '授权日志',
-    name: 'admin-wechat-auth-log',
-    path: '/admin/wechat/auth/log',
-    level: 2,
-    frontRoute: 'admin/wechat/auth/log',
-    parentId: 'admin-wechat-auth',
-    sortOrder: 1,
-    permission: '/admin/wechat/auth/log',
-    icon: 'file-text',
-    description: '授权日志管理',
-    type: 1,
-    appType: 1
+// 动态加载完整的菜单数据（从 scripts 目录）
+let fullAdminMenus: MenuItem[] = [];
+
+// 在模块加载时立即加载菜单数据
+(function loadAdminMenuData() {
+  const pathModule = require('path');
+  const fsModule = require('fs');
+
+  // 尝试多个可能的路径（按优先级排序）
+  const possiblePaths = [
+    // 1. 从项目根目录的 scripts 目录（开发环境）
+    pathModule.join(process.cwd(), 'scripts', 'admin-menu-data.js'),
+    // 2. 从编译后的 dist 目录（生产环境）
+    pathModule.join(process.cwd(), 'dist', 'scripts', 'admin-menu-data.js'),
+    // 3. 从当前文件位置的相对路径（编译后）
+    pathModule.join(__dirname, '../../../../scripts/admin-menu-data.js'),
+    // 4. 从当前文件位置的相对路径（开发环境，如果 __dirname 指向 src）
+    pathModule.join(__dirname, '../../../scripts/admin-menu-data.js'),
+  ];
+
+  console.log('🔍 开始加载菜单数据...');
+  console.log('📂 当前工作目录:', process.cwd());
+  console.log('📂 当前文件目录:', __dirname);
+
+  let loaded = false;
+  for (const filePath of possiblePaths) {
+    try {
+      if (fsModule.existsSync(filePath)) {
+        console.log(`📂 找到菜单文件: ${filePath}`);
+        // 清除缓存，确保重新加载
+        const resolvedPath = require.resolve(filePath);
+        if (require.cache[resolvedPath]) {
+          delete require.cache[resolvedPath];
+        }
+
+        const adminMenuData = require(filePath);
+        fullAdminMenus = adminMenuData.adminMenus || [];
+
+        if (fullAdminMenus.length > 0) {
+          console.log(`✅ 成功从 ${filePath} 加载了 ${fullAdminMenus.length} 个菜单项`);
+          loaded = true;
+          break;
+        } else {
+          console.warn(`⚠️ 文件 ${filePath} 存在但菜单数据为空`);
+        }
+      }
+    } catch (error: any) {
+      // 继续尝试下一个路径
+      console.debug(`尝试路径 ${filePath} 失败:`, error.message);
+    }
   }
-];
 
+  if (!loaded) {
+    console.error('❌ 所有路径都失败，菜单数据为空');
+    console.error('💡 请检查以下路径是否存在:');
+    possiblePaths.forEach(p => console.error(`   - ${p}`));
+    fullAdminMenus = [];
+  }
+})();
+
+// 使用完整的菜单数据，包含所有9大模块（会员、订单、商品、促销、店铺、运营、统计、设置、日志、公众号）
+export const adminMenus: MenuItem[] = fullAdminMenus;
+
+// 卖家端菜单（保持原有数据）
 export const sellerMenus: MenuItem[] = [
   // ========== 卖家端菜单 ==========
   {
@@ -355,7 +81,7 @@ export const sellerMenus: MenuItem[] = [
     icon: 'dashboard',
     description: '卖家工作台',
     type: 0,
-    appType: 2
+    appType: 2,
   },
   {
     id: 'seller-goods',
@@ -370,7 +96,7 @@ export const sellerMenus: MenuItem[] = [
     icon: 'shopping',
     description: '商品管理',
     type: 0,
-    appType: 2
+    appType: 2,
   },
   {
     id: 'seller-goods-list',
@@ -385,7 +111,7 @@ export const sellerMenus: MenuItem[] = [
     icon: 'unordered-list',
     description: '商品列表管理',
     type: 1,
-    appType: 2
+    appType: 2,
   },
   {
     id: 'seller-goods-add',
@@ -400,7 +126,7 @@ export const sellerMenus: MenuItem[] = [
     icon: 'plus',
     description: '添加商品',
     type: 1,
-    appType: 2
+    appType: 2,
   },
   {
     id: 'seller-goods-category',
@@ -415,7 +141,7 @@ export const sellerMenus: MenuItem[] = [
     icon: 'appstore',
     description: '商品分类管理',
     type: 1,
-    appType: 2
+    appType: 2,
   },
   {
     id: 'seller-order',
@@ -430,7 +156,7 @@ export const sellerMenus: MenuItem[] = [
     icon: 'solution',
     description: '订单管理',
     type: 0,
-    appType: 2
+    appType: 2,
   },
   {
     id: 'seller-order-list',
@@ -445,7 +171,7 @@ export const sellerMenus: MenuItem[] = [
     icon: 'ordered-list',
     description: '订单列表管理',
     type: 1,
-    appType: 2
+    appType: 2,
   },
   {
     id: 'seller-order-refund',
@@ -460,7 +186,7 @@ export const sellerMenus: MenuItem[] = [
     icon: 'rollback',
     description: '退款管理',
     type: 1,
-    appType: 2
+    appType: 2,
   },
   {
     id: 'seller-order-shipping',
@@ -475,7 +201,7 @@ export const sellerMenus: MenuItem[] = [
     icon: 'car',
     description: '发货管理',
     type: 1,
-    appType: 2
+    appType: 2,
   },
   {
     id: 'seller-finance',
@@ -490,7 +216,7 @@ export const sellerMenus: MenuItem[] = [
     icon: 'account-book',
     description: '财务管理',
     type: 0,
-    appType: 2
+    appType: 2,
   },
   {
     id: 'seller-finance-balance',
@@ -505,7 +231,7 @@ export const sellerMenus: MenuItem[] = [
     icon: 'dollar',
     description: '账户余额管理',
     type: 1,
-    appType: 2
+    appType: 2,
   },
   {
     id: 'seller-finance-withdraw',
@@ -520,7 +246,7 @@ export const sellerMenus: MenuItem[] = [
     icon: 'bank',
     description: '提现管理',
     type: 1,
-    appType: 2
+    appType: 2,
   },
   {
     id: 'seller-finance-bill',
@@ -535,7 +261,7 @@ export const sellerMenus: MenuItem[] = [
     icon: 'file-text',
     description: '账单明细管理',
     type: 1,
-    appType: 2
+    appType: 2,
   },
   {
     id: 'seller-store',
@@ -550,7 +276,7 @@ export const sellerMenus: MenuItem[] = [
     icon: 'shop',
     description: '店铺管理',
     type: 0,
-    appType: 2
+    appType: 2,
   },
   {
     id: 'seller-store-info',
@@ -565,7 +291,7 @@ export const sellerMenus: MenuItem[] = [
     icon: 'info-circle',
     description: '店铺信息管理',
     type: 1,
-    appType: 2
+    appType: 2,
   },
   {
     id: 'seller-store-setting',
@@ -580,7 +306,7 @@ export const sellerMenus: MenuItem[] = [
     icon: 'setting',
     description: '店铺设置管理',
     type: 1,
-    appType: 2
+    appType: 2,
   },
   {
     id: 'seller-store-decorate',
@@ -595,6 +321,6 @@ export const sellerMenus: MenuItem[] = [
     icon: 'highlight',
     description: '店铺装修管理',
     type: 1,
-    appType: 2
-  }
+    appType: 2,
+  },
 ];

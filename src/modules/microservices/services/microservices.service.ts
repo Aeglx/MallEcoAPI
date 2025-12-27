@@ -154,17 +154,23 @@ export class MicroservicesService {
     });
   }
 
-  async updateLoadBalancerMetrics(loadBalancerId: string, metrics: { failedRequests: number; totalRequests: number }) {
-    const loadBalancer = await this.loadBalancerRepository.findOne({ where: { id: loadBalancerId } });
+  async updateLoadBalancerMetrics(
+    loadBalancerId: string,
+    metrics: { failedRequests: number; totalRequests: number },
+  ) {
+    const loadBalancer = await this.loadBalancerRepository.findOne({
+      where: { id: loadBalancerId },
+    });
     if (!loadBalancer) {
       throw new Error('Load balancer not found');
     }
 
     loadBalancer.failedRequests += metrics.failedRequests;
     loadBalancer.totalRequests += metrics.totalRequests;
-    loadBalancer.failureRate = loadBalancer.totalRequests > 0 
-      ? (loadBalancer.failedRequests / loadBalancer.totalRequests) * 100 
-      : 0;
+    loadBalancer.failureRate =
+      loadBalancer.totalRequests > 0
+        ? (loadBalancer.failedRequests / loadBalancer.totalRequests) * 100
+        : 0;
 
     return await this.loadBalancerRepository.save(loadBalancer);
   }
@@ -183,15 +189,21 @@ export class MicroservicesService {
     });
   }
 
-  async updateCircuitBreakerState(circuitBreakerId: string, newState: string, isSuccess: boolean = false) {
-    const circuitBreaker = await this.circuitBreakerRepository.findOne({ where: { id: circuitBreakerId } });
+  async updateCircuitBreakerState(
+    circuitBreakerId: string,
+    newState: string,
+    isSuccess: boolean = false,
+  ) {
+    const circuitBreaker = await this.circuitBreakerRepository.findOne({
+      where: { id: circuitBreakerId },
+    });
     if (!circuitBreaker) {
       throw new Error('Circuit breaker not found');
     }
 
     circuitBreaker.state = newState as any;
     circuitBreaker.lastStateChangeTime = new Date();
-    
+
     if (isSuccess) {
       circuitBreaker.successCount++;
     } else {
@@ -200,9 +212,10 @@ export class MicroservicesService {
     }
 
     circuitBreaker.requestCount++;
-    circuitBreaker.failurePercentage = circuitBreaker.requestCount > 0 
-      ? (circuitBreaker.failureCount / circuitBreaker.requestCount) * 100 
-      : 0;
+    circuitBreaker.failurePercentage =
+      circuitBreaker.requestCount > 0
+        ? (circuitBreaker.failureCount / circuitBreaker.requestCount) * 100
+        : 0;
 
     return await this.circuitBreakerRepository.save(circuitBreaker);
   }
@@ -218,7 +231,7 @@ export class MicroservicesService {
       // 模拟健康检查逻辑
       const isHealthy = await this.checkServiceHealth(service);
       const status = isHealthy ? 'healthy' : 'unhealthy';
-      
+
       await this.updateServiceStatus(serviceId, status);
       return { serviceId: service.serviceName, status, lastCheck: new Date() };
     } catch (error) {
@@ -235,13 +248,21 @@ export class MicroservicesService {
 
   // 服务统计和报表
   async getServiceStatistics() {
-    const totalServices = await this.serviceRegistryRepository.count({ where: { state: 'active' } });
-    const healthyServices = await this.serviceRegistryRepository.count({ where: { state: 'active', status: 'healthy' } });
+    const totalServices = await this.serviceRegistryRepository.count({
+      where: { state: 'active' },
+    });
+    const healthyServices = await this.serviceRegistryRepository.count({
+      where: { state: 'active', status: 'healthy' },
+    });
     const unhealthyServices = totalServices - healthyServices;
-    
+
     const totalConfigs = await this.serviceConfigRepository.count({ where: { isActive: true } });
-    const activeLoadBalancers = await this.loadBalancerRepository.count({ where: { isActive: true } });
-    const activeCircuitBreakers = await this.circuitBreakerRepository.count({ where: { isActive: true } });
+    const activeLoadBalancers = await this.loadBalancerRepository.count({
+      where: { isActive: true },
+    });
+    const activeCircuitBreakers = await this.circuitBreakerRepository.count({
+      where: { isActive: true },
+    });
 
     return {
       totalServices,
@@ -261,9 +282,12 @@ export class MicroservicesService {
     for (const service of services) {
       const metrics = await this.getServiceMetrics(service.serviceName, timeRange);
       if (metrics.length > 0) {
-        const avgResponseTime = metrics.reduce((sum, m) => sum + Number(m.responseTime), 0) / metrics.length;
-        const avgCpuUsage = metrics.reduce((sum, m) => sum + Number(m.cpuUsage), 0) / metrics.length;
-        const avgMemoryUsage = metrics.reduce((sum, m) => sum + Number(m.memoryUsage), 0) / metrics.length;
+        const avgResponseTime =
+          metrics.reduce((sum, m) => sum + Number(m.responseTime), 0) / metrics.length;
+        const avgCpuUsage =
+          metrics.reduce((sum, m) => sum + Number(m.cpuUsage), 0) / metrics.length;
+        const avgMemoryUsage =
+          metrics.reduce((sum, m) => sum + Number(m.memoryUsage), 0) / metrics.length;
         const totalRequests = metrics.reduce((sum, m) => sum + m.requestCount, 0);
         const totalErrors = metrics.reduce((sum, m) => sum + m.errorCount, 0);
         const errorRate = totalRequests > 0 ? (totalErrors / totalRequests) * 100 : 0;

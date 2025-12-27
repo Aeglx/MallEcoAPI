@@ -7,13 +7,9 @@ import { OrdersModule } from '../orders/orders.module';
 import { PaymentModule } from '../payment/payment.module';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([AfterSales]),
-    OrdersModule,
-    PaymentModule
-  ],
+  imports: [TypeOrmModule.forFeature([AfterSales]), OrdersModule, PaymentModule],
   controllers: [AfterSalesController],
   providers: [AfterSalesService],
-  exports: [AfterSalesService]
+  exports: [AfterSalesService],
 })
 export class AfterSalesModule {}

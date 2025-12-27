@@ -69,9 +69,9 @@ export class WechatOauthService {
   }
 
   async getOauthUserById(id: string) {
-    const user = await this.oauthUserRepository.findOne({ 
+    const user = await this.oauthUserRepository.findOne({
       where: { id },
-      relations: ['app'] 
+      relations: ['app'],
     });
     if (!user) {
       throw new NotFoundException(`授权用户不存在: ${id}`);
@@ -174,9 +174,9 @@ export class WechatOauthService {
   }
 
   async getOauthTokenById(id: string) {
-    const token = await this.oauthTokenRepository.findOne({ 
+    const token = await this.oauthTokenRepository.findOne({
       where: { id },
-      relations: ['user', 'app'] 
+      relations: ['user', 'app'],
     });
     if (!token) {
       throw new NotFoundException(`令牌不存在: ${id}`);
@@ -196,13 +196,13 @@ export class WechatOauthService {
     const result = await this.oauthTokenRepository
       .createQueryBuilder()
       .update(WechatOauthToken)
-      .set({ 
-        status: 0
+      .set({
+        status: 0,
       })
       .where('id = :userId AND appId = :appId AND status = :active', {
         userId,
         appId,
-        active: 1
+        active: 1,
       })
       .execute();
 
@@ -241,18 +241,18 @@ export class WechatOauthService {
   // 生成应用密钥
   async generateAppSecret(appId: string) {
     const app = await this.getOauthAppById(appId);
-    
+
     // 生成新的密钥（实际应该使用安全的随机生成方法）
     const newSecret = this.generateRandomString(32);
     app.appSecret = newSecret;
     app.updateTime = new Date();
 
     await this.oauthAppRepository.save(app);
-    
-    return { 
-      success: true, 
+
+    return {
+      success: true,
       message: '应用密钥生成成功',
-      appSecret: newSecret 
+      appSecret: newSecret,
     };
   }
 

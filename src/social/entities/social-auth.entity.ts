@@ -1,4 +1,11 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import { User } from '../../modules/users/entities/user.entity';
 
 export enum SocialPlatform {
@@ -61,6 +68,6 @@ export class SocialAuthEntity {
   @UpdateDateColumn()
   updated_at!: Date;
 
-  @ManyToOne(() => User, (user) => user.social_auths)
+  @ManyToOne(() => User, user => user.social_auths)
   user!: User;
 }

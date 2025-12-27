@@ -34,4 +34,3 @@ export class OrderMessageHandler {
     console.log('Received order.cancelled event:', order);
   }
 }
-

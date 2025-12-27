@@ -19,8 +19,16 @@ export class DepartmentService {
   }
 
   async findAll(searchDto: DepartmentSearchDto): Promise<Department[]> {
-    const { name, code, status, page = 1, limit = 10, sortBy = 'sortWeight', sortOrder = 'ASC' } = searchDto;
-    
+    const {
+      name,
+      code,
+      status,
+      page = 1,
+      limit = 10,
+      sortBy = 'sortWeight',
+      sortOrder = 'ASC',
+    } = searchDto;
+
     const queryBuilder = this.departmentRepository
       .createQueryBuilder('department')
       .leftJoinAndSelect('department.parent', 'parent');
@@ -81,7 +89,7 @@ export class DepartmentService {
     });
 
     const rootDepartments = departments.filter(dept => !dept.parent);
-    
+
     const buildSubTree = (parent: Department) => {
       parent.children = departments.filter(dept => dept.parent?.id === parent.id);
       parent.children.forEach(child => buildSubTree(child));

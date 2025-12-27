@@ -49,4 +49,3 @@ export default registerAs<AppConfig>('app', () => ({
   apiPrefix: process.env.API_PREFIX || '/api',
   globalPrefix: process.env.GLOBAL_PREFIX,
 }));
-

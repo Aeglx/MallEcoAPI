@@ -18,9 +18,9 @@ import { Kuaidi100Plugin } from './plugins/kuaidi100.plugin';
         logisticsService.registerPlugin(kuaidi100Plugin);
         return [];
       },
-      inject: [LogisticsService, Kuaidi100Plugin]
-    }
+      inject: [LogisticsService, Kuaidi100Plugin],
+    },
   ],
-  exports: [LogisticsService]
+  exports: [LogisticsService],
 })
 export class LogisticsModule {}

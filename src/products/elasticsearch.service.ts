@@ -10,8 +10,10 @@ export class ElasticsearchProductService implements OnModuleInit, OnModuleDestro
 
   async onModuleInit() {
     // 检查索引是否存在
-    const indexExists = await this.elasticsearchService.indices.exists({ index: this.index } as any);
-    
+    const indexExists = await this.elasticsearchService.indices.exists({
+      index: this.index,
+    } as any);
+
     if (!indexExists) {
       // 创建索引
       await this.elasticsearchService.indices.create({
@@ -28,9 +30,9 @@ export class ElasticsearchProductService implements OnModuleInit, OnModuleDestro
                   suggest: {
                     type: 'completion',
                     analyzer: 'ik_smart',
-                    search_analyzer: 'ik_smart'
-                  }
-                }
+                    search_analyzer: 'ik_smart',
+                  },
+                },
               },
               description: { type: 'text', analyzer: 'ik_smart', search_analyzer: 'ik_smart' },
               details: { type: 'text', analyzer: 'ik_smart', search_analyzer: 'ik_smart' },
@@ -66,7 +68,7 @@ export class ElasticsearchProductService implements OnModuleInit, OnModuleDestro
         createdAt: new Date(product.createdAt).toISOString(),
         updatedAt: new Date(product.updatedAt).toISOString(),
         // 添加搜索建议字段
-        'name.suggest': product.name
+        'name.suggest': product.name,
       },
     } as any);
   }
@@ -102,7 +104,7 @@ export class ElasticsearchProductService implements OnModuleInit, OnModuleDestro
         createdAt: new Date(product.createdAt).toISOString(),
         updatedAt: new Date(product.updatedAt).toISOString(),
         // 添加搜索建议字段
-        'name.suggest': product.name
+        'name.suggest': product.name,
       });
     }
 
@@ -112,8 +114,20 @@ export class ElasticsearchProductService implements OnModuleInit, OnModuleDestro
   /**
    * 搜索商品
    */
-  async search(params: any): Promise<{ data: any[], total: number }> {
-    const { keyword, categoryId, brandId, minPrice, maxPrice, isShow, isNew, isHot, recommend, page = 1, limit = 10 } = params;
+  async search(params: any): Promise<{ data: any[]; total: number }> {
+    const {
+      keyword,
+      categoryId,
+      brandId,
+      minPrice,
+      maxPrice,
+      isShow,
+      isNew,
+      isHot,
+      recommend,
+      page = 1,
+      limit = 10,
+    } = params;
 
     const body = {
       query: {
@@ -122,10 +136,7 @@ export class ElasticsearchProductService implements OnModuleInit, OnModuleDestro
           filter: [],
         },
       },
-      sort: [
-        { sortOrder: { order: 'asc' } },
-        { createdAt: { order: 'desc' } },
-      ],
+      sort: [{ sortOrder: { order: 'asc' } }, { createdAt: { order: 'desc' } }],
       from: (page - 1) * limit,
       size: limit,
     } as any;
@@ -232,7 +243,8 @@ export class ElasticsearchProductService implements OnModuleInit, OnModuleDestro
 
     return {
       data,
-      total: typeof response.hits.total === 'number' ? response.hits.total : response.hits.total.value,
+      total:
+        typeof response.hits.total === 'number' ? response.hits.total : response.hits.total.value,
     };
   }
 
@@ -256,11 +268,11 @@ export class ElasticsearchProductService implements OnModuleInit, OnModuleDestro
             completion: {
               field: 'name.suggest',
               size: limit,
-              skip_duplicates: true
-            }
-          }
-        }
-      }
+              skip_duplicates: true,
+            },
+          },
+        },
+      },
     } as any);
 
     if (response.suggest && response.suggest.product_suggestions) {

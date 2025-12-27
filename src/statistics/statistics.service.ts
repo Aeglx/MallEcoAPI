@@ -49,26 +49,24 @@ export class StatisticsService {
    * 获取热门商品
    */
   async getHotProducts(limit: number = 10) {
-    return this.productRepository
-      .find({
-        where: { isShow: 1 },
-        order: { sales: 'DESC' },
-        take: limit,
-        select: ['id', 'name', 'price', 'sales', 'mainImage', 'isHot'],
-      });
+    return this.productRepository.find({
+      where: { isShow: 1 },
+      order: { sales: 'DESC' },
+      take: limit,
+      select: ['id', 'name', 'price', 'sales', 'mainImage', 'isHot'],
+    });
   }
 
   /**
    * 获取滞销商品
    */
   async getUnsoldProducts(limit: number = 10) {
-    return this.productRepository
-      .find({
-        where: { sales: 0, stock: 1 },
-        order: { createdAt: 'ASC' },
-        take: limit,
-        select: ['id', 'name', 'price', 'stock', 'mainImage', 'createdAt'],
-      });
+    return this.productRepository.find({
+      where: { sales: 0, stock: 1 },
+      order: { createdAt: 'ASC' },
+      take: limit,
+      select: ['id', 'name', 'price', 'stock', 'mainImage', 'createdAt'],
+    });
   }
 
   /**
@@ -77,12 +75,12 @@ export class StatisticsService {
   async getSystemOverview() {
     const [productStats, userStats] = await Promise.all([
       this.getProductStatistics(),
-      this.getUserStatistics()
+      this.getUserStatistics(),
     ]);
 
     return {
       ...productStats,
-      ...userStats
+      ...userStats,
     };
   }
 
@@ -95,7 +93,7 @@ export class StatisticsService {
       totalOrders: 0,
       completedOrders: 0,
       totalRevenue: 0,
-      avgOrderValue: 0
+      avgOrderValue: 0,
     };
   }
 
@@ -105,12 +103,12 @@ export class StatisticsService {
   private async getUserStatistics() {
     const [totalUsers, activeUsers] = await Promise.all([
       this.userRepository.count(),
-      this.userRepository.count({ where: { status: UserStatus.ACTIVE } })
+      this.userRepository.count({ where: { status: UserStatus.ACTIVE } }),
     ]);
 
     return {
       totalUsers: totalUsers || 0,
-      activeUsers: activeUsers || 0
+      activeUsers: activeUsers || 0,
     };
   }
 
@@ -125,7 +123,7 @@ export class StatisticsService {
       date.setDate(date.getDate() - days + i);
       result.push({
         date: date.toISOString().split('T')[0],
-        salesAmount: Math.floor(Math.random() * 1000)
+        salesAmount: Math.floor(Math.random() * 1000),
       });
     }
     return result;
@@ -138,7 +136,7 @@ export class StatisticsService {
     // 返回模拟数据
     return [
       { categoryId: 1, totalProducts: 10, totalSales: 100 },
-      { categoryId: 2, totalProducts: 15, totalSales: 150 }
+      { categoryId: 2, totalProducts: 15, totalSales: 150 },
     ];
   }
 
@@ -150,7 +148,7 @@ export class StatisticsService {
       { priceRange: '0-100', totalProducts: 5, totalSales: 50 },
       { priceRange: '100-500', totalProducts: 8, totalSales: 80 },
       { priceRange: '500-1000', totalProducts: 3, totalSales: 30 },
-      { priceRange: '1000+', totalProducts: 2, totalSales: 20 }
+      { priceRange: '1000+', totalProducts: 2, totalSales: 20 },
     ];
   }
 
@@ -175,13 +173,7 @@ export class StatisticsService {
    * 获取综合仪表盘数据
    */
   async getDashboardStatistics() {
-    const [
-      productStats,
-      orderStats,
-      userStats,
-      contentStats,
-      hotProducts,
-    ] = await Promise.all([
+    const [productStats, orderStats, userStats, contentStats, hotProducts] = await Promise.all([
       this.getProductStatistics(),
       this.getOrderStatistics(),
       this.getUserStatistics(),

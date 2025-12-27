@@ -58,13 +58,20 @@ export class SchedulerService {
     };
 
     await this.timeTrigger.addDelay(msg);
-    this.logger.log(`Scheduled task at: ${executorName}, time: ${new Date(triggerTime * 1000).toISOString()}`);
+    this.logger.log(
+      `Scheduled task at: ${executorName}, time: ${new Date(triggerTime * 1000).toISOString()}`,
+    );
   }
 
   /**
    * 取消任务
    */
-  async cancel(executorName: string, triggerTime: number, uniqueKey: string, topic?: string): Promise<void> {
+  async cancel(
+    executorName: string,
+    triggerTime: number,
+    uniqueKey: string,
+    topic?: string,
+  ): Promise<void> {
     await this.timeTrigger.delete(executorName, triggerTime, uniqueKey, topic || '');
     this.logger.log(`Cancelled task: ${executorName}, key: ${uniqueKey}`);
   }
@@ -76,4 +83,3 @@ export class SchedulerService {
     return await this.timeTrigger.getPendingTaskCount();
   }
 }
-

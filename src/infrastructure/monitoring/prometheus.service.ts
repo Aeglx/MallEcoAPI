@@ -4,21 +4,21 @@ import { Registry, collectDefaultMetrics, Gauge, Counter, Histogram } from 'prom
 @Injectable()
 export class PrometheusService implements OnModuleInit {
   private registry: Registry;
-  
+
   // 应用指标
   private requestCounter: Counter;
   private responseTimeHistogram: Histogram;
   private activeConnectionsGauge: Gauge;
   private memoryUsageGauge: Gauge;
   private cpuUsageGauge: Gauge;
-  
+
   // 业务指标
   private orderCounter: Counter;
   private paymentCounter: Counter;
   private userCounter: Counter;
   private cacheHitCounter: Counter;
   private cacheMissCounter: Counter;
-  
+
   // 数据库指标
   private databaseQueryCounter: Counter;
   private databaseQueryDurationHistogram: Histogram;
@@ -33,7 +33,7 @@ export class PrometheusService implements OnModuleInit {
   async onModuleInit() {
     // 收集默认指标
     collectDefaultMetrics({ register: this.registry });
-    
+
     // 启动指标收集定时任务
     this.startMetricsCollection();
   }
@@ -218,7 +218,7 @@ export class PrometheusService implements OnModuleInit {
 
   // 获取缓存命中率
   getCacheHitRate(cacheName: string): Promise<number> {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       // 这里可以实现缓存命中率计算逻辑
       resolve(0);
     });
@@ -233,7 +233,7 @@ export class PrometheusService implements OnModuleInit {
   } {
     const memoryUsage = process.memoryUsage();
     const memoryPercent = (memoryUsage.heapUsed / memoryUsage.heapTotal) * 100;
-    
+
     return {
       status: memoryPercent < 80 ? 'healthy' : 'warning',
       memory: memoryPercent,
@@ -257,11 +257,11 @@ export class PrometheusService implements OnModuleInit {
     this.databaseErrorCounter.inc({ error_type: errorType });
   }
 
-  recordConnectionPoolStats(poolStats: { 
-    totalConnections: number; 
-    activeConnections: number; 
-    idleConnections: number; 
-    waitingClients: number; 
+  recordConnectionPoolStats(poolStats: {
+    totalConnections: number;
+    activeConnections: number;
+    idleConnections: number;
+    waitingClients: number;
   }) {
     this.databasePoolConnectionsGauge.set({ pool_type: 'total' }, poolStats.totalConnections);
     this.databasePoolConnectionsGauge.set({ pool_type: 'active' }, poolStats.activeConnections);

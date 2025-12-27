@@ -13,13 +13,16 @@ export class SalesStatisticsService {
 
   async getSalesStatistics(queryDto: SalesStatisticsQueryDto) {
     const { startDate, endDate, productId, categoryId, granularity = 'daily' } = queryDto;
-    
+
     const queryBuilder = this.salesStatisticsRepository
       .createQueryBuilder('sales')
       .where('sales.granularity = :granularity', { granularity });
 
     if (startDate && endDate) {
-      queryBuilder.andWhere('sales.statDate BETWEEN :startDate AND :endDate', { startDate, endDate });
+      queryBuilder.andWhere('sales.statDate BETWEEN :startDate AND :endDate', {
+        startDate,
+        endDate,
+      });
     } else if (startDate) {
       queryBuilder.andWhere('sales.statDate >= :startDate', { startDate });
     } else if (endDate) {
@@ -34,14 +37,12 @@ export class SalesStatisticsService {
       queryBuilder.andWhere('sales.categoryId = :categoryId', { categoryId });
     }
 
-    return await queryBuilder
-      .orderBy('sales.statDate', 'ASC')
-      .getMany();
+    return await queryBuilder.orderBy('sales.statDate', 'ASC').getMany();
   }
 
   async getTopProducts(queryDto: SalesStatisticsQueryDto) {
     const { startDate, endDate, limit = 10 } = queryDto;
-    
+
     const queryBuilder = this.salesStatisticsRepository
       .createQueryBuilder('sales')
       .select([
@@ -49,12 +50,15 @@ export class SalesStatisticsService {
         'sales.productName',
         'SUM(sales.salesQuantity) as totalQuantity',
         'SUM(sales.salesAmount) as totalAmount',
-        'AVG(sales.conversionRate) as avgConversionRate'
+        'AVG(sales.conversionRate) as avgConversionRate',
       ])
       .where('sales.productId IS NOT NULL');
 
     if (startDate && endDate) {
-      queryBuilder.andWhere('sales.statDate BETWEEN :startDate AND :endDate', { startDate, endDate });
+      queryBuilder.andWhere('sales.statDate BETWEEN :startDate AND :endDate', {
+        startDate,
+        endDate,
+      });
     }
 
     return await queryBuilder
@@ -67,19 +71,22 @@ export class SalesStatisticsService {
 
   async getSalesTrend(queryDto: SalesStatisticsQueryDto) {
     const { startDate, endDate, granularity = 'daily' } = queryDto;
-    
+
     const queryBuilder = this.salesStatisticsRepository
       .createQueryBuilder('sales')
       .select([
         'sales.statDate',
         'SUM(sales.salesQuantity) as totalQuantity',
         'SUM(sales.salesAmount) as totalAmount',
-        'AVG(sales.conversionRate) as avgConversionRate'
+        'AVG(sales.conversionRate) as avgConversionRate',
       ])
       .where('sales.granularity = :granularity', { granularity });
 
     if (startDate && endDate) {
-      queryBuilder.andWhere('sales.statDate BETWEEN :startDate AND :endDate', { startDate, endDate });
+      queryBuilder.andWhere('sales.statDate BETWEEN :startDate AND :endDate', {
+        startDate,
+        endDate,
+      });
     }
 
     return await queryBuilder
@@ -90,19 +97,22 @@ export class SalesStatisticsService {
 
   async getCategorySales(queryDto: SalesStatisticsQueryDto) {
     const { startDate, endDate } = queryDto;
-    
+
     const queryBuilder = this.salesStatisticsRepository
       .createQueryBuilder('sales')
       .select([
         'sales.categoryId',
         'sales.categoryName',
         'SUM(sales.salesQuantity) as totalQuantity',
-        'SUM(sales.salesAmount) as totalAmount'
+        'SUM(sales.salesAmount) as totalAmount',
       ])
       .where('sales.categoryId IS NOT NULL');
 
     if (startDate && endDate) {
-      queryBuilder.andWhere('sales.statDate BETWEEN :startDate AND :endDate', { startDate, endDate });
+      queryBuilder.andWhere('sales.statDate BETWEEN :startDate AND :endDate', {
+        startDate,
+        endDate,
+      });
     }
 
     return await queryBuilder
@@ -122,8 +132,10 @@ export class SalesStatisticsService {
       summary: {
         totalSales: statistics.reduce((sum, item) => sum + item.salesAmount, 0),
         totalQuantity: statistics.reduce((sum, item) => sum + item.salesQuantity, 0),
-        avgConversionRate: statistics.length > 0 ? 
-          statistics.reduce((sum, item) => sum + item.conversionRate, 0) / statistics.length : 0,
+        avgConversionRate:
+          statistics.length > 0
+            ? statistics.reduce((sum, item) => sum + item.conversionRate, 0) / statistics.length
+            : 0,
       },
       topProducts,
       salesTrend,

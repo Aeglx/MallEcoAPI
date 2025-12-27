@@ -32,7 +32,7 @@ export class RoleService {
 
   async findAll(searchDto: RoleSearchDto): Promise<{ data: Role[]; total: number }> {
     const { name, code, status, page = 1, pageSize = 20 } = searchDto;
-    
+
     const queryBuilder = this.roleRepository
       .createQueryBuilder('role')
       .leftJoinAndSelect('role.rolePermissions', 'rolePermissions')
@@ -74,26 +74,26 @@ export class RoleService {
 
   async update(id: number, updateRoleDto: UpdateRoleDto): Promise<Role> {
     const role = await this.findOne(id);
-    
+
     Object.assign(role, updateRoleDto);
     return await this.roleRepository.save(role);
   }
 
   async remove(id: number): Promise<void> {
     const role = await this.findOne(id);
-    
+
     // 检查是否有用户关联该角色
     const userCount = await this.userRoleRepository.count({ where: { roleId: id } });
     if (userCount > 0) {
       throw new Error('该角色已被用户使用，无法删除');
     }
-    
+
     await this.roleRepository.remove(role);
   }
 
   async assignPermissions(roleId: number, permissionIds: number[]): Promise<void> {
     const role = await this.findOne(roleId);
-    
+
     // 删除现有权限关联
     await this.rolePermissionRepository.delete({ roleId });
 
@@ -132,7 +132,7 @@ export class RoleService {
 
   async getRolePermissionsTree(roleId: number): Promise<any[]> {
     const permissions = await this.getRolePermissions(roleId);
-    
+
     // 构建权限树形结构
     const permissionMap = new Map<number, any>();
     const tree: any[] = [];

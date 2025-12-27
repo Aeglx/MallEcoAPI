@@ -22,7 +22,11 @@ export class CreateLogisticsDto {
   @IsString()
   formItems?: string;
 
-  @ApiProperty({ description: '禁用状态 OPEN：开启，CLOSE：禁用', required: false, default: 'OPEN' })
+  @ApiProperty({
+    description: '禁用状态 OPEN：开启，CLOSE：禁用',
+    required: false,
+    default: 'OPEN',
+  })
   @IsOptional()
   @IsString()
   disabled?: string;

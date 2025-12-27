@@ -13,7 +13,7 @@ alerting:
 
 # 加载规则文件
 rule_files:
-  - "alert_rules.yml"
+  - 'alert_rules.yml'
 
 # 抓取配置
 scrape_configs:
@@ -30,12 +30,12 @@ scrape_configs:
     metrics_path: '/api/system/metrics'
     scrape_interval: 15s
     scrape_timeout: 10s
-    
+
     # 自定义标签
     labels:
       service: 'malleco-api'
       tier: 'backend'
-    
+
     # 重试配置
     relabel_configs:
       - source_labels: [__address__]
@@ -82,8 +82,8 @@ scrape_configs:
       module: [http_2xx]
     static_configs:
       - targets:
-        - 'https://api.malleco.com/api/health'  # 外部健康检查
-        - 'https://api.malleco.com/api/products' # 主要API检查
+          - 'https://api.malleco.com/api/health' # 外部健康检查
+          - 'https://api.malleco.com/api/products' # 主要API检查
     relabel_configs:
       - source_labels: [__address__]
         target_label: __param_target
@@ -99,9 +99,9 @@ scrape_configs:
       module: [tcp_connect]
     static_configs:
       - targets:
-        - 'mysql:3306'
-        - 'redis:6379'
-        - 'elasticsearch:9200'
+          - 'mysql:3306'
+          - 'redis:6379'
+          - 'elasticsearch:9200'
     relabel_configs:
       - source_labels: [__address__]
         target_label: __param_target

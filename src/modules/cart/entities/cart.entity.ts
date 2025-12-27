@@ -31,6 +31,5 @@ export class Cart extends BaseEntity {
   @Column({ name: 'selected', type: 'tinyint', default: 1 })
   selected: number;
 
-  // 注意：由于使用内存存储，暂时不添加实体关�?
+  // 注意：由于使用内存存储，暂时不添加实体关�?
 }
-

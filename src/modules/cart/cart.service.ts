@@ -28,7 +28,8 @@ export class CartService {
   async addItem(userId: string, addCartItemDto: AddCartItemDto): Promise<Cart> {
     // 检查商品是否已在购物车中
     const existingItem = this.carts.find(
-      cart => cart.userId === userId && cart.productId === addCartItemDto.productId && cart.isDel === 0
+      cart =>
+        cart.userId === userId && cart.productId === addCartItemDto.productId && cart.isDel === 0,
     );
 
     if (existingItem) {
@@ -96,9 +97,7 @@ export class CartService {
 
     this.carts.forEach((cart, index) => {
       if (cart.isDel === 0 && cart.userId === userId) {
-        const shouldUpdate = ids
-          ? ids.includes(cart.id)
-          : true;
+        const shouldUpdate = ids ? ids.includes(cart.id) : true;
 
         if (shouldUpdate) {
           this.carts[index] = {
@@ -173,7 +172,7 @@ export class CartService {
     const totalItems = userCart.reduce((sum, item) => sum + item.quantity, 0);
     const totalPrice = userCart.reduce(
       (sum, item) => sum + (item.price - item.discount) * item.quantity,
-      0
+      0,
     );
 
     const selectedItems = userCart

@@ -1,13 +1,13 @@
 import { Controller, Get, Post, Put, Delete, Body, Param, Query } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiQuery } from '@nestjs/swagger';
 import { ServiceMeshService } from '../services/service-mesh.service';
-import { 
-  MeshConfigEntity, 
-  MeshGatewayEntity, 
+import {
+  MeshConfigEntity,
+  MeshGatewayEntity,
   MeshPolicyEntity,
   MeshTelemetryEntity,
   MeshSecurityEntity,
-  MeshTrafficEntity
+  MeshTrafficEntity,
 } from '../entities/index';
 
 @ApiTags('服务网格管理')
@@ -44,7 +44,7 @@ export class ServiceMeshController {
   @ApiResponse({ status: 200, description: '更新成功' })
   async updateMeshConfig(
     @Param('configId') configId: string,
-    @Body() updateData: Partial<MeshConfigEntity>
+    @Body() updateData: Partial<MeshConfigEntity>,
   ) {
     return await this.serviceMeshService.updateMeshConfig(configId, updateData);
   }
@@ -86,7 +86,7 @@ export class ServiceMeshController {
   @ApiResponse({ status: 200, description: '更新成功' })
   async updateGateway(
     @Param('gatewayId') gatewayId: string,
-    @Body() updateData: Partial<MeshGatewayEntity>
+    @Body() updateData: Partial<MeshGatewayEntity>,
   ) {
     return await this.serviceMeshService.updateGateway(gatewayId, updateData);
   }
@@ -113,7 +113,7 @@ export class ServiceMeshController {
   @ApiResponse({ status: 200, description: '更新成功' })
   async updatePolicy(
     @Param('policyId') policyId: string,
-    @Body() updateData: Partial<MeshPolicyEntity>
+    @Body() updateData: Partial<MeshPolicyEntity>,
   ) {
     return await this.serviceMeshService.updatePolicy(policyId, updateData);
   }
@@ -142,13 +142,16 @@ export class ServiceMeshController {
   async getTelemetryData(
     @Query('serviceName') serviceName?: string,
     @Query('startTime') startTime?: string,
-    @Query('endTime') endTime?: string
+    @Query('endTime') endTime?: string,
   ) {
-    const timeRange = startTime && endTime ? {
-      start: new Date(startTime),
-      end: new Date(endTime)
-    } : undefined;
-    
+    const timeRange =
+      startTime && endTime
+        ? {
+            start: new Date(startTime),
+            end: new Date(endTime),
+          }
+        : undefined;
+
     return await this.serviceMeshService.getTelemetryData(serviceName, timeRange);
   }
 
@@ -169,13 +172,13 @@ export class ServiceMeshController {
   async getServiceMetrics(
     @Param('serviceName') serviceName: string,
     @Query('startTime') startTime: string,
-    @Query('endTime') endTime: string
+    @Query('endTime') endTime: string,
   ) {
     const timeRange = {
       start: new Date(startTime),
-      end: new Date(endTime)
+      end: new Date(endTime),
     };
-    
+
     return await this.serviceMeshService.getServiceMetrics(serviceName, timeRange);
   }
 
@@ -198,7 +201,9 @@ export class ServiceMeshController {
   @Post('security/evaluate')
   @ApiOperation({ summary: '评估安全策略' })
   @ApiResponse({ status: 200, description: '评估完成' })
-  async evaluateSecurityPolicy(@Body() data: { serviceName: string; context: Record<string, any> }) {
+  async evaluateSecurityPolicy(
+    @Body() data: { serviceName: string; context: Record<string, any> },
+  ) {
     return await this.serviceMeshService.evaluateSecurityPolicy(data.serviceName, data.context);
   }
 
@@ -227,13 +232,16 @@ export class ServiceMeshController {
   async getTrafficData(
     @Query('serviceName') serviceName?: string,
     @Query('startTime') startTime?: string,
-    @Query('endTime') endTime?: string
+    @Query('endTime') endTime?: string,
   ) {
-    const timeRange = startTime && endTime ? {
-      start: new Date(startTime),
-      end: new Date(endTime)
-    } : undefined;
-    
+    const timeRange =
+      startTime && endTime
+        ? {
+            start: new Date(startTime),
+            end: new Date(endTime),
+          }
+        : undefined;
+
     return await this.serviceMeshService.getTrafficData(serviceName, timeRange);
   }
 
@@ -246,13 +254,13 @@ export class ServiceMeshController {
   async getTrafficStatistics(
     @Param('serviceName') serviceName: string,
     @Query('startTime') startTime: string,
-    @Query('endTime') endTime: string
+    @Query('endTime') endTime: string,
   ) {
     const timeRange = {
       start: new Date(startTime),
-      end: new Date(endTime)
+      end: new Date(endTime),
     };
-    
+
     return await this.serviceMeshService.getTrafficStatistics(serviceName, timeRange);
   }
 

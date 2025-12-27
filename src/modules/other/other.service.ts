@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class OtherService {
-  
   // 获取首页楼层装修数据
   async getIndexData(params: any) {
     // 模拟首页装修数据
@@ -13,25 +12,25 @@ export class OtherService {
           options: {
             categories: [
               { id: 1, name: '手机数码', image: '/images/category1.jpg' },
-              { id: 2, name: '电脑办公', image: '/images/category2.jpg' }
-            ]
-          }
+              { id: 2, name: '电脑办公', image: '/images/category2.jpg' },
+            ],
+          },
         },
         {
           type: 'seckill',
           options: {
-            list: [] // 秒杀数据由前端单独调用
-          }
-        }
-      ]
+            list: [], // 秒杀数据由前端单独调用
+          },
+        },
+      ],
     };
 
     return {
       success: true,
       result: {
-        pageData: JSON.stringify(pageData)
+        pageData: JSON.stringify(pageData),
       },
-      message: '获取首页数据成功'
+      message: '获取首页数据成功',
     };
   }
 
@@ -42,9 +41,9 @@ export class OtherService {
       result: {
         title: '专题页面',
         content: '专题页面内容',
-        images: ['/images/topic1.jpg', '/images/topic2.jpg']
+        images: ['/images/topic1.jpg', '/images/topic2.jpg'],
       },
-      message: '获取专题数据成功'
+      message: '获取专题数据成功',
     };
   }
 
@@ -60,14 +59,14 @@ export class OtherService {
               options: {
                 storeInfo: {
                   name: '示例店铺',
-                  logo: '/images/store-logo.jpg'
-                }
-              }
-            }
-          ]
-        })
+                  logo: '/images/store-logo.jpg',
+                },
+              },
+            },
+          ],
+        }),
       },
-      message: '获取页面数据成功'
+      message: '获取页面数据成功',
     };
   }
 
@@ -81,18 +80,18 @@ export class OtherService {
             id: 1,
             title: '帮助中心文章1',
             content: '文章内容1',
-            categoryId: 1
+            categoryId: 1,
           },
           {
             id: 2,
-            title: '帮助中心文章2', 
+            title: '帮助中心文章2',
             content: '文章内容2',
-            categoryId: 1
-          }
+            categoryId: 1,
+          },
         ],
-        total: 2
+        total: 2,
       },
-      message: '获取文章列表成功'
+      message: '获取文章列表成功',
     };
   }
 
@@ -105,9 +104,9 @@ export class OtherService {
         title: '文章标题',
         content: '文章详细内容',
         categoryId: 1,
-        createTime: new Date().toISOString()
+        createTime: new Date().toISOString(),
       },
-      message: '获取文章详情成功'
+      message: '获取文章详情成功',
     };
   }
 
@@ -119,15 +118,15 @@ export class OtherService {
         {
           id: 1,
           name: '帮助中心',
-          sort: 1
+          sort: 1,
         },
         {
           id: 2,
           name: '常见问题',
-          sort: 2
-        }
+          sort: 2,
+        },
       ],
-      message: '获取文章分类成功'
+      message: '获取文章分类成功',
     };
   }
 }

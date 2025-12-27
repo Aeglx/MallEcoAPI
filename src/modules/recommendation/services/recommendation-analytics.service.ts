@@ -24,7 +24,7 @@ export class RecommendationAnalyticsService {
       totalClicks: 0,
       totalConversions: 0,
       clickThroughRate: 0,
-      conversionRate: 0
+      conversionRate: 0,
     };
   }
 }

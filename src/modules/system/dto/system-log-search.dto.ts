@@ -26,19 +26,19 @@ export class SystemLogSearchDto {
   @ApiProperty({ description: '用户ID', required: false })
   @IsNumber()
   @IsOptional()
-  @Transform(({ value }) => value ? Number(value) : undefined)
+  @Transform(({ value }) => (value ? Number(value) : undefined))
   userId?: number;
 
   @ApiProperty({ description: '开始时间', required: false })
   @IsDate()
   @IsOptional()
-  @Transform(({ value }) => value ? new Date(value) : undefined)
+  @Transform(({ value }) => (value ? new Date(value) : undefined))
   startTime?: Date;
 
   @ApiProperty({ description: '结束时间', required: false })
   @IsDate()
   @IsOptional()
-  @Transform(({ value }) => value ? new Date(value) : undefined)
+  @Transform(({ value }) => (value ? new Date(value) : undefined))
   endTime?: Date;
 
   @ApiProperty({ description: '关键词搜索', required: false })
@@ -49,13 +49,13 @@ export class SystemLogSearchDto {
   @ApiProperty({ description: '页码', default: 1 })
   @IsNumber()
   @IsOptional()
-  @Transform(({ value }) => value ? Number(value) : 1)
+  @Transform(({ value }) => (value ? Number(value) : 1))
   page?: number = 1;
 
   @ApiProperty({ description: '每页数量', default: 20 })
   @IsNumber()
   @IsOptional()
-  @Transform(({ value }) => value ? Number(value) : 20)
+  @Transform(({ value }) => (value ? Number(value) : 20))
   limit?: number = 20;
 
   @ApiProperty({ description: '排序字段', default: 'createdAt' })

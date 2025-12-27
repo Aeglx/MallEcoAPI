@@ -28,7 +28,14 @@ export class LiveStatistics extends BaseEntity {
   @Column({ name: 'order_count', default: 0, comment: '订单数' })
   orderCount: number;
 
-  @Column({ name: 'sales_amount', type: 'decimal', precision: 15, scale: 2, default: 0, comment: '销售额' })
+  @Column({
+    name: 'sales_amount',
+    type: 'decimal',
+    precision: 15,
+    scale: 2,
+    default: 0,
+    comment: '销售额',
+  })
   salesAmount: number;
 
   @Column({ name: 'avg_stay_time', type: 'int', default: 0, comment: '平均停留时间(秒)' })
@@ -38,4 +45,3 @@ export class LiveStatistics extends BaseEntity {
   @JoinColumn({ name: 'live_room_id' })
   liveRoom: LiveRoom;
 }
-

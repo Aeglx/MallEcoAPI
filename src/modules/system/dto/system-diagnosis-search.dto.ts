@@ -1,14 +1,29 @@
-import { IsOptional, IsString, IsIn, IsInt, Min, Max, IsBoolean, IsDateString } from 'class-validator';
+import {
+  IsOptional,
+  IsString,
+  IsIn,
+  IsInt,
+  Min,
+  Max,
+  IsBoolean,
+  IsDateString,
+} from 'class-validator';
 import { Type } from 'class-transformer';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 
 export class SystemDiagnosisSearchDto {
-  @ApiPropertyOptional({ description: '诊断类型', enum: ['health', 'performance', 'security', 'dependency', 'connectivity'] })
+  @ApiPropertyOptional({
+    description: '诊断类型',
+    enum: ['health', 'performance', 'security', 'dependency', 'connectivity'],
+  })
   @IsOptional()
   @IsIn(['health', 'performance', 'security', 'dependency', 'connectivity'])
   type?: string;
 
-  @ApiPropertyOptional({ description: '诊断类别', enum: ['database', 'cache', 'network', 'disk', 'memory', 'cpu', 'api'] })
+  @ApiPropertyOptional({
+    description: '诊断类别',
+    enum: ['database', 'cache', 'network', 'disk', 'memory', 'cpu', 'api'],
+  })
   @IsOptional()
   @IsIn(['database', 'cache', 'network', 'disk', 'memory', 'cpu', 'api'])
   category?: string;

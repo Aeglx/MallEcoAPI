@@ -10,7 +10,8 @@ import { UpdateDistributorDto } from './dto/update-distributor.dto';
 export class DistributionService {
   constructor(
     @InjectRepository(Distributor) private distributorRepository: Repository<Distributor>,
-    @InjectRepository(CommissionRecord) private commissionRecordRepository: Repository<CommissionRecord>,
+    @InjectRepository(CommissionRecord)
+    private commissionRecordRepository: Repository<CommissionRecord>,
   ) {}
 
   /**
@@ -24,7 +25,11 @@ export class DistributionService {
   /**
    * 获取分销商列表
    */
-  async getDistributors(page: number = 1, pageSize: number = 10, status?: number): Promise<{ items: Distributor[], total: number }> {
+  async getDistributors(
+    page: number = 1,
+    pageSize: number = 10,
+    status?: number,
+  ): Promise<{ items: Distributor[]; total: number }> {
     const query = this.distributorRepository.createQueryBuilder('distributor');
 
     if (status !== undefined) {
@@ -65,15 +70,18 @@ export class DistributionService {
   /**
    * 更新分销商
    */
-  async updateDistributor(id: string, updateDistributorDto: UpdateDistributorDto): Promise<Distributor> {
+  async updateDistributor(
+    id: string,
+    updateDistributorDto: UpdateDistributorDto,
+  ): Promise<Distributor> {
     const distributor = await this.getDistributorById(id);
     Object.assign(distributor, updateDistributorDto);
-    
+
     // 如果是审核操作，设置审核时间
     if (updateDistributorDto.status !== undefined) {
       distributor.auditTime = new Date();
     }
-    
+
     return this.distributorRepository.save(distributor);
   }
 
@@ -94,8 +102,8 @@ export class DistributionService {
     distributorId?: string,
     status?: number,
     page: number = 1,
-    pageSize: number = 10
-  ): Promise<{ items: CommissionRecord[], total: number }> {
+    pageSize: number = 10,
+  ): Promise<{ items: CommissionRecord[]; total: number }> {
     const query = this.commissionRecordRepository.createQueryBuilder('record');
 
     if (distributorId) {

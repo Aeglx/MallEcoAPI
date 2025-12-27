@@ -19,8 +19,17 @@ export class MenuService {
   }
 
   async findAll(searchDto: MenuSearchDto): Promise<Menu[]> {
-    const { name, path, type, visible, page = 1, limit = 10, sortBy = 'sortWeight', sortOrder = 'ASC' } = searchDto;
-    
+    const {
+      name,
+      path,
+      type,
+      visible,
+      page = 1,
+      limit = 10,
+      sortBy = 'sortWeight',
+      sortOrder = 'ASC',
+    } = searchDto;
+
     const queryBuilder = this.menuRepository
       .createQueryBuilder('menu')
       .leftJoinAndSelect('menu.parent', 'parent');
@@ -85,7 +94,7 @@ export class MenuService {
     });
 
     const rootMenus = menus.filter(menu => !menu.parent);
-    
+
     const buildSubTree = (parent: Menu) => {
       parent.children = menus.filter(menu => menu.parent?.id === parent.id);
       parent.children.forEach(child => buildSubTree(child));

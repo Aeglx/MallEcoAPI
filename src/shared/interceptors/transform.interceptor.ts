@@ -9,7 +9,7 @@ export class TransformInterceptor<T> implements NestInterceptor<T, T> {
       map(data => {
         // 简单的数据转换，可以根据需要扩展
         return data;
-      })
+      }),
     );
   }
 }

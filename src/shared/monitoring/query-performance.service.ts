@@ -8,7 +8,10 @@ import { DataSource } from 'typeorm';
 @Injectable()
 export class QueryPerformanceService {
   private readonly logger = new Logger(QueryPerformanceService.name);
-  private readonly queryMetrics = new Map<string, { count: number; totalTime: number; avgTime: number }>();
+  private readonly queryMetrics = new Map<
+    string,
+    { count: number; totalTime: number; avgTime: number }
+  >();
 
   constructor(private readonly dataSource: DataSource) {}
 
@@ -28,7 +31,9 @@ export class QueryPerformanceService {
 
     // 如果查询时间超过阈值，记录警告
     if (executionTime > 1000) {
-      this.logger.warn(`Slow query detected: ${executionTime}ms - ${normalizedQuery.substring(0, 100)}`);
+      this.logger.warn(
+        `Slow query detected: ${executionTime}ms - ${normalizedQuery.substring(0, 100)}`,
+      );
     }
   }
 
@@ -48,7 +53,9 @@ export class QueryPerformanceService {
   /**
    * 获取慢查询列表
    */
-  getSlowQueries(threshold: number = 1000): Array<{ query: string; avgTime: number; count: number }> {
+  getSlowQueries(
+    threshold: number = 1000,
+  ): Array<{ query: string; avgTime: number; count: number }> {
     const slowQueries: Array<{ query: string; avgTime: number; count: number }> = [];
 
     this.queryMetrics.forEach((metrics, query) => {
@@ -77,7 +84,7 @@ export class QueryPerformanceService {
     let totalTime = 0;
     let slowQueries = 0;
 
-    this.queryMetrics.forEach((metrics) => {
+    this.queryMetrics.forEach(metrics => {
       totalQueries += metrics.count;
       totalTime += metrics.totalTime;
       if (metrics.avgTime > 1000) {
@@ -99,7 +106,9 @@ export class QueryPerformanceService {
   /**
    * 分析N+1查询问题
    */
-  async analyzeNPlusOneQueries(): Promise<Array<{ pattern: string; count: number; suggestion: string }>> {
+  async analyzeNPlusOneQueries(): Promise<
+    Array<{ pattern: string; count: number; suggestion: string }>
+  > {
     const nPlusOnePatterns: Array<{ pattern: string; count: number; suggestion: string }> = [];
 
     // 检测可能的N+1查询模式
@@ -133,4 +142,3 @@ export class QueryPerformanceService {
     this.logger.log('Query performance metrics reset');
   }
 }
-

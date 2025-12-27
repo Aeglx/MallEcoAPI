@@ -10,7 +10,7 @@ import { SystemMonitorService } from '../services/system-monitor.service';
 export class DatabaseManagementController {
   constructor(
     private readonly backupService: SystemBackupService,
-    private readonly monitorService: SystemMonitorService
+    private readonly monitorService: SystemMonitorService,
   ) {}
 
   @Get('status')
@@ -20,7 +20,7 @@ export class DatabaseManagementController {
     const healthCheck = await this.monitorService.healthCheck();
     return {
       status: healthCheck.database.status,
-      latency: healthCheck.database.latency
+      latency: healthCheck.database.latency,
     };
   }
 
@@ -52,7 +52,7 @@ export class DatabaseManagementController {
     const performance = await this.monitorService.performanceMonitor();
     return {
       connections: performance.database.connections,
-      queriesPerSecond: performance.database.queriesPerSecond
+      queriesPerSecond: performance.database.queriesPerSecond,
     };
   }
 }

@@ -1,4 +1,14 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseInterceptors } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Query,
+  UseInterceptors,
+} from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
 import { SystemConfigService } from '../services/system-config.service';
 import { SystemConfigEntity } from '../entities/system-config.entity';
@@ -80,7 +90,9 @@ export class SystemConfigController {
 
   @Post('batch-values')
   @ApiOperation({ summary: '批量获取配置值' })
-  @ApiBody({ schema: { type: 'object', properties: { keys: { type: 'array', items: { type: 'string' } } } } })
+  @ApiBody({
+    schema: { type: 'object', properties: { keys: { type: 'array', items: { type: 'string' } } } },
+  })
   @ApiResponse({ status: 200, description: '查询成功' })
   async getConfigValues(@Body('keys') keys: string[]): Promise<Record<string, any>> {
     return await this.configService.getConfigValues(keys);

@@ -29,12 +29,7 @@ import { ImTalkService } from './services/im-talk.service';
     }),
   ],
   controllers: [MessageController],
-  providers: [
-    ImWebSocketGateway,
-    WebSocketJwtGuard,
-    ImMessageService,
-    ImTalkService,
-  ],
+  providers: [ImWebSocketGateway, WebSocketJwtGuard, ImMessageService, ImTalkService],
   exports: [ImWebSocketGateway, ImMessageService, ImTalkService],
 })
 export class ImModule {}

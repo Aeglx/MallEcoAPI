@@ -3,7 +3,11 @@ import { ApiTags, ApiOperation, ApiParam, ApiQuery, ApiBody } from '@nestjs/swag
 import { NotificationService } from '../services/notification.service';
 import { CreateNotificationDto } from '../dto/create-notification.dto';
 import { UpdateNotificationDto } from '../dto/update-notification.dto';
-import { Notification, NotificationStatus, NotificationType } from '../entities/notification.entity';
+import {
+  Notification,
+  NotificationStatus,
+  NotificationType,
+} from '../entities/notification.entity';
 
 @ApiTags('通知管理')
 @Controller('notification')
@@ -13,14 +17,18 @@ export class NotificationController {
   @Post()
   @ApiOperation({ summary: '创建通知' })
   @ApiBody({ type: CreateNotificationDto })
-  async createNotification(@Body() createNotificationDto: CreateNotificationDto): Promise<Notification> {
+  async createNotification(
+    @Body() createNotificationDto: CreateNotificationDto,
+  ): Promise<Notification> {
     return await this.notificationService.createNotification(createNotificationDto);
   }
 
   @Post('broadcast')
   @ApiOperation({ summary: '创建系统广播通知' })
   @ApiBody({ type: CreateNotificationDto })
-  async createBroadcastNotification(@Body() createNotificationDto: CreateNotificationDto): Promise<void> {
+  async createBroadcastNotification(
+    @Body() createNotificationDto: CreateNotificationDto,
+  ): Promise<void> {
     return await this.notificationService.createBroadcastNotification(createNotificationDto);
   }
 
@@ -30,7 +38,7 @@ export class NotificationController {
   @ApiBody({ type: UpdateNotificationDto })
   async updateNotification(
     @Param('id') id: number,
-    @Body() updateNotificationDto: UpdateNotificationDto
+    @Body() updateNotificationDto: UpdateNotificationDto,
   ): Promise<Notification> {
     return await this.notificationService.updateNotification(id, updateNotificationDto);
   }
@@ -78,7 +86,7 @@ export class NotificationController {
   async findNotificationsByUserId(
     @Param('userId') userId: string,
     @Query('type') type?: NotificationType,
-    @Query('status') status?: NotificationStatus
+    @Query('status') status?: NotificationStatus,
   ): Promise<Notification[]> {
     return await this.notificationService.findNotificationsByUserId(userId, type, status);
   }

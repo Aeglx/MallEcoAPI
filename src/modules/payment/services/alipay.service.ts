@@ -20,7 +20,11 @@ export class AlipayService {
     });
   }
 
-  async createPayment(paymentRecord: PaymentRecord, paymentClient: string, queryPaymentDto: QueryPaymentDto) {
+  async createPayment(
+    paymentRecord: PaymentRecord,
+    paymentClient: string,
+    queryPaymentDto: QueryPaymentDto,
+  ) {
     try {
       // 根据客户端类型设置不同的支付接口
       const method = this.getAlipayMethod(paymentClient);

@@ -10,4 +10,3 @@ import { DbConnectionService } from '../../common/database/db-connection.service
   exports: [SearchService],
 })
 export class SearchModule {}
-

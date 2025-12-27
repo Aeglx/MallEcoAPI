@@ -1,7 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { AfterSalesStatus } from '../entities/after-sales.entity';
 
-
 export class UpdateAfterSalesDto {
   @ApiProperty({ description: '售后服务状态', enum: AfterSalesStatus, required: false })
   status?: AfterSalesStatus;

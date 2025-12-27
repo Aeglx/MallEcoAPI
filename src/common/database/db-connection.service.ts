@@ -71,7 +71,7 @@ export class DbConnectionService implements OnModuleInit, OnModuleDestroy {
    */
   async transaction<T>(callback: (connection: mysql.PoolConnection) => Promise<T>): Promise<T> {
     const connection = await this.getConnection();
-    
+
     try {
       await connection.beginTransaction();
       const result = await callback(connection);

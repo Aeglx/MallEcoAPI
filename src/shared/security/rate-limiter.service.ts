@@ -44,28 +44,28 @@ export class RateLimiterService {
 
       // 使用Redis事务确保原子性操作
       const pipeline = this.redis.pipeline();
-      
+
       // 移除过期的请求记录
       pipeline.zremrangebyscore(key, 0, windowStart);
-      
+
       // 添加当前请求
       pipeline.zadd(key, now, now.toString());
-      
+
       // 设置过期时间
       pipeline.expire(key, Math.ceil(finalConfig.windowMs / 1000));
-      
+
       // 获取当前窗口内的请求数
       pipeline.zcard(key);
-      
+
       const results = await pipeline.exec();
-      
+
       if (!results) {
         throw new Error('Redis事务执行失败');
       }
 
       const currentRequests = results[3][1] as number;
       const remaining = Math.max(0, finalConfig.maxRequests - currentRequests);
-      
+
       return {
         allowed: currentRequests <= finalConfig.maxRequests,
         remaining,
@@ -120,7 +120,7 @@ export class RateLimiterService {
       pipeline.ttl(key);
 
       const results = await pipeline.exec();
-      
+
       if (!results) {
         throw new Error('Redis事务执行失败');
       }
@@ -133,7 +133,7 @@ export class RateLimiterService {
         maxRequests: finalConfig.maxRequests,
         remaining: Math.max(0, finalConfig.maxRequests - currentRequests),
         windowMs: finalConfig.windowMs,
-        resetTime: Date.now() + (ttl * 1000),
+        resetTime: Date.now() + ttl * 1000,
       };
     } catch (error) {
       console.error('Get rate limit stats failed:', error);
@@ -169,7 +169,7 @@ export class RateLimiterService {
         keyPrefix: 'login_limit',
         message: '登录尝试次数过多，请5分钟后再试',
       },
-      
+
       // 注册接口限流：1小时内最多3次
       register: {
         windowMs: 60 * 60 * 1000, // 1小时
@@ -177,7 +177,7 @@ export class RateLimiterService {
         keyPrefix: 'register_limit',
         message: '注册次数过多，请1小时后再试',
       },
-      
+
       // 短信验证码限流：1分钟内最多1次
       sms: {
         windowMs: 60 * 1000, // 1分钟
@@ -185,7 +185,7 @@ export class RateLimiterService {
         keyPrefix: 'sms_limit',
         message: '验证码发送过于频繁，请1分钟后再试',
       },
-      
+
       // API接口通用限流：1分钟内最多60次
       api: {
         windowMs: 60 * 1000, // 1分钟

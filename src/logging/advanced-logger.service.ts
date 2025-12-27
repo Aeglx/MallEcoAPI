@@ -24,7 +24,7 @@ export class AdvancedLoggerService implements OnModuleInit {
     http: 3,
     verbose: 4,
     debug: 5,
-    silly: 6
+    silly: 6,
   };
 
   constructor(private configService: ConfigService) {
@@ -43,7 +43,7 @@ export class AdvancedLoggerService implements OnModuleInit {
     const logFormat = winston.format.combine(
       winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
       winston.format.errors({ stack: true }),
-      winston.format.json()
+      winston.format.json(),
     );
 
     const consoleFormat = winston.format.combine(
@@ -51,7 +51,7 @@ export class AdvancedLoggerService implements OnModuleInit {
       winston.format.colorize(),
       winston.format.printf(({ timestamp, level, message, ...meta }) => {
         return `${timestamp} [${level}]: ${message} ${Object.keys(meta).length ? JSON.stringify(meta, null, 2) : ''}`;
-      })
+      }),
     );
 
     // 创建logger实例
@@ -61,13 +61,13 @@ export class AdvancedLoggerService implements OnModuleInit {
       format: logFormat,
       defaultMeta: {
         service: 'mall-eco-api',
-        version: '1.0.0'
+        version: '1.0.0',
       },
       transports: [
         // 控制台输出（开发环境）
         new winston.transports.Console({
           format: consoleFormat,
-          level: isProduction ? 'warn' : 'debug'
+          level: isProduction ? 'warn' : 'debug',
         }),
 
         // 每日轮转文件（生产环境）
@@ -77,7 +77,7 @@ export class AdvancedLoggerService implements OnModuleInit {
           zippedArchive: true,
           maxSize: '20m',
           maxFiles: '30d',
-          level: 'info'
+          level: 'info',
         }),
 
         // 错误日志单独文件
@@ -87,7 +87,7 @@ export class AdvancedLoggerService implements OnModuleInit {
           zippedArchive: true,
           maxSize: '20m',
           maxFiles: '90d',
-          level: 'error'
+          level: 'error',
         }),
 
         // HTTP请求日志
@@ -97,9 +97,9 @@ export class AdvancedLoggerService implements OnModuleInit {
           zippedArchive: true,
           maxSize: '20m',
           maxFiles: '30d',
-          level: 'http'
-        })
-      ]
+          level: 'http',
+        }),
+      ],
     });
 
     // Elasticsearch集成（如果配置了ES）
@@ -111,26 +111,24 @@ export class AdvancedLoggerService implements OnModuleInit {
           node: esHost,
           auth: {
             username: this.configService.get('ELASTICSEARCH_USERNAME') || '',
-            password: this.configService.get('ELASTICSEARCH_PASSWORD') || ''
-          }
+            password: this.configService.get('ELASTICSEARCH_PASSWORD') || '',
+          },
         },
-        indexPrefix: 'mall-eco-logs'
+        indexPrefix: 'mall-eco-logs',
       });
 
       this.logger.add(esTransport);
     }
 
     // 处理未捕获的异常
-    this.logger.exceptions.handle(
-      new winston.transports.File({ filename: 'logs/exceptions.log' })
-    );
+    this.logger.exceptions.handle(new winston.transports.File({ filename: 'logs/exceptions.log' }));
 
     // 处理未处理的Promise拒绝
     process.on('unhandledRejection', (reason, promise) => {
       this.logger.error('Unhandled Promise Rejection:', {
         reason,
         promise,
-        stack: new Error().stack
+        stack: new Error().stack,
       });
     });
   }
@@ -166,13 +164,7 @@ export class AdvancedLoggerService implements OnModuleInit {
   /**
    * 记录用户操作日志
    */
-  userAction(
-    userId: string,
-    action: string,
-    resource: string,
-    details?: any,
-    ip?: string
-  ) {
+  userAction(userId: string, action: string, resource: string, details?: any, ip?: string) {
     this.info(`User action: ${action}`, {
       userId,
       action,
@@ -180,80 +172,61 @@ export class AdvancedLoggerService implements OnModuleInit {
       details,
       ip,
       module: 'user',
-      type: 'action'
+      type: 'action',
     });
   }
 
   /**
    * 记录订单相关日志
    */
-  orderLog(
-    orderId: string,
-    action: string,
-    details?: any,
-    userId?: string
-  ) {
+  orderLog(orderId: string, action: string, details?: any, userId?: string) {
     this.info(`Order ${action}: ${orderId}`, {
       orderId,
       action,
       details,
       userId,
       module: 'order',
-      type: 'business'
+      type: 'business',
     });
   }
 
   /**
    * 记录支付相关日志
    */
-  paymentLog(
-    paymentId: string,
-    action: string,
-    amount?: number,
-    details?: any
-  ) {
+  paymentLog(paymentId: string, action: string, amount?: number, details?: any) {
     this.info(`Payment ${action}: ${paymentId}`, {
       paymentId,
       action,
       amount,
       details,
       module: 'payment',
-      type: 'business'
+      type: 'business',
     });
   }
 
   /**
    * 记录安全相关日志
    */
-  securityLog(
-    event: string,
-    level: 'info' | 'warn' | 'error',
-    details?: any,
-    ip?: string
-  ) {
+  securityLog(event: string, level: 'info' | 'warn' | 'error', details?: any, ip?: string) {
     this[level](`Security event: ${event}`, {
       event,
       details,
       ip,
       module: 'security',
-      type: 'security'
+      type: 'security',
     });
   }
 
   /**
    * 记录性能日志
    */
-  performanceLog(
-    operation: string,
-    duration: number,
-    details?: any
-  ) {
+  performanceLog(operation: string, duration: number, details?: any) {
     this.info(`Performance: ${operation} took ${duration}ms`, {
       operation,
       duration,
       details,
       module: 'performance',
-      type: 'performance'
+      type: 'performance',
     });
   }
 
@@ -268,7 +241,7 @@ export class AdvancedLoggerService implements OnModuleInit {
     resource: string,
     beforeState?: any,
     afterState?: any,
-    ip?: string
+    ip?: string,
   ) {
     this.info(`Audit: ${action} on ${resource}`, {
       userId,
@@ -278,7 +251,7 @@ export class AdvancedLoggerService implements OnModuleInit {
       afterState,
       ip,
       module: 'audit',
-      type: 'audit'
+      type: 'audit',
     });
   }
 
@@ -291,7 +264,7 @@ export class AdvancedLoggerService implements OnModuleInit {
     recordId: string,
     operation: 'create' | 'update' | 'delete',
     oldData?: any,
-    newData?: any
+    newData?: any,
   ) {
     this.info(`Data ${operation}: ${table}.${recordId}`, {
       userId,
@@ -301,7 +274,7 @@ export class AdvancedLoggerService implements OnModuleInit {
       oldData,
       newData,
       module: 'data',
-      type: 'audit'
+      type: 'audit',
     });
   }
 
@@ -321,7 +294,7 @@ export class AdvancedLoggerService implements OnModuleInit {
     return {
       requestId: this.generateRequestId(),
       timestamp: new Date().toISOString(),
-      ...baseContext
+      ...baseContext,
     };
   }
 
@@ -342,7 +315,7 @@ export class AdvancedLoggerService implements OnModuleInit {
       errorCount: 0,
       warnCount: 0,
       infoCount: 0,
-      lastHourStats: {}
+      lastHourStats: {},
     };
   }
 
@@ -354,7 +327,7 @@ export class AdvancedLoggerService implements OnModuleInit {
     level?: string,
     startTime?: Date,
     endTime?: Date,
-    limit: number = 100
+    limit: number = 100,
   ): Promise<any[]> {
     // 这里可以实现日志搜索逻辑
     // 可以集成Elasticsearch的搜索功能
@@ -372,19 +345,19 @@ export class AdvancedLoggerService implements OnModuleInit {
     try {
       // 检查日志文件是否可写
       // 检查Elasticsearch连接（如果启用）
-      
+
       return {
         status: 'healthy',
         details: {
           transports: this.logger.transports.length,
-          level: this.logger.level
-        }
+          level: this.logger.level,
+        },
       };
     } catch (error) {
       return {
         status: 'unhealthy',
         message: error.message,
-        details: { error: error.message }
+        details: { error: error.message },
       };
     }
   }
@@ -399,7 +372,7 @@ export class AdvancedLoggerService implements OnModuleInit {
     // 这里可以实现日志清理逻辑
     return {
       deletedFiles: 0,
-      totalSize: 0
+      totalSize: 0,
     };
   }
 }

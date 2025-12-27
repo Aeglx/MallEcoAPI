@@ -12,7 +12,7 @@ export class DatabasePoolService implements OnModuleInit, OnModuleDestroy {
 
   constructor(
     private configService: ConfigService,
-    private prometheusService: PrometheusService
+    private prometheusService: PrometheusService,
   ) {
     this.initDataSource();
   }
@@ -21,7 +21,7 @@ export class DatabasePoolService implements OnModuleInit, OnModuleDestroy {
     try {
       await this.dataSource.initialize();
       console.log('Database connection pool initialized');
-      
+
       // 启动连接池监�?
       this.startPoolMonitoring();
     } catch (error) {
@@ -45,7 +45,7 @@ export class DatabasePoolService implements OnModuleInit, OnModuleDestroy {
       username: this.configService.get('DB_USERNAME') || 'root',
       password: this.configService.get('DB_PASSWORD') || 'password',
       database: this.configService.get('DB_DATABASE') || 'malldb',
-      
+
       // 连接池配置（类似Druid的功能）
       poolSize: this.configService.get('DB_POOL_SIZE') || 10,
       extra: {
@@ -53,15 +53,15 @@ export class DatabasePoolService implements OnModuleInit, OnModuleDestroy {
         acquireTimeout: this.configService.get('DB_ACQUIRE_TIMEOUT') || 60000,
         timeout: this.configService.get('DB_TIMEOUT') || 60000,
       },
-      
+
       // 性能优化配置
       synchronize: false,
       logging: this.configService.get('DB_LOGGING') === 'true',
-      
+
       // 实体和迁移配�?
       entities: [__dirname + '/../**/*.entity{.ts,.js}'],
       migrations: [__dirname + '/../migrations/*{.ts,.js}'],
-      
+
       // 连接池事件处理已移除，使用默认的错误处理机制
     });
 
@@ -84,7 +84,7 @@ export class DatabasePoolService implements OnModuleInit, OnModuleDestroy {
   private async monitorPoolHealth() {
     try {
       const pool = (this.dataSource.driver as any).pool;
-      
+
       if (pool) {
         const poolStats = {
           totalConnections: pool._allConnections?.length || 0,
@@ -140,11 +140,11 @@ export class DatabasePoolService implements OnModuleInit, OnModuleDestroy {
    */
   getPoolStats() {
     const pool = (this.dataSource.driver as any).pool;
-    
+
     if (!pool) {
       return {
         status: 'unknown',
-        message: 'Connection pool not available'
+        message: 'Connection pool not available',
       };
     }
 
@@ -171,26 +171,26 @@ export class DatabasePoolService implements OnModuleInit, OnModuleDestroy {
     try {
       // 执行简单查询测试连�?
       await this.dataSource.query('SELECT 1');
-      
+
       const poolStats = this.getPoolStats();
-      
+
       if (poolStats.status === 'healthy' && poolStats.totalConnections > 0) {
         return {
           status: 'healthy',
-          details: poolStats
+          details: poolStats,
         };
       } else {
         return {
           status: 'unhealthy',
           message: 'Connection pool issues detected',
-          details: poolStats
+          details: poolStats,
         };
       }
     } catch (error) {
       return {
         status: 'unhealthy',
         message: error.message,
-        details: { error: error.message }
+        details: { error: error.message },
       };
     }
   }

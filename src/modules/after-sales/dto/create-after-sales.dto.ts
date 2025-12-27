@@ -1,7 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { AfterSalesType } from '../entities/after-sales.entity';
 
-
 export class CreateAfterSalesDto {
   @ApiProperty({ description: '订单ID', example: '1' })
   orderId: string;
@@ -9,7 +8,11 @@ export class CreateAfterSalesDto {
   @ApiProperty({ description: '用户ID', example: '1' })
   userId: string;
 
-  @ApiProperty({ description: '售后服务类型', enum: AfterSalesType, example: AfterSalesType.REFUND })
+  @ApiProperty({
+    description: '售后服务类型',
+    enum: AfterSalesType,
+    example: AfterSalesType.REFUND,
+  })
   type: AfterSalesType;
 
   @ApiProperty({ description: '商品ID', example: 1 })
@@ -42,6 +45,10 @@ export class CreateAfterSalesDto {
   @ApiProperty({ description: '详细描述', example: '商品收到后发现有质量问题', required: false })
   description?: string;
 
-  @ApiProperty({ description: '证据图片URL列表', example: ['https://example.com/image1.jpg'], required: false })
+  @ApiProperty({
+    description: '证据图片URL列表',
+    example: ['https://example.com/image1.jpg'],
+    required: false,
+  })
   evidenceImages?: string[];
 }

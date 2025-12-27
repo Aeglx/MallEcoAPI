@@ -28,7 +28,7 @@ export class DatabaseMonitorService implements OnModuleInit, OnModuleDestroy {
   private readonly logger = new Logger(DatabaseMonitorService.name);
   private monitoringInterval: NodeJS.Timeout;
   private metrics: Map<string, DatabaseMetrics> = new Map();
-  
+
   // Prometheus指标
   private queryCounter: promClient.Counter;
   private slowQueryCounter: promClient.Counter;
@@ -42,39 +42,39 @@ export class DatabaseMonitorService implements OnModuleInit, OnModuleDestroy {
   private alertRules: AlertRule[] = [
     {
       name: 'high_slow_queries',
-      condition: (metrics) => metrics.slowQueryCount > 10,
+      condition: metrics => metrics.slowQueryCount > 10,
       severity: 'warning',
-      message: 'High number of slow queries detected'
+      message: 'High number of slow queries detected',
     },
     {
       name: 'high_connection_count',
-      condition: (metrics) => metrics.connectionCount > 100,
+      condition: metrics => metrics.connectionCount > 100,
       severity: 'critical',
-      message: 'High database connection count detected'
+      message: 'High database connection count detected',
     },
     {
       name: 'large_table_size',
-      condition: (metrics) => metrics.tableSize > 10737418240, // 10GB
+      condition: metrics => metrics.tableSize > 10737418240, // 10GB
       severity: 'warning',
-      message: 'Large table size detected, consider archiving'
+      message: 'Large table size detected, consider archiving',
     },
     {
       name: 'low_index_usage',
-      condition: (metrics) => metrics.indexUsage < 0.8,
+      condition: metrics => metrics.indexUsage < 0.8,
       severity: 'warning',
-      message: 'Low index usage detected, consider optimizing queries'
+      message: 'Low index usage detected, consider optimizing queries',
     },
     {
       name: 'high_lock_wait',
-      condition: (metrics) => metrics.lockWaitTime > 5000, // 5 seconds
+      condition: metrics => metrics.lockWaitTime > 5000, // 5 seconds
       severity: 'critical',
-      message: 'High lock wait time detected'
-    }
+      message: 'High lock wait time detected',
+    },
   ];
 
   constructor(
     @InjectConnection() private readonly connection: Connection,
-    private readonly eventEmitter: EventEmitter2
+    private readonly eventEmitter: EventEmitter2,
   ) {
     this.initializeMetrics();
   }
@@ -95,39 +95,39 @@ export class DatabaseMonitorService implements OnModuleInit, OnModuleDestroy {
     this.queryCounter = new promClient.Counter({
       name: 'database_queries_total',
       help: 'Total number of database queries',
-      labelNames: ['type', 'table']
+      labelNames: ['type', 'table'],
     });
 
     this.slowQueryCounter = new promClient.Counter({
       name: 'database_slow_queries_total',
       help: 'Total number of slow queries',
-      labelNames: ['table']
+      labelNames: ['table'],
     });
 
     this.connectionGauge = new promClient.Gauge({
       name: 'database_connections_current',
-      help: 'Current number of database connections'
+      help: 'Current number of database connections',
     });
 
     this.tableSizeGauge = new promClient.Gauge({
       name: 'database_table_size_bytes',
       help: 'Size of database tables in bytes',
-      labelNames: ['table']
+      labelNames: ['table'],
     });
 
     this.indexUsageGauge = new promClient.Gauge({
       name: 'database_index_usage_ratio',
-      help: 'Index usage ratio (0-1)'
+      help: 'Index usage ratio (0-1)',
     });
 
     this.lockWaitGauge = new promClient.Gauge({
       name: 'database_lock_wait_time_ms',
-      help: 'Lock wait time in milliseconds'
+      help: 'Lock wait time in milliseconds',
     });
 
     this.bufferPoolGauge = new promClient.Gauge({
       name: 'database_buffer_pool_usage_ratio',
-      help: 'Buffer pool usage ratio (0-1)'
+      help: 'Buffer pool usage ratio (0-1)',
     });
   }
 
@@ -170,19 +170,18 @@ export class DatabaseMonitorService implements OnModuleInit, OnModuleDestroy {
       tableSize: 0,
       indexUsage: 0,
       lockWaitTime: 0,
-      bufferPoolUsage: 0
+      bufferPoolUsage: 0,
     };
 
     try {
       // 获取连接数
-      const connectionResult = await this.connection.query(
-        'SHOW STATUS LIKE \'Threads_connected\''
-      );
+      const connectionResult = await this.connection.query("SHOW STATUS LIKE 'Threads_connected'");
       metrics.connectionCount = parseInt(connectionResult[0]?.Value || '0');
       this.connectionGauge.set(metrics.connectionCount);
 
       // 获取表大小
-      const sizeResult = await this.connection.query(`
+      const sizeResult = await this.connection.query(
+        `
         SELECT 
           table_name,
           ROUND((data_length + index_length) / 1024 / 1024, 2) as size_mb
@@ -190,66 +189,66 @@ export class DatabaseMonitorService implements OnModuleInit, OnModuleDestroy {
         WHERE table_schema = ?
         ORDER BY (data_length + index_length) DESC
         LIMIT 10
-      `, [this.connection.options.database]);
+      `,
+        [this.connection.options.database],
+      );
 
-      metrics.tableSize = sizeResult.reduce((total: number, table: any) => 
-        total + (table.size_mb * 1024 * 1024), 0);
+      metrics.tableSize = sizeResult.reduce(
+        (total: number, table: any) => total + table.size_mb * 1024 * 1024,
+        0,
+      );
 
       // 更新表大小指标
       sizeResult.forEach((table: any) => {
-        this.tableSizeGauge.set(
-          { table: table.table_name }, 
-          table.size_mb * 1024 * 1024
-        );
+        this.tableSizeGauge.set({ table: table.table_name }, table.size_mb * 1024 * 1024);
       });
 
       // 获取索引使用情况
-      const indexResult = await this.connection.query(`
+      const indexResult = await this.connection.query(
+        `
         SELECT 
           TABLE_NAME,
           INDEX_NAME,
           SEQ_IN_INDEX
         FROM information_schema.statistics 
         WHERE table_schema = ?
-      `, [this.connection.options.database]);
+      `,
+        [this.connection.options.database],
+      );
 
       metrics.indexUsage = indexResult.length > 0 ? 0.9 : 0.5; // 简化计算
       this.indexUsageGauge.set(metrics.indexUsage);
 
       // 获取锁等待时间
-      const lockResult = await this.connection.query(
-        'SHOW STATUS LIKE \'Innodb_row_lock_time_max\''
-      );
+      const lockResult = await this.connection.query("SHOW STATUS LIKE 'Innodb_row_lock_time_max'");
       metrics.lockWaitTime = parseInt(lockResult[0]?.Value || '0');
       this.lockWaitGauge.set(metrics.lockWaitTime);
 
       // 获取缓冲池使用情况
       const bufferResult = await this.connection.query(
-        'SHOW STATUS LIKE \'Innodb_buffer_pool_pages_%\''
+        "SHOW STATUS LIKE 'Innodb_buffer_pool_pages_%'",
       );
-      
+
       const bufferPoolData = bufferResult.reduce((acc: any, row: any) => {
         acc[row.Variable_name] = parseInt(row.Value);
         return acc;
       }, {});
 
       if (bufferPoolData.Innodb_buffer_pool_pages_total > 0) {
-        metrics.bufferPoolUsage = bufferPoolData.Innodb_buffer_pool_pages_data / 
-                                 bufferPoolData.Innodb_buffer_pool_pages_total;
+        metrics.bufferPoolUsage =
+          bufferPoolData.Innodb_buffer_pool_pages_data /
+          bufferPoolData.Innodb_buffer_pool_pages_total;
         this.bufferPoolGauge.set(metrics.bufferPoolUsage);
       }
 
       // 获取慢查询统计
-      const slowQueryResult = await this.connection.query(
-        'SHOW STATUS LIKE \'Slow_queries\''
-      );
+      const slowQueryResult = await this.connection.query("SHOW STATUS LIKE 'Slow_queries'");
       metrics.slowQueryCount = parseInt(slowQueryResult[0]?.Value || '0');
 
       this.metrics.set(timestamp, metrics);
-      
+
       // 清理旧的指标数据（保留最近1小时）
       this.cleanupOldMetrics();
-
     } catch (error) {
       this.logger.error('Failed to collect database metrics', error);
     }
@@ -260,7 +259,7 @@ export class DatabaseMonitorService implements OnModuleInit, OnModuleDestroy {
    */
   private async checkAlerts() {
     const latestMetrics = Array.from(this.metrics.values()).pop();
-    
+
     if (!latestMetrics) return;
 
     for (const rule of this.alertRules) {
@@ -279,11 +278,11 @@ export class DatabaseMonitorService implements OnModuleInit, OnModuleDestroy {
       severity: rule.severity,
       message: rule.message,
       metrics: metrics,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     };
 
     this.logger.warn(`Database alert triggered: ${JSON.stringify(alertData)}`);
-    
+
     // 发送事件给事件发射器
     this.eventEmitter.emit('database.alert', alertData);
 
@@ -305,8 +304,8 @@ export class DatabaseMonitorService implements OnModuleInit, OnModuleDestroy {
           alertData.severity,
           alertData.message,
           JSON.stringify(alertData.metrics),
-          alertData.timestamp
-        ]
+          alertData.timestamp,
+        ],
       );
     } catch (error) {
       this.logger.error('Failed to record alert to database', error);
@@ -318,7 +317,7 @@ export class DatabaseMonitorService implements OnModuleInit, OnModuleDestroy {
    */
   private cleanupOldMetrics() {
     const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString();
-    
+
     for (const [timestamp] of this.metrics) {
       if (timestamp < oneHourAgo) {
         this.metrics.delete(timestamp);
@@ -356,7 +355,8 @@ export class DatabaseMonitorService implements OnModuleInit, OnModuleDestroy {
   async runPerformanceAnalysis(): Promise<any> {
     try {
       const analysis = {
-        tableSizes: await this.connection.query(`
+        tableSizes: await this.connection.query(
+          `
           SELECT 
             table_name,
             ROUND((data_length + index_length) / 1024 / 1024, 2) as size_mb,
@@ -364,9 +364,12 @@ export class DatabaseMonitorService implements OnModuleInit, OnModuleDestroy {
           FROM information_schema.tables 
           WHERE table_schema = ?
           ORDER BY (data_length + index_length) DESC
-        `, [this.connection.options.database]),
+        `,
+          [this.connection.options.database],
+        ),
 
-        indexUsage: await this.connection.query(`
+        indexUsage: await this.connection.query(
+          `
           SELECT 
             table_name,
             index_name,
@@ -376,7 +379,9 @@ export class DatabaseMonitorService implements OnModuleInit, OnModuleDestroy {
           FROM information_schema.statistics 
           WHERE table_schema = ?
           ORDER BY table_name, index_name, seq_in_index
-        `, [this.connection.options.database]),
+        `,
+          [this.connection.options.database],
+        ),
 
         queryPerformance: await this.connection.query(`
           SELECT 
@@ -391,7 +396,7 @@ export class DatabaseMonitorService implements OnModuleInit, OnModuleDestroy {
           LIMIT 10
         `),
 
-        connectionInfo: await this.connection.query('SHOW PROCESSLIST')
+        connectionInfo: await this.connection.query('SHOW PROCESSLIST'),
       };
 
       return analysis;
@@ -408,7 +413,7 @@ export class DatabaseMonitorService implements OnModuleInit, OnModuleDestroy {
   async cleanupOldAlerts() {
     try {
       await this.connection.query(
-        'DELETE FROM mall_database_alerts WHERE created_at < DATE_SUB(NOW(), INTERVAL 30 DAY)'
+        'DELETE FROM mall_database_alerts WHERE created_at < DATE_SUB(NOW(), INTERVAL 30 DAY)',
       );
       this.logger.log('Cleaned up old database alerts');
     } catch (error) {

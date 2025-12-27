@@ -93,10 +93,7 @@ export class SystemVersionController {
   @Get('compare/:version1/:version2')
   @ApiOperation({ summary: '比较两个版本' })
   @ApiResponse({ status: 200, description: '比较成功' })
-  async compareVersions(
-    @Param('version1') version1: string,
-    @Param('version2') version2: string,
-  ) {
+  async compareVersions(@Param('version1') version1: string, @Param('version2') version2: string) {
     const comparison = await this.versionService.compareVersions(version1, version2);
     return {
       code: HttpStatus.OK,
@@ -133,10 +130,7 @@ export class SystemVersionController {
   @Roles('admin', 'system_manager')
   @ApiOperation({ summary: '更新版本信息' })
   @ApiResponse({ status: 200, description: '更新成功' })
-  async update(
-    @Param('id') id: string,
-    @Body() updateVersionDto: UpdateSystemVersionDto,
-  ) {
+  async update(@Param('id') id: string, @Body() updateVersionDto: UpdateSystemVersionDto) {
     const version = await this.versionService.update(+id, updateVersionDto);
     return {
       code: HttpStatus.OK,
@@ -186,12 +180,9 @@ export class SystemVersionController {
   @Get(':id/download')
   @ApiOperation({ summary: '下载版本文件' })
   @ApiResponse({ status: 200, description: '下载成功' })
-  async download(
-    @Param('id') id: string,
-    @Res() res: Response,
-  ) {
+  async download(@Param('id') id: string, @Res() res: Response) {
     const version = await this.versionService.findOne(+id);
-    
+
     if (!version.downloadUrl) {
       return res.status(HttpStatus.NOT_FOUND).json({
         code: HttpStatus.NOT_FOUND,
@@ -271,7 +262,7 @@ export class SystemVersionController {
   @ApiResponse({ status: 200, description: '验证成功' })
   async validateVersion(@Param('id') id: string) {
     const version = await this.versionService.findOne(+id);
-    
+
     // 这里可以实现文件完整性验证逻辑
     // 例如：验证文件校验和、检查文件是否存在等
     const isValid = true; // 简化示例

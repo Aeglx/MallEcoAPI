@@ -8,4 +8,3 @@ import { EnhancedHealthService } from './enhanced-health.service';
   providers: [EnhancedHealthService],
 })
 export class HealthModule {}
-

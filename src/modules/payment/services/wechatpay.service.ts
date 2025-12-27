@@ -36,9 +36,14 @@ export class WechatPayService {
     }
   }
 
-  async createPayment(paymentRecord: PaymentRecord, paymentClient: string, queryPaymentDto: QueryPaymentDto) {
+  async createPayment(
+    paymentRecord: PaymentRecord,
+    paymentClient: string,
+    queryPaymentDto: QueryPaymentDto,
+  ) {
     try {
-      const notifyUrl = process.env.WECHAT_NOTIFY_URL || 'https://example.com/payment/callback/wechatpay';
+      const notifyUrl =
+        process.env.WECHAT_NOTIFY_URL || 'https://example.com/payment/callback/wechatpay';
 
       // 构建支付参数
       const params = {

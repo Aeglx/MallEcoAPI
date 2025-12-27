@@ -24,14 +24,14 @@ export class PerformanceInterceptor implements NestInterceptor {
         next: () => {
           const duration = (Date.now() - startTime) / 1000; // 转换为秒
           const status = response.statusCode;
-          
+
           // 记录API性能指标
           this.performanceService.recordApiRequest(method, path, duration, status);
         },
         error: () => {
           const duration = (Date.now() - startTime) / 1000;
           const status = response.statusCode || 500;
-          
+
           // 记录错误API请求
           this.performanceService.recordApiRequest(method, path, duration, status);
         },

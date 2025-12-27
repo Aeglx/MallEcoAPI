@@ -84,13 +84,7 @@ export class PaginationResponseDto<T = any> extends ApiResponseDto<T[]> {
     hasPrev: boolean;
   };
 
-  constructor(
-    code: number,
-    message: string,
-    data: T[],
-    pagination: any,
-    path?: string
-  ) {
+  constructor(code: number, message: string, data: T[], pagination: any, path?: string) {
     super(code, message, data, path);
     this.pagination = pagination;
   }
@@ -99,7 +93,7 @@ export class PaginationResponseDto<T = any> extends ApiResponseDto<T[]> {
     data: T[],
     pagination: any,
     message = '获取成功',
-    path?: string
+    path?: string,
   ): PaginationResponseDto<T> {
     return new PaginationResponseDto(200, message, data, pagination, path);
   }

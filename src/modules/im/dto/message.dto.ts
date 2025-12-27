@@ -161,4 +161,3 @@ export class ConversationDto {
   @ApiProperty({ description: '未读消息数', example: 2 })
   unreadCount: number;
 }
-

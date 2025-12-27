@@ -1,6 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { Wallet } from './entities/wallet.entity';
-import { WalletTransaction, TransactionType, TransactionStatus, TransactionBusinessType } from './entities/wallet-transaction.entity';
+import {
+  WalletTransaction,
+  TransactionType,
+  TransactionStatus,
+  TransactionBusinessType,
+} from './entities/wallet-transaction.entity';
 import { CreateWalletDto } from './dto/create-wallet.dto';
 import { RechargeDto } from './dto/recharge.dto';
 import { WithdrawDto } from './dto/withdraw.dto';
@@ -146,7 +151,11 @@ export class WalletService {
    * @param orderId 订单ID
    * @returns 支付结果和交易记录
    */
-  payOrder(userId: string, amount: number, orderId: string): { success: boolean; transaction: WalletTransaction } {
+  payOrder(
+    userId: string,
+    amount: number,
+    orderId: string,
+  ): { success: boolean; transaction: WalletTransaction } {
     const wallet = this.getWalletByUserId(userId);
     if (!wallet) {
       throw new Error('钱包不存在');
@@ -194,7 +203,11 @@ export class WalletService {
    * @param orderId 订单ID
    * @returns 退款结果和交易记录
    */
-  refundOrder(userId: string, amount: number, orderId: string): { success: boolean; transaction: WalletTransaction } {
+  refundOrder(
+    userId: string,
+    amount: number,
+    orderId: string,
+  ): { success: boolean; transaction: WalletTransaction } {
     const wallet = this.getWalletByUserId(userId);
     if (!wallet) {
       throw new Error('钱包不存在');

@@ -18,15 +18,9 @@ import { StoreSettingService } from './services/settings/store.service';
     CategoryController,
     OrderController,
     PromotionController,
-    StoreSettingController
+    StoreSettingController,
   ],
-  providers: [
-    GoodsService,
-    CategoryService,
-    OrderService,
-    PromotionService,
-    StoreSettingService
-  ],
+  providers: [GoodsService, CategoryService, OrderService, PromotionService, StoreSettingService],
   exports: [],
 })
 export class SellerModule {}

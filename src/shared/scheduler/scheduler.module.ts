@@ -32,4 +32,3 @@ export class SchedulerModule implements OnModuleInit {
     this.executorRegistry.register(this.orderExecutor);
   }
 }
-

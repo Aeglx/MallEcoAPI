@@ -1,14 +1,14 @@
-import { 
-  Controller, 
-  Get, 
-  Post, 
-  Body, 
-  Patch, 
-  Param, 
-  Delete, 
-  Query, 
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Query,
   UseGuards,
-  BadRequestException
+  BadRequestException,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiParam } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../../../infrastructure/auth/guards/jwt-auth.guard';
@@ -72,7 +72,7 @@ export class WechatFansController {
   @Patch('tags/batch')
   @ApiOperation({ summary: '批量更新粉丝标签' })
   @ApiResponse({ status: 200, description: '批量更新标签成功' })
-  batchUpdateTags(@Body() body: { ids: string[], tagIds: number[] }) {
+  batchUpdateTags(@Body() body: { ids: string[]; tagIds: number[] }) {
     if (!body.ids || !Array.isArray(body.ids) || body.ids.length === 0) {
       throw new BadRequestException('请选择要操作的粉丝');
     }
@@ -82,7 +82,7 @@ export class WechatFansController {
   @Patch('blacklist/batch')
   @ApiOperation({ summary: '批量更新黑名单状态' })
   @ApiResponse({ status: 200, description: '批量更新黑名单状态成功' })
-  batchUpdateBlacklist(@Body() body: { ids: string[], blacklist: number }) {
+  batchUpdateBlacklist(@Body() body: { ids: string[]; blacklist: number }) {
     if (!body.ids || !Array.isArray(body.ids) || body.ids.length === 0) {
       throw new BadRequestException('请选择要操作的粉丝');
     }
@@ -94,8 +94,8 @@ export class WechatFansController {
   @ApiResponse({ status: 200, description: '关注状态更新成功' })
   @ApiParam({ name: 'openid', description: '粉丝openid' })
   updateSubscribeStatus(
-    @Param('openid') openid: string, 
-    @Body() body: { subscribeStatus: number }
+    @Param('openid') openid: string,
+    @Body() body: { subscribeStatus: number },
   ) {
     return this.wechatFansService.updateSubscribeStatus(openid, body.subscribeStatus);
   }

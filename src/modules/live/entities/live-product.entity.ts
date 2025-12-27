@@ -20,10 +20,24 @@ export class LiveProduct extends BaseEntity {
   @Column({ name: 'sort_order', type: 'int', default: 0, comment: '排序' })
   sortOrder: number;
 
-  @Column({ name: 'live_price', type: 'decimal', precision: 10, scale: 2, nullable: false, comment: '直播价格' })
+  @Column({
+    name: 'live_price',
+    type: 'decimal',
+    precision: 10,
+    scale: 2,
+    nullable: false,
+    comment: '直播价格',
+  })
   livePrice: number;
 
-  @Column({ name: 'original_price', type: 'decimal', precision: 10, scale: 2, nullable: false, comment: '原价' })
+  @Column({
+    name: 'original_price',
+    type: 'decimal',
+    precision: 10,
+    scale: 2,
+    nullable: false,
+    comment: '原价',
+  })
   originalPrice: number;
 
   @Column({ name: 'stock', type: 'int', nullable: false, comment: '直播间库存' })
@@ -35,4 +49,3 @@ export class LiveProduct extends BaseEntity {
   @Column({ name: 'is_hot', type: 'int', default: 0, comment: '是否为直播热销' })
   isHot: number;
 }
-

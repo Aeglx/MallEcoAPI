@@ -65,12 +65,7 @@ export class PerformanceMonitorController {
   @ApiOperation({ summary: '获取性能仪表盘数据' })
   @ApiResponse({ status: 200, description: '获取成功' })
   async getPerformanceDashboard() {
-    const [
-      apiStats,
-      dbStats,
-      cacheStats,
-      systemStats,
-    ] = await Promise.all([
+    const [apiStats, dbStats, cacheStats, systemStats] = await Promise.all([
       this.performanceMonitorService.getApiPerformanceStats(undefined, '24h'),
       this.performanceMonitorService.getDatabasePerformanceStats('24h'),
       this.performanceMonitorService.getCachePerformanceStats(undefined, '24h'),

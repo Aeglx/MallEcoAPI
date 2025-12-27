@@ -15,8 +15,23 @@ import { CouponController } from './promotion/controllers/coupon.controller';
 import { CouponService } from './promotion/services/coupon.service';
 
 @Module({
-  controllers: [PageDataController, GoodsController, CategoryController, MemberBuyerController, ArticleController, CouponController],
-  providers: [PageDataService, HotWordsService, CategoryService, GoodsService, MemberService, ArticleService, ArticleCategoryService, CouponService],
+  controllers: [
+    PageDataController,
+    GoodsController,
+    CategoryController,
+    MemberBuyerController,
+    ArticleController,
+    CouponController,
+  ],
+  providers: [
+    PageDataService,
+    HotWordsService,
+    CategoryService,
+    GoodsService,
+    MemberService,
+    ArticleService,
+    ArticleCategoryService,
+    CouponService,
+  ],
 })
 export class BuyerModule {}
-

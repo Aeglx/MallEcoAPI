@@ -29,7 +29,7 @@ export class HealthController {
   @ApiOperation({ summary: '就绪检查' })
   async getReadiness() {
     const health = await this.enhancedHealthService.getHealthStatus();
-    
+
     return {
       status: health.status === 'healthy' ? 'ready' : 'not_ready',
       timestamp: health.timestamp,

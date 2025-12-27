@@ -3,14 +3,30 @@ import { Injectable } from '@nestjs/common';
 @Injectable()
 export class MemberService {
   private members: any[] = [
-    { id: '1', username: 'test', mobile: '13800138000', nickName: '测试用户', email: 'test@example.com', gender: 0, point: 100, balance: 0, couponNum: 5, birthday: null, regTime: '2023-01-01 10:00:00', lastLoginTime: '2023-12-16 22:00:00', avatar: 'https://via.placeholder.com/100x100?text=Avatar', status: 1 }
+    {
+      id: '1',
+      username: 'test',
+      mobile: '13800138000',
+      nickName: '测试用户',
+      email: 'test@example.com',
+      gender: 0,
+      point: 100,
+      balance: 0,
+      couponNum: 5,
+      birthday: null,
+      regTime: '2023-01-01 10:00:00',
+      lastLoginTime: '2023-12-16 22:00:00',
+      avatar: 'https://via.placeholder.com/100x100?text=Avatar',
+      status: 1,
+    },
   ];
 
   createPcSession() {
     // 模拟创建PC登录会话
     return {
       token: 'mock-pc-session-token-' + Date.now(),
-      qrCode: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=='
+      qrCode:
+        'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==',
     };
   }
 
@@ -19,7 +35,7 @@ export class MemberService {
     return {
       status: 3, // 登录成功状态
       token: 'mock-jwt-token-' + Date.now(),
-      member: this.members[0]
+      member: this.members[0],
     };
   }
 
@@ -27,7 +43,7 @@ export class MemberService {
     // 模拟APP扫码
     return {
       status: 2, // 扫码中状态
-      message: '扫码成功，请在APP中确认登录'
+      message: '扫码成功，请在APP中确认登录',
     };
   }
 
@@ -41,7 +57,7 @@ export class MemberService {
     if (username === 'test' && password === '123456') {
       return {
         token: 'mock-jwt-token-' + Date.now(),
-        member: this.members[0]
+        member: this.members[0],
       };
     }
     return null;
@@ -58,7 +74,7 @@ export class MemberService {
     if (member) {
       return {
         token: 'mock-jwt-token-' + Date.now(),
-        member: member
+        member: member,
       };
     }
     return null;
@@ -90,12 +106,12 @@ export class MemberService {
       regTime: new Date().toISOString().replace('T', ' ').substring(0, 19),
       lastLoginTime: new Date().toISOString().replace('T', ' ').substring(0, 19),
       avatar: 'https://via.placeholder.com/100x100?text=Avatar',
-      status: 1
+      status: 1,
     };
     this.members.push(newMember);
     return {
       token: 'mock-jwt-token-' + Date.now(),
-      member: newMember
+      member: newMember,
     };
   }
 
@@ -153,7 +169,7 @@ export class MemberService {
     // 模拟刷新token
     return {
       token: 'mock-jwt-token-' + Date.now(),
-      refreshToken: 'mock-refresh-token-' + Date.now()
+      refreshToken: 'mock-refresh-token-' + Date.now(),
     };
   }
 

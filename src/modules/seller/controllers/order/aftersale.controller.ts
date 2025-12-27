@@ -2,7 +2,6 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestj
 
 @Controller('seller/order/aftersale')
 export class AfterSaleController {
-  
   @Get()
   findAll(@Query() query: any) {
     // 获取售后列表

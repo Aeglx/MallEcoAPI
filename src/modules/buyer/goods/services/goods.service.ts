@@ -6,7 +6,7 @@ export class GoodsService {
     {
       id: '1',
       goodsName: '手机',
-      price: 1999.00,
+      price: 1999.0,
       brandId: '1',
       categoryPath: '1/2/3',
       goodsUnit: '台',
@@ -52,8 +52,8 @@ export class GoodsService {
           weight: 0.5,
           marketEnable: 'UPPER',
           intro: '<p>这是一款高性能手机</p>',
-          price: 1999.00,
-          cost: 1500.00,
+          price: 1999.0,
+          cost: 1500.0,
           viewCount: 1000,
           buyCount: 50,
           quantity: 200,
@@ -82,16 +82,16 @@ export class GoodsService {
               specName: '样式',
               specValue: '全网通',
               specType: 0,
-              specImage: []
+              specImage: [],
             },
             {
               specName: '颜色',
               specValue: '黑色',
               specType: 1,
-              specImage: ['/images/color-black.jpg']
-            }
+              specImage: ['/images/color-black.jpg'],
+            },
           ],
-          goodsGalleryList: ['/images/phone-black1.jpg', '/images/phone-black2.jpg']
+          goodsGalleryList: ['/images/phone-black1.jpg', '/images/phone-black2.jpg'],
         },
         {
           id: '2',
@@ -110,8 +110,8 @@ export class GoodsService {
           weight: 0.5,
           marketEnable: 'UPPER',
           intro: '<p>这是一款高性能手机</p>',
-          price: 1999.00,
-          cost: 1500.00,
+          price: 1999.0,
+          cost: 1500.0,
           viewCount: 800,
           buyCount: 30,
           quantity: 150,
@@ -140,20 +140,20 @@ export class GoodsService {
               specName: '样式',
               specValue: '全网通',
               specType: 0,
-              specImage: []
+              specImage: [],
             },
             {
               specName: '颜色',
               specValue: '白色',
               specType: 1,
-              specImage: ['/images/color-white.jpg']
-            }
+              specImage: ['/images/color-white.jpg'],
+            },
           ],
-          goodsGalleryList: ['/images/phone-white1.jpg', '/images/phone-white2.jpg']
-        }
+          goodsGalleryList: ['/images/phone-white1.jpg', '/images/phone-white2.jpg'],
+        },
       ],
-      wholesaleList: []
-    }
+      wholesaleList: [],
+    },
   ];
 
   getGoodsVO(goodsId: string) {
@@ -187,7 +187,7 @@ export class GoodsService {
       quantity: sku.quantity,
       weight: sku.weight,
       goodsGalleryList: sku.goodsGalleryList,
-      specList: sku.specList
+      specList: sku.specList,
     };
   }
 

@@ -70,7 +70,8 @@ export class DatabaseQueryOptimizerService {
    */
   async getTableIndexes(tableName: string): Promise<any[]> {
     try {
-      const result = await this.dataSource.query(`
+      const result = await this.dataSource.query(
+        `
         SELECT 
           INDEX_NAME,
           COLUMN_NAME,
@@ -81,7 +82,9 @@ export class DatabaseQueryOptimizerService {
         WHERE TABLE_SCHEMA = DATABASE()
           AND TABLE_NAME = ?
         ORDER BY INDEX_NAME, SEQ_IN_INDEX
-      `, [tableName]);
+      `,
+        [tableName],
+      );
       return result;
     } catch (error) {
       this.logger.error(`Failed to get indexes for table ${tableName}:`, error);
@@ -117,7 +120,8 @@ export class DatabaseQueryOptimizerService {
    */
   async getTableStats(tableName: string): Promise<any> {
     try {
-      const result = await this.dataSource.query(`
+      const result = await this.dataSource.query(
+        `
         SELECT 
           TABLE_ROWS,
           DATA_LENGTH,
@@ -127,7 +131,9 @@ export class DatabaseQueryOptimizerService {
         FROM information_schema.TABLES
         WHERE TABLE_SCHEMA = DATABASE()
           AND TABLE_NAME = ?
-      `, [tableName]);
+      `,
+        [tableName],
+      );
       return result[0] || null;
     } catch (error) {
       this.logger.error(`Failed to get stats for table ${tableName}:`, error);
@@ -140,7 +146,7 @@ export class DatabaseQueryOptimizerService {
    */
   async getOptimizationSuggestions(tableName: string): Promise<string[]> {
     const suggestions: string[] = [];
-    
+
     try {
       // 检查表统计信息
       const stats = await this.getTableStats(tableName);
@@ -171,4 +177,3 @@ export class DatabaseQueryOptimizerService {
     return suggestions;
   }
 }
-

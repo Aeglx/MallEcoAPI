@@ -28,8 +28,17 @@ export class UserService {
   }
 
   async findAll(searchDto: UserSearchDto): Promise<{ data: User[]; total: number }> {
-    const { username, realName, email, phone, departmentId, enabled, page = 1, pageSize = 20 } = searchDto;
-    
+    const {
+      username,
+      realName,
+      email,
+      phone,
+      departmentId,
+      enabled,
+      page = 1,
+      pageSize = 20,
+    } = searchDto;
+
     const queryBuilder = this.userRepository
       .createQueryBuilder('user')
       .leftJoinAndSelect('user.department', 'department')
@@ -84,7 +93,7 @@ export class UserService {
 
   async update(id: number, updateUserDto: UpdateUserDto): Promise<User> {
     const user = await this.findOne(id);
-    
+
     Object.assign(user, updateUserDto);
     return await this.userRepository.save(user);
   }
@@ -96,7 +105,7 @@ export class UserService {
 
   async assignRoles(userId: number, roleIds: number[]): Promise<void> {
     const user = await this.findOne(userId);
-    
+
     // 删除现有角色关联
     await this.userRoleRepository.delete({ userId });
 
@@ -120,7 +129,12 @@ export class UserService {
   async getUserPermissions(userId: number): Promise<Permission[]> {
     const user = await this.userRepository.findOne({
       where: { id: userId },
-      relations: ['userRoles', 'userRoles.role', 'userRoles.role.rolePermissions', 'userRoles.role.rolePermissions.permission'],
+      relations: [
+        'userRoles',
+        'userRoles.role',
+        'userRoles.role.rolePermissions',
+        'userRoles.role.rolePermissions.permission',
+      ],
     });
 
     if (!user) {
@@ -128,7 +142,7 @@ export class UserService {
     }
 
     const permissions = new Set<Permission>();
-    
+
     user.roles.forEach(role => {
       role.rolePermissions.forEach(rolePermission => {
         permissions.add(rolePermission.permission);

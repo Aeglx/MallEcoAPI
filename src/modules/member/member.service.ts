@@ -2,13 +2,12 @@ import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class MemberService {
-  
   // 会员收藏相关服务
   async collectGoods(type: string, id: string) {
     return {
       success: true,
       result: {},
-      message: '收藏商品成功'
+      message: '收藏商品成功',
     };
   }
 
@@ -16,7 +15,7 @@ export class MemberService {
     return {
       success: true,
       result: {},
-      message: '收藏店铺成功'
+      message: '收藏店铺成功',
     };
   }
 
@@ -24,7 +23,7 @@ export class MemberService {
     return {
       success: true,
       result: {},
-      message: '取消收藏成功'
+      message: '取消收藏成功',
     };
   }
 
@@ -32,7 +31,7 @@ export class MemberService {
     return {
       success: true,
       result: {},
-      message: '取消店铺收藏成功'
+      message: '取消店铺收藏成功',
     };
   }
 
@@ -40,7 +39,7 @@ export class MemberService {
     return {
       success: true,
       result: false,
-      message: '获取收藏状态成功'
+      message: '获取收藏状态成功',
     };
   }
 
@@ -48,7 +47,7 @@ export class MemberService {
     return {
       success: true,
       result: false,
-      message: '获取店铺收藏状态成功'
+      message: '获取店铺收藏状态成功',
     };
   }
 
@@ -57,9 +56,9 @@ export class MemberService {
       success: true,
       result: {
         records: [],
-        total: 0
+        total: 0,
       },
-      message: '获取收藏列表成功'
+      message: '获取收藏列表成功',
     };
   }
 
@@ -68,9 +67,9 @@ export class MemberService {
       success: true,
       result: {
         records: [],
-        total: 0
+        total: 0,
       },
-      message: '获取店铺收藏列表成功'
+      message: '获取店铺收藏列表成功',
     };
   }
 
@@ -80,9 +79,9 @@ export class MemberService {
       success: true,
       result: {
         records: [],
-        total: 0
+        total: 0,
       },
-      message: '获取商品评价成功'
+      message: '获取商品评价成功',
     };
   }
 
@@ -92,9 +91,9 @@ export class MemberService {
       result: {
         good: 0,
         moderate: 0,
-        bad: 0
+        bad: 0,
       },
-      message: '获取评价数量成功'
+      message: '获取评价数量成功',
     };
   }
 
@@ -102,7 +101,7 @@ export class MemberService {
     return {
       success: true,
       result: {},
-      message: '添加评价成功'
+      message: '添加评价成功',
     };
   }
 
@@ -111,9 +110,9 @@ export class MemberService {
       success: true,
       result: {
         records: [],
-        total: 0
+        total: 0,
       },
-      message: '获取评价列表成功'
+      message: '获取评价列表成功',
     };
   }
 
@@ -123,9 +122,9 @@ export class MemberService {
       result: {
         id: parseInt(id),
         content: '评价内容',
-        createTime: new Date().toISOString()
+        createTime: new Date().toISOString(),
       },
-      message: '获取评价详情成功'
+      message: '获取评价详情成功',
     };
   }
 
@@ -135,9 +134,9 @@ export class MemberService {
       success: true,
       result: {
         records: [],
-        total: 0
+        total: 0,
       },
-      message: '获取足迹列表成功'
+      message: '获取足迹列表成功',
     };
   }
 
@@ -145,7 +144,7 @@ export class MemberService {
     return {
       success: true,
       result: {},
-      message: '清空足迹成功'
+      message: '清空足迹成功',
     };
   }
 
@@ -153,7 +152,7 @@ export class MemberService {
     return {
       success: true,
       result: {},
-      message: '删除足迹成功'
+      message: '删除足迹成功',
     };
   }
 
@@ -163,9 +162,9 @@ export class MemberService {
       success: true,
       result: {
         point: 1000,
-        level: 'VIP1'
+        level: 'VIP1',
       },
-      message: '获取会员积分成功'
+      message: '获取会员积分成功',
     };
   }
 
@@ -174,9 +173,9 @@ export class MemberService {
       success: true,
       result: {
         records: [],
-        total: 0
+        total: 0,
       },
-      message: '获取积分历史成功'
+      message: '获取积分历史成功',
     };
   }
 
@@ -186,9 +185,9 @@ export class MemberService {
       success: true,
       result: {
         records: [],
-        total: 0
+        total: 0,
       },
-      message: '获取会员消息成功'
+      message: '获取会员消息成功',
     };
   }
 
@@ -196,7 +195,7 @@ export class MemberService {
     return {
       success: true,
       result: {},
-      message: '标记消息已读成功'
+      message: '标记消息已读成功',
     };
   }
 
@@ -204,7 +203,7 @@ export class MemberService {
     return {
       success: true,
       result: {},
-      message: '删除消息成功'
+      message: '删除消息成功',
     };
   }
 
@@ -214,9 +213,9 @@ export class MemberService {
       success: true,
       result: {
         records: [],
-        total: 0
+        total: 0,
       },
-      message: '获取提现申请成功'
+      message: '获取提现申请成功',
     };
   }
 }

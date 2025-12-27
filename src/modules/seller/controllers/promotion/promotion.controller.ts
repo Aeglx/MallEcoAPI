@@ -4,7 +4,6 @@ import { ApiTags } from '@nestjs/swagger';
 @ApiTags('促销营销')
 @Controller('seller/promotion')
 export class PromotionController {
-  
   @Get()
   findAll(@Query() query: any) {
     return { message: '获取卖家促销活动列表', query };

@@ -95,7 +95,7 @@ export class CreateOrderDto {
 
   @ApiProperty({
     description: '优惠券金额',
-    example: 10.00,
+    example: 10.0,
     type: Number,
     minimum: 0,
   })
@@ -106,7 +106,7 @@ export class CreateOrderDto {
 
   @ApiProperty({
     description: '运费',
-    example: 5.00,
+    example: 5.0,
     type: Number,
     minimum: 0,
   })

@@ -17,7 +17,11 @@ import {
   ConversationDto,
 } from '../dto/message.dto';
 import { MessageTypeEnum } from '../enums/message-type.enum';
-import { ApiCreateOperation, ApiGetOperation, ApiListOperation } from '../../../shared/decorators/swagger.decorator';
+import {
+  ApiCreateOperation,
+  ApiGetOperation,
+  ApiListOperation,
+} from '../../../shared/decorators/swagger.decorator';
 
 @ApiTags('即时通讯')
 @Controller('im/message')

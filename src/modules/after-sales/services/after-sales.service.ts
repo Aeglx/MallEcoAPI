@@ -12,7 +12,7 @@ export class AfterSalesService {
   constructor(
     @InjectRepository(AfterSales) private readonly afterSalesRepository: Repository<AfterSales>,
     private readonly orderService: OrdersService,
-    private readonly paymentService: PaymentService
+    private readonly paymentService: PaymentService,
   ) {}
 
   /**
@@ -34,7 +34,7 @@ export class AfterSalesService {
     // 创建售后服务记录
     const afterSales = this.afterSalesRepository.create({
       ...createAfterSalesDto,
-      status: AfterSalesStatus.APPLIED
+      status: AfterSalesStatus.APPLIED,
     });
 
     return await this.afterSalesRepository.save(afterSales);
@@ -45,7 +45,10 @@ export class AfterSalesService {
    * @param id 售后服务ID
    * @param updateAfterSalesDto 更新售后服务DTO
    */
-  async reviewAfterSales(id: number, updateAfterSalesDto: UpdateAfterSalesDto): Promise<AfterSales> {
+  async reviewAfterSales(
+    id: number,
+    updateAfterSalesDto: UpdateAfterSalesDto,
+  ): Promise<AfterSales> {
     const afterSales = await this.findAfterSalesById(id);
     if (afterSales.status !== AfterSalesStatus.APPLIED) {
       throw new BadRequestException('只有待审核的售后服务申请才能被审核');
@@ -73,7 +76,10 @@ export class AfterSalesService {
    * @param id 售后服务ID
    * @param updateAfterSalesDto 更新售后服务DTO
    */
-  async submitReturnInfo(id: number, updateAfterSalesDto: UpdateAfterSalesDto): Promise<AfterSales> {
+  async submitReturnInfo(
+    id: number,
+    updateAfterSalesDto: UpdateAfterSalesDto,
+  ): Promise<AfterSales> {
     const afterSales = await this.findAfterSalesById(id);
     if (afterSales.status !== AfterSalesStatus.APPROVED) {
       throw new BadRequestException('只有审核通过的售后服务申请才能提交退货物流信息');
@@ -95,7 +101,10 @@ export class AfterSalesService {
    * @param id 售后服务ID
    * @param updateAfterSalesDto 更新售后服务DTO
    */
-  async completeAfterSales(id: number, updateAfterSalesDto: UpdateAfterSalesDto): Promise<AfterSales> {
+  async completeAfterSales(
+    id: number,
+    updateAfterSalesDto: UpdateAfterSalesDto,
+  ): Promise<AfterSales> {
     const afterSales = await this.findAfterSalesById(id);
     if (afterSales.status !== AfterSalesStatus.PROCESSING) {
       throw new BadRequestException('只有处理中的售后服务申请才能完成');
@@ -153,7 +162,7 @@ export class AfterSalesService {
   async findAfterSalesByUserId(userId: string): Promise<AfterSales[]> {
     return await this.afterSalesRepository.find({
       where: { userId },
-      order: { createdAt: 'DESC' }
+      order: { createdAt: 'DESC' },
     });
   }
 
@@ -162,7 +171,7 @@ export class AfterSalesService {
    */
   async findAllAfterSales(): Promise<AfterSales[]> {
     return await this.afterSalesRepository.find({
-      order: { createdAt: 'DESC' }
+      order: { createdAt: 'DESC' },
     });
   }
 
@@ -173,7 +182,7 @@ export class AfterSalesService {
   async findAfterSalesByStatus(status: AfterSalesStatus): Promise<AfterSales[]> {
     return await this.afterSalesRepository.find({
       where: { status },
-      order: { createdAt: 'DESC' }
+      order: { createdAt: 'DESC' },
     });
   }
 }

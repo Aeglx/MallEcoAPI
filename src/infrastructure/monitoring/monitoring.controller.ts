@@ -13,9 +13,9 @@ export class MonitoringController {
       res.set('Content-Type', 'text/plain');
       res.send(metrics);
     } catch (error) {
-      res.status(500).json({ 
+      res.status(500).json({
         error: 'Failed to retrieve metrics',
-        message: error.message 
+        message: error.message,
       });
     }
   }
@@ -30,7 +30,7 @@ export class MonitoringController {
         memory_usage_percent: healthStatus.memory,
         cpu_usage_percent: healthStatus.cpu,
         uptime_seconds: healthStatus.uptime,
-      }
+      },
     };
   }
 
@@ -51,7 +51,7 @@ export class MonitoringController {
       performance: {
         memory: process.memoryUsage(),
         uptime: process.uptime(),
-      }
+      },
     };
   }
 }

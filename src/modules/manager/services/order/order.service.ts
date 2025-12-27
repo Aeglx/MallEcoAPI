@@ -2,14 +2,13 @@ import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class OrderService {
-  
   async findAll(query: any) {
     // 获取订单列表的业务逻辑
     return {
       success: true,
       data: [],
       total: 0,
-      message: '获取订单列表成功'
+      message: '获取订单列表成功',
     };
   }
 
@@ -18,7 +17,7 @@ export class OrderService {
     return {
       success: true,
       data: { id, orderNo: 'ORDER001', totalAmount: 100 },
-      message: '获取订单详情成功'
+      message: '获取订单详情成功',
     };
   }
 
@@ -27,7 +26,7 @@ export class OrderService {
     return {
       success: true,
       data: { id, ...orderData },
-      message: '更新订单信息成功'
+      message: '更新订单信息成功',
     };
   }
 
@@ -35,7 +34,7 @@ export class OrderService {
     // 取消订单的业务逻辑
     return {
       success: true,
-      message: '取消订单成功'
+      message: '取消订单成功',
     };
   }
 
@@ -44,7 +43,7 @@ export class OrderService {
     return {
       success: true,
       data: { id, ...refundData },
-      message: '退款处理成功'
+      message: '退款处理成功',
     };
   }
 }

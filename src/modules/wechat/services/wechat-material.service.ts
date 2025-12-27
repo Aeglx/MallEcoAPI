@@ -128,7 +128,7 @@ export class WechatMaterialService {
   // 获取素材统计
   async getMaterialStats() {
     const total = await this.materialRepository.count({ where: { status: 1 } });
-    
+
     return {
       total,
       byType: [{ type: MaterialType.IMAGE, count: total, publishedCount: total }],

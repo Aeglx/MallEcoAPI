@@ -62,7 +62,12 @@ export class IntelligentLoadBalancer {
   /**
    * 添加服务器节点
    */
-  addNode(node: Omit<ServerNode, 'currentLoad' | 'activeConnections' | 'responseTime' | 'isHealthy' | 'lastHealthCheck'>): void {
+  addNode(
+    node: Omit<
+      ServerNode,
+      'currentLoad' | 'activeConnections' | 'responseTime' | 'isHealthy' | 'lastHealthCheck'
+    >,
+  ): void {
     const serverNode: ServerNode = {
       ...node,
       currentLoad: 0,
@@ -90,7 +95,7 @@ export class IntelligentLoadBalancer {
    */
   selectNode(request?: any): ServerNode | null {
     const healthyNodes = this.getHealthyNodes();
-    
+
     if (healthyNodes.length === 0) {
       this.logger.error('没有可用的健康服务器节点');
       return null;
@@ -103,11 +108,11 @@ export class IntelligentLoadBalancer {
     }
 
     const selectedNode = strategy.selectNode(healthyNodes, request);
-    
+
     if (selectedNode) {
       this.updateNodeMetrics(selectedNode, request);
       this.metrics.totalRequests++;
-      this.metrics.requestDistribution[selectedNode.id] = 
+      this.metrics.requestDistribution[selectedNode.id] =
         (this.metrics.requestDistribution[selectedNode.id] || 0) + 1;
     }
 
@@ -146,7 +151,7 @@ export class IntelligentLoadBalancer {
       // 使用指数移动平均计算响应时间
       const alpha = 0.3; // 平滑因子
       node.responseTime = alpha * responseTime + (1 - alpha) * node.responseTime;
-      
+
       // 更新全局平均响应时间
       this.updateGlobalResponseTime(responseTime);
     }
@@ -159,7 +164,7 @@ export class IntelligentLoadBalancer {
     this.metrics.activeConnections = this.calculateTotalActiveConnections();
     this.metrics.failureRate = this.calculateFailureRate();
     this.metrics.throughput = this.calculateThroughput();
-    
+
     return { ...this.metrics };
   }
 
@@ -175,16 +180,16 @@ export class IntelligentLoadBalancer {
    */
   async performHealthCheck(): Promise<HealthCheckResult[]> {
     const results: HealthCheckResult[] = [];
-    
+
     for (const [nodeId, node] of this.nodes) {
       try {
         const result = await this.checkNodeHealth(node);
         results.push(result);
-        
+
         // 更新节点健康状态
         node.isHealthy = result.isHealthy;
         node.lastHealthCheck = new Date();
-        
+
         if (result.responseTime) {
           node.responseTime = result.responseTime;
         }
@@ -196,11 +201,11 @@ export class IntelligentLoadBalancer {
           responseTime: -1,
           error: error.message,
         });
-        
+
         node.isHealthy = false;
       }
     }
-    
+
     return results;
   }
 
@@ -211,9 +216,9 @@ export class IntelligentLoadBalancer {
     // 轮询策略
     this.strategies.set('round_robin', {
       name: '轮询',
-      selectNode: (nodes) => {
+      selectNode: nodes => {
         if (nodes.length === 0) return null;
-        
+
         const node = nodes[this.roundRobinIndex % nodes.length];
         this.roundRobinIndex++;
         return node;
@@ -223,22 +228,22 @@ export class IntelligentLoadBalancer {
     // 加权轮询策略
     this.strategies.set('weighted_round_robin', {
       name: '加权轮询',
-      selectNode: (nodes) => {
+      selectNode: nodes => {
         if (nodes.length === 0) return null;
-        
+
         // 计算总权重
         const totalWeight = nodes.reduce((sum, node) => sum + node.weight, 0);
-        
+
         // 随机选择
         let random = Math.random() * totalWeight;
-        
+
         for (const node of nodes) {
           random -= node.weight;
           if (random <= 0) {
             return node;
           }
         }
-        
+
         return nodes[0];
       },
     });
@@ -246,11 +251,11 @@ export class IntelligentLoadBalancer {
     // 最少连接策略
     this.strategies.set('least_connections', {
       name: '最少连接',
-      selectNode: (nodes) => {
+      selectNode: nodes => {
         if (nodes.length === 0) return null;
-        
-        return nodes.reduce((min, node) => 
-          node.activeConnections < min.activeConnections ? node : min
+
+        return nodes.reduce((min, node) =>
+          node.activeConnections < min.activeConnections ? node : min,
         );
       },
     });
@@ -258,23 +263,21 @@ export class IntelligentLoadBalancer {
     // 最少负载策略
     this.strategies.set('least_load', {
       name: '最少负载',
-      selectNode: (nodes) => {
+      selectNode: nodes => {
         if (nodes.length === 0) return null;
-        
-        return nodes.reduce((min, node) => 
-          node.currentLoad < min.currentLoad ? node : min
-        );
+
+        return nodes.reduce((min, node) => (node.currentLoad < min.currentLoad ? node : min));
       },
     });
 
     // 最快响应策略
     this.strategies.set('fastest_response', {
       name: '最快响应',
-      selectNode: (nodes) => {
+      selectNode: nodes => {
         if (nodes.length === 0) return null;
-        
-        return nodes.reduce((fastest, node) => 
-          node.responseTime < fastest.responseTime ? node : fastest
+
+        return nodes.reduce((fastest, node) =>
+          node.responseTime < fastest.responseTime ? node : fastest,
         );
       },
     });
@@ -284,13 +287,15 @@ export class IntelligentLoadBalancer {
       name: '智能均衡',
       selectNode: (nodes, request) => {
         if (nodes.length === 0) return null;
-        
-        return nodes
-          .map(node => ({
-            node,
-            score: this.calculateNodeScore(node, request),
-          }))
-          .sort((a, b) => b.score - a.score)[0]?.node || null;
+
+        return (
+          nodes
+            .map(node => ({
+              node,
+              score: this.calculateNodeScore(node, request),
+            }))
+            .sort((a, b) => b.score - a.score)[0]?.node || null
+        );
       },
     });
 
@@ -302,23 +307,23 @@ export class IntelligentLoadBalancer {
    */
   private calculateNodeScore(node: ServerNode, request?: any): number {
     let score = 100; // 基础分数
-    
+
     // 负载影响（权重30%）
     const loadScore = (1 - node.currentLoad / 100) * 30;
     score += loadScore;
-    
+
     // 连接数影响（权重25%）
     const connectionScore = (1 - node.activeConnections / node.maxConnections) * 25;
     score += connectionScore;
-    
+
     // 响应时间影响（权重25%）
     const responseScore = Math.max(0, (1000 - node.responseTime) / 1000) * 25;
     score += responseScore;
-    
+
     // 健康状态影响（权重20%）
     const healthScore = node.isHealthy ? 20 : 0;
     score += healthScore;
-    
+
     return Math.max(0, score);
   }
 
@@ -334,7 +339,7 @@ export class IntelligentLoadBalancer {
    */
   private updateNodeMetrics(node: ServerNode, request?: any): void {
     node.activeConnections++;
-    node.currentLoad = Math.min(100, node.currentLoad + (100 / node.maxConnections));
+    node.currentLoad = Math.min(100, node.currentLoad + 100 / node.maxConnections);
   }
 
   /**
@@ -342,7 +347,7 @@ export class IntelligentLoadBalancer {
    */
   private updateGlobalResponseTime(responseTime: number): void {
     const alpha = 0.1;
-    this.metrics.averageResponseTime = 
+    this.metrics.averageResponseTime =
       alpha * responseTime + (1 - alpha) * this.metrics.averageResponseTime;
   }
 
@@ -350,8 +355,10 @@ export class IntelligentLoadBalancer {
    * 计算总活跃连接数
    */
   private calculateTotalActiveConnections(): number {
-    return Array.from(this.nodes.values())
-      .reduce((total, node) => total + node.activeConnections, 0);
+    return Array.from(this.nodes.values()).reduce(
+      (total, node) => total + node.activeConnections,
+      0,
+    );
   }
 
   /**
@@ -359,9 +366,8 @@ export class IntelligentLoadBalancer {
    */
   private calculateFailureRate(): number {
     // 简化实现，实际应该基于历史请求数据
-    const unhealthyNodes = Array.from(this.nodes.values())
-      .filter(node => !node.isHealthy).length;
-    
+    const unhealthyNodes = Array.from(this.nodes.values()).filter(node => !node.isHealthy).length;
+
     return this.nodes.size > 0 ? (unhealthyNodes / this.nodes.size) * 100 : 0;
   }
 
@@ -378,17 +384,17 @@ export class IntelligentLoadBalancer {
    */
   private async checkNodeHealth(node: ServerNode): Promise<HealthCheckResult> {
     const startTime = Date.now();
-    
+
     try {
       // 使用HTTP健康检查
       const response = await fetch(`http://${node.host}:${node.port}/health`, {
         method: 'GET',
         signal: AbortSignal.timeout(5000), // 5秒超时
       });
-      
+
       const responseTime = Date.now() - startTime;
       const isHealthy = response.ok && responseTime < 5000;
-      
+
       return {
         nodeId: node.id,
         isHealthy,
@@ -415,7 +421,7 @@ export class IntelligentLoadBalancer {
     this.healthCheckInterval = setInterval(async () => {
       await this.performHealthCheck();
     }, 30000); // 每30秒检查一次
-    
+
     this.logger.log('启动了定时健康检查');
   }
 

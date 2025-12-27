@@ -6,7 +6,7 @@ import { GoodsService } from '../../services/goods/goods.service';
 @Controller('manager/goods')
 export class GoodsController {
   constructor(private readonly goodsService: GoodsService) {}
-  
+
   @Get()
   async findAll(@Query() query: any) {
     return await this.goodsService.findAll(query);

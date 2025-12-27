@@ -60,12 +60,14 @@ initializeDatabase()
 初始化完成后，您可以使用以下账户登录系统：
 
 #### 管理员账户
+
 - **用户名**：admin
 - **密码**：dav888
 - **邮箱**：admin@malleco.com
 - **角色**：超级管理员（拥有所有权限）
 
 #### 运营账户
+
 - **用户名**：operator
 - **密码**：dav888
 - **邮箱**：operator@malleco.com

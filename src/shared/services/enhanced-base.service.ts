@@ -1,5 +1,18 @@
-import { Injectable, NotFoundException, BadRequestException, ConflictException } from '@nestjs/common';
-import { Repository, DeepPartial, FindManyOptions, FindOneOptions, DeleteResult, ObjectLiteral, In } from 'typeorm';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+  ConflictException,
+} from '@nestjs/common';
+import {
+  Repository,
+  DeepPartial,
+  FindManyOptions,
+  FindOneOptions,
+  DeleteResult,
+  ObjectLiteral,
+  In,
+} from 'typeorm';
 
 /**
  * 增强的基础服务类，提供更强大的通用数据操作方法
@@ -82,7 +95,7 @@ export abstract class EnhancedBaseService<T extends ObjectLiteral> {
     try {
       // 检查唯一性约束
       await this.checkUniqueConstraints(createDto);
-      
+
       const entity = this.repository.create(createDto);
       return await this.repository.save(entity);
     } catch (error) {
@@ -97,10 +110,10 @@ export abstract class EnhancedBaseService<T extends ObjectLiteral> {
     try {
       // 检查实体是否存在
       await this.findById(id);
-      
+
       // 检查唯一性约束（排除当前实体）
       await this.checkUniqueConstraints(updateDto, id);
-      
+
       await this.repository.update(id, updateDto as any);
       return await this.findById(id);
     } catch (error) {
@@ -115,7 +128,7 @@ export abstract class EnhancedBaseService<T extends ObjectLiteral> {
     try {
       // 检查实体是否存在
       await this.findById(id);
-      
+
       await this.repository.delete(id);
     } catch (error) {
       throw this.handleError('删除实体失败', error);
@@ -128,7 +141,7 @@ export abstract class EnhancedBaseService<T extends ObjectLiteral> {
   async softRemove(id: string): Promise<void> {
     try {
       const entity = await this.findById(id);
-      
+
       // 如果实体有deleteFlag字段，则使用软删除
       if ('deleteFlag' in entity) {
         await this.repository.update(id, { deleteFlag: true } as any);
@@ -209,9 +222,11 @@ export abstract class EnhancedBaseService<T extends ObjectLiteral> {
    */
   protected handleError(operation: string, error: any): Error {
     // 如果是已知的异常，直接抛出
-    if (error instanceof NotFoundException || 
-        error instanceof BadRequestException || 
-        error instanceof ConflictException) {
+    if (
+      error instanceof NotFoundException ||
+      error instanceof BadRequestException ||
+      error instanceof ConflictException
+    ) {
       return error;
     }
 
@@ -235,7 +250,7 @@ export abstract class EnhancedBaseService<T extends ObjectLiteral> {
    */
   protected buildWhereConditions(filters: Record<string, any>): any {
     const where: any = {};
-    
+
     for (const [key, value] of Object.entries(filters)) {
       if (value !== undefined && value !== null && value !== '') {
         if (typeof value === 'string' && value.includes(',')) {
@@ -246,7 +261,7 @@ export abstract class EnhancedBaseService<T extends ObjectLiteral> {
         }
       }
     }
-    
+
     return where;
   }
 }

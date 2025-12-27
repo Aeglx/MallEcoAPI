@@ -37,8 +37,11 @@ export const LimitPoint = (options?: {
 
   return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
     // 装饰器逻辑将在拦截器中实现
-    Reflect.defineMetadata('limitPoint', { name, key, prefix, period, limit, limitType }, descriptor.value);
+    Reflect.defineMetadata(
+      'limitPoint',
+      { name, key, prefix, period, limit, limitType },
+      descriptor.value,
+    );
     return descriptor;
   };
 };
-

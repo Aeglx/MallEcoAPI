@@ -172,9 +172,9 @@ export class WechatCouponService {
   }
 
   async getCouponRecordById(id: string) {
-    const record = await this.couponRecordRepository.findOne({ 
+    const record = await this.couponRecordRepository.findOne({
       where: { id },
-      relations: ['coupon', 'user'] 
+      relations: ['coupon', 'user'],
     });
     if (!record) {
       throw new NotFoundException(`卡券记录不存在: ${id}`);
@@ -185,8 +185,9 @@ export class WechatCouponService {
   // 核销卡券
   async verifyCoupon(recordId: string, verifyData: { operatorId: string }) {
     const record = await this.getCouponRecordById(recordId);
-    
-    if (record.status !== 1) { // 1: 待核销
+
+    if (record.status !== 1) {
+      // 1: 待核销
       throw new NotFoundException('卡券状态不正确，无法核销');
     }
 

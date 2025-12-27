@@ -11,7 +11,8 @@ export class GatewayController {
     try {
       // 从请求头获取服务名称和负载均衡策�?
       const serviceName = req.headers['x-service-name'] as string;
-      const strategy = (req.headers['x-load-balancing-strategy'] as LoadBalancingStrategy) || 'round-robin';
+      const strategy =
+        (req.headers['x-load-balancing-strategy'] as LoadBalancingStrategy) || 'round-robin';
 
       if (!serviceName) {
         return res.status(HttpStatus.BAD_REQUEST).json({
@@ -39,11 +40,10 @@ export class GatewayController {
       return res.status(HttpStatus.OK).json(response);
     } catch (error) {
       console.error('Gateway error:', error);
-      
+
       return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
         error: error.message || 'Internal server error',
       });
     }
   }
 }
-

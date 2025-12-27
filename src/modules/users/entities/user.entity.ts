@@ -63,7 +63,6 @@ export class User extends BaseEntity {
   balance: number;
 
   // 关联社交账号
-  @OneToMany(() => SocialAuthEntity, (socialAuth) => socialAuth.user)
+  @OneToMany(() => SocialAuthEntity, socialAuth => socialAuth.user)
   social_auths: SocialAuthEntity[];
 }
-

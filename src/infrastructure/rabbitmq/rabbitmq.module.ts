@@ -34,5 +34,3 @@ import { ProductsModule } from '../../products/products.module';
   exports: [ClientsModule, RabbitMQService],
 })
 export class RabbitMQModule {}
-
-

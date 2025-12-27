@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class PassportService {
-  
   async userLogin(loginData: any) {
     // 用户登录逻辑
     return {
@@ -10,9 +9,9 @@ export class PassportService {
       data: {
         accessToken: 'jwt-token-example',
         refreshToken: 'refresh-token-example',
-        userInfo: { username: loginData.username }
+        userInfo: { username: loginData.username },
       },
-      message: '登录成功'
+      message: '登录成功',
     };
   }
 
@@ -23,9 +22,9 @@ export class PassportService {
       data: {
         accessToken: 'jwt-token-example',
         refreshToken: 'refresh-token-example',
-        userInfo: { mobile: loginData.mobile }
+        userInfo: { mobile: loginData.mobile },
       },
-      message: '短信登录成功'
+      message: '短信登录成功',
     };
   }
 
@@ -33,7 +32,7 @@ export class PassportService {
     // 退出登录逻辑
     return {
       success: true,
-      message: '退出成功'
+      message: '退出成功',
     };
   }
 
@@ -43,9 +42,9 @@ export class PassportService {
       success: true,
       data: {
         accessToken: 'new-jwt-token-example',
-        refreshToken: 'new-refresh-token-example'
+        refreshToken: 'new-refresh-token-example',
       },
-      message: 'Token刷新成功'
+      message: 'Token刷新成功',
     };
   }
 
@@ -53,7 +52,7 @@ export class PassportService {
     // 重置密码逻辑
     return {
       success: true,
-      message: '密码重置成功'
+      message: '密码重置成功',
     };
   }
 
@@ -61,7 +60,7 @@ export class PassportService {
     // 修改密码逻辑
     return {
       success: true,
-      message: '密码修改成功'
+      message: '密码修改成功',
     };
   }
 
@@ -69,7 +68,7 @@ export class PassportService {
     // 通过手机重置密码逻辑
     return {
       success: true,
-      message: '手机重置密码成功'
+      message: '手机重置密码成功',
     };
   }
 }

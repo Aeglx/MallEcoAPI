@@ -156,7 +156,7 @@ describe('MallEcoAPI 系统集成测试', () => {
         .send({
           productId: 1,
           quantity: 2,
-          paymentMethod: 'wallet'
+          paymentMethod: 'wallet',
         })
         .expect(201);
 
@@ -186,7 +186,7 @@ describe('MallEcoAPI 系统集成测试', () => {
         .send({
           distributorId: 1,
           productId: 1,
-          quantity: 1
+          quantity: 1,
         })
         .expect(201);
 
@@ -237,24 +237,22 @@ describe('MallEcoAPI 系统集成测试', () => {
   describe('性能监控集成测试', () => {
     it('响应时间监控', async () => {
       const startTime = Date.now();
-      
-      await request(app.getHttpServer())
-        .get('/api/products')
-        .expect(200);
-      
+
+      await request(app.getHttpServer()).get('/api/products').expect(200);
+
       const responseTime = Date.now() - startTime;
-      
+
       // 验证响应时间在可接受范围内
       expect(responseTime).toBeLessThan(1000); // 1秒内
     });
 
     it('并发请求处理', async () => {
-      const requests = Array(10).fill(0).map(() => 
-        request(app.getHttpServer()).get('/api/products').expect(200)
-      );
-      
+      const requests = Array(10)
+        .fill(0)
+        .map(() => request(app.getHttpServer()).get('/api/products').expect(200));
+
       await Promise.all(requests);
-      
+
       // 所有请求都应该成功完成
       expect(requests.length).toBe(10);
     });
@@ -277,7 +275,7 @@ describe('MallEcoAPI 系统集成测试', () => {
         .post('/api/test/transaction')
         .send({ shouldFail: true })
         .expect(500);
-      
+
       // 验证数据没有插入
       await request(app.getHttpServer())
         .get('/api/test/data')
@@ -311,25 +309,20 @@ describe('MallEcoAPI 系统集成测试', () => {
       await new Promise(resolve => setTimeout(resolve, 2000));
 
       // 验证缓存已失效
-      await request(app.getHttpServer())
-        .get('/api/cache/get/test')
-        .expect(404);
+      await request(app.getHttpServer()).get('/api/cache/get/test').expect(404);
     });
   });
 
   describe('消息队列集成测试', () => {
     it('消息发送和接收', async () => {
       const message = { type: 'test', data: 'integration test' };
-      
+
       // 发送消息
-      await request(app.getHttpServer())
-        .post('/api/message/send')
-        .send(message)
-        .expect(201);
+      await request(app.getHttpServer()).post('/api/message/send').send(message).expect(201);
 
       // 验证消息处理
       await new Promise(resolve => setTimeout(resolve, 1000));
-      
+
       await request(app.getHttpServer())
         .get('/api/message/status/test')
         .expect(200)

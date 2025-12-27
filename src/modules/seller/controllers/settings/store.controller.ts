@@ -5,7 +5,6 @@ import { ApiTags, ApiOperation, ApiConsumes, ApiBody } from '@nestjs/swagger';
 @ApiTags('卖家端-店铺设置')
 @Controller('seller/settings/store')
 export class StoreSettingController {
-  
   @Get('info')
   @ApiOperation({ summary: '获取店铺信息' })
   getStoreInfo() {
@@ -15,8 +14,8 @@ export class StoreSettingController {
       storeDescription: '优质商品，诚信经营',
       contactInfo: {
         phone: '13800000000',
-        email: 'store@example.com'
-      }
+        email: 'store@example.com',
+      },
     };
   }
 
@@ -42,9 +41,9 @@ export class StoreSettingController {
   })
   @ApiOperation({ summary: '上传店铺logo' })
   uploadLogo(@UploadedFile() file: any) {
-    return { 
+    return {
       message: 'Logo上传成功',
-      fileUrl: `/uploads/${file.filename}`
+      fileUrl: `/uploads/${file.filename}`,
     };
   }
 
@@ -56,8 +55,8 @@ export class StoreSettingController {
       templateName: '默认模板',
       colors: {
         primary: '#1890ff',
-        secondary: '#52c41a'
-      }
+        secondary: '#52c41a',
+      },
     };
   }
 

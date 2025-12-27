@@ -7,4 +7,3 @@ export * from './date.util';
 export * from './batch-query.util';
 export * from './common.util';
 export * from './uuid.util';
-

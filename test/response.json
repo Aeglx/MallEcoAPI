@@ -1,1 +1,26 @@
-{"success":true,"data":{"name":"MallEco API","version":"1.0.0","description":"电商生态系统API","availableAPIs":{"products":"/products","rbac":"/rbac","auth":"/auth","cart":"/cart","orders":"/orders","wallet":"/wallet","promotion":"/promotion","distribution":"/distribution","content":"/content","live":"/live","monitoring":"/monitoring"},"documentation":"访问 /api 查看Swagger文档"},"message":"请求成功","timestamp":"2025-12-14T13:03:29.425Z","path":"/","code":200}
+{
+  "success": true,
+  "data": {
+    "name": "MallEco API",
+    "version": "1.0.0",
+    "description": "电商生态系统API",
+    "availableAPIs": {
+      "products": "/products",
+      "rbac": "/rbac",
+      "auth": "/auth",
+      "cart": "/cart",
+      "orders": "/orders",
+      "wallet": "/wallet",
+      "promotion": "/promotion",
+      "distribution": "/distribution",
+      "content": "/content",
+      "live": "/live",
+      "monitoring": "/monitoring"
+    },
+    "documentation": "访问 /api 查看Swagger文档"
+  },
+  "message": "请求成功",
+  "timestamp": "2025-12-14T13:03:29.425Z",
+  "path": "/",
+  "code": 200
+}

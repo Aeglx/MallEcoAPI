@@ -49,4 +49,3 @@ export class ExecutorRegistryService {
     return this.executors.delete(executorName);
   }
 }
-

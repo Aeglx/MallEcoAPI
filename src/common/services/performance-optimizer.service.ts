@@ -50,7 +50,7 @@ export class PerformanceOptimizerService implements OnModuleInit {
     };
 
     this.metrics.push(metricData);
-    
+
     // 保持指标数量在限制范围内
     if (this.metrics.length > this.maxMetrics) {
       this.metrics.splice(0, this.metrics.length - this.maxMetrics);
@@ -63,11 +63,7 @@ export class PerformanceOptimizerService implements OnModuleInit {
   /**
    * 获取性能指标
    */
-  getMetrics(
-    metric?: string,
-    startTime?: number,
-    endTime?: number,
-  ): PerformanceMetric[] {
+  getMetrics(metric?: string, startTime?: number, endTime?: number): PerformanceMetric[] {
     let filtered = this.metrics;
 
     if (metric) {
@@ -88,7 +84,10 @@ export class PerformanceOptimizerService implements OnModuleInit {
   /**
    * 获取性能统计
    */
-  getStats(metric: string, timeWindow: number = 60000): {
+  getStats(
+    metric: string,
+    timeWindow: number = 60000,
+  ): {
     avg: number;
     min: number;
     max: number;
@@ -98,7 +97,7 @@ export class PerformanceOptimizerService implements OnModuleInit {
   } {
     const now = Date.now();
     const windowStart = now - timeWindow;
-    
+
     const recentMetrics = this.getMetrics(metric, windowStart, now)
       .map(m => m.value)
       .sort((a, b) => a - b);
@@ -111,10 +110,10 @@ export class PerformanceOptimizerService implements OnModuleInit {
     const avg = sum / recentMetrics.length;
     const min = recentMetrics[0];
     const max = recentMetrics[recentMetrics.length - 1];
-    
+
     const p95Index = Math.floor(recentMetrics.length * 0.95);
     const p99Index = Math.floor(recentMetrics.length * 0.99);
-    
+
     return {
       avg,
       min,
@@ -132,12 +131,14 @@ export class PerformanceOptimizerService implements OnModuleInit {
     // 规则1: 高响应时间告警
     this.optimizationRules.push({
       name: 'high_response_time_alert',
-      condition: (metrics) => {
+      condition: metrics => {
         const responseTimeStats = this.getStats('api.response_time', 30000);
         return responseTimeStats.p95 > 1000; // 95%的请求超过1秒
       },
       action: async () => {
-        this.logger.warn('High response time detected, consider optimizing database queries or increasing resources');
+        this.logger.warn(
+          'High response time detected, consider optimizing database queries or increasing resources',
+        );
         this.eventEmitter.emit('performance.alert.high_response_time');
       },
       priority: 'high',
@@ -147,15 +148,17 @@ export class PerformanceOptimizerService implements OnModuleInit {
     // 规则2: 内存使用过高告警
     this.optimizationRules.push({
       name: 'high_memory_usage_alert',
-      condition: (metrics) => {
+      condition: metrics => {
         const memoryMetrics = this.getMetrics('system.memory.usage', Date.now() - 60000);
         if (memoryMetrics.length === 0) return false;
-        
+
         const avgUsage = memoryMetrics.reduce((sum, m) => sum + m.value, 0) / memoryMetrics.length;
         return avgUsage > 80; // 平均内存使用率超过80%
       },
       action: async () => {
-        this.logger.warn('High memory usage detected, consider optimizing memory usage or increasing memory');
+        this.logger.warn(
+          'High memory usage detected, consider optimizing memory usage or increasing memory',
+        );
         this.eventEmitter.emit('performance.alert.high_memory_usage');
       },
       priority: 'high',
@@ -165,10 +168,10 @@ export class PerformanceOptimizerService implements OnModuleInit {
     // 规则3: 数据库连接池优化
     this.optimizationRules.push({
       name: 'database_pool_optimization',
-      condition: (metrics) => {
+      condition: metrics => {
         const poolMetrics = this.getMetrics('database.pool.waiting', Date.now() - 300000);
         if (poolMetrics.length === 0) return false;
-        
+
         const waitingCounts = poolMetrics.map(m => m.value);
         const avgWaiting = waitingCounts.reduce((sum, val) => sum + val, 0) / waitingCounts.length;
         return avgWaiting > 5; // 平均等待连接数超过5
@@ -184,7 +187,7 @@ export class PerformanceOptimizerService implements OnModuleInit {
     // 规则4: 缓存命中率优化
     this.optimizationRules.push({
       name: 'cache_hit_rate_optimization',
-      condition: (metrics) => {
+      condition: metrics => {
         const hitRateStats = this.getStats('cache.hit_rate', 600000);
         return hitRateStats.avg < 70; // 缓存命中率低于70%
       },
@@ -202,7 +205,7 @@ export class PerformanceOptimizerService implements OnModuleInit {
    */
   private startOptimizationLoop(): void {
     const interval = this.configService.get<number>('performance.optimizationInterval') || 30000;
-    
+
     this.optimizationInterval = setInterval(() => {
       this.evaluateOptimizationRules();
     }, interval);
@@ -306,7 +309,7 @@ export class PerformanceOptimizerService implements OnModuleInit {
 
     const responseTimeStats = this.getStats('api.response_time', timeWindow);
     const errorRateStats = this.getStats('api.error_rate', timeWindow);
-    
+
     const totalRequests = this.getMetrics('api.request_count', windowStart, now).length;
 
     return {
@@ -329,12 +332,13 @@ export class PerformanceOptimizerService implements OnModuleInit {
   /**
    * 清理过期的指标数据
    */
-  cleanupOldMetrics(retentionPeriod: number = 86400000): void { // 默认保留24小时
+  cleanupOldMetrics(retentionPeriod: number = 86400000): void {
+    // 默认保留24小时
     const cutoffTime = Date.now() - retentionPeriod;
     const initialLength = this.metrics.length;
-    
+
     this.metrics = this.metrics.filter(metric => metric.timestamp >= cutoffTime);
-    
+
     const removedCount = initialLength - this.metrics.length;
     if (removedCount > 0) {
       this.logger.debug(`Cleaned up ${removedCount} old metrics`);

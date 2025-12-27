@@ -28,19 +28,19 @@ export class SystemLogService {
     page: number;
     limit: number;
   }> {
-    const { 
-      logType, 
-      level, 
-      module, 
-      username, 
-      userId, 
-      startTime, 
-      endTime, 
+    const {
+      logType,
+      level,
+      module,
+      username,
+      userId,
+      startTime,
+      endTime,
       keyword,
-      page, 
-      limit, 
-      orderBy, 
-      order 
+      page,
+      limit,
+      orderBy,
+      order,
     } = searchDto;
 
     const skip = (page - 1) * limit;
@@ -83,14 +83,14 @@ export class SystemLogService {
       where,
       order: { [orderBy]: order },
       skip,
-      take: limit
+      take: limit,
     });
 
     return {
       list,
       total,
       page,
-      limit
+      limit,
     };
   }
 
@@ -147,16 +147,16 @@ export class SystemLogService {
 
     // 总数量统计
     const totalCount = await this.logRepository.count({
-      where: { createdAt: MoreThan(startDate) }
+      where: { createdAt: MoreThan(startDate) },
     });
 
     // 错误和警告数量统计
     const errorCount = await this.logRepository.count({
-      where: { level: 'error', createdAt: MoreThan(startDate) }
+      where: { level: 'error', createdAt: MoreThan(startDate) },
     });
 
     const warningCount = await this.logRepository.count({
-      where: { level: 'warn', createdAt: MoreThan(startDate) }
+      where: { level: 'warn', createdAt: MoreThan(startDate) },
     });
 
     // 每日统计
@@ -164,7 +164,7 @@ export class SystemLogService {
       .createQueryBuilder('log')
       .select('DATE(log.createdAt) as date')
       .addSelect('COUNT(*) as count')
-      .addSelect('SUM(CASE WHEN log.level = \'error\' THEN 1 ELSE 0 END) as errorCount')
+      .addSelect("SUM(CASE WHEN log.level = 'error' THEN 1 ELSE 0 END) as errorCount")
       .where('log.createdAt >= :startDate', { startDate })
       .groupBy('DATE(log.createdAt)')
       .orderBy('date', 'ASC')
@@ -198,16 +198,16 @@ export class SystemLogService {
       dailyStats: dailyStats.map(item => ({
         date: item.date,
         count: parseInt(item.count),
-        errorCount: parseInt(item.errorCount)
+        errorCount: parseInt(item.errorCount),
       })),
       levelStats: levelStats.map(item => ({
         level: item.level,
-        count: parseInt(item.count)
+        count: parseInt(item.count),
       })),
       moduleStats: moduleStats.map(item => ({
         module: item.module,
-        count: parseInt(item.count)
-      }))
+        count: parseInt(item.count),
+      })),
     };
   }
 

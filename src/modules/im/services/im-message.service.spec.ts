@@ -30,9 +30,7 @@ describe('ImMessageService', () => {
     }).compile();
 
     service = module.get<ImMessageService>(ImMessageService);
-    repository = module.get<Repository<ImMessageEntity>>(
-      getRepositoryToken(ImMessageEntity),
-    );
+    repository = module.get<Repository<ImMessageEntity>>(getRepositoryToken(ImMessageEntity));
   });
 
   afterEach(() => {
@@ -109,4 +107,3 @@ describe('ImMessageService', () => {
     });
   });
 });
-

@@ -34,4 +34,3 @@ import { QueryPerformanceService } from '../shared/monitoring/query-performance.
   ],
 })
 export class InfrastructureModule {}
-

@@ -1,5 +1,18 @@
-import { Injectable, NotFoundException, BadRequestException, ConflictException } from '@nestjs/common';
-import { Repository, DeepPartial, FindManyOptions, FindOneOptions, DeleteResult, ObjectLiteral, Like } from 'typeorm';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+  ConflictException,
+} from '@nestjs/common';
+import {
+  Repository,
+  DeepPartial,
+  FindManyOptions,
+  FindOneOptions,
+  DeleteResult,
+  ObjectLiteral,
+  Like,
+} from 'typeorm';
 import { QueryBuilderUtil, PaginationParams, QueryResult } from '../utils/query-builder.util';
 
 /**
@@ -76,11 +89,11 @@ export abstract class BaseService<T extends ObjectLiteral> {
       } else {
         entity = await this.repository.findOne(id);
       }
-      
+
       if (!entity) {
         throw new NotFoundException(`${this.getEntityName()}不存在`);
       }
-      
+
       return entity;
     } catch (error) {
       if (error instanceof NotFoundException) {
@@ -125,7 +138,7 @@ export abstract class BaseService<T extends ObjectLiteral> {
     try {
       // 检查唯一性约束
       await this.checkUniqueConstraints(createDto);
-      
+
       const entity = this.repository.create(createDto);
       return await this.repository.save(entity);
     } catch (error) {
@@ -182,7 +195,7 @@ export abstract class BaseService<T extends ObjectLiteral> {
    */
   protected buildQueryOptions(query?: any): FindManyOptions<T> {
     const options: FindManyOptions<T> = {};
-    
+
     // 处理模糊查询
     if (query) {
       for (const [key, value] of Object.entries(query)) {
@@ -192,10 +205,10 @@ export abstract class BaseService<T extends ObjectLiteral> {
         }
       }
     }
-    
+
     // 可以在子类中重写此方法以添加特定的查询逻辑
     // 例如：处理关系查询、自定义排序等
-    
+
     return options;
   }
 

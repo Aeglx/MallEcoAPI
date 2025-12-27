@@ -1,11 +1,19 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+  ManyToOne,
+  JoinColumn,
+} from 'typeorm';
 import { Order } from '../../orders/entities/order.entity';
 import { User } from '../../users/entities/user.entity';
 
 export enum AfterSalesType {
   REFUND = 'refund',
   RETURN = 'return',
-  EXCHANGE = 'exchange'
+  EXCHANGE = 'exchange',
 }
 
 export enum AfterSalesStatus {
@@ -15,7 +23,7 @@ export enum AfterSalesStatus {
   REJECTED = 'rejected',
   PROCESSING = 'processing',
   COMPLETED = 'completed',
-  CANCELLED = 'cancelled'
+  CANCELLED = 'cancelled',
 }
 
 @Entity('mall_after_sales')

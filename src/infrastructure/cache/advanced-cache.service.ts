@@ -33,19 +33,13 @@ export class AdvancedCacheService implements OnModuleInit {
     key: string,
     timeout: number = this.DEFAULT_LOCK_TIMEOUT,
     retryCount: number = 3,
-    retryDelay: number = 100
+    retryDelay: number = 100,
   ): Promise<string | null> {
     const lockKey = `${this.LOCK_PREFIX}${key}`;
     const lockValue = Math.random().toString(36).substring(2) + Date.now().toString();
 
     for (let i = 0; i < retryCount; i++) {
-      const result = await this.redisClient.set(
-        lockKey,
-        lockValue,
-        'PX',
-        timeout,
-        'NX'
-      );
+      const result = await this.redisClient.set(lockKey, lockValue, 'PX', timeout, 'NX');
 
       if (result === 'OK') {
         return lockValue;
@@ -64,7 +58,7 @@ export class AdvancedCacheService implements OnModuleInit {
    */
   async releaseLock(key: string, lockValue: string): Promise<boolean> {
     const lockKey = `${this.LOCK_PREFIX}${key}`;
-    
+
     // 使用Lua脚本确保原子性操作
     const luaScript = `
       if redis.call("get", KEYS[1]) == ARGV[1] then
@@ -88,13 +82,13 @@ export class AdvancedCacheService implements OnModuleInit {
       timeout?: number;
       retryCount?: number;
       retryDelay?: number;
-    } = {}
+    } = {},
   ): Promise<T> {
     const lockValue = await this.acquireLock(
       key,
       options.timeout,
       options.retryCount,
-      options.retryDelay
+      options.retryDelay,
     );
 
     if (!lockValue) {
@@ -116,10 +110,10 @@ export class AdvancedCacheService implements OnModuleInit {
   async getWithLock<T>(
     key: string,
     fallbackFn: () => Promise<T>,
-    ttl: number = this.DEFAULT_CACHE_TTL
+    ttl: number = this.DEFAULT_CACHE_TTL,
   ): Promise<T> {
     const cacheKey = `${this.CACHE_PREFIX}${key}`;
-    
+
     // 尝试从缓存获取
     const cached = await this.redisClient.get(cacheKey);
     if (cached) {
@@ -127,28 +121,21 @@ export class AdvancedCacheService implements OnModuleInit {
     }
 
     // 使用分布式锁防止缓存击穿
-    return this.executeWithLock(
-      `cache:${key}`,
-      async () => {
-        // 双重检查，防止重复计算
-        const doubleCheck = await this.redisClient.get(cacheKey);
-        if (doubleCheck) {
-          return JSON.parse(doubleCheck);
-        }
-
-        // 执行回源函数
-        const data = await fallbackFn();
-        
-        // 设置缓存
-        await this.redisClient.setex(
-          cacheKey,
-          ttl,
-          JSON.stringify(data)
-        );
-
-        return data;
+    return this.executeWithLock(`cache:${key}`, async () => {
+      // 双重检查，防止重复计算
+      const doubleCheck = await this.redisClient.get(cacheKey);
+      if (doubleCheck) {
+        return JSON.parse(doubleCheck);
       }
-    );
+
+      // 执行回源函数
+      const data = await fallbackFn();
+
+      // 设置缓存
+      await this.redisClient.setex(cacheKey, ttl, JSON.stringify(data));
+
+      return data;
+    });
   }
 
   /**
@@ -157,31 +144,28 @@ export class AdvancedCacheService implements OnModuleInit {
   async mget<T>(keys: string[]): Promise<Map<string, T>> {
     const cacheKeys = keys.map(key => `${this.CACHE_PREFIX}${key}`);
     const values = await this.redisClient.mget(...cacheKeys);
-    
+
     const result = new Map<string, T>();
     keys.forEach((key, index) => {
       if (values[index]) {
         result.set(key, JSON.parse(values[index]));
       }
     });
-    
+
     return result;
   }
 
   /**
    * 批量设置缓存
    */
-  async mset(
-    data: Map<string, any>,
-    ttl: number = this.DEFAULT_CACHE_TTL
-  ): Promise<void> {
+  async mset(data: Map<string, any>, ttl: number = this.DEFAULT_CACHE_TTL): Promise<void> {
     const pipeline = this.redisClient.pipeline();
-    
+
     for (const [key, value] of data.entries()) {
       const cacheKey = `${this.CACHE_PREFIX}${key}`;
       pipeline.setex(cacheKey, ttl, JSON.stringify(value));
     }
-    
+
     await pipeline.exec();
   }
 
@@ -221,7 +205,7 @@ export class AdvancedCacheService implements OnModuleInit {
       hitCount: 0,
       missCount: 0,
       hitRate: 0,
-      totalSize: 0
+      totalSize: 0,
     };
   }
 
@@ -251,7 +235,7 @@ export class AdvancedCacheService implements OnModuleInit {
   async readThrough<T>(
     key: string,
     loader: () => Promise<T>,
-    ttl: number = this.DEFAULT_CACHE_TTL
+    ttl: number = this.DEFAULT_CACHE_TTL,
   ): Promise<T> {
     return this.getWithLock(key, loader, ttl);
   }
@@ -263,13 +247,13 @@ export class AdvancedCacheService implements OnModuleInit {
     key: string,
     data: T,
     writer: (data: T) => Promise<void>,
-    ttl: number = this.DEFAULT_CACHE_TTL
+    ttl: number = this.DEFAULT_CACHE_TTL,
   ): Promise<void> {
     const cacheKey = `${this.CACHE_PREFIX}${key}`;
-    
+
     // 先写数据库
     await writer(data);
-    
+
     // 再写缓存
     await this.redisClient.setex(cacheKey, ttl, JSON.stringify(data));
   }
@@ -281,13 +265,13 @@ export class AdvancedCacheService implements OnModuleInit {
     key: string,
     data: T,
     writer: (data: T) => Promise<void>,
-    ttl: number = this.DEFAULT_CACHE_TTL
+    ttl: number = this.DEFAULT_CACHE_TTL,
   ): Promise<void> {
     const cacheKey = `${this.CACHE_PREFIX}${key}`;
-    
+
     // 只写缓存，异步写数据库
     await this.redisClient.setex(cacheKey, ttl, JSON.stringify(data));
-    
+
     // 异步写入数据库（可以使用消息队列）
     setImmediate(async () => {
       try {

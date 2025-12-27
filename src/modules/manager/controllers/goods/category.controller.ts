@@ -6,7 +6,7 @@ import { ApiTags } from '@nestjs/swagger';
 @Controller('manager/goods/category')
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
-  
+
   @Get()
   async findAll() {
     return await this.categoryService.findAll();

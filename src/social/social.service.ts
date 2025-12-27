@@ -46,7 +46,8 @@ export class SocialService {
 
   constructor(
     private readonly httpService: HttpService,
-    @InjectRepository(SocialAuthEntity) private readonly socialAuthRepository: Repository<SocialAuthEntity>,
+    @InjectRepository(SocialAuthEntity)
+    private readonly socialAuthRepository: Repository<SocialAuthEntity>,
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
@@ -111,7 +112,11 @@ export class SocialService {
   }
 
   // 生成授权URL
-  generateAuthUrl(platform: SocialPlatform, clientType: ClientType = ClientType.PC, state?: string): string {
+  generateAuthUrl(
+    platform: SocialPlatform,
+    clientType: ClientType = ClientType.PC,
+    state?: string,
+  ): string {
     const config = this.configs[platform];
     if (!config) {
       throw new HttpException(`Unsupported social platform: ${platform}`, HttpStatus.BAD_REQUEST);
@@ -121,28 +126,28 @@ export class SocialService {
       case SocialPlatform.WECHAT:
       case SocialPlatform.WECHAT_MP:
         return `https://open.weixin.qq.com/connect/oaut../infrastructure/authorize?appid=${config.clientId}&redirect_uri=${encodeURIComponent(config.redirectUri)}&response_type=code&scope=${config.scope}&state=${state || ''}#wechat_redirect`;
-      
+
       case SocialPlatform.WECHAT_OPEN:
         return `https://open.weixin.qq.com/connect/qrconnect?appid=${config.clientId}&redirect_uri=${encodeURIComponent(config.redirectUri)}&response_type=code&scope=${config.scope}&state=${state || ''}#wechat_redirect`;
-      
+
       case SocialPlatform.QQ:
         return `https://graph.qq.com/oauth2../infrastructure/authorize?client_id=${config.clientId}&redirect_uri=${encodeURIComponent(config.redirectUri)}&response_type=code&scope=${config.scope}&state=${state || ''}`;
-      
+
       case SocialPlatform.WEIBO:
         return `https://api.weibo.com/oaut../infrastructure/authorize?client_id=${config.clientId}&redirect_uri=${encodeURIComponent(config.redirectUri)}&response_type=code&scope=${config.scope}&state=${state || ''}`;
-      
+
       case SocialPlatform.ALIPAY:
         return `https://openauth.alipay.com/oauth2/publicAppAuthorize.htm?app_id=${config.clientId}&scope=${config.scope}&redirect_uri=${encodeURIComponent(config.redirectUri)}&state=${state || ''}`;
-      
+
       case SocialPlatform.APPLE:
         return `https://appleid.apple.c../infrastructure/auth/authorize?client_id=${config.clientId}&redirect_uri=${encodeURIComponent(config.redirectUri)}&response_type=code&scope=${config.scope}&state=${state || ''}&response_mode=form_post`;
-      
+
       case SocialPlatform.GITHUB:
         return `https://github.com/login/oau../infrastructure/authorize?client_id=${config.clientId}&redirect_uri=${encodeURIComponent(config.redirectUri)}&scope=${config.scope}&state=${state || ''}`;
-      
+
       case SocialPlatform.GOOGLE:
         return `https://accounts.google.com/o/oauth2/../infrastructure/auth?client_id=${config.clientId}&redirect_uri=${encodeURIComponent(config.redirectUri)}&response_type=code&scope=${config.scope}&state=${state || ''}`;
-      
+
       default:
         throw new HttpException(`Unsupported social platform: ${platform}`, HttpStatus.BAD_REQUEST);
     }
@@ -157,7 +162,7 @@ export class SocialService {
 
     try {
       let response;
-      
+
       switch (platform) {
         case SocialPlatform.WECHAT:
         case SocialPlatform.WECHAT_MP:
@@ -171,7 +176,7 @@ export class SocialService {
             },
           });
           break;
-        
+
         case SocialPlatform.QQ:
           response = await axios.get('https://graph.qq.com/oauth2.0/token', {
             params: {
@@ -189,7 +194,7 @@ export class SocialService {
             expires_in: parseInt(qqResult.get('expires_in') || '0'),
             refresh_token: qqResult.get('refresh_token'),
           };
-        
+
         case SocialPlatform.WEIBO:
           response = await axios.post('https://api.weibo.com/oauth2/access_token', {
             client_id: config.clientId,
@@ -199,7 +204,7 @@ export class SocialService {
             redirect_uri: config.redirectUri,
           });
           break;
-        
+
         case SocialPlatform.ALIPAY:
           response = await axios.get('https://openapi.alipay.co./infrastructure/gateway.do', {
             params: {
@@ -207,14 +212,18 @@ export class SocialService {
               method: 'alipay.system.oauth.token',
               charset: 'utf-8',
               sign_type: 'RSA2',
-              timestamp: new Date().toISOString().replace(/\.[0-9]+Z/, '+0800').slice(0, 19).replace('T', ' '),
+              timestamp: new Date()
+                .toISOString()
+                .replace(/\.[0-9]+Z/, '+0800')
+                .slice(0, 19)
+                .replace('T', ' '),
               version: '1.0',
               grant_type: 'authorization_code',
               code,
             },
           });
           return response.data.alipay_system_oauth_token_response;
-        
+
         case SocialPlatform.APPLE:
           response = await axios.post('https://appleid.apple.c../infrastructure/auth/token', {
             client_id: config.clientId,
@@ -224,18 +233,22 @@ export class SocialService {
             redirect_uri: config.redirectUri,
           });
           break;
-        
+
         case SocialPlatform.GITHUB:
-          response = await axios.post('https://github.com/login/oauth/access_token', {
-            client_id: config.clientId,
-            client_secret: config.clientSecret,
-            code,
-            redirect_uri: config.redirectUri,
-          }, {
-            headers: { Accept: 'application/json' },
-          });
+          response = await axios.post(
+            'https://github.com/login/oauth/access_token',
+            {
+              client_id: config.clientId,
+              client_secret: config.clientSecret,
+              code,
+              redirect_uri: config.redirectUri,
+            },
+            {
+              headers: { Accept: 'application/json' },
+            },
+          );
           break;
-        
+
         case SocialPlatform.GOOGLE:
           response = await axios.post('https://oauth2.googleapis.com/token', {
             client_id: config.clientId,
@@ -245,23 +258,33 @@ export class SocialService {
             redirect_uri: config.redirectUri,
           });
           break;
-        
+
         default:
-          throw new HttpException(`Unsupported social platform: ${platform}`, HttpStatus.BAD_REQUEST);
+          throw new HttpException(
+            `Unsupported social platform: ${platform}`,
+            HttpStatus.BAD_REQUEST,
+          );
       }
 
       return response.data;
     } catch (error) {
       this.logger.error(`Failed to get access token for ${platform}:`, error.message);
-      throw new HttpException(`Failed to get access token: ${error.message}`, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new HttpException(
+        `Failed to get access token: ${error.message}`,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
   // 鑾峰彇鐢ㄦ埛淇℃伅
-  async getUserInfo(platform: SocialPlatform, accessToken: string, openId?: string): Promise<UserInfoResult> {
+  async getUserInfo(
+    platform: SocialPlatform,
+    accessToken: string,
+    openId?: string,
+  ): Promise<UserInfoResult> {
     try {
       let response;
-      
+
       switch (platform) {
         case SocialPlatform.WECHAT:
         case SocialPlatform.WECHAT_MP:
@@ -279,7 +302,7 @@ export class SocialService {
             nickname: response.data.nickname,
             avatar: response.data.headimgurl,
           };
-        
+
         case SocialPlatform.QQ:
           // 鍏堣幏鍙杘penid
           const openIdResponse = await axios.get('https://graph.qq.com/oauth2.0/me', {
@@ -287,7 +310,7 @@ export class SocialService {
           });
           const openIdData = JSON.parse(openIdResponse.data.match(/callback\((.*)\)/)[1]);
           const qqOpenId = openIdData.openid;
-          
+
           // 鍐嶈幏鍙栫敤鎴蜂俊鎭?
           response = await axios.get('https://graph.qq.com/user/get_user_info', {
             params: {
@@ -297,13 +320,13 @@ export class SocialService {
               format: 'json',
             },
           });
-          
+
           return {
             openid: qqOpenId,
             nickname: response.data.nickname,
             avatar: response.data.figureurl_qq_2,
           };
-        
+
         case SocialPlatform.WEIBO:
           response = await axios.get('https://api.weibo.com/2/users/show.json', {
             params: {
@@ -316,7 +339,7 @@ export class SocialService {
             nickname: response.data.screen_name,
             avatar: response.data.avatar_large,
           };
-        
+
         case SocialPlatform.ALIPAY:
           response = await axios.get('https://openapi.alipay.co./infrastructure/gateway.do', {
             params: {
@@ -324,7 +347,11 @@ export class SocialService {
               method: 'alipay.user.info.share',
               charset: 'utf-8',
               sign_type: 'RSA2',
-              timestamp: new Date().toISOString().replace(/\.[0-9]+Z/, '+0800').slice(0, 19).replace('T', ' '),
+              timestamp: new Date()
+                .toISOString()
+                .replace(/\.[0-9]+Z/, '+0800')
+                .slice(0, 19)
+                .replace('T', ' '),
               version: '1.0',
               auth_token: accessToken,
             },
@@ -335,7 +362,7 @@ export class SocialService {
             nickname: alipayUser.nick_name,
             avatar: alipayUser.avatar,
           };
-        
+
         case SocialPlatform.GITHUB:
           response = await axios.get('https://api.github.com/user', {
             headers: { Authorization: `token ${accessToken}` },
@@ -346,7 +373,7 @@ export class SocialService {
             avatar: response.data.avatar_url,
             email: response.data.email,
           };
-        
+
         case SocialPlatform.GOOGLE:
           response = await axios.get('https://www.googleapis.com/oauth2/v3/userinfo', {
             headers: { Authorization: `Bearer ${accessToken}` },
@@ -357,28 +384,38 @@ export class SocialService {
             avatar: response.data.picture,
             email: response.data.email,
           };
-        
+
         default:
-          throw new HttpException(`Unsupported social platform: ${platform}`, HttpStatus.BAD_REQUEST);
+          throw new HttpException(
+            `Unsupported social platform: ${platform}`,
+            HttpStatus.BAD_REQUEST,
+          );
       }
     } catch (error) {
       this.logger.error(`Failed to get user info for ${platform}:`, error.message);
-      throw new HttpException(`Failed to get user info: ${error.message}`, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new HttpException(
+        `Failed to get user info: ${error.message}`,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
   // 绀句氦鐧诲綍鍥炶皟澶勭悊
-  async handleCallback(platform: SocialPlatform, code: string, clientType: ClientType = ClientType.PC): Promise<{ user: User; token: string }> {
+  async handleCallback(
+    platform: SocialPlatform,
+    code: string,
+    clientType: ClientType = ClientType.PC,
+  ): Promise<{ user: User; token: string }> {
     // 获取访问令牌
     const tokenResult = await this.getAccessToken(platform, code);
-    
+
     // 鑾峰彇鐢ㄦ埛淇℃伅
     const userInfo = await this.getUserInfo(platform, tokenResult.access_token, tokenResult.openid);
-    
+
     // 鏌ユ壘鎴栧垱寤虹敤鎴?
     let user: User;
     let socialAuth: SocialAuthEntity | null;
-    
+
     // 浼樺厛閫氳繃unionid鏌ユ壘
     if (userInfo.unionid) {
       socialAuth = await this.socialAuthRepository.findOne({
@@ -386,7 +423,7 @@ export class SocialService {
         relations: ['user'],
       });
     }
-    
+
     // 濡傛灉娌℃湁鎵惧埌锛岄€氳繃openid鏌ユ壘
     if (!socialAuth && userInfo.openid) {
       socialAuth = await this.socialAuthRepository.findOne({
@@ -394,7 +431,7 @@ export class SocialService {
         relations: ['user'],
       });
     }
-    
+
     // 濡傛灉鎵惧埌浜嗙ぞ浜よ处鍙凤紝杩斿洖鍏宠仈鐨勭敤鎴?
     if (socialAuth && socialAuth.user) {
       user = socialAuth.user;
@@ -408,7 +445,7 @@ export class SocialService {
         password: '', // 绀句氦鐧诲綍鐢ㄦ埛涓嶉渶瑕佸瘑鐮?
       });
     }
-    
+
     // 鏇存柊鎴栧垱寤虹ぞ浜よ处鍙蜂俊鎭?
     if (socialAuth) {
       socialAuth.access_token = tokenResult.access_token;
@@ -430,36 +467,45 @@ export class SocialService {
       });
       await this.socialAuthRepository.save(socialAuth);
     }
-    
+
     // 鐢熸垚JWT浠ょ墝
     const token = this.jwtService.sign({
       id: user.id,
       username: user.username,
     });
-    
+
     return { user, token };
   }
 
   // 缁戝畾绀句氦璐﹀彿
-  async bindSocialAccount(userId: number, platform: SocialPlatform, accessToken: string, openId: string, unionId?: string): Promise<SocialAuthEntity> {
+  async bindSocialAccount(
+    userId: number,
+    platform: SocialPlatform,
+    accessToken: string,
+    openId: string,
+    unionId?: string,
+  ): Promise<SocialAuthEntity> {
     // 妫€鏌ユ槸鍚﹀凡缁忕粦瀹?
     const existing = await this.socialAuthRepository.findOne({
       where: { user_id: userId, platform },
     });
-    
+
     if (existing) {
       throw new HttpException('This social account is already bound', HttpStatus.BAD_REQUEST);
     }
-    
+
     // 检查openid是否已经被其他用户绑定
     const existingByOpenId = await this.socialAuthRepository.findOne({
       where: { open_id: openId, platform },
     });
-    
+
     if (existingByOpenId) {
-      throw new HttpException('This social account is already bound to another user', HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        'This social account is already bound to another user',
+        HttpStatus.BAD_REQUEST,
+      );
     }
-    
+
     // 创建新的绑定
     const socialAuth = this.socialAuthRepository.create({
       user_id: userId,
@@ -469,7 +515,7 @@ export class SocialService {
       union_id: unionId || undefined,
       access_token: accessToken,
     });
-    
+
     return this.socialAuthRepository.save(socialAuth);
   }
 
@@ -479,7 +525,7 @@ export class SocialService {
       user_id: userId,
       platform,
     });
-    
+
     if (result.affected === 0) {
       throw new HttpException('Social account not found', HttpStatus.NOT_FOUND);
     }
@@ -492,5 +538,3 @@ export class SocialService {
     });
   }
 }
-
-

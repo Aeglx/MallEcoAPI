@@ -33,7 +33,10 @@ export class FeedbackService {
     });
   }
 
-  async getAllFeedbacks(page: number = 1, limit: number = 10): Promise<{ data: Feedback[], total: number }> {
+  async getAllFeedbacks(
+    page: number = 1,
+    limit: number = 10,
+  ): Promise<{ data: Feedback[]; total: number }> {
     const skip = (page - 1) * limit;
     const [feedbacks, total] = await this.feedbackRepository.findAndCount({
       skip,

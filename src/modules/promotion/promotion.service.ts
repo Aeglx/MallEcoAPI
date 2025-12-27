@@ -26,7 +26,11 @@ export class PromotionService {
   /**
    * 获取优惠券列表
    */
-  async getCoupons(page: number = 1, pageSize: number = 10, status?: number): Promise<{ items: Coupon[], total: number }> {
+  async getCoupons(
+    page: number = 1,
+    pageSize: number = 10,
+    status?: number,
+  ): Promise<{ items: Coupon[]; total: number }> {
     const query = this.couponRepository.createQueryBuilder('coupon');
 
     if (status !== undefined) {
@@ -83,7 +87,11 @@ export class PromotionService {
   /**
    * 获取活动列表
    */
-  async getActivities(page: number = 1, pageSize: number = 10, status?: number): Promise<{ items: Activity[], total: number }> {
+  async getActivities(
+    page: number = 1,
+    pageSize: number = 10,
+    status?: number,
+  ): Promise<{ items: Activity[]; total: number }> {
     const query = this.activityRepository.createQueryBuilder('activity');
 
     if (status !== undefined) {

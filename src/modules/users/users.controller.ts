@@ -42,7 +42,10 @@ export class UsersController {
   @ApiOperation({ summary: '更新用户信息' })
   @ApiResponse({ status: 200, description: '更新用户成功' })
   @ApiResponse({ status: 404, description: '用户不存在' })
-  async update(@Param('id') id: string, @Body() userData: Partial<User>): Promise<User | undefined> {
+  async update(
+    @Param('id') id: string,
+    @Body() userData: Partial<User>,
+  ): Promise<User | undefined> {
     return await this.usersService.update(id, userData);
   }
 

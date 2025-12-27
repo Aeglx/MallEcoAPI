@@ -13,13 +13,16 @@ export class OrderStatisticsService {
 
   async getOrderStatistics(queryDto: OrderStatisticsQueryDto) {
     const { startDate, endDate, orderStatus, paymentMethod, granularity = 'daily' } = queryDto;
-    
+
     const queryBuilder = this.orderStatisticsRepository
       .createQueryBuilder('order')
       .where('order.granularity = :granularity', { granularity });
 
     if (startDate && endDate) {
-      queryBuilder.andWhere('order.statDate BETWEEN :startDate AND :endDate', { startDate, endDate });
+      queryBuilder.andWhere('order.statDate BETWEEN :startDate AND :endDate', {
+        startDate,
+        endDate,
+      });
     }
 
     if (orderStatus) {
@@ -30,14 +33,12 @@ export class OrderStatisticsService {
       queryBuilder.andWhere('order.paymentMethod = :paymentMethod', { paymentMethod });
     }
 
-    return await queryBuilder
-      .orderBy('order.statDate', 'ASC')
-      .getMany();
+    return await queryBuilder.orderBy('order.statDate', 'ASC').getMany();
   }
 
   async getOrderTrend(queryDto: OrderStatisticsQueryDto) {
     const { startDate, endDate, granularity = 'daily' } = queryDto;
-    
+
     const queryBuilder = this.orderStatisticsRepository
       .createQueryBuilder('order')
       .select([
@@ -45,12 +46,15 @@ export class OrderStatisticsService {
         'SUM(order.orderCount) as totalOrders',
         'SUM(order.orderAmount) as totalAmount',
         'AVG(order.avgOrderAmount) as avgOrderAmount',
-        'AVG(order.successRate) as avgSuccessRate'
+        'AVG(order.successRate) as avgSuccessRate',
       ])
       .where('order.granularity = :granularity', { granularity });
 
     if (startDate && endDate) {
-      queryBuilder.andWhere('order.statDate BETWEEN :startDate AND :endDate', { startDate, endDate });
+      queryBuilder.andWhere('order.statDate BETWEEN :startDate AND :endDate', {
+        startDate,
+        endDate,
+      });
     }
 
     return await queryBuilder
@@ -61,7 +65,7 @@ export class OrderStatisticsService {
 
   async getOrderStatusAnalysis(queryDto: OrderStatisticsQueryDto) {
     const { startDate, endDate } = queryDto;
-    
+
     const queryBuilder = this.orderStatisticsRepository
       .createQueryBuilder('order')
       .select([
@@ -71,33 +75,37 @@ export class OrderStatisticsService {
         'SUM(order.successfulOrders) as successfulOrders',
         'SUM(order.failedOrders) as failedOrders',
         'SUM(order.refundOrders) as refundOrders',
-        'SUM(order.canceledOrders) as canceledOrders'
+        'SUM(order.canceledOrders) as canceledOrders',
       ]);
 
     if (startDate && endDate) {
-      queryBuilder.andWhere('order.statDate BETWEEN :startDate AND :endDate', { startDate, endDate });
+      queryBuilder.andWhere('order.statDate BETWEEN :startDate AND :endDate', {
+        startDate,
+        endDate,
+      });
     }
 
-    return await queryBuilder
-      .groupBy('order.orderStatus')
-      .getRawMany();
+    return await queryBuilder.groupBy('order.orderStatus').getRawMany();
   }
 
   async getPaymentMethodAnalysis(queryDto: OrderStatisticsQueryDto) {
     const { startDate, endDate } = queryDto;
-    
+
     const queryBuilder = this.orderStatisticsRepository
       .createQueryBuilder('order')
       .select([
         'order.paymentMethod',
         'SUM(order.orderCount) as orderCount',
         'SUM(order.orderAmount) as orderAmount',
-        'AVG(order.successRate) as avgSuccessRate'
+        'AVG(order.successRate) as avgSuccessRate',
       ])
       .where('order.paymentMethod IS NOT NULL');
 
     if (startDate && endDate) {
-      queryBuilder.andWhere('order.statDate BETWEEN :startDate AND :endDate', { startDate, endDate });
+      queryBuilder.andWhere('order.statDate BETWEEN :startDate AND :endDate', {
+        startDate,
+        endDate,
+      });
     }
 
     return await queryBuilder
@@ -116,8 +124,10 @@ export class OrderStatisticsService {
       summary: {
         totalOrders: statistics.reduce((sum, item) => sum + item.orderCount, 0),
         totalAmount: statistics.reduce((sum, item) => sum + item.orderAmount, 0),
-        avgOrderAmount: statistics.reduce((sum, item) => sum + item.avgOrderAmount, 0) / statistics.length,
-        successRate: statistics.reduce((sum, item) => sum + item.successRate, 0) / statistics.length,
+        avgOrderAmount:
+          statistics.reduce((sum, item) => sum + item.avgOrderAmount, 0) / statistics.length,
+        successRate:
+          statistics.reduce((sum, item) => sum + item.successRate, 0) / statistics.length,
       },
       orderTrend,
       statusAnalysis,

@@ -1,4 +1,14 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiQuery, ApiParam } from '@nestjs/swagger';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
@@ -24,7 +34,7 @@ export class ProductsController {
 
   // @Public()
   @Get()
-  // @Cache({ 
+  // @Cache({
   //   ttl: 300, // 5分钟缓存
   //   key: (context) => `product_list:${JSON.stringify(context.getArgs()[0])}`,
   //   condition: (context) => {
@@ -57,11 +67,25 @@ export class ProductsController {
   @ApiQuery({ name: 'brandId', description: '品牌ID', required: false })
   @ApiQuery({ name: 'minPrice', description: '最低价', required: false, type: Number })
   @ApiQuery({ name: 'maxPrice', description: '最高价', required: false, type: Number })
-  @ApiQuery({ name: 'isShow', description: '是否上架(0:下架, 1:上架)', required: false, type: Number })
+  @ApiQuery({
+    name: 'isShow',
+    description: '是否上架(0:下架, 1:上架)',
+    required: false,
+    type: Number,
+  })
   @ApiQuery({ name: 'isNew', description: '是否新品(0:否 1:是)', required: false, type: Number })
   @ApiQuery({ name: 'isHot', description: '是否热门(0:否 1:是)', required: false, type: Number })
-  @ApiQuery({ name: 'recommend', description: '是否推荐(0:否 1:是)', required: false, type: Number })
-  @ApiQuery({ name: 'sortBy', description: '排序字段(price:价格, sales:销量 createdAt:新品)', required: false })
+  @ApiQuery({
+    name: 'recommend',
+    description: '是否推荐(0:否 1:是)',
+    required: false,
+    type: Number,
+  })
+  @ApiQuery({
+    name: 'sortBy',
+    description: '排序字段(price:价格, sales:销量 createdAt:新品)',
+    required: false,
+  })
   @ApiQuery({ name: 'sortOrder', description: '排序方式(ASC:升序, DESC:降序)', required: false })
   @ApiQuery({ name: 'page', description: '页码', required: false, type: Number })
   @ApiQuery({ name: 'limit', description: '每页数量', required: false, type: Number })

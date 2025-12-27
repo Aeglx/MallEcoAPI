@@ -7,7 +7,7 @@ export default registerAs('performance', () => ({
     sampleRate: parseFloat(process.env.API_SAMPLE_RATE || '1.0'), // 采样率
     maxResponseTime: parseInt(process.env.API_MAX_RESPONSE_TIME || '30000'), // 最大响应时间
   },
-  
+
   // 数据库性能配置
   database: {
     connectionLimit: parseInt(process.env.DB_CONNECTION_LIMIT || '20'),
@@ -16,20 +16,20 @@ export default registerAs('performance', () => ({
     acquireTimeout: parseInt(process.env.DB_ACQUIRE_TIMEOUT || '60000'),
     reapInterval: parseInt(process.env.DB_REAP_INTERVAL || '1000'),
   },
-  
+
   // Redis缓存配置
   redis: {
     connectionTimeout: parseInt(process.env.REDIS_CONNECTION_TIMEOUT || '10000'),
     maxRetriesPerRequest: parseInt(process.env.REDIS_MAX_RETRIES_PER_REQUEST || '3'),
     lazyConnect: process.env.REDIS_LAZY_CONNECT === 'true',
   },
-  
+
   // 缓存策略配置
   cache: {
     ttl: parseInt(process.env.CACHE_TTL || '3600'), // 默认缓存时间(秒)
     maxItems: parseInt(process.env.CACHE_MAX_ITEMS || '10000'), // 最大缓存项数
     checkPeriod: parseInt(process.env.CACHE_CHECK_PERIOD || '600'), // 清理周期(秒)
-    
+
     // 不同业务模块的缓存配置
     modules: {
       product: {
@@ -46,12 +46,12 @@ export default registerAs('performance', () => ({
       },
     },
   },
-  
+
   // 请求限制配置
   rateLimit: {
     windowMs: parseInt(process.env.RATE_LIMIT_WINDOW || '60000'), // 时间窗口(ms)
     max: parseInt(process.env.RATE_LIMIT_MAX || '1000'), // 最大请求数
-    
+
     // 不同接口的限流配置
     endpoints: {
       auth: { max: 100 }, // 认证接口限流
@@ -60,13 +60,13 @@ export default registerAs('performance', () => ({
       search: { max: 2000 }, // 搜索接口限流
     },
   },
-  
+
   // 压缩配置
   compression: {
     threshold: process.env.COMPRESSION_THRESHOLD || '1kb',
     level: parseInt(process.env.COMPRESSION_LEVEL || '6'),
   },
-  
+
   // 监控和告警配置
   monitoring: {
     enabled: process.env.MONITORING_ENABLED === 'true',

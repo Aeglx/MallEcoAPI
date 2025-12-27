@@ -19,7 +19,7 @@ export class CartsService {
             quantity: 1,
             selected: true,
             stock: 100,
-            image: 'https://example.com/image1.jpg'
+            image: 'https://example.com/image1.jpg',
           },
           {
             cartId: '2',
@@ -31,14 +31,14 @@ export class CartsService {
             quantity: 2,
             selected: false,
             stock: 50,
-            image: 'https://example.com/image2.jpg'
-          }
+            image: 'https://example.com/image2.jpg',
+          },
         ],
         total: 2,
         totalPrice: 99.9 + 199.9 * 2,
         selectedPrice: 99.9,
-        selectedCount: 1
-      }
+        selectedCount: 1,
+      },
     };
   }
 
@@ -50,8 +50,8 @@ export class CartsService {
       data: {
         cartId: 'new_' + Date.now(),
         ...body,
-        createTime: new Date().toISOString()
-      }
+        createTime: new Date().toISOString(),
+      },
     };
   }
 
@@ -63,8 +63,8 @@ export class CartsService {
       data: {
         cartId: id,
         quantity: body.quantity,
-        updateTime: new Date().toISOString()
-      }
+        updateTime: new Date().toISOString(),
+      },
     };
   }
 
@@ -74,8 +74,8 @@ export class CartsService {
       code: 200,
       message: '删除购物车商品成功',
       data: {
-        cartId: id
-      }
+        cartId: id,
+      },
     };
   }
 
@@ -86,8 +86,8 @@ export class CartsService {
       message: '批量删除购物车商品成功',
       data: {
         deletedIds: body.ids || [],
-        deleteTime: new Date().toISOString()
-      }
+        deleteTime: new Date().toISOString(),
+      },
     };
   }
 
@@ -97,8 +97,8 @@ export class CartsService {
       code: 200,
       message: '清空购物车成功',
       data: {
-        clearTime: new Date().toISOString()
-      }
+        clearTime: new Date().toISOString(),
+      },
     };
   }
 
@@ -108,8 +108,8 @@ export class CartsService {
       code: 200,
       message: '获取购物车商品数量成功',
       data: {
-        count: 2
-      }
+        count: 2,
+      },
     };
   }
 
@@ -120,8 +120,8 @@ export class CartsService {
       message: '合并购物车成功',
       data: {
         mergedItems: body.items || [],
-        mergeTime: new Date().toISOString()
-      }
+        mergeTime: new Date().toISOString(),
+      },
     };
   }
 
@@ -133,8 +133,8 @@ export class CartsService {
       data: {
         cartId: id,
         selected: true,
-        updateTime: new Date().toISOString()
-      }
+        updateTime: new Date().toISOString(),
+      },
     };
   }
 
@@ -146,8 +146,8 @@ export class CartsService {
       data: {
         cartId: id,
         selected: false,
-        updateTime: new Date().toISOString()
-      }
+        updateTime: new Date().toISOString(),
+      },
     };
   }
 
@@ -158,8 +158,8 @@ export class CartsService {
       message: '批量选中购物车商品成功',
       data: {
         selectedIds: body.ids || [],
-        updateTime: new Date().toISOString()
-      }
+        updateTime: new Date().toISOString(),
+      },
     };
   }
 
@@ -170,8 +170,8 @@ export class CartsService {
       message: '批量取消选中购物车商品成功',
       data: {
         unselectedIds: body.ids || [],
-        updateTime: new Date().toISOString()
-      }
+        updateTime: new Date().toISOString(),
+      },
     };
   }
 
@@ -182,8 +182,8 @@ export class CartsService {
       message: '全选购物车商品成功',
       data: {
         selectAll: true,
-        updateTime: new Date().toISOString()
-      }
+        updateTime: new Date().toISOString(),
+      },
     };
   }
 
@@ -194,8 +194,8 @@ export class CartsService {
       message: '取消全选购物车商品成功',
       data: {
         selectAll: false,
-        updateTime: new Date().toISOString()
-      }
+        updateTime: new Date().toISOString(),
+      },
     };
   }
 
@@ -211,15 +211,15 @@ export class CartsService {
             goodsName: '商品1',
             price: 99.9,
             quantity: 1,
-            totalPrice: 99.9
-          }
+            totalPrice: 99.9,
+          },
         ],
         totalPrice: 99.9,
         discount: 0,
         finalPrice: 99.9,
         address: null,
-        paymentMethods: ['支付宝', '微信', '银行卡']
-      }
+        paymentMethods: ['支付宝', '微信', '银行卡'],
+      },
     };
   }
 
@@ -227,7 +227,7 @@ export class CartsService {
   async calculateCartPrice(body: any) {
     const items = body.items || [];
     let totalPrice = 0;
-    
+
     items.forEach((item: any) => {
       totalPrice += (item.price || 0) * (item.quantity || 1);
     });
@@ -239,8 +239,8 @@ export class CartsService {
         items,
         totalPrice,
         discount: 0,
-        finalPrice: totalPrice
-      }
+        finalPrice: totalPrice,
+      },
     };
   }
 }

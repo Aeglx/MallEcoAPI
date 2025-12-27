@@ -41,7 +41,7 @@ describe('BatchQueryUtil', () => {
   describe('batchLoadInChunks', () => {
     it('应该分批加载', async () => {
       const ids = Array.from({ length: 250 }, (_, i) => String(i));
-      const loader = jest.fn().mockImplementation((chunkIds) => {
+      const loader = jest.fn().mockImplementation(chunkIds => {
         return Promise.resolve(chunkIds.map((id: string) => ({ id, name: `Item ${id}` })));
       });
 
@@ -57,4 +57,3 @@ describe('BatchQueryUtil', () => {
     });
   });
 });
-

@@ -14,7 +14,7 @@ function printModuleInfo(configService: ConfigService) {
   const redisEnabled = redisHost && redisHost !== 'localhost';
   const elasticsearchEnabled = configService.get('ELASTICSEARCH_NODE') !== 'http://localhost:9200';
   const consulEnabled = configService.get('CONSUL_HOST') !== 'localhost';
-  
+
   console.log('');
   console.log(' 📋 应用模块信息: ');
   console.log(' ├── 权限管理模块 ✅ 已启用 ');
@@ -96,37 +96,38 @@ async function bootstrap() {
     // 在应用启动前执行数据库初始化
     console.log('🚀 启动数据库初始化检查...');
     const dbInitSuccess = await initializeDatabase();
-    
+
     if (!dbInitSuccess) {
       console.log('⚠️ 数据库初始化失败，应用仍将继续启动，但数据库功能可能不可用');
     }
 
     const app = await NestFactory.create<NestExpressApplication>(AppModule, {
-      logger: ['error', 'warn', 'log', 'debug', 'verbose']
+      logger: ['error', 'warn', 'log', 'debug', 'verbose'],
     });
-    
+
     // 设置全局 API 前缀
     app.setGlobalPrefix('api');
-    
+
     // 静态文件服务已在 app.module.ts 中通过 ServeStaticModule 配置
-    
+
     // 应用全局异常过滤器
     app.useGlobalFilters(new HttpExceptionFilter());
-    
+
     // 应用全局响应拦截器
     app.useGlobalInterceptors(new ResponseInterceptor());
-    
+
     // 启用 CORS
     app.enableCors();
-    
+
     // 配置 Swagger
     const swaggerConfigService = app.get(ConfigService);
     const swaggerPort = swaggerConfigService.get('PORT') || 9000;
     const nodeEnv = swaggerConfigService.get('NODE_ENV') || 'development';
-    
+
     const swaggerConfig = new DocumentBuilder()
       .setTitle('MallEco API')
-      .setDescription(`
+      .setDescription(
+        `
 # MallEco商城系统API文档
 
 ## 系统介绍
@@ -152,7 +153,8 @@ Authorization: Bearer <your-token>
 - 促销营销
 - 即时通讯
 - 统计分析
-      `)
+      `,
+      )
       .setVersion('1.0')
       .setContact('MallEco团队', 'https://github.com/malleco', 'support@malleco.com')
       .setLicense('MIT', 'https://opensource.org/licenses/MIT')
@@ -252,11 +254,11 @@ Authorization: Bearer <your-token>
         'JWT-auth',
       )
       .build();
-    
+
     const document = SwaggerModule.createDocument(app, swaggerConfig, {
       operationIdFactory: (controllerKey: string, methodKey: string) => methodKey,
     });
-    
+
     SwaggerModule.setup('api-docs', app, document, {
       swaggerOptions: {
         persistAuthorization: true,
@@ -270,24 +272,24 @@ Authorization: Bearer <your-token>
       customSiteTitle: 'MallEco API 文档',
       customfavIcon: '/favicon.ico',
     });
-    
+
     // 获取配置服务
     const appConfigService = app.get(ConfigService);
-    
+
     // 从环境变量获取端口
     const appPort = appConfigService.get('PORT') || 9000;
     console.log(`📝 配置的端口: ${appPort}`);
-    
+
     await app.listen(appPort, '0.0.0.0', () => {
       console.log(`🚀 服务已启动在 http://localhost:${appPort}`);
       console.log(`🌐 服务已启动在 http://0.0.0.0:${appPort} (可从外部访问)`);
       console.log(`📖 Swagger文档可用在 http://localhost:${appPort}/api-docs`);
       console.log(`📖 Swagger文档可用在 http://0.0.0.0:${appPort}/api-docs (可从外部访问)`);
-      
+
       // 打印模块信息
       printModuleInfo(appConfigService);
     });
-    
+
     console.log('✅ 应用程序启动成功');
   } catch (error) {
     console.error('❌ 应用程序启动失败:', error);

@@ -59,7 +59,7 @@ export function ApiResponseDecorator<T>(statusCode: number, message: string, typ
     ApiResponse({
       status: statusCode,
       ...responseSchema,
-    })
+    }),
   );
 }
 
@@ -93,7 +93,7 @@ export function ApiPaginationResponse<T>(statusCode: number, message: string, ty
           },
         },
       },
-    })
+    }),
   );
 }
 

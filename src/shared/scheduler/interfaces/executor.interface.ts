@@ -15,4 +15,3 @@ export interface DelayTaskExecutor {
    */
   execute(msg: TimeTriggerMsg): Promise<void>;
 }
-

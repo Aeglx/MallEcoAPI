@@ -12,10 +12,7 @@ export class RecommendationController {
   @ApiResponse({ status: 200, description: '获取成功' })
   @ApiParam({ name: 'userId', description: '用户ID' })
   @ApiQuery({ name: 'limit', description: '推荐数量', required: false })
-  async getUserRecommendations(
-    @Param('userId') userId: string,
-    @Query('limit') limit?: number
-  ) {
+  async getUserRecommendations(@Param('userId') userId: string, @Query('limit') limit?: number) {
     return await this.recommendationService.getUserRecommendations(userId, limit);
   }
 

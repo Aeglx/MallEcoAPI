@@ -49,4 +49,3 @@ export default registerAs<RedisConfig>('redis', () => ({
   connectTimeout: parseInt(process.env.REDIS_CONNECT_TIMEOUT || '10000', 10),
   maxRetriesPerRequest: parseInt(process.env.REDIS_MAX_RETRIES || '3', 10),
 }));
-

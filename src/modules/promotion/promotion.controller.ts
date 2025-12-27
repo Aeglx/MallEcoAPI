@@ -19,7 +19,9 @@ export class PromotionController {
   @ApiBody({ type: CreateCouponDto })
   @ApiResponse({ status: HttpStatus.CREATED, description: '创建成功', type: Coupon })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: '参数错误' })
-  async createCoupon(@Body() createCouponDto: CreateCouponDto): Promise<{ success: boolean; data: Coupon; message: string }> {
+  async createCoupon(
+    @Body() createCouponDto: CreateCouponDto,
+  ): Promise<{ success: boolean; data: Coupon; message: string }> {
     const coupon = await this.promotionService.createCoupon(createCouponDto);
     return {
       success: true,
@@ -31,13 +33,25 @@ export class PromotionController {
   @Get('coupons')
   @ApiOperation({ summary: '获取优惠券列表' })
   @ApiQuery({ name: 'page', description: '页码', example: 1, required: false, type: Number })
-  @ApiQuery({ name: 'pageSize', description: '每页数量', example: 10, required: false, type: Number })
-  @ApiQuery({ name: 'status', description: '状态：0-未发布，1-进行中，2-已结束', example: 1, required: false, type: Number })
+  @ApiQuery({
+    name: 'pageSize',
+    description: '每页数量',
+    example: 10,
+    required: false,
+    type: Number,
+  })
+  @ApiQuery({
+    name: 'status',
+    description: '状态：0-未发布，1-进行中，2-已结束',
+    example: 1,
+    required: false,
+    type: Number,
+  })
   @ApiResponse({ status: HttpStatus.OK, description: '查询成功' })
   async getCoupons(
     @Query('page') page: number = 1,
     @Query('pageSize') pageSize: number = 10,
-    @Query('status') status?: number
+    @Query('status') status?: number,
   ): Promise<{ success: boolean; data: { items: Coupon[]; total: number }; message: string }> {
     const result = await this.promotionService.getCoupons(page, pageSize, status);
     return {
@@ -52,7 +66,9 @@ export class PromotionController {
   @ApiParam({ name: 'id', description: '优惠券ID', example: '1' })
   @ApiResponse({ status: HttpStatus.OK, description: '查询成功', type: Coupon })
   @ApiResponse({ status: HttpStatus.NOT_FOUND, description: '优惠券不存在' })
-  async getCouponById(@Param('id') id: string): Promise<{ success: boolean; data: Coupon; message: string }> {
+  async getCouponById(
+    @Param('id') id: string,
+  ): Promise<{ success: boolean; data: Coupon; message: string }> {
     const coupon = await this.promotionService.getCouponById(id);
     return {
       success: true,
@@ -70,7 +86,7 @@ export class PromotionController {
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: '参数错误' })
   async updateCoupon(
     @Param('id') id: string,
-    @Body() updateCouponDto: UpdateCouponDto
+    @Body() updateCouponDto: UpdateCouponDto,
   ): Promise<{ success: boolean; data: Coupon; message: string }> {
     const updatedCoupon = await this.promotionService.updateCoupon(id, updateCouponDto);
     return {
@@ -99,7 +115,9 @@ export class PromotionController {
   @ApiBody({ type: CreateActivityDto })
   @ApiResponse({ status: HttpStatus.CREATED, description: '创建成功', type: Activity })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: '参数错误' })
-  async createActivity(@Body() createActivityDto: CreateActivityDto): Promise<{ success: boolean; data: Activity; message: string }> {
+  async createActivity(
+    @Body() createActivityDto: CreateActivityDto,
+  ): Promise<{ success: boolean; data: Activity; message: string }> {
     const activity = await this.promotionService.createActivity(createActivityDto);
     return {
       success: true,
@@ -111,13 +129,25 @@ export class PromotionController {
   @Get('activities')
   @ApiOperation({ summary: '获取活动列表' })
   @ApiQuery({ name: 'page', description: '页码', example: 1, required: false, type: Number })
-  @ApiQuery({ name: 'pageSize', description: '每页数量', example: 10, required: false, type: Number })
-  @ApiQuery({ name: 'status', description: '状态：0-未发布，1-进行中，2-已结束', example: 1, required: false, type: Number })
+  @ApiQuery({
+    name: 'pageSize',
+    description: '每页数量',
+    example: 10,
+    required: false,
+    type: Number,
+  })
+  @ApiQuery({
+    name: 'status',
+    description: '状态：0-未发布，1-进行中，2-已结束',
+    example: 1,
+    required: false,
+    type: Number,
+  })
   @ApiResponse({ status: HttpStatus.OK, description: '查询成功' })
   async getActivities(
     @Query('page') page: number = 1,
     @Query('pageSize') pageSize: number = 10,
-    @Query('status') status?: number
+    @Query('status') status?: number,
   ): Promise<{ success: boolean; data: { items: Activity[]; total: number }; message: string }> {
     const result = await this.promotionService.getActivities(page, pageSize, status);
     return {
@@ -132,7 +162,9 @@ export class PromotionController {
   @ApiParam({ name: 'id', description: '活动ID', example: '1' })
   @ApiResponse({ status: HttpStatus.OK, description: '查询成功', type: Activity })
   @ApiResponse({ status: HttpStatus.NOT_FOUND, description: '活动不存在' })
-  async getActivityById(@Param('id') id: string): Promise<{ success: boolean; data: Activity; message: string }> {
+  async getActivityById(
+    @Param('id') id: string,
+  ): Promise<{ success: boolean; data: Activity; message: string }> {
     const activity = await this.promotionService.getActivityById(id);
     return {
       success: true,
@@ -150,7 +182,7 @@ export class PromotionController {
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: '参数错误' })
   async updateActivity(
     @Param('id') id: string,
-    @Body() updateActivityDto: UpdateActivityDto
+    @Body() updateActivityDto: UpdateActivityDto,
   ): Promise<{ success: boolean; data: Activity; message: string }> {
     const updatedActivity = await this.promotionService.updateActivity(id, updateActivityDto);
     return {

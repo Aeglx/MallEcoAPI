@@ -36,14 +36,16 @@ export class SystemBackupController {
   @Get()
   @ApiOperation({ summary: '获取备份列表' })
   @ApiResponse({ status: 200, description: '查询成功' })
-  async getBackupList(@Query('type') type?: string): Promise<Array<{
-    id: string;
-    type: string;
-    filename: string;
-    size: number;
-    createdAt: Date;
-    status: string;
-  }>> {
+  async getBackupList(@Query('type') type?: string): Promise<
+    Array<{
+      id: string;
+      type: string;
+      filename: string;
+      size: number;
+      createdAt: Date;
+      status: string;
+    }>
+  > {
     return await this.backupService.getBackupList(type);
   }
 

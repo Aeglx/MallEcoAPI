@@ -23,13 +23,25 @@ export class LiveController {
   @Get()
   @ApiOperation({ summary: '获取直播间列表' })
   @ApiQuery({ name: 'page', description: '页码', example: 1, required: false, type: Number })
-  @ApiQuery({ name: 'pageSize', description: '每页数量', example: 10, required: false, type: Number })
-  @ApiQuery({ name: 'status', description: '状态：0-未开播，1-直播中，2-已结束', example: 1, required: false, type: Number })
+  @ApiQuery({
+    name: 'pageSize',
+    description: '每页数量',
+    example: 10,
+    required: false,
+    type: Number,
+  })
+  @ApiQuery({
+    name: 'status',
+    description: '状态：0-未开播，1-直播中，2-已结束',
+    example: 1,
+    required: false,
+    type: Number,
+  })
   @ApiResponse({ status: HttpStatus.OK, description: '查询成功' })
   async getLiveRooms(
     @Query('page') page: number = 1,
     @Query('pageSize') pageSize: number = 10,
-    @Query('status') status?: number
+    @Query('status') status?: number,
   ): Promise<{ success: boolean; data: { items: LiveRoom[]; total: number }; message: string }> {
     const result = await this.liveService.getLiveRooms(page, pageSize, status);
     return {
@@ -44,7 +56,9 @@ export class LiveController {
   @ApiParam({ name: 'id', description: '直播间ID', example: '1' })
   @ApiResponse({ status: HttpStatus.OK, description: '查询成功', type: LiveRoom })
   @ApiResponse({ status: HttpStatus.NOT_FOUND, description: '直播间不存在' })
-  async getLiveRoomById(@Param('id') id: string): Promise<{ success: boolean; data: LiveRoom; message: string }> {
+  async getLiveRoomById(
+    @Param('id') id: string,
+  ): Promise<{ success: boolean; data: LiveRoom; message: string }> {
     const liveRoom = await this.liveService.getLiveRoomById(id);
     return {
       success: true,
@@ -62,7 +76,7 @@ export class LiveController {
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: '参数错误' })
   async updateLiveRoom(
     @Param('id') id: string,
-    @Body() updateLiveRoomDto: UpdateLiveRoomDto
+    @Body() updateLiveRoomDto: UpdateLiveRoomDto,
   ): Promise<{ success: boolean; data: LiveRoom; message: string }> {
     const updatedRoom = await this.liveService.updateLiveRoom(id, updateLiveRoomDto);
     return {
@@ -90,7 +104,9 @@ export class LiveController {
   @ApiParam({ name: 'id', description: '直播间ID', example: '1' })
   @ApiResponse({ status: HttpStatus.OK, description: '查询成功', type: [LiveStatistics] })
   @ApiResponse({ status: HttpStatus.NOT_FOUND, description: '直播间不存在' })
-  async getLiveStatistics(@Param('id') id: string): Promise<{ success: boolean; data: LiveStatistics[]; message: string }> {
+  async getLiveStatistics(
+    @Param('id') id: string,
+  ): Promise<{ success: boolean; data: LiveStatistics[]; message: string }> {
     const statistics = await this.liveService.getLiveStatistics(id);
     return {
       success: true,

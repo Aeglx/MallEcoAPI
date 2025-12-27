@@ -96,10 +96,7 @@ export class ImWebSocketGateway implements OnGatewayConnection, OnGatewayDisconn
   }
 
   @SubscribeMessage('message')
-  async handleMessage(
-    @MessageBody() data: MessageOperationDto,
-    @ConnectedSocket() client: Socket,
-  ) {
+  async handleMessage(@MessageBody() data: MessageOperationDto, @ConnectedSocket() client: Socket) {
     const user = (client as any).user;
     const userId = user?.id;
 
@@ -199,7 +196,11 @@ export class ImWebSocketGateway implements OnGatewayConnection, OnGatewayDisconn
     });
 
     // 更新聊天最后消息
-    await this.imTalkService.updateLastMessage(talkId, data.context, data.messageType || MessageTypeEnum.MESSAGE);
+    await this.imTalkService.updateLastMessage(
+      talkId,
+      data.context,
+      data.messageType || MessageTypeEnum.MESSAGE,
+    );
 
     this.logger.log(`Send message from ${fromUserId} to ${data.to}: ${data.context}`);
 
@@ -251,4 +252,3 @@ export class ImWebSocketGateway implements OnGatewayConnection, OnGatewayDisconn
     return this.sessionPools.has(userId);
   }
 }
-

@@ -62,7 +62,10 @@ export class ResultUtil {
   /**
    * 返回成功消息（带自定义消息）
    */
-  static successWithMessage<T>(message: string, code: ResultCode = ResultCode.SUCCESS): ResultMessage<T> {
+  static successWithMessage<T>(
+    message: string,
+    code: ResultCode = ResultCode.SUCCESS,
+  ): ResultMessage<T> {
     return {
       success: true,
       message,
@@ -86,7 +89,10 @@ export class ResultUtil {
   /**
    * 返回失败消息（带自定义消息）
    */
-  static errorWithMessage<T>(message: string, code: ResultCode = ResultCode.ERROR): ResultMessage<T> {
+  static errorWithMessage<T>(
+    message: string,
+    code: ResultCode = ResultCode.ERROR,
+  ): ResultMessage<T> {
     return {
       success: false,
       message,
@@ -95,4 +101,3 @@ export class ResultUtil {
     };
   }
 }
-

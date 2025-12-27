@@ -4,14 +4,24 @@ import { ApiProperty } from '@nestjs/swagger';
 export class UpdateCouponDto {
   @IsOptional()
   @IsString({ message: '优惠券名称必须是字符串' })
-  @ApiProperty({ name: 'couponName', description: '优惠券名称', example: '满100减10', required: false })
+  @ApiProperty({
+    name: 'couponName',
+    description: '优惠券名称',
+    example: '满100减10',
+    required: false,
+  })
   couponName?: string;
 
   @IsOptional()
   @IsNumber({}, { message: '优惠券类型必须是数字' })
   @Min(0, { message: '优惠券类型最小值为0' })
   @Max(2, { message: '优惠券类型最大值为2' })
-  @ApiProperty({ name: 'couponType', description: '优惠券类型：0-满减券，1-折扣券，2-免运费券', example: 0, required: false })
+  @ApiProperty({
+    name: 'couponType',
+    description: '优惠券类型：0-满减券，1-折扣券，2-免运费券',
+    example: 0,
+    required: false,
+  })
   couponType?: number;
 
   @IsOptional()
@@ -41,19 +51,34 @@ export class UpdateCouponDto {
 
   @IsOptional()
   @IsDateString({}, { message: '开始时间必须是有效的日期字符串' })
-  @ApiProperty({ name: 'startTime', description: '开始时间', example: '2023-01-01 00:00:00', required: false })
+  @ApiProperty({
+    name: 'startTime',
+    description: '开始时间',
+    example: '2023-01-01 00:00:00',
+    required: false,
+  })
   startTime?: Date;
 
   @IsOptional()
   @IsDateString({}, { message: '结束时间必须是有效的日期字符串' })
-  @ApiProperty({ name: 'endTime', description: '结束时间', example: '2023-12-31 23:59:59', required: false })
+  @ApiProperty({
+    name: 'endTime',
+    description: '结束时间',
+    example: '2023-12-31 23:59:59',
+    required: false,
+  })
   endTime?: Date;
 
   @IsOptional()
   @IsNumber({}, { message: '状态必须是数字' })
   @Min(0, { message: '状态最小值为0' })
   @Max(2, { message: '状态最大值为2' })
-  @ApiProperty({ name: 'status', description: '状态：0-未发布，1-进行中，2-已结束', example: 1, required: false })
+  @ApiProperty({
+    name: 'status',
+    description: '状态：0-未发布，1-进行中，2-已结束',
+    example: 1,
+    required: false,
+  })
   status?: number;
 
   @IsOptional()
@@ -67,11 +92,21 @@ export class UpdateCouponDto {
   @IsNumber({}, { message: '适用范围必须是数字' })
   @Min(0, { message: '适用范围最小值为0' })
   @Max(2, { message: '适用范围最大值为2' })
-  @ApiProperty({ name: 'applicableRange', description: '适用范围：0-全场通用，1-指定商品，2-指定分类', example: 0, required: false })
+  @ApiProperty({
+    name: 'applicableRange',
+    description: '适用范围：0-全场通用，1-指定商品，2-指定分类',
+    example: 0,
+    required: false,
+  })
   applicableRange?: number;
 
   @IsOptional()
   @IsString({ message: '适用商品/分类ID必须是字符串' })
-  @ApiProperty({ name: 'applicableIds', description: '适用商品/分类ID', example: '1,2,3', required: false })
+  @ApiProperty({
+    name: 'applicableIds',
+    description: '适用商品/分类ID',
+    example: '1,2,3',
+    required: false,
+  })
   applicableIds?: string;
 }

@@ -22,10 +22,10 @@ export class WebSocketJwtGuard implements CanActivate {
 
   canActivate(context: ExecutionContext): boolean {
     const client = context.switchToWs().getClient();
-    
+
     // 支持从query参数或Authorization header获取token
     let token = client.handshake.query?.accessToken as string;
-    
+
     if (!token && client.handshake.headers?.authorization) {
       const authHeader = client.handshake.headers.authorization as string;
       if (authHeader.startsWith('Bearer ')) {
@@ -50,7 +50,7 @@ export class WebSocketJwtGuard implements CanActivate {
         username: payload.username,
         roles: payload.roles || [],
       };
-      
+
       return true;
     } catch (error) {
       this.logger.warn('WebSocket connection rejected: invalid token', error);
@@ -58,4 +58,3 @@ export class WebSocketJwtGuard implements CanActivate {
     }
   }
 }
-

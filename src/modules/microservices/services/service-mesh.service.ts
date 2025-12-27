@@ -29,16 +29,17 @@ export class ServiceMeshService {
         totalServices: services.length,
         activeRules: trafficRules.length,
         securityPolicies: securityPolicies.length,
-        lastUpdated: new Date()
-      }
+        lastUpdated: new Date(),
+      },
     };
   }
 
   // 获取网格中的所有服�?
   private async getAllMeshServices(environment?: string): Promise<any> {
-    const query = this.serviceRepository.createQueryBuilder('service')
+    const query = this.serviceRepository
+      .createQueryBuilder('service')
       .where('service.status = :status', { status: 'RUNNING' });
-    
+
     if (environment) {
       query.andWhere('service.environment = :environment', { environment });
     }
@@ -52,7 +53,7 @@ export class ServiceMeshService {
       endpoints: this.generateServiceEndpoints(service),
       sidecar: this.generateSidecarConfig(service),
       labels: this.generateServiceLabels(service),
-      annotations: this.generateServiceAnnotations(service)
+      annotations: this.generateServiceAnnotations(service),
     }));
   }
 
@@ -66,14 +67,14 @@ export class ServiceMeshService {
         healthCheck: {
           path: service.healthCheckPath || './infrastructure/health',
           interval: '30s',
-          timeout: '5s'
-        }
+          timeout: '5s',
+        },
       },
       {
         port: service.port + 1,
         protocol: 'GRPC',
-        name: 'grpc'
-      }
+        name: 'grpc',
+      },
     ];
   }
 
@@ -84,17 +85,17 @@ export class ServiceMeshService {
       resources: {
         requests: {
           cpu: '100m',
-          memory: '128Mi'
+          memory: '128Mi',
         },
         limits: {
           cpu: '500m',
-          memory: '512Mi'
-        }
+          memory: '512Mi',
+        },
       },
       env: [
         { name: 'SERVICE_NAME', value: service.serviceName },
-        { name: 'SERVICE_VERSION', value: service.version }
-      ]
+        { name: 'SERVICE_VERSION', value: service.version },
+      ],
     };
   }
 
@@ -105,7 +106,7 @@ export class ServiceMeshService {
       version: service.version,
       environment: service.environment,
       language: service.language,
-      owner: service.owner
+      owner: service.owner,
     };
   }
 
@@ -114,7 +115,7 @@ export class ServiceMeshService {
     return {
       'prometheus.io/scrape': 'true',
       'prometheus.io/port': service.port.toString(),
-      'sidecar.istio.io/inject': 'true'
+      'sidecar.istio.io/inject': 'true',
     };
   }
 
@@ -129,15 +130,15 @@ export class ServiceMeshService {
           {
             service: 'user-service',
             version: 'v1',
-            weight: 80
+            weight: 80,
           },
           {
             service: 'user-service',
             version: 'v2',
-            weight: 20
-          }
+            weight: 20,
+          },
         ],
-        type: 'WEIGHTED_ROUTING'
+        type: 'WEIGHTED_ROUTING',
       },
       {
         name: 'product-service-canary',
@@ -146,15 +147,15 @@ export class ServiceMeshService {
           {
             service: 'product-service',
             version: 'v1',
-            weight: 90
+            weight: 90,
           },
           {
             service: 'product-service',
             version: 'v2',
-            weight: 10
-          }
+            weight: 10,
+          },
         ],
-        type: 'CANARY_DEPLOYMENT'
+        type: 'CANARY_DEPLOYMENT',
       },
       {
         name: 'order-service-mirror',
@@ -163,17 +164,17 @@ export class ServiceMeshService {
           {
             service: 'order-service',
             version: 'v1',
-            weight: 100
+            weight: 100,
           },
           {
             service: 'order-service',
             version: 'v2',
             weight: 100,
-            mirror: true
-          }
+            mirror: true,
+          },
         ],
-        type: 'MIRRORING'
-      }
+        type: 'MIRRORING',
+      },
     ];
   }
 
@@ -184,24 +185,24 @@ export class ServiceMeshService {
         name: 'allow-internal-traffic',
         action: 'ALLOW',
         source: {
-          principals: ['cluster.local/ns/default/sa/*']
+          principals: ['cluster.local/ns/default/sa/*'],
         },
         destination: {
-          namespace: 'default'
-        }
+          namespace: 'default',
+        },
       },
       {
         name: 'deny-external-to-sensitive',
         action: 'DENY',
         source: {
-          namespaces: ['*']
+          namespaces: ['*'],
         },
         destination: {
           namespaces: ['default'],
           labels: {
-            sensitivity: 'high'
-          }
-        }
+            sensitivity: 'high',
+          },
+        },
       },
       {
         name: 'require-mtls-for-payment',
@@ -210,16 +211,16 @@ export class ServiceMeshService {
         destination: {
           namespaces: ['default'],
           labels: {
-            service: 'payment-service'
-          }
+            service: 'payment-service',
+          },
         },
         when: [
           {
             key: 'request.headers[authorization]',
-            values: ['*']
-          }
-        ]
-      }
+            values: ['*'],
+          },
+        ],
+      },
     ];
   }
 
@@ -230,15 +231,15 @@ export class ServiceMeshService {
         enabled: true,
         sampling: 1.0,
         jaeger: {
-          endpoint: 'http://jaeger-collector:14268/api/traces'
-        }
+          endpoint: 'http://jaeger-collector:14268/api/traces',
+        },
       },
       metrics: {
         enabled: true,
         prometheus: {
           endpoint: 'http://prometheus:9090',
-          scrapeInterval: '15s'
-        }
+          scrapeInterval: '15s',
+        },
       },
       logging: {
         enabled: true,
@@ -246,10 +247,10 @@ export class ServiceMeshService {
         destinations: [
           {
             type: 'elasticsearch',
-            endpoint: 'http://elasticsearch:9200'
-          }
-        ]
-      }
+            endpoint: 'http://elasticsearch:9200',
+          },
+        ],
+      },
     };
   }
 
@@ -268,8 +269,11 @@ export class ServiceMeshService {
       totalRequests: trafficData.reduce((sum, d) => sum + d.requests, 0),
       totalBytes: trafficData.reduce((sum, d) => sum + d.bytes, 0),
       avgLatency: trafficData.reduce((sum, d) => sum + d.latency, 0) / trafficData.length,
-      errorRate: (trafficData.reduce((sum, d) => sum + d.errors, 0) / trafficData.reduce((sum, d) => sum + d.requests, 0)) * 100,
-      timeline: trafficData
+      errorRate:
+        (trafficData.reduce((sum, d) => sum + d.errors, 0) /
+          trafficData.reduce((sum, d) => sum + d.requests, 0)) *
+        100,
+      timeline: trafficData,
     };
   }
 
@@ -293,7 +297,7 @@ export class ServiceMeshService {
         requests: Math.max(0, requests),
         errors: Math.max(0, errors),
         latency: Math.max(0, latency),
-        bytes: Math.max(0, bytes)
+        bytes: Math.max(0, bytes),
       });
     }
 
@@ -315,12 +319,12 @@ export class ServiceMeshService {
           port: ep.port,
           protocol: ep.protocol,
           status: 'UP',
-          healthCheck: ep.healthCheck
-        }))
+          healthCheck: ep.healthCheck,
+        })),
       })),
       controlPlane,
       dataPlane,
-      lastUpdated: new Date()
+      lastUpdated: new Date(),
     };
 
     return healthStatus;
@@ -334,20 +338,20 @@ export class ServiceMeshService {
         version: '1.14.3',
         cpuUsage: 45.2,
         memoryUsage: 67.8,
-        connectedProxies: 25
+        connectedProxies: 25,
       },
       citadel: {
         status: 'HEALTHY',
         version: '1.14.3',
         cpuUsage: 23.1,
-        memoryUsage: 34.5
+        memoryUsage: 34.5,
       },
       galley: {
         status: 'HEALTHY',
         version: '1.14.3',
         cpuUsage: 12.3,
-        memoryUsage: 28.9
-      }
+        memoryUsage: 28.9,
+      },
     };
   }
 
@@ -360,10 +364,10 @@ export class ServiceMeshService {
       avgSyncTime: '2.3s',
       lastConfigSync: new Date(),
       proxyDistribution: {
-        'default': 15,
-        'production': 8,
-        'staging': 2
-      }
+        default: 15,
+        production: 8,
+        staging: 2,
+      },
     };
   }
 
@@ -376,8 +380,9 @@ export class ServiceMeshService {
     score -= unhealthyServices * 10;
 
     // 控制平面状态影�?
-    const unhealthyControlComponents = Object.values(controlPlane)
-      .filter((cp: any) => cp.status !== 'HEALTHY').length;
+    const unhealthyControlComponents = Object.values(controlPlane).filter(
+      (cp: any) => cp.status !== 'HEALTHY',
+    ).length;
     score -= unhealthyControlComponents * 15;
 
     // 数据平面状态影�?
@@ -398,7 +403,7 @@ export class ServiceMeshService {
       ...rule,
       status: 'ACTIVE',
       createdAt: new Date(),
-      appliedAt: new Date()
+      appliedAt: new Date(),
     };
 
     return newRule;
@@ -410,7 +415,7 @@ export class ServiceMeshService {
       id: ruleId,
       ...updates,
       updatedAt: new Date(),
-      appliedAt: new Date()
+      appliedAt: new Date(),
     };
 
     return updatedRule;
@@ -421,20 +426,22 @@ export class ServiceMeshService {
     return {
       id: ruleId,
       status: 'DELETED',
-      deletedAt: new Date()
+      deletedAt: new Date(),
     };
   }
 
   // 获取服务依赖�?
   async getServiceDependencyGraph(): Promise<any> {
     const dependencies = await this.dependencyRepository.find({
-      where: { status: 'ACTIVE' }
+      where: { status: 'ACTIVE' },
     });
 
-    const nodes = [...new Set([
-      ...dependencies.map(d => d.serviceName),
-      ...dependencies.map(d => d.dependencyServiceName)
-    ])].map(name => ({ id: name, name }));
+    const nodes = [
+      ...new Set([
+        ...dependencies.map(d => d.serviceName),
+        ...dependencies.map(d => d.dependencyServiceName),
+      ]),
+    ].map(name => ({ id: name, name }));
 
     const edges = dependencies.map(dep => ({
       source: dep.serviceName,
@@ -443,7 +450,7 @@ export class ServiceMeshService {
       strength: dep.strength,
       callFrequency: dep.callFrequency,
       avgResponseTime: dep.avgResponseTime,
-      successRate: dep.successRate
+      successRate: dep.successRate,
     }));
 
     return {
@@ -452,8 +459,8 @@ export class ServiceMeshService {
       metadata: {
         totalNodes: nodes.length,
         totalEdges: edges.length,
-        avgDegree: (edges.length * 2) / nodes.length
-      }
+        avgDegree: (edges.length * 2) / nodes.length,
+      },
     };
   }
 
@@ -464,14 +471,14 @@ export class ServiceMeshService {
         name: 'malleco-gateway',
         type: 'INGRESS',
         selectors: {
-          app: 'malleco-gateway'
+          app: 'malleco-gateway',
         },
         servers: [
           {
             port: 80,
-            hosts: ['api.malleco.com']
-          }
-        ]
+            hosts: ['api.malleco.com'],
+          },
+        ],
       },
       virtualService: {
         name: 'malleco-vs',
@@ -479,16 +486,14 @@ export class ServiceMeshService {
         gateways: ['malleco-gateway'],
         http: [
           {
-            match: [
-              { uri: { prefix: '/api/v1/' } }
-            ],
+            match: [{ uri: { prefix: '/api/v1/' } }],
             route: [
               { destination: { host: 'user-service', subset: 'v1' } },
               { destination: { host: 'product-service', subset: 'v1' } },
-              { destination: { host: 'order-service', subset: 'v1' } }
-            ]
-          }
-        ]
+              { destination: { host: 'order-service', subset: 'v1' } },
+            ],
+          },
+        ],
       },
       destinationRule: {
         name: 'malleco-dr',
@@ -496,14 +501,14 @@ export class ServiceMeshService {
         subsets: [
           {
             name: 'v1',
-            labels: { version: 'v1' }
+            labels: { version: 'v1' },
           },
           {
             name: 'v2',
-            labels: { version: 'v2' }
-          }
-        ]
-      }
+            labels: { version: 'v2' },
+          },
+        ],
+      },
     };
   }
 }

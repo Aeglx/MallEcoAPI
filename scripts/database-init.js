@@ -9,16 +9,16 @@ const { spawn } = require('child_process');
 
 async function initializeDatabase() {
   console.log('🚀 MallEco API 数据库初始化...');
-  
+
   const dbManagerPath = path.join(__dirname, '../DB/database-manager.js');
-  
+
   return new Promise((resolve, reject) => {
     const child = spawn('node', [dbManagerPath, 'init'], {
       stdio: 'inherit',
-      cwd: path.dirname(dbManagerPath)
+      cwd: path.dirname(dbManagerPath),
     });
-    
-    child.on('close', (code) => {
+
+    child.on('close', code => {
       if (code === 0) {
         console.log('✅ 数据库初始化完成');
         resolve(true);
@@ -27,8 +27,8 @@ async function initializeDatabase() {
         reject(new Error(`数据库初始化失败，退出码: ${code}`));
       }
     });
-    
-    child.on('error', (error) => {
+
+    child.on('error', error => {
       console.error('❌ 启动数据库初始化进程失败:', error.message);
       reject(error);
     });
@@ -40,16 +40,16 @@ async function initializeDatabase() {
  */
 async function checkDatabaseHealth() {
   console.log('🏥 检查数据库健康状态...');
-  
+
   const dbManagerPath = path.join(__dirname, '../DB/database-manager.js');
-  
+
   return new Promise((resolve, reject) => {
     const child = spawn('node', [dbManagerPath, 'check'], {
       stdio: 'inherit',
-      cwd: path.dirname(dbManagerPath)
+      cwd: path.dirname(dbManagerPath),
     });
-    
-    child.on('close', (code) => {
+
+    child.on('close', code => {
       if (code === 0) {
         console.log('✅ 数据库健康检查通过');
         resolve(true);
@@ -58,8 +58,8 @@ async function checkDatabaseHealth() {
         resolve(false); // 健康检查失败不阻止应用启动
       }
     });
-    
-    child.on('error', (error) => {
+
+    child.on('error', error => {
       console.error('❌ 启动数据库健康检查进程失败:', error.message);
       resolve(false); // 健康检查失败不阻止应用启动
     });
@@ -73,7 +73,7 @@ if (require.main === module) {
   // 命令行直接运行
   initializeDatabase()
     .then(() => process.exit(0))
-    .catch((error) => {
+    .catch(error => {
       console.error('数据库初始化错误:', error.message);
       process.exit(1);
     });
@@ -81,5 +81,5 @@ if (require.main === module) {
 
 module.exports = {
   initializeDatabase,
-  checkDatabaseHealth
+  checkDatabaseHealth,
 };

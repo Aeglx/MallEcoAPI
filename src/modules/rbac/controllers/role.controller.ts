@@ -52,7 +52,10 @@ export class RoleController {
   @Post(':id/permissions')
   @ApiOperation({ summary: '为角色分配权限' })
   @ApiResponse({ status: 200, description: '权限分配成功' })
-  assignPermissions(@Param('id') id: string, @Body() { permissionIds }: { permissionIds: number[] }) {
+  assignPermissions(
+    @Param('id') id: string,
+    @Body() { permissionIds }: { permissionIds: number[] },
+  ) {
     return this.roleService.assignPermissions(+id, permissionIds);
   }
 

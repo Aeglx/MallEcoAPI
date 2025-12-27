@@ -13,13 +13,16 @@ export class FinancialStatisticsService {
 
   async getFinancialStatistics(queryDto: FinancialStatisticsQueryDto) {
     const { startDate, endDate, accountType, transactionType, granularity = 'daily' } = queryDto;
-    
+
     const queryBuilder = this.financialStatisticsRepository
       .createQueryBuilder('finance')
       .where('finance.granularity = :granularity', { granularity });
 
     if (startDate && endDate) {
-      queryBuilder.andWhere('finance.statDate BETWEEN :startDate AND :endDate', { startDate, endDate });
+      queryBuilder.andWhere('finance.statDate BETWEEN :startDate AND :endDate', {
+        startDate,
+        endDate,
+      });
     }
 
     if (accountType) {
@@ -30,14 +33,12 @@ export class FinancialStatisticsService {
       queryBuilder.andWhere('finance.transactionType = :transactionType', { transactionType });
     }
 
-    return await queryBuilder
-      .orderBy('finance.statDate', 'ASC')
-      .getMany();
+    return await queryBuilder.orderBy('finance.statDate', 'ASC').getMany();
   }
 
   async getFinancialTrend(queryDto: FinancialStatisticsQueryDto) {
     const { startDate, endDate, granularity = 'daily' } = queryDto;
-    
+
     const queryBuilder = this.financialStatisticsRepository
       .createQueryBuilder('finance')
       .select([
@@ -45,12 +46,15 @@ export class FinancialStatisticsService {
         'SUM(finance.incomeAmount) as totalIncome',
         'SUM(finance.expenseAmount) as totalExpense',
         'SUM(finance.netProfit) as totalProfit',
-        'SUM(finance.platformCommission) as totalCommission'
+        'SUM(finance.platformCommission) as totalCommission',
       ])
       .where('finance.granularity = :granularity', { granularity });
 
     if (startDate && endDate) {
-      queryBuilder.andWhere('finance.statDate BETWEEN :startDate AND :endDate', { startDate, endDate });
+      queryBuilder.andWhere('finance.statDate BETWEEN :startDate AND :endDate', {
+        startDate,
+        endDate,
+      });
     }
 
     return await queryBuilder
@@ -61,18 +65,21 @@ export class FinancialStatisticsService {
 
   async getTransactionTypeAnalysis(queryDto: FinancialStatisticsQueryDto) {
     const { startDate, endDate, accountType } = queryDto;
-    
+
     const queryBuilder = this.financialStatisticsRepository
       .createQueryBuilder('finance')
       .select([
         'finance.transactionType',
         'SUM(finance.transactionCount) as transactionCount',
-        'SUM(finance.transactionAmount) as transactionAmount'
+        'SUM(finance.transactionAmount) as transactionAmount',
       ])
       .where('finance.transactionType IS NOT NULL');
 
     if (startDate && endDate) {
-      queryBuilder.andWhere('finance.statDate BETWEEN :startDate AND :endDate', { startDate, endDate });
+      queryBuilder.andWhere('finance.statDate BETWEEN :startDate AND :endDate', {
+        startDate,
+        endDate,
+      });
     }
 
     if (accountType) {
@@ -87,7 +94,7 @@ export class FinancialStatisticsService {
 
   async getFinancialSummary(queryDto: FinancialStatisticsQueryDto) {
     const { startDate, endDate } = queryDto;
-    
+
     const queryBuilder = this.financialStatisticsRepository
       .createQueryBuilder('finance')
       .select([
@@ -98,11 +105,14 @@ export class FinancialStatisticsService {
         'SUM(finance.taxAmount) as totalTax',
         'AVG(finance.totalAssets) as avgAssets',
         'AVG(finance.totalLiabilities) as avgLiabilities',
-        'AVG(finance.netAssets) as avgNetAssets'
+        'AVG(finance.netAssets) as avgNetAssets',
       ]);
 
     if (startDate && endDate) {
-      queryBuilder.andWhere('finance.statDate BETWEEN :startDate AND :endDate', { startDate, endDate });
+      queryBuilder.andWhere('finance.statDate BETWEEN :startDate AND :endDate', {
+        startDate,
+        endDate,
+      });
     }
 
     return await queryBuilder.getRawOne();
