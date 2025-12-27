@@ -297,10 +297,12 @@ export class CommonService {
         const templateB = templateImage.data[templateIndex + 2];
         const templateAlpha = templateImage.data[templateIndex + 3];
         
-        // 判断模板像素是否属于需要抠出的区域（与拼图生成逻辑一致）
-        const isWhite = templateR > 200 && templateG > 200 && templateB > 200 && templateAlpha > 200;
+        // 判断模板像素是否属于需要抠出的区域（与拼图生成逻辑完全一致）
+        const isOpaque = templateAlpha > 128; // alpha > 128 表示不透明
+        const isWhite = templateR > 200 && templateG > 200 && templateB > 200;
+        const shouldExtract = isOpaque || isWhite; // 不透明或白色区域需要抠出
         
-        if (isWhite) {
+        if (shouldExtract) {
           // 模板白色区域（需要抠出的区域），进行模糊处理
           let r = 0, g = 0, b = 0, count = 0;
           for (let dy = -2; dy <= 2; dy++) {
