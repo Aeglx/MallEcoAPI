@@ -1,7 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Like, Between } from 'typeorm';
-import { PointsRecord, PointsRecordType, PointsRecordSource } from '../../../framework/entities/points-record.entity';
+import {
+  PointsRecord,
+  PointsRecordType,
+  PointsRecordSource,
+} from '../../../framework/entities/points-record.entity';
 
 @Injectable()
 export class PointsRecordService {
@@ -28,13 +32,15 @@ export class PointsRecordService {
 
     const skip = (Number(page) - 1) * Number(pageSize);
 
-    let queryBuilder = this.pointsRecordRepository.createQueryBuilder('record');
+    const queryBuilder = this.pointsRecordRepository.createQueryBuilder('record');
 
     if (memberId) {
       queryBuilder.andWhere('record.memberId = :memberId', { memberId });
     }
     if (memberUsername) {
-      queryBuilder.andWhere('record.memberUsername LIKE :memberUsername', { memberUsername: `%${memberUsername}%` });
+      queryBuilder.andWhere('record.memberUsername LIKE :memberUsername', {
+        memberUsername: `%${memberUsername}%`,
+      });
     }
     if (type) {
       queryBuilder.andWhere('record.type = :type', { type });
@@ -80,16 +86,11 @@ export class PointsRecordService {
    * 获取会员积分记录
    */
   async findByMemberId(memberId: string, query: any) {
-    const {
-      page = 1,
-      pageSize = 10,
-      type,
-      source,
-    } = query;
+    const { page = 1, pageSize = 10, type, source } = query;
 
     const skip = (Number(page) - 1) * Number(pageSize);
 
-    let queryBuilder = this.pointsRecordRepository.createQueryBuilder('record');
+    const queryBuilder = this.pointsRecordRepository.createQueryBuilder('record');
     queryBuilder.andWhere('record.memberId = :memberId', { memberId });
 
     if (type) {
@@ -175,4 +176,3 @@ export class PointsRecordService {
     }
   }
 }
-

@@ -1,10 +1,4 @@
-import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  CreateDateColumn,
-  Index,
-} from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, Index } from 'typeorm';
 
 /**
  * 积分记录类型枚举
@@ -84,4 +78,3 @@ export class PointsRecord {
   @CreateDateColumn({ comment: '创建时间' })
   createTime: Date;
 }
-

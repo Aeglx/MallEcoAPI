@@ -56,7 +56,12 @@ export class PointsGoods {
   @Column({ type: 'int', default: 1, comment: '兑换方式：1-仅积分，2-积分+现金' })
   exchangeType: number;
 
-  @Column('decimal', { precision: 10, scale: 2, default: 0, comment: '现金金额（当exchangeType为2时使用）' })
+  @Column('decimal', {
+    precision: 10,
+    scale: 2,
+    default: 0,
+    comment: '现金金额（当exchangeType为2时使用）',
+  })
   cashAmount: number;
 
   @Column({ type: 'text', nullable: true, comment: '商品详情' })
@@ -83,4 +88,3 @@ export class PointsGoods {
   @Column({ default: false, comment: '是否删除' })
   deleted: boolean;
 }
-

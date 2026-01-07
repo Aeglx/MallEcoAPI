@@ -167,7 +167,7 @@ export abstract class BaseService<T extends ObjectLiteral> {
     try {
       // 使用类型断言处理updateDto的类型
       await this.repository.update(id, updateDto as any);
-      return this.findOne(id) as Promise<T>;
+      return this.findOne(id);
     } catch (error) {
       console.error('更新实体失败:', error);
       throw error;

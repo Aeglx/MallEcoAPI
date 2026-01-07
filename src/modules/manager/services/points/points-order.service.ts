@@ -4,7 +4,11 @@ import { Repository, Like, In, Between } from 'typeorm';
 import { PointsOrder, PointsOrderStatus } from '../../../framework/entities/points-order.entity';
 import { PointsGoods } from '../../../framework/entities/points-goods.entity';
 import { Member } from '../../../framework/entities/member.entity';
-import { PointsRecord, PointsRecordType, PointsRecordSource } from '../../../framework/entities/points-record.entity';
+import {
+  PointsRecord,
+  PointsRecordType,
+  PointsRecordSource,
+} from '../../../framework/entities/points-record.entity';
 
 @Injectable()
 export class PointsOrderService {
@@ -24,7 +28,9 @@ export class PointsOrderService {
    */
   private generateOrderNo(): string {
     const timestamp = Date.now();
-    const random = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+    const random = Math.floor(Math.random() * 10000)
+      .toString()
+      .padStart(4, '0');
     return `PO${timestamp}${random}`;
   }
 
@@ -45,7 +51,7 @@ export class PointsOrderService {
 
     const skip = (Number(page) - 1) * Number(pageSize);
 
-    let queryBuilder = this.pointsOrderRepository.createQueryBuilder('order');
+    const queryBuilder = this.pointsOrderRepository.createQueryBuilder('order');
 
     if (orderNo) {
       queryBuilder.andWhere('order.orderNo LIKE :orderNo', { orderNo: `%${orderNo}%` });
@@ -54,7 +60,9 @@ export class PointsOrderService {
       queryBuilder.andWhere('order.memberId = :memberId', { memberId });
     }
     if (memberUsername) {
-      queryBuilder.andWhere('order.memberUsername LIKE :memberUsername', { memberUsername: `%${memberUsername}%` });
+      queryBuilder.andWhere('order.memberUsername LIKE :memberUsername', {
+        memberUsername: `%${memberUsername}%`,
+      });
     }
     if (status) {
       queryBuilder.andWhere('order.status = :status', { status });
@@ -391,7 +399,7 @@ export class PointsOrderService {
     try {
       const { startTime, endTime } = query;
 
-      let queryBuilder = this.pointsOrderRepository.createQueryBuilder('order');
+      const queryBuilder = this.pointsOrderRepository.createQueryBuilder('order');
       queryBuilder.andWhere('order.deleted = :deleted', { deleted: false });
 
       if (startTime && endTime) {
@@ -426,4 +434,3 @@ export class PointsOrderService {
     }
   }
 }
-

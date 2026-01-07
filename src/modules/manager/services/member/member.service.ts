@@ -1,4 +1,9 @@
-import { Injectable, NotFoundException, ConflictException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ConflictException,
+  BadRequestException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Like, In, Not, IsNull } from 'typeorm';
 import { Member } from '../../../framework/entities/member.entity';
@@ -50,8 +55,8 @@ export class MemberService {
       where.gradeId = gradeId;
     }
     // 日期范围查询需要特殊处理，使用QueryBuilder
-    let queryBuilder = this.memberRepository.createQueryBuilder('member');
-    
+    const queryBuilder = this.memberRepository.createQueryBuilder('member');
+
     // 应用所有查询条件
     if (username) {
       queryBuilder.andWhere('member.username LIKE :username', { username: `%${username}%` });
@@ -63,7 +68,9 @@ export class MemberService {
       queryBuilder.andWhere('member.nickname LIKE :nickname', { nickname: `%${nickname}%` });
     }
     if (status !== undefined && status !== '') {
-      queryBuilder.andWhere('member.status = :status', { status: status === 'true' || status === true || status === 1 });
+      queryBuilder.andWhere('member.status = :status', {
+        status: status === 'true' || status === true || status === 1,
+      });
     }
     if (gradeId) {
       queryBuilder.andWhere('member.gradeId = :gradeId', { gradeId });
@@ -83,9 +90,8 @@ export class MemberService {
 
       // 获取会员等级信息
       const gradeIds = [...new Set(result.map(m => m.gradeId).filter(Boolean))];
-      const grades = gradeIds.length > 0 
-        ? await this.gradeRepository.find({ where: { id: In(gradeIds) } })
-        : [];
+      const grades =
+        gradeIds.length > 0 ? await this.gradeRepository.find({ where: { id: In(gradeIds) } }) : [];
       const gradeMap = new Map(grades.map(g => [g.id, g]));
 
       // 关联等级信息
@@ -213,7 +219,7 @@ export class MemberService {
       const savedMember = await this.memberRepository.save(newMember);
 
       // 移除密码字段
-      const { password, ...result } = savedMember;
+      const { password, ...result } = savedMember as any;
 
       return {
         success: true,

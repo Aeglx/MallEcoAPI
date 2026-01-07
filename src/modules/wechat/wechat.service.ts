@@ -56,7 +56,8 @@ export class WechatService {
         this.wechatMenuRepository.count({ where: { status: 1 } }),
       ]);
 
-      const materialCount = materialImageCount + materialVideoCount + materialVoiceCount + materialArticleCount;
+      const materialCount =
+        materialImageCount + materialVideoCount + materialVoiceCount + materialArticleCount;
 
       // 获取最后同步时间（粉丝最后更新时间）
       const lastFansUpdate = await this.wechatFansRepository
@@ -165,12 +166,7 @@ export class WechatService {
       const totalReceived = totalSent; // 假设发送数等于接收数
 
       // 获取素材统计数据
-      const [
-        imageCount,
-        videoCount,
-        voiceCount,
-        articleCount,
-      ] = await Promise.all([
+      const [imageCount, videoCount, voiceCount, articleCount] = await Promise.all([
         this.materialImageRepository.count(),
         this.materialVideoRepository.count(),
         this.materialVoiceRepository.count(),

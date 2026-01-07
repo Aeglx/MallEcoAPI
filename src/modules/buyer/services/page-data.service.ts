@@ -16,24 +16,36 @@ export class PageDataService {
                 list: [
                   {
                     id: 1,
-                    img: 'https://dummyimage.com/637x334/cccccc/ffffff&text=' + encodeURIComponent('新潮国货-为颜值加分'),
-                    imageUrl: 'https://dummyimage.com/637x334/cccccc/ffffff&text=' + encodeURIComponent('新潮国货-为颜值加分'),
+                    img:
+                      'https://dummyimage.com/637x334/cccccc/ffffff&text=' +
+                      encodeURIComponent('新潮国货-为颜值加分'),
+                    imageUrl:
+                      'https://dummyimage.com/637x334/cccccc/ffffff&text=' +
+                      encodeURIComponent('新潮国货-为颜值加分'),
                     url: '/',
                     linkUrl: '/',
                     title: '首页横幅1',
                   },
                   {
                     id: 2,
-                    img: 'https://dummyimage.com/637x334/cccccc/ffffff&text=' + encodeURIComponent('新品上市'),
-                    imageUrl: 'https://dummyimage.com/637x334/cccccc/ffffff&text=' + encodeURIComponent('新品上市'),
+                    img:
+                      'https://dummyimage.com/637x334/cccccc/ffffff&text=' +
+                      encodeURIComponent('新品上市'),
+                    imageUrl:
+                      'https://dummyimage.com/637x334/cccccc/ffffff&text=' +
+                      encodeURIComponent('新品上市'),
                     url: '/goodsList',
                     linkUrl: '/goodsList',
                     title: '首页横幅2',
                   },
                   {
                     id: 3,
-                    img: 'https://dummyimage.com/637x334/cccccc/ffffff&text=' + encodeURIComponent('限时秒杀'),
-                    imageUrl: 'https://dummyimage.com/637x334/cccccc/ffffff&text=' + encodeURIComponent('限时秒杀'),
+                    img:
+                      'https://dummyimage.com/637x334/cccccc/ffffff&text=' +
+                      encodeURIComponent('限时秒杀'),
+                    imageUrl:
+                      'https://dummyimage.com/637x334/cccccc/ffffff&text=' +
+                      encodeURIComponent('限时秒杀'),
                     url: '/seckill',
                     linkUrl: '/seckill',
                     title: '首页横幅3',

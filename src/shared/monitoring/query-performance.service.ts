@@ -24,7 +24,7 @@ export class QueryPerformanceService {
       this.queryMetrics.set(normalizedQuery, { count: 0, totalTime: 0, avgTime: 0 });
     }
 
-    const metrics = this.queryMetrics.get(normalizedQuery)!;
+    const metrics = this.queryMetrics.get(normalizedQuery);
     metrics.count++;
     metrics.totalTime += executionTime;
     metrics.avgTime = metrics.totalTime / metrics.count;

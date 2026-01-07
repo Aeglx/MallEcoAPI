@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { HttpModule } from '@nestjs/axios';
 import { WechatController } from './wechat.controller';
 import { WechatService } from './wechat.service';
 import { WechatFansService } from './services/wechat-fans.service';
@@ -10,6 +11,7 @@ import { WechatCouponService } from './services/wechat-coupon.service';
 import { WechatMaterialService } from './services/wechat-material.service';
 import { WechatMenuService } from './services/wechat-menu.service';
 import { WechatOauthService } from './services/wechat-oauth.service';
+import { WechatApiService } from './services/wechat-api.service';
 import { WechatFansController } from './controllers/wechat-fans.controller';
 import { WechatSubscribeController } from './controllers/wechat-subscribe.controller';
 import { WechatTemplateController } from './controllers/wechat-template.controller';
@@ -42,6 +44,7 @@ import { WechatOauthToken } from './entities/wechat-oauth-token.entity';
 
 @Module({
   imports: [
+    HttpModule,
     TypeOrmModule.forFeature([
       WechatFans,
       WechatSubscribe,
@@ -85,6 +88,7 @@ import { WechatOauthToken } from './entities/wechat-oauth-token.entity';
     WechatMaterialService,
     WechatMenuService,
     WechatOauthService,
+    WechatApiService,
   ],
   exports: [
     WechatService,
@@ -96,6 +100,7 @@ import { WechatOauthToken } from './entities/wechat-oauth-token.entity';
     WechatMaterialService,
     WechatMenuService,
     WechatOauthService,
+    WechatApiService,
   ],
 })
 export class WechatModule {}

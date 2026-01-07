@@ -22,4 +22,3 @@ export class PointsRecordController {
     return this.pointsRecordService.adjustPoints(adjustData);
   }
 }
-

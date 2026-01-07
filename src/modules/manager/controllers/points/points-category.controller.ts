@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { PointsCategoryService } from '../../services/points/points-category.service';
 
@@ -32,4 +32,3 @@ export class PointsCategoryController {
     return this.pointsCategoryService.remove(Number(id));
   }
 }
-

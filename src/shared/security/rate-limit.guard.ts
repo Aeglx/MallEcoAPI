@@ -103,8 +103,7 @@ export function RateLimit(config?: any) {
 
     descriptor.value = async function (...args: any[]) {
       const request = args[0]?.req || args[0];
-      const rateLimiterService =
-        this.rateLimiterService || (this as any).moduleRef?.get(RateLimiterService);
+      const rateLimiterService = this.rateLimiterService || this.moduleRef?.get(RateLimiterService);
 
       if (rateLimiterService && request) {
         const identifier = this.getClientIdentifier?.(request) || 'unknown';

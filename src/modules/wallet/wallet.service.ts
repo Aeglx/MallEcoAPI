@@ -65,7 +65,7 @@ export class WalletService {
       this.createWallet(createWalletDto);
     }
 
-    const updatedWallet = this.getWalletByUserId(userId) as Wallet;
+    const updatedWallet = this.getWalletByUserId(userId);
     const balanceBefore = updatedWallet.balance;
     const balanceAfter = balanceBefore + dto.amount;
 

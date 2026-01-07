@@ -53,7 +53,7 @@ export function GlobalTransaction(timeout: number = 60000) {
     const originalMethod = descriptor.value;
 
     descriptor.value = async function (...args: any[]) {
-      const seataService: SeataService = (this as any).seataService;
+      const seataService: SeataService = this.seataService;
 
       if (!seataService) {
         return originalMethod.apply(this, args);
@@ -99,7 +99,7 @@ export function BranchTransaction(resourceId: string, branchType: string = 'AT')
     const originalMethod = descriptor.value;
 
     descriptor.value = async function (...args: any[]) {
-      const seataService: SeataService = (this as any).seataService;
+      const seataService: SeataService = this.seataService;
 
       if (!seataService || !seataService.isInGlobalTransaction()) {
         return originalMethod.apply(this, args);

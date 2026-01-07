@@ -37,4 +37,3 @@ export class PointsOrderController {
     return this.pointsOrderService.remove(id);
   }
 }
-

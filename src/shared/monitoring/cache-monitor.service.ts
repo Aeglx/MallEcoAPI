@@ -38,7 +38,7 @@ export class CacheMonitorService {
     if (!this.cacheStats.has(prefix)) {
       this.cacheStats.set(prefix, { hits: 0, misses: 0 });
     }
-    const stats = this.cacheStats.get(prefix)!;
+    const stats = this.cacheStats.get(prefix);
     if (isHit) {
       stats.hits++;
     } else {

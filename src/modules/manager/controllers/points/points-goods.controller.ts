@@ -42,4 +42,3 @@ export class PointsGoodsController {
     return this.pointsGoodsService.batchRemove(body.ids);
   }
 }
-

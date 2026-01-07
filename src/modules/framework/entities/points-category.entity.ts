@@ -38,4 +38,3 @@ export class PointsCategory {
   @Column({ default: false, comment: '是否删除' })
   deleted: boolean;
 }
-

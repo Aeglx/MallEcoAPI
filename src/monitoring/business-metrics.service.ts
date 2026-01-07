@@ -103,7 +103,7 @@ export class BusinessMetricsService {
       this.metrics.set(name, []);
     }
 
-    const metricList = this.metrics.get(name)!;
+    const metricList = this.metrics.get(name);
     metricList.push(metric);
 
     // 保留最近1小时的数据（假设每秒一个数据点）
@@ -257,7 +257,7 @@ export class BusinessMetricsService {
       this.thresholds.set(threshold.metric, []);
     }
 
-    this.thresholds.get(threshold.metric)!.push(threshold);
+    this.thresholds.get(threshold.metric).push(threshold);
     this.logger.log(`设置指标阈值: ${threshold.metric} ${threshold.operator} ${threshold.value}`);
   }
 

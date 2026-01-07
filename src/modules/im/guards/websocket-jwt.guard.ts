@@ -45,7 +45,7 @@ export class WebSocketJwtGuard implements CanActivate {
       });
 
       // 将用户信息附加到客户端对象
-      (client as any).user = {
+      client.user = {
         id: payload.sub || payload.id,
         username: payload.username,
         roles: payload.roles || [],
